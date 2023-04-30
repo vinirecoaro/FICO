@@ -7,12 +7,78 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:layout_marginTop="8dp"
+        android:id="@+id/tv_available_this_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/available_this_month"
+        app:layout_constraintEnd_toStartOf="@id/tv_total_expenses"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextAppearance.MaterialComponents.Headline6"/>
+
+    <TextView
+        android:layout_marginTop="8dp"
+        android:id="@+id/tv_total_expenses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/total_expenses"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_available_this_month"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/TextAppearance.MaterialComponents.Headline6"/>
+
+    <TextView
+        android:id="@+id/tv_available_this_month_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text=""
+        tools:text="R$500,00"
+        app:layout_constraintEnd_toEndOf="@id/tv_available_this_month"
+        app:layout_constraintStart_toStartOf="@id/tv_available_this_month"
+        app:layout_constraintTop_toBottomOf="@id/tv_available_this_month" />
+
+    <TextView
+        android:id="@+id/tv_total_expenses_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text=""
+        tools:text="R$45975,00"
+        app:layout_constraintEnd_toEndOf="@id/tv_total_expenses"
+        app:layout_constraintStart_toStartOf="@id/tv_total_expenses"
+        app:layout_constraintTop_toBottomOf="@id/tv_total_expenses" />
+
+    <Button
+        android:layout_marginTop="100dp"
+        android:id="@+id/bt_add_expenses"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_expense"
+        app:layout_constraintBottom_toTopOf="@id/bt_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bt_list"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="@string/list_of_expenses"
+        app:layout_constraintBottom_toTopOf="@id/bt_config"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_add_expenses" />
+
+    <Button
+        android:id="@+id/bt_config"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="@string/config"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
