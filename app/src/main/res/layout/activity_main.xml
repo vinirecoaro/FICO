@@ -4,29 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <TextView
-        android:layout_marginTop="8dp"
         android:id="@+id/tv_available_this_month"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/available_this_month"
+        android:layout_marginTop="16dp"
+        android:text="@string/available"
         app:layout_constraintEnd_toStartOf="@id/tv_total_expenses"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/TextAppearance.MaterialComponents.Headline6"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_marginTop="8dp"
         android:id="@+id/tv_total_expenses"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/total_expenses"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_available_this_month"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/TextAppearance.MaterialComponents.Headline6"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_available_this_month_value"
@@ -34,10 +34,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text=""
-        tools:text="R$500,00"
         app:layout_constraintEnd_toEndOf="@id/tv_available_this_month"
         app:layout_constraintStart_toStartOf="@id/tv_available_this_month"
-        app:layout_constraintTop_toBottomOf="@id/tv_available_this_month" />
+        app:layout_constraintTop_toBottomOf="@id/tv_available_this_month"
+        tools:text="R$500,00"/>
 
     <TextView
         android:id="@+id/tv_total_expenses_value"
@@ -45,16 +45,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text=""
-        tools:text="R$45975,00"
         app:layout_constraintEnd_toEndOf="@id/tv_total_expenses"
         app:layout_constraintStart_toStartOf="@id/tv_total_expenses"
-        app:layout_constraintTop_toBottomOf="@id/tv_total_expenses" />
+        app:layout_constraintTop_toBottomOf="@id/tv_total_expenses"
+        tools:text="R$45975,00" />
 
     <Button
-        android:layout_marginTop="100dp"
         android:id="@+id/bt_add_expenses"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:text="@string/add_expense"
         app:layout_constraintBottom_toTopOf="@id/bt_list"
         app:layout_constraintEnd_toEndOf="parent"
