@@ -2,7 +2,7 @@
     <string name="app_name">FICO</string>
     <string name="add_expense">Adicionar gasto</string>
     <string name="list_of_expenses">Lista de gastos</string>
-    <string name="config">configurções</string>
+    <string name="config">configurações</string>
     <string name="available">Disponivel</string>
     <string name="total_expenses">Gasto Total</string>
     <string name="add_value">Valor</string>
@@ -10,4 +10,5 @@
     <string name="add_category">Categoria</string>
     <string name="add_date">Data</string>
     <string name="add_save">salvar</string>
+    <string name="this_month_expense">Gasto do Mês</string>
 </resources>
