@@ -1,46 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.AddExpenseActivity"
     android:padding="16dp"
-    android:orientation="vertical"
-    android:gravity="center">
+    tools:context=".ui.AddExpenseActivity">
 
     <EditText
         android:id="@+id/et_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/add_value"
-        android:digits="0,1,2,3,4,5,6,7,8,9,."
         android:inputType="numberDecimal"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:layout_marginTop="32dp"
         android:id="@+id/et_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:hint="@string/add_description"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_value" />
 
     <EditText
-        android:layout_marginTop="32dp"
         android:id="@+id/et_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:hint="@string/add_category"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_description"
+        android:focusable="false"
+        android:cursorVisible="false"/>
+
+    <Spinner
+        android:id="@+id/sp_category_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/et_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/et_category" />
 
     <EditText
-        android:layout_marginTop="32dp"
         android:id="@+id/et_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:hint="@string/add_date"
         android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_category"
         />
 
     <Button
@@ -48,6 +66,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/add_save"/>
+        android:text="@string/add_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_date"
+        />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
