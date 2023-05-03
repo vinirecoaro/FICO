@@ -11,10 +11,4 @@
     <string name="add_date">Data</string>
     <string name="add_save">salvar</string>
     <string name="this_month_expense">Gasto do Mês</string>
-    <string name="email">E-mail</string>
-    <string name="password">Senha</string>
-    <string name="login">Login</string>
-    <string name="name">Nome</string>
-    <string name="register">Cadastrar</string>
-    <string name="register_login_screen">Não tem conta? Cadastre-se</string>
 </resources>
