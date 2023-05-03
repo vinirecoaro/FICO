@@ -41,16 +41,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/login"
-<<<<<<< HEAD
         app:layout_constraintBottom_toTopOf="@id/bt_register"
-=======
         app:layout_constraintBottom_toBottomOf="parent"
->>>>>>> origin/master
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_password" />
 
-<<<<<<< HEAD
     <TextView
         android:id="@+id/bt_register"
         android:layout_width="300dp"
@@ -63,6 +59,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bt_login"/>
 
-=======
->>>>>>> origin/master
 </androidx.constraintlayout.widget.ConstraintLayout>
