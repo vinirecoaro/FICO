@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setUpListeners()
+
     }
 
     private fun setUpListeners(){
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         }
         binding.tvTotalExpensesValue.setOnClickListener {
             viewModel.ShowHideValue(binding.tvTotalExpensesValue)
+        }
+        binding.btConfig.setOnClickListener {
+            startActivity(Intent(this, ConfigurationActivity::class.java))
         }
     }
 

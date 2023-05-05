@@ -9,7 +9,7 @@
     <string name="add_description">Descrição</string>
     <string name="add_category">Categoria</string>
     <string name="add_date">Data</string>
-    <string name="add_save">salvar</string>
+    <string name="save">salvar</string>
     <string name="this_month_expense">Gasto do Mês</string>
     <string name="email">E-mail</string>
     <string name="password">Senha</string>
@@ -17,4 +17,5 @@
     <string name="register_login_screen">Não tem uma conta? Cadastre-se</string>
     <string name="register">Cadastrar</string>
     <string name="name">Nome</string>
+    <string name="available_per_month">Disponível  por mês</string>
 </resources>

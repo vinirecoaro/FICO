@@ -21,4 +21,5 @@ class MainViewModel : ViewModel() {
             text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
         }
     }
+
 }
