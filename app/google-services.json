@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1016687985047",
+    "project_id": "fico-1f94b",
+    "storage_bucket": "fico-1f94b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016687985047:android:529de893ed7884703f84d2",
+        "android_client_info": {
+          "package_name": "com.example.fico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016687985047-69mkdhspged3lfnaj06d2oajol9vn2gc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fico",
+            "certificate_hash": "7bb8035dae5f61cdb1c6b3aaf836434a64c2879e"
+          }
+        },
+        {
+          "client_id": "1016687985047-ggvcegpg51af1hc4dcqdvmjthui21sni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1SR6WM8PweWBGZ-oShFk3RQo60yyZliw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016687985047-ggvcegpg51af1hc4dcqdvmjthui21sni.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
