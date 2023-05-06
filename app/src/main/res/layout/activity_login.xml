@@ -41,14 +41,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/login"
-        app:layout_constraintBottom_toTopOf="@id/bt_register"
+        app:layout_constraintBottom_toTopOf="@id/tv_register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_password" />
 
     <TextView
-        android:id="@+id/bt_register"
+        android:id="@+id/tv_register"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
