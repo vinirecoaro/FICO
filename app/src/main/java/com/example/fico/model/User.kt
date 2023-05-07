@@ -1,7 +1,6 @@
 package com.example.fico.model
 
 data class User(
-    private val name : String,
-    private val email : String,
-    private val password : String
+    internal val email : String,
+    internal val password : String
 )
