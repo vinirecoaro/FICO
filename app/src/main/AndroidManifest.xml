@@ -12,6 +12,9 @@
         android:theme="@style/Theme.FICO"
         tools:targetApi="31">
         <activity
+            android:name=".VerifyEmailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.ConfigurationActivity"
             android:exported="false" />
         <activity
@@ -21,16 +24,17 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="false"
-            android:screenOrientation="sensor"/>
+            android:screenOrientation="sensor" />
         <activity
-            android:name="com.example.fico.ui.LoginActivity"
+            android:name=".LoginActivity"
             android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name="com.example.fico.ui.RegisterActivity" />
+        <activity android:name=".RegisterActivity" />
     </application>
 
 </manifest>

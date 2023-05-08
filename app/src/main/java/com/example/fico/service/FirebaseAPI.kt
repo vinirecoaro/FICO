@@ -33,4 +33,8 @@ class FirebaseAPI private constructor() {
         return FirebaseAuth.getInstance().signInWithEmailAndPassword(user.email, user.password)
     }
 
+    fun verifyEmail(){
+
+    }
+
 }
