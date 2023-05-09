@@ -30,15 +30,22 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         viewModel.onUserCreated = {
-            // Inicia a nova activity em caso de sucesso
-            val intent = Intent(this, MainActivity::class.java)
+            viewModel.sendEmailVerificarion()
+            val intent = Intent(this, VerifyEmailActivity::class.java)
             startActivity(intent)
             finish()
         }
 
         viewModel.onError = { message ->
-            // Exibe a mensagem de erro em caso de falha
             Snackbar.make(binding.btRegister, message, Snackbar.LENGTH_LONG).show()
+        }
+
+        viewModel.onSendEmailSuccess = {
+            Snackbar.make(binding.btRegister, "Email de verificação enviado com sucesso.", Snackbar.LENGTH_LONG).show()
+        }
+
+        viewModel.onSendEmailFailure = {
+            Snackbar.make(binding.btRegister, "Erro ao enviar email de verificação.", Snackbar.LENGTH_LONG).show()
         }
     }
 

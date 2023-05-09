@@ -12,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 class RegisterViewModel : ViewModel() {
 
+    val auth = FirebaseAPI.getInstance()
+
     fun checkFields(btn: Button, vararg fields : EditText): Boolean {
         val nFileds = fields.size
         var counter = 0
@@ -35,7 +37,6 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun createUser(email: String, password: String) {
-        val auth = FirebaseAPI.getInstance()
         val user = User(email, password)
 
         auth.createUser(user)
@@ -56,7 +57,20 @@ class RegisterViewModel : ViewModel() {
             }
     }
 
+    fun sendEmailVerificarion(){
+        auth.sendEmailVerification()
+            ?.addOnCompleteListener{
+                onSendEmailSuccess()
+            }
+            ?.addOnFailureListener{
+                onSendEmailFailure()
+            }
+    }
+
     var onUserCreated: () -> Unit = {}
     var onError: (String) -> Unit = {}
+
+    var onSendEmailSuccess: () -> Unit = {}
+    var onSendEmailFailure: () -> Unit = {}
 
 }

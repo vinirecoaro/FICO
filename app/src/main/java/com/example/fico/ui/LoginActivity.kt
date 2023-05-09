@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
         viewModel.onUserLogged = {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, VerifyEmailActivity::class.java))
         }
         viewModel.onError = { message ->
             // Exibe a mensagem de erro em caso de falha
