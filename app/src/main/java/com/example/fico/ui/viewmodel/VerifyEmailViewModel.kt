@@ -5,19 +5,31 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.fico.service.FirebaseAPI
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 
 class VerifyEmailViewModel : ViewModel() {
 
     private val _isVerified = MutableLiveData<Boolean>()
     val isVerified : LiveData<Boolean> = _isVerified
-    private val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAPI.getInstance()
 
     init{
-        auth.addAuthStateListener { firebaseAuth ->
-            val user = firebaseAuth.currentUser
-            _isVerified.value = user?.isEmailVerified ?: false
+        auth.stateListener().also {
+            val user = auth.currentUser()
+            _isVerified.value = user?.isEmailVerified == true
         }
     }
+
+    fun sendEmailVerificarion(){
+        auth.sendEmailVerification()
+            ?.addOnCompleteListener{
+                onSendEmailSuccess()
+            }
+            ?.addOnFailureListener{
+                onSendEmailFailure()
+            }
+    }
+
+    var onSendEmailSuccess: () -> Unit = {}
+    var onSendEmailFailure: () -> Unit = {}
 
 }

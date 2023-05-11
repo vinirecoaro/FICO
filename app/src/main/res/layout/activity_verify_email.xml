@@ -7,12 +7,25 @@
     tools:context=".ui.VerifyEmailActivity">
 
     <TextView
+        android:id="@+id/tv_message_email_verification"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/verification_email_message"
         android:gravity="center"
+        android:text="@string/verification_email_message"
+        app:layout_constraintBottom_toTopOf="@id/bt_resent_email"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/bt_resent_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/resent_email"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_message_email_verification" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

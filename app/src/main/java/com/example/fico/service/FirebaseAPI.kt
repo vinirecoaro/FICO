@@ -37,4 +37,9 @@ class FirebaseAPI private constructor() {
         return FirebaseAPI.getInstance().currentUser()?.sendEmailVerification()
     }
 
+    fun stateListener(){
+        val auth: FirebaseAuth = Firebase.auth
+        return auth.addAuthStateListener {  }
+    }
+
 }
