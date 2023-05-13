@@ -41,7 +41,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, VerifyEmailActivity::class.java))
         }
         viewModel.onError = { message ->
-            // Exibe a mensagem de erro em caso de falha
             Snackbar.make(binding.btLogin, message, Snackbar.LENGTH_LONG).show()
         }
     }

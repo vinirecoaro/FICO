@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
@@ -23,35 +24,32 @@ class FirebaseAPI private constructor() {
         val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
     }
 
-    /*companion object {
-        @Volatile
-        private var instance: FirebaseAPI? = null
-
-        fun getInstance() =
-            instance ?: synchronized(this) {
-                instance ?: FirebaseAPI().also { instance = it }
-            }
-    }*/
+    fun currentUser(): FirebaseUser? {
+        return auth.currentUser
+    }
 
     fun createUser(user: User) : Task<AuthResult> {
-        return FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.email, user.password)
+        return auth.createUserWithEmailAndPassword(user.email, user.password)
     }
 
     fun login(user: User) : Task<AuthResult> {
-        return FirebaseAuth.getInstance().signInWithEmailAndPassword(user.email, user.password)
+        return auth.signInWithEmailAndPassword(user.email, user.password)
     }
 
     fun sendEmailVerification(): Task<Void>? {
-        return FirebaseAPI.auth.currentUser?.sendEmailVerification()
+        return auth.currentUser?.sendEmailVerification()
     }
 
     fun stateListener(){
-        val auth: FirebaseAuth = Firebase.auth
         return auth.addAuthStateListener {  }
     }
 
     fun logoff(){
-        return FirebaseAuth.getInstance().signOut()
+        return auth.signOut()
+    }
+
+    fun verifyIfUserExists(): Task<SignInMethodQueryResult> {
+        return auth.fetchSignInMethodsForEmail(currentUser()?.email.toString())
     }
 
 }

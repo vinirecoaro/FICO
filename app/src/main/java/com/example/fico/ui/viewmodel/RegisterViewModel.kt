@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 class RegisterViewModel : ViewModel() {
 
-    val auth = FirebaseAPI.getInstance()
+    val firebaseAPI = FirebaseAPI.instance
 
     fun checkFields(btn: Button, vararg fields : EditText): Boolean {
         val nFileds = fields.size
@@ -39,7 +39,7 @@ class RegisterViewModel : ViewModel() {
     fun createUser(email: String, password: String) {
         val user = User(email, password)
 
-        auth.createUser(user)
+        firebaseAPI.createUser(user)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Chama a função que inicia a nova activity
@@ -58,7 +58,7 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun sendEmailVerificarion(){
-        auth.sendEmailVerification()
+        firebaseAPI.sendEmailVerification()
             ?.addOnCompleteListener{
                 onSendEmailSuccess()
             }

@@ -14,7 +14,6 @@ class MainViewModel : ViewModel() {
             text.transformationMethod = null
             text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_24, 0)
         }
-        //if(binding.tvTotalExpensesValue.inputType == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
         else{
             text.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             text.transformationMethod = PasswordTransformationMethod()

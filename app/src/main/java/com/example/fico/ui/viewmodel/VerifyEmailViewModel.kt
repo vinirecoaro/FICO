@@ -13,8 +13,8 @@ class VerifyEmailViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance
 
     init{
-        firebaseAPI.also {
-            val user = FirebaseAPI.auth.currentUser
+        firebaseAPI.stateListener().also {
+            val user = firebaseAPI.currentUser()
             _isVerified.value = user?.isEmailVerified == true
         }
     }

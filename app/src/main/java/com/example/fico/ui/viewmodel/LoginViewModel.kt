@@ -9,15 +9,14 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 class LoginViewModel : ViewModel() {
 
-    private val auth = FirebaseAPI.getInstance()
+    private val firebaseAPI = FirebaseAPI.instance
 
     fun login(email: String, password: String){
         val user = User(email, password)
-
-        auth.login(user)
+        firebaseAPI.login(user)
             .addOnCompleteListener{ task ->
                 if (task.isSuccessful) {
-                    if(auth.currentUser()?.isEmailVerified == true){
+                    if(firebaseAPI.currentUser()?.isEmailVerified == true){
                         onUserLogged()
                     }else{
                         onUserNotVerified()
@@ -35,9 +34,23 @@ class LoginViewModel : ViewModel() {
     }
 
     fun isLogged(){
-        val curretUser = auth.currentUser()
+        val curretUser = firebaseAPI.currentUser()
         if(curretUser != null){
-            onUserLogged()
+            firebaseAPI.verifyIfUserExists()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val providers = task.result
+                        if (providers != null && providers.signInMethods?.isNotEmpty() == true) {
+                            onUserLogged()
+                        } else {
+                            firebaseAPI.logoff()
+                            onError("Usuário não identificado")
+                        }
+                    } else {
+                        firebaseAPI.logoff()
+                        onError("Usuário não identificado")
+                    }
+                }
         }
     }
 
