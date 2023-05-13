@@ -17,7 +17,12 @@ class LoginViewModel : ViewModel() {
         auth.login(user)
             .addOnCompleteListener{ task ->
                 if (task.isSuccessful) {
-                    onUserLogged()
+                    if(auth.currentUser()?.isEmailVerified == true){
+                        onUserLogged()
+                    }else{
+                        onUserNotVerified()
+                    }
+
                 } else {
                     val message = when (task.exception) {
                         is FirebaseAuthInvalidCredentialsException -> "E-mail ou senha inválidos."
@@ -37,6 +42,7 @@ class LoginViewModel : ViewModel() {
     }
 
     var onUserLogged: () -> Unit = {}
+    var onUserNotVerified : () -> Unit = {}
     var onError: (String) -> Unit = {}
 
 }

@@ -42,4 +42,8 @@ class FirebaseAPI private constructor() {
         return auth.addAuthStateListener {  }
     }
 
+    fun logoff(){
+        return FirebaseAuth.getInstance().signOut()
+    }
+
 }

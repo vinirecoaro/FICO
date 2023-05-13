@@ -35,6 +35,9 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
         viewModel.onUserLogged = {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+        viewModel.onUserNotVerified = {
             startActivity(Intent(this, VerifyEmailActivity::class.java))
         }
         viewModel.onError = { message ->

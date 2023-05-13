@@ -19,6 +19,10 @@ class VerifyEmailViewModel : ViewModel() {
         }
     }
 
+    fun logoff(){
+        auth.logoff()
+    }
+
     fun sendEmailVerificarion(){
         auth.sendEmailVerification()
             ?.addOnCompleteListener{
