@@ -10,21 +10,21 @@ class VerifyEmailViewModel : ViewModel() {
 
     private val _isVerified = MutableLiveData<Boolean>()
     val isVerified : LiveData<Boolean> = _isVerified
-    private val auth = FirebaseAPI.getInstance()
+    private val firebaseAPI = FirebaseAPI.instance
 
     init{
-        auth.stateListener().also {
-            val user = auth.currentUser()
+        firebaseAPI.also {
+            val user = FirebaseAPI.auth.currentUser
             _isVerified.value = user?.isEmailVerified == true
         }
     }
 
     fun logoff(){
-        auth.logoff()
+        firebaseAPI.logoff()
     }
 
     fun sendEmailVerificarion(){
-        auth.sendEmailVerification()
+        firebaseAPI.sendEmailVerification()
             ?.addOnCompleteListener{
                 onSendEmailSuccess()
             }

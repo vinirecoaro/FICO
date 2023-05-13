@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.fico.R
 import com.example.fico.databinding.ActivityVerifyEmailBinding
+import com.example.fico.service.FirebaseAPI
 import com.example.fico.ui.viewmodel.VerifyEmailViewModel
 import com.google.android.material.snackbar.Snackbar
 

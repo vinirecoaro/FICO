@@ -6,11 +6,24 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 
 class FirebaseAPI private constructor() {
 
+    private object HOLDER {
+        val INSTANCE = FirebaseAPI()
+        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+        val mDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    }
+
     companion object {
+        val instance: FirebaseAPI by lazy { HOLDER.INSTANCE }
+        val auth: FirebaseAuth by lazy { HOLDER.mAuth }
+        val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
+    }
+
+    /*companion object {
         @Volatile
         private var instance: FirebaseAPI? = null
 
@@ -18,15 +31,10 @@ class FirebaseAPI private constructor() {
             instance ?: synchronized(this) {
                 instance ?: FirebaseAPI().also { instance = it }
             }
-    }
+    }*/
 
     fun createUser(user: User) : Task<AuthResult> {
         return FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.email, user.password)
-    }
-
-    fun currentUser(): FirebaseUser? {
-        val auth: FirebaseAuth = Firebase.auth
-        return auth.currentUser
     }
 
     fun login(user: User) : Task<AuthResult> {
@@ -34,7 +42,7 @@ class FirebaseAPI private constructor() {
     }
 
     fun sendEmailVerification(): Task<Void>? {
-        return FirebaseAPI.getInstance().currentUser()?.sendEmailVerification()
+        return FirebaseAPI.auth.currentUser?.sendEmailVerification()
     }
 
     fun stateListener(){
