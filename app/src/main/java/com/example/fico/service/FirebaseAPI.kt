@@ -6,9 +6,8 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 
 class FirebaseAPI private constructor() {
 
@@ -50,6 +49,11 @@ class FirebaseAPI private constructor() {
 
     fun verifyIfUserExists(): Task<SignInMethodQueryResult> {
         return auth.fetchSignInMethodsForEmail(currentUser()?.email.toString())
+    }
+
+    fun addNewUser(userEmail: String) {
+        val rootRef = database.getReference("users")
+        rootRef.child(userEmail)
     }
 
 }

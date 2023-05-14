@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.fico.service.FirebaseAPI
-import com.google.firebase.auth.FirebaseAuth
 
 class VerifyEmailViewModel : ViewModel() {
 
