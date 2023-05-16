@@ -31,8 +31,7 @@ class RegisterActivity : AppCompatActivity() {
 
         viewModel.onUserCreated = {
             viewModel.sendEmailVerificarion()
-            val intent = Intent(this, VerifyEmailActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, VerifyEmailActivity::class.java))
             finish()
         }
 

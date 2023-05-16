@@ -51,9 +51,9 @@ class FirebaseAPI private constructor() {
         return auth.fetchSignInMethodsForEmail(currentUser()?.email.toString())
     }
 
-    fun addNewUser(userEmail: String) {
+    fun addNewUserOnDatabase() {
         val rootRef = database.getReference("users")
-        rootRef.child(userEmail)
+        rootRef.child(auth.currentUser?.uid.toString()).setValue("")
     }
 
 }

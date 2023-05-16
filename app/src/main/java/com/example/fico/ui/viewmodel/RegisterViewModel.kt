@@ -42,7 +42,7 @@ class RegisterViewModel : ViewModel() {
         firebaseAPI.createUser(user)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Chama a função que inicia a nova activity
+                    firebaseAPI.addNewUserOnDatabase()
                     onUserCreated()
                 } else {
                     val message = when (task.exception) {
