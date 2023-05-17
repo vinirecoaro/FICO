@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 class RegisterViewModel : ViewModel() {
 
-    val firebaseAPI = FirebaseAPI.instance
+    private val firebaseAPI = FirebaseAPI.instance
 
     fun checkFields(btn: Button, vararg fields : EditText): Boolean {
         val nFileds = fields.size

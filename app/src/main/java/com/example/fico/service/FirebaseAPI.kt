@@ -1,5 +1,6 @@
 package com.example.fico.service
 
+import com.example.fico.model.Expense
 import com.example.fico.model.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -20,7 +21,8 @@ class FirebaseAPI private constructor() {
     companion object {
         val instance: FirebaseAPI by lazy { HOLDER.INSTANCE }
         val auth: FirebaseAuth by lazy { HOLDER.mAuth }
-        val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
+        private val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
+        val rootRef = database.getReference("users")
     }
 
     fun currentUser(): FirebaseUser? {
@@ -52,8 +54,15 @@ class FirebaseAPI private constructor() {
     }
 
     fun addNewUserOnDatabase() {
-        val rootRef = database.getReference("users")
         rootRef.child(auth.currentUser?.uid.toString()).setValue("")
+    }
+
+    fun addExpense(expense: Expense){
+        val reference = rootRef.child(auth.currentUser?.uid.toString()).child(expense.date).child(expense.description)
+        val values = HashMap<String, Any>()
+        values["price"] = expense.price
+        values["category"] = expense.category
+        reference.updateChildren(values)
     }
 
 }

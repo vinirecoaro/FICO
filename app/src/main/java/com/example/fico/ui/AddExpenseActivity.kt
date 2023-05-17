@@ -6,12 +6,18 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.activity.viewModels
 import com.example.fico.databinding.ActivityAddExpenseBinding
+import com.example.fico.model.Expense
+import com.example.fico.service.FirebaseAPI
+import com.example.fico.ui.viewmodel.AddExpenseViewModel
 
 class AddExpenseActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityAddExpenseBinding.inflate(layoutInflater) }
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
+    private val viewModel by viewModels<AddExpenseViewModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +30,6 @@ class AddExpenseActivity : AppCompatActivity() {
         binding.btSave.setOnClickListener {
             finish()
         }
-        // Define o que acontece quando o EditText é clicado
         binding.etCategory.setOnClickListener {
             binding.etCategory.setText(" ")
             binding.spCategoryOptions.visibility = View.VISIBLE
@@ -38,23 +43,28 @@ class AddExpenseActivity : AppCompatActivity() {
                     position: Int,
                     id: Long
                 ) {
-                    // Define o texto do EditText como a opção selecionada
                     binding.etCategory.setText(categoryOptions[position])
-                    // Esconde o Spinner
                     binding.spCategoryOptions.visibility = View.GONE
                 }
-
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    // Faz nada
                 }
             }
+        binding.btSave.setOnClickListener {
+            viewModel.addExpense(
+                binding.etPrice.text.toString().toFloat(),
+                binding.etDescription.text.toString(),
+                binding.etCategory.text.toString(),
+                binding.etDate.text.toString()
+            )
+            finish()
+        }
     }
 
     private fun categoryListConfig(){
         val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, categoryOptions)
 
     // Define o layout para usar quando a lista de opções aparecer
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
 
     // Associa o adaptador ao Spinner
         binding.spCategoryOptions.adapter = adapter

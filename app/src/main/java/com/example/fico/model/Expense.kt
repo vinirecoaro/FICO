@@ -1,8 +1,8 @@
 package com.example.fico.model
 
 data class Expense(
-    private val value : Float,
-    private val description : String,
-    private val category : String,
-    private val date : String
+    internal val price : Float,
+    internal val description : String,
+    internal var category : String,
+    internal val date : String
 )
