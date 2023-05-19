@@ -1,12 +1,15 @@
 package com.example.fico.ui
 
 import android.R
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import com.example.fico.databinding.ActivityAddExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
@@ -19,13 +22,18 @@ class AddExpenseActivity : AppCompatActivity() {
     private val viewModel by viewModels<AddExpenseViewModel>()
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setUpListeners()
         categoryListConfig()
+
+        binding.etDate.setText(viewModel.getCurrentlyDate())
+        binding.etDate.inputType = InputType.TYPE_NULL
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners() {
         binding.btSave.setOnClickListener {
             finish()
@@ -57,6 +65,18 @@ class AddExpenseActivity : AppCompatActivity() {
                 binding.etDate.text.toString()
             )
             finish()
+        }
+        binding.etDate.setOnClickListener {
+            binding.dpDateExpense.visibility = View.VISIBLE
+            binding.dpDateExpense.setOnDateChangedListener{_, selectedYear,selectedMonth, selectedDay ->
+                val selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
+                binding.etDate.setText(selectedDate)
+            }
+        }
+        binding.etDate.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if(!hasFocus){
+                binding.dpDateExpense.visibility = View.GONE
+            }
         }
     }
 
