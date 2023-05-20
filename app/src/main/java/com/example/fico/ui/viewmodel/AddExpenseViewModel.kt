@@ -1,6 +1,9 @@
 package com.example.fico.ui.viewmodel
 
+import android.app.Instrumentation
 import android.os.Build
+import android.os.SystemClock
+import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.fico.model.Expense
@@ -12,7 +15,7 @@ class AddExpenseViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
 
-    fun addExpense(price: Float, description: String, category: String, date: String){
+    fun addExpense(price: String, description: String, category: String, date: String){
         val expense = Expense(price, description, category, date)
         firebaseAPI.addExpense(expense)
     }
@@ -23,4 +26,6 @@ class AddExpenseViewModel : ViewModel() {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         return currentDate.format(formatter)
     }
+
+
 }

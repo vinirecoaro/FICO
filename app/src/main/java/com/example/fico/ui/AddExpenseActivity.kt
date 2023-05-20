@@ -6,14 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.example.fico.databinding.ActivityAddExpenseBinding
-import com.example.fico.model.Expense
-import com.example.fico.service.FirebaseAPI
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
+import java.text.DecimalFormat
 
 class AddExpenseActivity : AppCompatActivity() {
 
@@ -21,13 +19,12 @@ class AddExpenseActivity : AppCompatActivity() {
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
     private val viewModel by viewModels<AddExpenseViewModel>()
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setUpListeners()
-        categoryListConfig()
+        actvConfig()
 
         binding.etDate.setText(viewModel.getCurrentlyDate())
         binding.etDate.inputType = InputType.TYPE_NULL
@@ -35,37 +32,28 @@ class AddExpenseActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners() {
+
         binding.btSave.setOnClickListener {
-            finish()
-        }
-        binding.etCategory.setOnClickListener {
-            binding.etCategory.setText(" ")
-            binding.spCategoryOptions.visibility = View.VISIBLE
-            binding.spCategoryOptions.performClick()
-        }
-        binding.spCategoryOptions.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    binding.etCategory.setText(categoryOptions[position])
-                    binding.spCategoryOptions.visibility = View.GONE
-                }
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
-            }
-        binding.btSave.setOnClickListener {
+            val day = binding.etDate.text.toString().substring(0,2)
+            val month = binding.etDate.text.toString().substring(3,5)
+            val year = binding.etDate.text.toString().substring(6,10)
+            val modifiedDate = "$year-$month-$day"
+
+            val formatNum = DecimalFormat("#.##")
+            val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
             viewModel.addExpense(
-                binding.etPrice.text.toString().toFloat(),
+                formatedNum.toString(),
                 binding.etDescription.text.toString(),
-                binding.etCategory.text.toString(),
-                binding.etDate.text.toString()
+                binding.actvCategory.text.toString(),
+                modifiedDate
             )
             finish()
         }
+
+        binding.actvCategory.setOnClickListener {
+            binding.actvCategory.showDropDown()
+        }
+
         binding.etDate.setOnClickListener {
             binding.dpDateExpense.visibility = View.VISIBLE
             binding.dpDateExpense.setOnDateChangedListener{_, selectedYear,selectedMonth, selectedDay ->
@@ -80,13 +68,10 @@ class AddExpenseActivity : AppCompatActivity() {
         }
     }
 
-    private fun categoryListConfig(){
-        val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, categoryOptions)
-
-    // Define o layout para usar quando a lista de opções aparecer
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-
-    // Associa o adaptador ao Spinner
-        binding.spCategoryOptions.adapter = adapter
+    private fun actvConfig(){
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categoryOptions)
+        binding.actvCategory.setAdapter(adapter)
     }
+
+
 }
