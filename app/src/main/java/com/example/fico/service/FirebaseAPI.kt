@@ -2,6 +2,7 @@ package com.example.fico.service
 
 import com.example.fico.model.Expense
 import com.example.fico.model.User
+import com.example.fico.service.constants.AppConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -22,7 +23,7 @@ class FirebaseAPI private constructor() {
         val instance: FirebaseAPI by lazy { HOLDER.INSTANCE }
         val auth: FirebaseAuth by lazy { HOLDER.mAuth }
         private val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
-        val rootRef = database.getReference("users")
+        val rootRef = database.getReference(AppConstants.DATABASE.USERS)
     }
 
     fun currentUser(): FirebaseUser? {
@@ -54,14 +55,16 @@ class FirebaseAPI private constructor() {
     }
 
     fun addNewUserOnDatabase() {
-        rootRef.child(auth.currentUser?.uid.toString()).setValue("")
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSE_PER_MONTH).setValue("")
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("")
     }
 
     fun addExpense(expense: Expense){
-        val reference = rootRef.child(auth.currentUser?.uid.toString()).child(expense.date).child(expense.description)
+        val reference = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST).child(expense.date).child(expense.description)
         val values = HashMap<String, Any>()
-        values["price"] = expense.price
-        values["category"] = expense.category
+        values[AppConstants.DATABASE.PRICE] = expense.price
+        values[AppConstants.DATABASE.CATEGORY] = expense.category
         reference.updateChildren(values)
     }
 
