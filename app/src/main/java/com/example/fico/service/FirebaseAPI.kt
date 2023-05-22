@@ -55,8 +55,10 @@ class FirebaseAPI private constructor() {
     }
 
     fun addNewUserOnDatabase() {
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSE_PER_MONTH).setValue("")
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue("")
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(AppConstants.DATABASE.BUDGET).setValue("")
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(AppConstants.DATABASE.EXPENSES).setValue("")
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("")
     }
 
