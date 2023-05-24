@@ -8,8 +8,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class FirebaseAPI private constructor() {
 
@@ -56,9 +55,7 @@ class FirebaseAPI private constructor() {
 
     fun addNewUserOnDatabase() {
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue("0.00")
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(AppConstants.DATABASE.BUDGET).setValue("0.00")
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(AppConstants.DATABASE.EXPENSES).setValue("0.00")
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).setValue("0.00")
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
     }
 
@@ -68,6 +65,20 @@ class FirebaseAPI private constructor() {
         values[AppConstants.DATABASE.PRICE] = expense.price
         values[AppConstants.DATABASE.CATEGORY] = expense.category
         reference.updateChildren(values)
+        val currentTotalExpense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).get().toString().toFloat()
+        val addValueTotalExpense = expense.price.toFloat()
+        val newTotalExpense = currentTotalExpense + addValueTotalExpense
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue(newTotalExpense.toString())
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).get().addOnSuccessListener {
+            val currentAvailableNow = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).get().toString().toFloat()
+            val subValueAvailableNow = expense.price.toFloat()
+            val newAvailableNow = currentAvailableNow - subValueAvailableNow
+            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(newAvailableNow.toString())
+        }.addOnFailureListener {
+            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(expense.price)
+        }
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(AppConstants.DATABASE.BUDGET).setValue("0.00")
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).child(AppConstants.DATABASE.EXPENSES).setValue("0.00")
     }
 
 }
