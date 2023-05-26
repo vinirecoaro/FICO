@@ -67,48 +67,35 @@ class FirebaseAPI private constructor() {
     }
 
     fun addExpense(expense: Expense){
-        //Update Expense List
-        val reference = expense_list.child(expense.date).child(expense.description)
-        val values = HashMap<String, Any>()
-        values[AppConstants.DATABASE.PRICE] = expense.price
-        values[AppConstants.DATABASE.CATEGORY] = expense.category
-        reference.updateChildren(values)
+        updateExpenseList(expense)
+        updateTotalExpense(expense.price)
 
-        //Update Total Expense
-        total_expense.addValueEventListener(object : ValueEventListener{
-            val currentTotalExpense : String = ""
-            val addValueTotalExpense : String = ""
-            val newTotalExpense : Float = 0.0f
+    }
+
+    fun updateTotalExpense(value: String){
+        total_expense.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                val currentTotalExpense = snapshot.value.toString()
-                val addValueTotalExpense = expense.price.toFloat()
-                val newTotalExpense = currentTotalExpense.toFloat() + addValueTotalExpense.toFloat()
-
+                val currentTotalExpense = snapshot.value.toString().toFloat()
+                val addValue = value.toFloat()
+                val newValue = currentTotalExpense + addValue
+                total_expense.setValue(newValue.toString())
             }
-            total_expense.setValue(newTotalExpense.toString())
 
             override fun onCancelled(error: DatabaseError) {
 
             }
 
         })
+    }
 
-
-        /*//Update Information per Month - Available Now
-        information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).get().addOnSuccessListener {
-            val currentAvailableNow = information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).get().toString().toFloat()
-            val subValueAvailableNow = expense.price.toFloat()
-            val newAvailableNow = currentAvailableNow - subValueAvailableNow
-            information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(newAvailableNow.toString())
-        }.addOnFailureListener {
-            information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(expense.price)
-        }
-
-        //Update Information per Month - Budget
-        information_per_month.child(AppConstants.DATABASE.BUDGET).setValue("0.00")
-
-        //Update Information per Month - Expenses
-        information_per_month.child(AppConstants.DATABASE.EXPENSES).setValue("0.00")*/
+    fun updateExpenseList(expense: Expense){
+        val reference = expense_list.child(expense.date).child(expense.description)
+        val values = HashMap<String, Any>()
+        values[AppConstants.DATABASE.PRICE] = expense.price
+        values[AppConstants.DATABASE.CATEGORY] = expense.category
+        reference.updateChildren(values)
     }
 
 }
+
+

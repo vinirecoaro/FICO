@@ -10,7 +10,7 @@ class AppConstants private constructor() {
         const val CATEGORY = "category"
         const val INFORMATION_PER_MONTH = "informationPerMonth"
         const val AVAILABLE_NOW = "availableNow"
-        const val EXPENSES = "expenses"
+        const val EXPENSE = "expense"
         const val BUDGET = "budget"
     }
 
