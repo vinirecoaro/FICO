@@ -1,7 +1,10 @@
 package com.example.fico.service
 
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.example.fico.model.Expense
 import com.example.fico.model.User
+import com.example.fico.model.UserData
 import com.example.fico.service.constants.AppConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -20,12 +23,13 @@ class FirebaseAPI private constructor() {
 
     companion object {
         val instance: FirebaseAPI by lazy { HOLDER.INSTANCE }
-        val auth: FirebaseAuth by lazy { HOLDER.mAuth }
+        private val auth: FirebaseAuth by lazy { HOLDER.mAuth }
         private val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
-        val rootRef = database.getReference(AppConstants.DATABASE.USERS)
-        val total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
-        val information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
-        val expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
+        private val rootRef = database.getReference(AppConstants.DATABASE.USERS)
+        private val total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
+        private val information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
+        private val expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
+
     }
 
     fun currentUser(): FirebaseUser? {
@@ -71,14 +75,26 @@ class FirebaseAPI private constructor() {
         reference.updateChildren(values)
 
         //Update Total Expense
-        val currentTotalExpense = total_expense.get().addOnSuccessListener {
-            it.value
-        }
-        val addValueTotalExpense = expense.price.toString().toFloat()
-        val newTotalExpense = currentTotalExpense + addValueTotalExpense
-        total_expense.setValue(newTotalExpense.toString())
+        total_expense.addValueEventListener(object : ValueEventListener{
+            val currentTotalExpense : String = ""
+            val addValueTotalExpense : String = ""
+            val newTotalExpense : Float = 0.0f
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val currentTotalExpense = snapshot.value.toString()
+                val addValueTotalExpense = expense.price.toFloat()
+                val newTotalExpense = currentTotalExpense.toFloat() + addValueTotalExpense.toFloat()
 
-        //Update Information per Month - Available Now
+            }
+            total_expense.setValue(newTotalExpense.toString())
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+
+        /*//Update Information per Month - Available Now
         information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).get().addOnSuccessListener {
             val currentAvailableNow = information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).get().toString().toFloat()
             val subValueAvailableNow = expense.price.toFloat()
@@ -92,7 +108,7 @@ class FirebaseAPI private constructor() {
         information_per_month.child(AppConstants.DATABASE.BUDGET).setValue("0.00")
 
         //Update Information per Month - Expenses
-        information_per_month.child(AppConstants.DATABASE.EXPENSES).setValue("0.00")
+        information_per_month.child(AppConstants.DATABASE.EXPENSES).setValue("0.00")*/
     }
 
 }
