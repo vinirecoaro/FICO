@@ -20,8 +20,6 @@ import java.time.format.DateTimeFormatter
 class AddExpenseViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
-    private val expenseList = mutableListOf<Expense>()
-    private val totalExpense = mutableListOf<String>()
 
     fun addExpense(price: String, description: String, category: String, date: String){
         val expense = Expense(price, description, category, date)

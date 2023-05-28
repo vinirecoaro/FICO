@@ -1,10 +1,7 @@
 package com.example.fico.service
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.example.fico.model.Expense
 import com.example.fico.model.User
-import com.example.fico.model.UserData
 import com.example.fico.service.constants.AppConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -69,7 +66,7 @@ class FirebaseAPI private constructor() {
     fun addExpense(expense: Expense){
         updateExpenseList(expense)
         updateTotalExpense(expense.price)
-
+        updateInformationPerMonth(expense)
     }
 
     fun updateTotalExpense(value: String){
@@ -94,6 +91,43 @@ class FirebaseAPI private constructor() {
         values[AppConstants.DATABASE.PRICE] = expense.price
         values[AppConstants.DATABASE.CATEGORY] = expense.category
         reference.updateChildren(values)
+    }
+
+    fun updateInformationPerMonth(expense: Expense){
+        information_per_month.child(expense.date.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
+                    information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
+                    val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
+                    information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
+                }else{
+                    information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(expense.price)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        }
+        )
+    }
+
+    fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
+        val current = snapshot.child(child).value.toString().toFloat()
+        val add = expense.price.toFloat()
+        val new = current + add
+        val floatFormat = "%.${2}f"
+        return String.format(floatFormat, new)
+    }
+
+    fun subOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
+        val current = snapshot.child(child).value.toString().toFloat()
+        val sub = expense.price.toFloat()
+        val new = current - sub
+        val floatFormat = "%.${2}f"
+        return String.format(floatFormat, new)
     }
 
 }
