@@ -1,5 +1,7 @@
 package com.example.fico.service
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.fico.model.Expense
 import com.example.fico.model.User
 import com.example.fico.service.constants.AppConstants
@@ -9,6 +11,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.util.concurrent.CompletableFuture
 
 class FirebaseAPI private constructor() {
 
@@ -66,7 +72,28 @@ class FirebaseAPI private constructor() {
     fun addExpense(expense: Expense){
         updateExpenseList(expense)
         updateTotalExpense(expense.price)
-        updateInformationPerMonth(expense)
+       //updateInformationPerMonth(expense)
+    }
+
+    fun setUpBudget(budget: String){
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun checkIfExistsDateOnDatabse(date: String): CompletableFuture<Boolean> {
+        val futureResult = CompletableFuture<Boolean>()
+
+        information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                futureResult.complete(snapshot.exists())
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                futureResult.complete(false)
+            }
+        })
+
+        return futureResult
     }
 
     fun updateTotalExpense(value: String){
@@ -96,20 +123,14 @@ class FirebaseAPI private constructor() {
     fun updateInformationPerMonth(expense: Expense){
         information_per_month.child(expense.date.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
-                    information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
-                    val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
-                    information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
-                }else{
-                    information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(expense.price)
-                }
+                val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
+                information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
+                val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
+                information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
             }
-
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
 
+            }
         }
         )
     }

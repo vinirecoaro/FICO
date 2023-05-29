@@ -1,21 +1,13 @@
 package com.example.fico.ui.viewmodel
 
-import android.app.Instrumentation
 import android.os.Build
-import android.os.SystemClock
-import android.util.Log
-import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.fico.model.Expense
-import com.example.fico.model.UserData
 import com.example.fico.service.FirebaseAPI
-import com.example.fico.service.constants.AppConstants
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.CompletableFuture
 
 class AddExpenseViewModel : ViewModel() {
 
@@ -24,6 +16,11 @@ class AddExpenseViewModel : ViewModel() {
     fun addExpense(price: String, description: String, category: String, date: String){
         val expense = Expense(price, description, category, date)
         firebaseAPI.addExpense(expense)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun checkIfExistsDateOnDatabse(date: String): CompletableFuture<Boolean> {
+        return firebaseAPI.checkIfExistsDateOnDatabse(date)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

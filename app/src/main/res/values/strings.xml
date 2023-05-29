@@ -20,4 +20,8 @@
     <string name="available_per_month">Disponível  por mês</string>
     <string name="verification_email_message">E-mail de validação da conta enviado.\nVerificar caixa de e-mail.</string>
     <string name="resent_email">Reeviar email</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="budget">Budget</string>
+    <string name="set_month_budget">Defina o Budget para o mês</string>
 </resources>

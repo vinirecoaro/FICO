@@ -38,16 +38,25 @@ class AddExpenseActivity : AppCompatActivity() {
             val month = binding.etDate.text.toString().substring(3,5)
             val year = binding.etDate.text.toString().substring(6,10)
             val modifiedDate = "$year-$month-$day"
+            val checkDate = "$year-$month"
 
             val formatNum = DecimalFormat("#.##")
             val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
-            viewModel.addExpense(
-                formatedNum.toString(),
-                binding.etDescription.text.toString(),
-                binding.actvCategory.text.toString(),
-                modifiedDate
-            )
-            finish()
+            viewModel.checkIfExistsDateOnDatabse(checkDate).thenAccept { exists ->
+                if (exists){
+                    viewModel.addExpense(
+                        formatedNum.toString(),
+                        binding.etDescription.text.toString(),
+                        binding.actvCategory.text.toString(),
+                        modifiedDate
+                    )
+                    finish()
+                }else{
+                    binding.btSave.visibility = View.GONE
+                    binding.dpDateExpense.visibility = View.GONE
+                    binding.fragSetBudget.visibility = View.VISIBLE
+                }
+            }
         }
 
         binding.actvCategory.setOnClickListener {
@@ -55,6 +64,8 @@ class AddExpenseActivity : AppCompatActivity() {
         }
 
         binding.etDate.setOnClickListener {
+            binding.fragSetBudget.visibility = View.GONE
+            binding.btSave.visibility = View.VISIBLE
             binding.dpDateExpense.visibility = View.VISIBLE
             binding.dpDateExpense.setOnDateChangedListener{_, selectedYear,selectedMonth, selectedDay ->
                 val selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
