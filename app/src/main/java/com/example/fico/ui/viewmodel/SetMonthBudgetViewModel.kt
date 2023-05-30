@@ -7,8 +7,8 @@ class SetMonthBudgetViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
 
-    fun setUpBudget(budget: String){
-        firebaseAPI.setUpBudget(budget)
+    fun setUpBudget(budget: String, date: String){
+        firebaseAPI.setUpBudget(budget, date)
     }
 
 }

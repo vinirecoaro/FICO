@@ -72,11 +72,13 @@ class FirebaseAPI private constructor() {
     fun addExpense(expense: Expense){
         updateExpenseList(expense)
         updateTotalExpense(expense.price)
-       //updateInformationPerMonth(expense)
+        updateInformationPerMonth(expense)
     }
 
-    fun setUpBudget(budget: String){
-
+    fun setUpBudget(budget: String, date: String){
+        information_per_month.child(date).child(AppConstants.DATABASE.BUDGET).setValue(budget)
+        information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(budget)
+        information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).setValue("0.00")
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -123,8 +125,11 @@ class FirebaseAPI private constructor() {
     fun updateInformationPerMonth(expense: Expense){
         information_per_month.child(expense.date.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
-                information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
+                //val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
+                val current = snapshot.child(AppConstants.DATABASE.EXPENSE).value.toString().toFloat()
+                val add = expense.price.toFloat()
+                val new = current + add
+                information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(new.toString())
                 val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
                 information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
             }

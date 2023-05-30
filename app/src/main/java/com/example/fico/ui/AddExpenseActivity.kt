@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.example.fico.databinding.ActivityAddExpenseBinding
+import com.example.fico.ui.fragments.SetMonthBudget
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import java.text.DecimalFormat
 
@@ -55,6 +56,15 @@ class AddExpenseActivity : AppCompatActivity() {
                     binding.btSave.visibility = View.GONE
                     binding.dpDateExpense.visibility = View.GONE
                     binding.fragSetBudget.visibility = View.VISIBLE
+                    val setMonthBudget = SetMonthBudget.newInstance(
+                        formatedNum.toString(),
+                        binding.etDescription.text.toString(),
+                        binding.actvCategory.text.toString(),
+                        modifiedDate
+                    )
+                    supportFragmentManager.beginTransaction()
+                        .replace(binding.fragSetBudget.id,setMonthBudget)
+                        .commit()
                 }
             }
         }
