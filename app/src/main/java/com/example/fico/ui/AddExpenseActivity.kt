@@ -11,10 +11,11 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.example.fico.databinding.ActivityAddExpenseBinding
 import com.example.fico.ui.fragments.SetMonthBudget
+import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import java.text.DecimalFormat
 
-class AddExpenseActivity : AppCompatActivity() {
+class AddExpenseActivity : AppCompatActivity(), OnButtonClickListener {
 
     private val binding by lazy { ActivityAddExpenseBinding.inflate(layoutInflater) }
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
@@ -43,6 +44,7 @@ class AddExpenseActivity : AppCompatActivity() {
 
             val formatNum = DecimalFormat("#.##")
             val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+
             viewModel.checkIfExistsDateOnDatabse(checkDate).thenAccept { exists ->
                 if (exists){
                     viewModel.addExpense(
@@ -57,9 +59,6 @@ class AddExpenseActivity : AppCompatActivity() {
                     binding.dpDateExpense.visibility = View.GONE
                     binding.fragSetBudget.visibility = View.VISIBLE
                     val setMonthBudget = SetMonthBudget.newInstance(
-                        formatedNum.toString(),
-                        binding.etDescription.text.toString(),
-                        binding.actvCategory.text.toString(),
                         modifiedDate
                     )
                     supportFragmentManager.beginTransaction()
@@ -94,5 +93,8 @@ class AddExpenseActivity : AppCompatActivity() {
         binding.actvCategory.setAdapter(adapter)
     }
 
+    override fun onSaveButtonFragmentClick() {
+        binding.btSave.performClick()
+    }
 
 }
