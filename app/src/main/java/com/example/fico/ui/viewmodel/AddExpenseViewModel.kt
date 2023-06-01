@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
-import com.example.fico.ui.fragments.SetMonthBudget
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
