@@ -158,9 +158,38 @@ class FirebaseAPI private constructor() {
     fun returnTotalExpense(textView : TextView): ValueEventListener {
         return total_expense.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val totalValue = snapshot.value.toString().toFloat()
-                val floatFormat = "%.${2}f"
-                textView.text = "R$%.2f".format(totalValue).replace(".", ",")
+                val value = snapshot.value.toString().toFloat()
+                textView.text = "R$%.2f".format(value).replace(".", ",")
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+
+    fun returnAvailableNow(textView : TextView): ValueEventListener {
+        return information_per_month.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val value = snapshot.value.toString().toFloat()
+                textView.text = "R$%.2f".format(value).replace(".", ",")
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+
+    fun returnMonthExpense(textView : TextView): ValueEventListener {
+        return information_per_month.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val value = snapshot.value.toString().toFloat()
+                textView.text = "R$%.2f".format(value).replace(".", ",")
 
             }
 
