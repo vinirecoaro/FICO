@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.example.fico.databinding.ActivityMainBinding
+import com.example.fico.service.FirebaseAPI
 import com.example.fico.ui.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setUpListeners()
+        viewModel.returnTotalExpense(binding.tvTotalExpensesValue)
 
     }
 
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         binding.btConfig.setOnClickListener {
             startActivity(Intent(this, ConfigurationActivity::class.java))
         }
+
     }
 
 }

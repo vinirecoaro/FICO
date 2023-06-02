@@ -1,6 +1,8 @@
 package com.example.fico.service
 
 import android.os.Build
+import android.widget.EditText
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.example.fico.model.Expense
 import com.example.fico.model.User
@@ -125,11 +127,8 @@ class FirebaseAPI private constructor() {
     fun updateInformationPerMonth(expense: Expense){
         information_per_month.child(expense.date.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                //val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
-                val current = snapshot.child(AppConstants.DATABASE.EXPENSE).value.toString().toFloat()
-                val add = expense.price.toFloat()
-                val new = current + add
-                information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(new.toString())
+                val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
+                information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
                 val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
                 information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
             }
@@ -156,6 +155,21 @@ class FirebaseAPI private constructor() {
         return String.format(floatFormat, new)
     }
 
+    fun returnTotalExpense(textView : TextView): ValueEventListener {
+        return total_expense.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val totalValue = snapshot.value.toString().toFloat()
+                val floatFormat = "%.${2}f"
+                textView.text = "R$%.2f".format(totalValue).replace(".", ",")
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
 }
 
 
