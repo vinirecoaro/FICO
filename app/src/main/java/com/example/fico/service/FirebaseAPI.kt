@@ -170,12 +170,15 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    fun returnAvailableNow(textView : TextView): ValueEventListener {
-        return information_per_month.addValueEventListener(object : ValueEventListener {
+    fun returnAvailableNow(textView : TextView, date: String): ValueEventListener {
+        return information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.value.toString().toFloat()
-                textView.text = "R$%.2f".format(value).replace(".", ",")
-
+                if(snapshot.exists()){
+                    val value = snapshot.value.toString().toFloat()
+                    textView.text = "R$%.2f".format(value).replace(".", ",")
+                }else{
+                    textView.text = "---"
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -185,11 +188,15 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    fun returnMonthExpense(textView : TextView): ValueEventListener {
-        return information_per_month.addValueEventListener(object : ValueEventListener {
+    fun returnMonthExpense(textView : TextView, date: String): ValueEventListener {
+        return information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.value.toString().toFloat()
-                textView.text = "R$%.2f".format(value).replace(".", ",")
+                if(snapshot.exists()){
+                    val value = snapshot.value.toString().toFloat()
+                    textView.text = "R$%.2f".format(value).replace(".", ",")
+                }else{
+                    textView.text = "---"
+                }
 
             }
 
