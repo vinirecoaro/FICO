@@ -4,6 +4,7 @@ import android.os.Build
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.model.Expense
 import com.example.fico.model.User
 import com.example.fico.service.constants.AppConstants
@@ -198,6 +199,23 @@ class FirebaseAPI private constructor() {
                     textView.text = "---"
                 }
 
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+
+    fun getExpenseList(recyclerView : RecyclerView, expenses : MutableList<Expense>){
+        expense_list.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    for (childSnapshot in snapshot.children){
+
+                    }
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {

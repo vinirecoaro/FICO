@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.model.Expense
 
-class ExpenseListAdapter(private val data: List<String>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>() {
+class ExpenseListAdapter(private val data: List<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val description: TextView = itemView.findViewById(R.id.tv_description)
@@ -22,9 +23,9 @@ class ExpenseListAdapter(private val data: List<String>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
-        holder.description.text = item
-        holder.price.text = item
-        holder.date.text = item
+        holder.description.text = item.description
+        holder.price.text = item.price
+        holder.date.text = item.date
     }
 
     override fun getItemCount(): Int {
