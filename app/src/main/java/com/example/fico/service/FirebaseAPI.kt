@@ -17,7 +17,9 @@ import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.HashMap
 
 class FirebaseAPI private constructor() {
 
@@ -118,9 +120,12 @@ class FirebaseAPI private constructor() {
     }
 
     fun updateExpenseList(expense: Expense){
-        val reference = expense_list.child(expense.date).child(expense.description)
+
+        val reference = expense_list.child(expense.date)
         val values = HashMap<String, Any>()
         values[AppConstants.DATABASE.PRICE] = expense.price
+        values[AppConstants.DATABASE.DESCRIPTION] = expense.description
+        values[AppConstants.DATABASE.DATE] = expense.date
         values[AppConstants.DATABASE.CATEGORY] = expense.category
         reference.updateChildren(values)
     }
@@ -224,6 +229,20 @@ class FirebaseAPI private constructor() {
 
         })
     }
+
+    fun generateRandomAddress(tamanho: Int): String {
+        val caracteresPermitidos = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        val random = Random(System.currentTimeMillis())
+        val sequenciaAleatoria = StringBuilder(tamanho)
+
+        for (i in 0 until tamanho) {
+            val index = random.nextInt(caracteresPermitidos.length)
+            sequenciaAleatoria.append(caracteresPermitidos[index])
+        }
+
+        return sequenciaAleatoria.toString()
+    }
+
 }
 
 

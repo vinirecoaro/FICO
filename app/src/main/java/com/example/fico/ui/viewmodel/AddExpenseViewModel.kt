@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture
 class AddExpenseViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
+    private val usedAddress = mutableSetOf<String>()
 
     fun addExpense(price: String, description: String, category: String, date: String){
         val expense = Expense(price, description, category, date)
@@ -29,6 +30,7 @@ class AddExpenseViewModel : ViewModel() {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         return currentDate.format(formatter)
     }
+
 
 
 }
