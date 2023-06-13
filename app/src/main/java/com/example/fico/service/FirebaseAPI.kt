@@ -1,7 +1,6 @@
 package com.example.fico.service
 
 import android.os.Build
-import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
@@ -14,12 +13,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashMap
+
 
 class FirebaseAPI private constructor() {
 
@@ -74,6 +70,7 @@ class FirebaseAPI private constructor() {
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun addExpense(expense: Expense){
         updateExpenseList(expense)
         updateTotalExpense(expense.price)
@@ -103,7 +100,7 @@ class FirebaseAPI private constructor() {
         return futureResult
     }
 
-    fun updateTotalExpense(value: String){
+    private fun updateTotalExpense(value: String){
         total_expense.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val currentTotalExpense = snapshot.value.toString().toFloat()
@@ -119,18 +116,39 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    fun updateExpenseList(expense: Expense){
-
-        val reference = expense_list.child(expense.date)
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun updateExpenseList(expense: Expense){
+        /*val reference = expense_list.child(expense.date)
         val values = HashMap<String, Any>()
         values[AppConstants.DATABASE.PRICE] = expense.price
         values[AppConstants.DATABASE.DESCRIPTION] = expense.description
         values[AppConstants.DATABASE.DATE] = expense.date
         values[AppConstants.DATABASE.CATEGORY] = expense.category
-        reference.updateChildren(values)
+        reference.updateChildren(values)*/
+
+        var control = 0
+        while(control == 0){
+            val expenseId = generateRandomAddress(5)
+            expense_list.child(expenseId).addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(!snapshot.exists()){
+                        expense_list.child(expenseId).child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                        expense_list.child(expenseId).child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
+                        expense_list.child(expenseId).child(AppConstants.DATABASE.DATE).setValue(expense.date)
+                        expense_list.child(expenseId).child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
+                        control = 1
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+        }
     }
 
-    fun updateInformationPerMonth(expense: Expense){
+    private fun updateInformationPerMonth(expense: Expense){
         information_per_month.child(expense.date.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
@@ -179,6 +197,7 @@ class FirebaseAPI private constructor() {
     fun returnAvailableNow(textView : TextView, date: String): ValueEventListener {
         return information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                val exist = snapshot.exists()
                 if(snapshot.exists()){
                     val value = snapshot.value.toString().toFloat()
                     textView.text = "R$%.2f".format(value).replace(".", ",")
@@ -230,12 +249,12 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    fun generateRandomAddress(tamanho: Int): String {
+    private fun generateRandomAddress(size: Int): String {
         val caracteresPermitidos = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
         val random = Random(System.currentTimeMillis())
-        val sequenciaAleatoria = StringBuilder(tamanho)
+        val sequenciaAleatoria = StringBuilder(size)
 
-        for (i in 0 until tamanho) {
+        for (i in 0 until size) {
             val index = random.nextInt(caracteresPermitidos.length)
             sequenciaAleatoria.append(caracteresPermitidos[index])
         }
