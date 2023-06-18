@@ -9,7 +9,7 @@
         android:id="@+id/tv_description"
         style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginStart="8dp"
         tools:text="Lanche Burger King" />
 
@@ -21,7 +21,8 @@
         <TextView
             android:id="@+id/tv_price"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:textAlignment="textStart"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:textSize="16sp"
@@ -30,11 +31,19 @@
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="12dp"
             android:textSize="16sp"
             tools:text="04/06/2023" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/grey"
+        />
 
 </LinearLayout>
