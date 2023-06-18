@@ -6,18 +6,20 @@ import androidx.lifecycle.ViewModel
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
 
 class AddExpenseViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
-    private val usedAddress = mutableSetOf<String>()
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addExpense(price: String, description: String, category: String, date: String){
         val expense = Expense(price, description, category, date)
-        firebaseAPI.addExpense(expense)
+        val timeNow = LocalTime.now()
+        val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+        firebaseAPI.addExpense(expense, inputTime)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

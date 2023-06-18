@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.databinding.ActivityExpenseListBinding
+import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.viewmodel.ExpenseListViewModel
 
 class ExpenseListActivity : AppCompatActivity() {
@@ -15,9 +16,11 @@ class ExpenseListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_expense_list)
+        setContentView(binding.root)
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(this)
+        val adapter = ExpenseListAdapter(emptyList())
+        binding.rvExpenseList.adapter = adapter
     }
 
     override fun onResume() {

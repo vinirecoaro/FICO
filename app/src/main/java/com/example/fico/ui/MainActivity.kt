@@ -36,6 +36,9 @@ class MainActivity : AppCompatActivity() {
         binding.btConfig.setOnClickListener {
             startActivity(Intent(this, ConfigurationActivity::class.java))
         }
+        binding.btList.setOnClickListener {
+            startActivity(Intent(this, ExpenseListActivity::class.java))
+        }
 
     }
 

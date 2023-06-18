@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.model.Expense
 import com.example.fico.model.User
 import com.example.fico.service.constants.AppConstants
+import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -71,8 +72,8 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun addExpense(expense: Expense){
-        updateExpenseList(expense)
+    fun addExpense(expense: Expense, inputTime : String){
+        updateExpenseList(expense, inputTime)
         updateTotalExpense(expense.price)
         updateInformationPerMonth(expense)
     }
@@ -134,10 +135,10 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun updateExpenseList(expense: Expense){
+    private fun updateExpenseList(expense: Expense, inputTime : String){
 
         val expenseId = generateRandomAddress(5)
-        val reference = expense_list.child("${expense.date}${expenseId}")
+        val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
         var control = 0;
         checkIfExistsOnDatabse(reference).thenAccept {exists ->
             while (control == 0){
@@ -148,7 +149,7 @@ class FirebaseAPI private constructor() {
                     reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
                     control = 1
                 }else{
-                    updateExpenseList(expense)
+                    updateExpenseList(expense, inputTime)
                     control = 1
                 }
             }
@@ -245,9 +246,19 @@ class FirebaseAPI private constructor() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
                     for (childSnapshot in snapshot.children){
-
+                        val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
+                        val priceFormated = "R$ %.2f".format(priceDatabase).replace(".", ",")
+                        val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
+                        val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
+                        val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
+                        val dateFormated = "${dateDatabase.substring(8,10)}/${dateDatabase.substring(5,7)}/${dateDatabase.substring(0,4)}"
+                        val expense = Expense(priceFormated, description, category , dateFormated)
+                        expenses.add(expense)
                     }
                 }
+                val expensesFormated = expenses.reversed()
+                val adapter = ExpenseListAdapter(expensesFormated)
+                recyclerView.adapter = adapter
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -255,6 +266,7 @@ class FirebaseAPI private constructor() {
             }
 
         })
+
     }
 
     private fun generateRandomAddress(size: Int): String {
