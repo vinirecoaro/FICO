@@ -14,6 +14,7 @@ class AddExpenseViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance
     private val usedAddress = mutableSetOf<String>()
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun addExpense(price: String, description: String, category: String, date: String){
         val expense = Expense(price, description, category, date)
         firebaseAPI.addExpense(expense)

@@ -100,6 +100,23 @@ class FirebaseAPI private constructor() {
         return futureResult
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun checkIfExistsOnDatabse(reference: DatabaseReference): CompletableFuture<Boolean> {
+        val futureResult = CompletableFuture<Boolean>()
+
+        reference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                futureResult.complete(snapshot.exists())
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                futureResult.complete(false)
+            }
+        })
+
+        return futureResult
+    }
+
     private fun updateTotalExpense(value: String){
         total_expense.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -118,34 +135,25 @@ class FirebaseAPI private constructor() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun updateExpenseList(expense: Expense){
-        /*val reference = expense_list.child(expense.date)
-        val values = HashMap<String, Any>()
-        values[AppConstants.DATABASE.PRICE] = expense.price
-        values[AppConstants.DATABASE.DESCRIPTION] = expense.description
-        values[AppConstants.DATABASE.DATE] = expense.date
-        values[AppConstants.DATABASE.CATEGORY] = expense.category
-        reference.updateChildren(values)*/
 
-        var control = 0
-        while(control == 0){
-            val expenseId = generateRandomAddress(5)
-            expense_list.child(expenseId).addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(!snapshot.exists()){
-                        expense_list.child(expenseId).child(AppConstants.DATABASE.PRICE).setValue(expense.price)
-                        expense_list.child(expenseId).child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
-                        expense_list.child(expenseId).child(AppConstants.DATABASE.DATE).setValue(expense.date)
-                        expense_list.child(expenseId).child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
-                        control = 1
-                    }
+        val expenseId = generateRandomAddress(5)
+        val reference = expense_list.child("${expense.date}${expenseId}")
+        var control = 0;
+        checkIfExistsOnDatabse(reference).thenAccept {exists ->
+            while (control == 0){
+                if(!exists){
+                    reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                    reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
+                    reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
+                    reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
+                    control = 1
+                }else{
+                    updateExpenseList(expense)
+                    control = 1
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-
-            })
+            }
         }
+
     }
 
     private fun updateInformationPerMonth(expense: Expense){

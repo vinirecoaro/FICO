@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "173462540796",
+    "firebase_url": "https://fico-725a9-default-rtdb.firebaseio.com",
+    "project_id": "fico-725a9",
+    "storage_bucket": "fico-725a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173462540796:android:8f7e957aa8d38bb95b6279",
+        "android_client_info": {
+          "package_name": "com.example.fico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173462540796-kk7k4gc6i0c09f0an4a5kumj7f41g4s9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fico",
+            "certificate_hash": "7bb8035dae5f61cdb1c6b3aaf836434a64c2879e"
+          }
+        },
+        {
+          "client_id": "173462540796-ntps07n6msd1beepbdb2hj4h3e7269sm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg_1pHrE8OU-esC5igkK09rU5UfgoW6qw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173462540796-ntps07n6msd1beepbdb2hj4h3e7269sm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
