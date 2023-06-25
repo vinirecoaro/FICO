@@ -24,7 +24,6 @@
         android:layout_marginTop="8dp"
         android:drawablePadding="8dp"
         android:inputType="textPassword"
-        android:text="R$45,00"
         android:textSize="16sp"
         app:drawableEndCompat="@drawable/ic_visibility_off_24"
         app:layout_constraintEnd_toEndOf="@id/tv_total_expenses"
@@ -108,5 +107,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bt_list" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
