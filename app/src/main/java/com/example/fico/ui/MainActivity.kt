@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.service.FirebaseAPI
 import com.example.fico.ui.viewmodel.MainViewModel
@@ -39,7 +40,30 @@ class MainActivity : AppCompatActivity() {
         binding.btList.setOnClickListener {
             startActivity(Intent(this, ExpenseListActivity::class.java))
         }
-
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId){
+                R.id.navigation_home -> {
+                    startActivity(Intent(this,MainActivity::class.java))
+                    true
+                }
+                R.id.navigation_add_expense -> {
+                    binding.bottomNavigation.selectedItemId = R.id.navigation_home
+                    startActivity(Intent(this,AddExpenseActivity::class.java))
+                    true
+                }
+                R.id.navigation_expense_list -> {
+                    binding.bottomNavigation.selectedItemId = R.id.navigation_home
+                    startActivity(Intent(this,ExpenseListActivity::class.java))
+                    true
+                }
+                R.id.navigation_config -> {
+                    binding.bottomNavigation.selectedItemId = R.id.navigation_home
+                    startActivity(Intent(this,ConfigurationActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
 }

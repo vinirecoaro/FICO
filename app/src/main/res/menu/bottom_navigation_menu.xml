@@ -5,7 +5,7 @@
         android:icon="@drawable/ac_home_24"
         android:title="@string/home" />
     <item
-        android:id="@+id/navigation_config"
+        android:id="@+id/navigation_add_expense"
         android:icon="@drawable/ic_add_24"
         android:title="@string/add" />
     <item
@@ -13,7 +13,7 @@
         android:icon="@drawable/ic_list_24"
         android:title="@string/list" />
     <item
-        android:id="@+id/navigation_add_expense"
+        android:id="@+id/navigation_config"
         android:icon="@drawable/config_image"
         android:title="@string/configurations" />
 
