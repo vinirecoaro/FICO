@@ -7,10 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.example.fico.R
 import com.example.fico.databinding.FragmentSetMonthBudgetBinding
 import com.example.fico.ui.interfaces.OnButtonClickListener
-import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import com.example.fico.ui.viewmodel.SetMonthBudgetViewModel
 
 class SetMonthBudget : Fragment() {
