@@ -17,9 +17,15 @@
         android:label="@string/add"
         tools:layout="@layout/fragment_add_expense" />
 
-    <!--<fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.teste.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />-->
+    <fragment
+        android:id="@+id/navigation_expense_list"
+        android:name="com.example.fico.ui.fragments.ExpenseListFragment"
+        android:label="@string/list"
+        tools:layout="@layout/fragment_expense_list" />
+
+    <fragment
+        android:id="@+id/navigation_config"
+        android:name="com.example.fico.ui.fragments.ConfigurationFragment"
+        android:label="@string/configurations"
+        tools:layout="@layout/fragment_configuration" />
 </navigation>

@@ -11,6 +11,7 @@ class ExpenseListViewModel: ViewModel() {
     private val expenses : MutableList<Expense> = mutableListOf()
 
     fun getExpenseList(recyclerView: RecyclerView){
+        expenses.clear()
         firebaseAPI.getExpenseList(recyclerView, expenses)
     }
 }
