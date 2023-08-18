@@ -59,6 +59,9 @@ class AddExpenseActivity : AppCompatActivity(), OnButtonClickListener {
                     binding.dpDateExpense.visibility = View.GONE
                     binding.fragSetBudget.visibility = View.VISIBLE
                     val setMonthBudget = SetMonthBudget.newInstance(
+                        formatedNum.toString(),
+                        binding.etDescription.text.toString(),
+                        binding.actvCategory.text.toString(),
                         modifiedDate
                     )
                     supportFragmentManager.beginTransaction()

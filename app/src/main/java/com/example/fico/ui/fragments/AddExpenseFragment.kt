@@ -54,12 +54,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         binding.actvCategory.text.toString(),
                         modifiedDate
                     )
-                    requireActivity().finish()
                 } else {
                     binding.btSave.visibility = View.GONE
                     binding.dpDateExpense.visibility = View.GONE
                     binding.fragSetBudget.visibility = View.VISIBLE
                     val setMonthBudget = SetMonthBudget.newInstance(
+                        formatedNum.toString(),
+                        binding.etDescription.text.toString(),
+                        binding.actvCategory.text.toString(),
                         modifiedDate
                     )
                     childFragmentManager.beginTransaction()
