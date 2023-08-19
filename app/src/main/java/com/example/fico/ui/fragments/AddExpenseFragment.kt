@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.fico.databinding.FragmentAddExpenseBinding
-import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import java.text.DecimalFormat
@@ -54,6 +54,9 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         binding.actvCategory.text.toString(),
                         modifiedDate
                     )
+                    binding.etPrice.setText("")
+                    binding.etDescription.setText("")
+                    binding.actvCategory.setText("")
                 } else {
                     binding.btSave.visibility = View.GONE
                     binding.dpDateExpense.visibility = View.GONE

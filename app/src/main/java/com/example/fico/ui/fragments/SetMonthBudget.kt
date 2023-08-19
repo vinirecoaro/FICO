@@ -69,18 +69,12 @@ class SetMonthBudget : Fragment() {
                 val budget = binding.etBudget.text.toString()
                 if (formatedNum != null && description != null && category != null && dateModified != null ) {
                     viewModel.setUpBudget(budget,dateModified)
-                    viewModel.addExpense(formatedNum, description, category, dateModified)
+                    viewModel.addExpense(formatedNum, description, category, date)
                 }
-
-
-
-
                 listener.onSaveButtonFragmentClick()
             }
         }
     }
-
-
 
 
 }
