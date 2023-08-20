@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.fico.databinding.FragmentSetMonthBudgetBinding
 import com.example.fico.ui.interfaces.OnButtonClickListener
+import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.SetMonthBudgetViewModel
 
 class SetMonthBudget : Fragment() {
@@ -18,6 +20,7 @@ class SetMonthBudget : Fragment() {
     private val binding by lazy {FragmentSetMonthBudgetBinding.inflate(layoutInflater)}
     private val viewModel by viewModels<SetMonthBudgetViewModel>()
     private lateinit var listener: OnButtonClickListener
+    private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
 
     companion object {
         private const val VALUE = "value"
@@ -71,7 +74,11 @@ class SetMonthBudget : Fragment() {
                     viewModel.setUpBudget(budget,dateModified)
                     viewModel.addExpense(formatedNum, description, category, date)
                 }
+                sharedViewModel.price.value = ""
+                sharedViewModel.description.value = ""
+                sharedViewModel.category.value = ""
                 listener.onSaveButtonFragmentClick()
+                binding.root.visibility = View.GONE
             }
         }
     }

@@ -9,21 +9,23 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.annotation.RequiresApi
-import androidx.core.text.set
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.ui.interfaces.OnButtonClickListener
+import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 
-class AddExpenseFragment : Fragment(), OnButtonClickListener {
+class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
     private var _binding : FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
     private val viewModel by viewModels<AddExpenseViewModel>()
+    private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -70,12 +72,27 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             binding.actvCategory.text.toString(),
                             modifiedDate
                         )
+
                         childFragmentManager.beginTransaction()
                             .replace(binding.fragSetBudget.id, setMonthBudget)
                             .commit()
+
                     }
                 }
             }
+        }
+
+        sharedViewModel.price.observe(viewLifecycleOwner) { price ->
+            binding.btSave.visibility = View.VISIBLE
+            binding.etPrice.setText(price)
+        }
+
+        sharedViewModel.description.observe(viewLifecycleOwner) { desc ->
+            binding.etDescription.setText(desc)
+        }
+
+        sharedViewModel.category.observe(viewLifecycleOwner) { cat ->
+            binding.actvCategory.setText(cat)
         }
 
         binding.actvCategory.setOnClickListener {
@@ -122,4 +139,5 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         super.onDestroyView()
         _binding = null
     }
+
 }
