@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.core.text.set
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import androidx.fragment.app.viewModels
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 
 class AddExpenseFragment : Fragment(), OnButtonClickListener {
@@ -37,39 +39,41 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners() {
         binding.btSave.setOnClickListener {
-            val day = binding.etDate.text.toString().substring(0, 2)
-            val month = binding.etDate.text.toString().substring(3, 5)
-            val year = binding.etDate.text.toString().substring(6, 10)
-            val modifiedDate = "$year-$month-$day"
-            val checkDate = "$year-$month"
+            if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
+                val day = binding.etDate.text.toString().substring(0, 2)
+                val month = binding.etDate.text.toString().substring(3, 5)
+                val year = binding.etDate.text.toString().substring(6, 10)
+                val modifiedDate = "$year-$month-$day"
+                val checkDate = "$year-$month"
 
-            val formatNum = DecimalFormat("#.##")
-            val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+                val formatNum = DecimalFormat("#.##")
+                val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
 
-            viewModel.checkIfExistsDateOnDatabse(checkDate).thenAccept { exists ->
-                if (exists) {
-                    viewModel.addExpense(
-                        formatedNum.toString(),
-                        binding.etDescription.text.toString(),
-                        binding.actvCategory.text.toString(),
-                        modifiedDate
-                    )
-                    binding.etPrice.setText("")
-                    binding.etDescription.setText("")
-                    binding.actvCategory.setText("")
-                } else {
-                    binding.btSave.visibility = View.GONE
-                    binding.dpDateExpense.visibility = View.GONE
-                    binding.fragSetBudget.visibility = View.VISIBLE
-                    val setMonthBudget = SetMonthBudget.newInstance(
-                        formatedNum.toString(),
-                        binding.etDescription.text.toString(),
-                        binding.actvCategory.text.toString(),
-                        modifiedDate
-                    )
-                    childFragmentManager.beginTransaction()
-                        .replace(binding.fragSetBudget.id, setMonthBudget)
-                        .commit()
+                viewModel.checkIfExistsDateOnDatabse(checkDate).thenAccept { exists ->
+                    if (exists) {
+                        viewModel.addExpense(
+                            formatedNum.toString(),
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            modifiedDate
+                        )
+                        binding.etPrice.setText("")
+                        binding.etDescription.setText("")
+                        binding.actvCategory.setText("")
+                    } else {
+                        binding.btSave.visibility = View.GONE
+                        binding.dpDateExpense.visibility = View.GONE
+                        binding.fragSetBudget.visibility = View.VISIBLE
+                        val setMonthBudget = SetMonthBudget.newInstance(
+                            formatedNum.toString(),
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            modifiedDate
+                        )
+                        childFragmentManager.beginTransaction()
+                            .replace(binding.fragSetBudget.id, setMonthBudget)
+                            .commit()
+                    }
                 }
             }
         }
@@ -98,6 +102,16 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
     private fun actvConfig() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categoryOptions)
         binding.actvCategory.setAdapter(adapter)
+    }
+
+    private fun verifyFields(vararg text: EditText) : Boolean{
+        for (i in text){
+            if (i.text.toString() == "" || i == null){
+                Snackbar.make(binding.btSave,"Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG).show()
+                return false
+            }
+        }
+        return true
     }
 
     override fun onSaveButtonFragmentClick() {
