@@ -157,19 +157,26 @@ class FirebaseAPI private constructor() {
 
     }
 
-    private fun updateInformationPerMonth(expense: Expense){
+    private fun updateInformationPerMonth(expense: Expense):String{
+        var message = ""
         information_per_month.child(expense.date.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
                 information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
                 val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
                 information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
+                if(updatedAvailable.toFloat() < 0){
+                    message = "negativo"
+                }else{
+                    message = "positivo"
+                }
             }
             override fun onCancelled(error: DatabaseError) {
-
+                message = error.message
             }
         }
         )
+        return message
     }
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
