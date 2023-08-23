@@ -3,7 +3,6 @@ package com.example.fico.ui.viewmodel
 import android.os.Build
 import android.text.InputType
 import android.text.method.PasswordTransformationMethod
-import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -12,7 +11,7 @@ import com.example.fico.service.FirebaseAPI
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class MainViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
 
@@ -49,6 +48,22 @@ class MainViewModel : ViewModel() {
 
     fun returnMonthExpense(textView : TextView, date: String){
         firebaseAPI.returnMonthExpense(textView, date)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getAvailableNow(date: String){
+        firebaseAPI.getAvailableNow(date)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentlyDate() : String{
+        val currentDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        var formattedDate = currentDate.format(formatter)
+        val month = formattedDate.substring(3, 5)
+        val year = formattedDate.substring(6, 10)
+        val date = "$year-$month"
+        return date
     }
 
 }

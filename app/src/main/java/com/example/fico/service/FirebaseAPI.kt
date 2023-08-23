@@ -157,26 +157,34 @@ class FirebaseAPI private constructor() {
 
     }
 
-    private fun updateInformationPerMonth(expense: Expense):String{
-        var message = ""
+    private fun updateInformationPerMonth(expense: Expense){
         information_per_month.child(expense.date.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
                 information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
                 val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
                 information_per_month.child(expense.date.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
-                if(updatedAvailable.toFloat() < 0){
-                    message = "negativo"
-                }else{
-                    message = "positivo"
-                }
             }
             override fun onCancelled(error: DatabaseError) {
-                message = error.message
+
             }
         }
         )
-        return message
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getAvailableNow(date: String) : CompletableFuture<String>{
+        var availableNow = CompletableFuture<String>()
+        information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                availableNow.complete(information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).toString())
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        }
+        )
+        return availableNow
     }
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {

@@ -9,14 +9,13 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.fico.databinding.FragmentHomeBinding
-
-import com.example.fico.ui.viewmodel.MainViewModel
+import com.example.fico.ui.viewmodel.HomeViewModel
 
 class HomeFragment : Fragment(){
 
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<HomeViewModel>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -34,6 +33,12 @@ class HomeFragment : Fragment(){
             viewModel.ShowHideValue(binding.tvTotalExpensesValue)
         }
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAvailableNow(viewModel.getCurrentlyDate())
     }
 
     override fun onDestroyView() {
