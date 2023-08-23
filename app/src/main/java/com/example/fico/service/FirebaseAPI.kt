@@ -177,7 +177,8 @@ class FirebaseAPI private constructor() {
         var availableNow = CompletableFuture<String>()
         information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                availableNow.complete(information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).toString())
+                val availableValue = snapshot.child(AppConstants.DATABASE.AVAILABLE_NOW).getValue(String::class.java)
+                availableNow.complete(availableValue ?: "")
             }
             override fun onCancelled(error: DatabaseError) {
 

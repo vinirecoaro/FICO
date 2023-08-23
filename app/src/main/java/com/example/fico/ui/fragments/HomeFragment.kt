@@ -2,6 +2,8 @@ package com.example.fico.ui.fragments
 
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +40,15 @@ class HomeFragment : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        viewModel.getAvailableNow(viewModel.getCurrentlyDate())
+        viewModel.getAvailableNow(viewModel.getCurrentlyDate()).thenAccept{availableNowText ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post {
+                binding.tvTest.text = availableNowText
+            }
+        }.exceptionally { throwable ->
+            // Handle exceptions if needed
+            return@exceptionally null
+        }
     }
 
     override fun onDestroyView() {

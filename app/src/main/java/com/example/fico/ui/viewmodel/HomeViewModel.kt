@@ -10,6 +10,7 @@ import com.example.fico.R
 import com.example.fico.service.FirebaseAPI
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.CompletableFuture
 
 class HomeViewModel : ViewModel() {
 
@@ -51,8 +52,8 @@ class HomeViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getAvailableNow(date: String){
-        firebaseAPI.getAvailableNow(date)
+    fun getAvailableNow(date: String): CompletableFuture<String> {
+        return firebaseAPI.getAvailableNow(date)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
