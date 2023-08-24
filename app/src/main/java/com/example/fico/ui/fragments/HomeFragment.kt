@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.viewmodel.HomeViewModel
 
@@ -24,8 +26,6 @@ class HomeFragment : Fragment(){
         _binding = FragmentHomeBinding.inflate(inflater,container,false)
         val rootView = binding.root
         setUpListeners()
-        viewModel.returnTotalExpense(binding.tvTotalExpensesValue)
-        viewModel.returnAvailableNow(binding.tvAvailableThisMonthValue, viewModel.getCurrentYearMonth().toString())
         viewModel.returnMonthExpense(binding.tvTotalExpensesThisMonthValue, viewModel.getCurrentYearMonth().toString())
         return rootView
     }
@@ -40,19 +40,41 @@ class HomeFragment : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        viewModel.getAvailableNow(viewModel.getCurrentlyDate()).thenAccept{availableNowText ->
-            val handler = Handler(Looper.getMainLooper())
-            handler.post {
-                binding.tvTest.text = availableNowText
-            }
-        }.exceptionally { throwable ->
-            // Handle exceptions if needed
-            return@exceptionally null
-        }
+        getAvailableNow()
+        getTotalExpense()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getAvailableNow(){
+        viewModel.getAvailableNow(viewModel.getCurrentlyDate()).thenAccept{availableNowText ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post {
+                if(availableNowText.toFloat() < 0){
+                    val myColor = ContextCompat.getColor(requireContext(), R.color.red)
+                    binding.tvAvailableThisMonthValue.setTextColor(myColor)
+                    binding.tvAvailableThisMonthValue.text = availableNowText
+                }else {
+                    binding.tvAvailableThisMonthValue.text = availableNowText
+                }
+            }
+        }.exceptionally { throwable ->
+            return@exceptionally null
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun getTotalExpense(){
+        viewModel.getTotalExpense().thenAccept { totalExpense ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post{
+                binding.tvTotalExpensesValue.text = totalExpense
+            }
+        }.exceptionally { throwable ->
+            return@exceptionally null }
     }
 }

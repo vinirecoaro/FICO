@@ -188,6 +188,23 @@ class FirebaseAPI private constructor() {
         return availableNow
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getTotalExpense() : CompletableFuture<String>{
+        var totalExpense = CompletableFuture<String>()
+        total_expense.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val value = snapshot.value.toString().toFloat()
+                totalExpense.complete("R$%.2f".format(value).replace(".", ","))
+
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        }
+        )
+        return totalExpense
+    }
+
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
         val current = snapshot.child(child).value.toString().toFloat()
         val add = expense.price.toFloat()
@@ -204,39 +221,6 @@ class FirebaseAPI private constructor() {
         return String.format(floatFormat, new)
     }
 
-    fun returnTotalExpense(textView : TextView): ValueEventListener {
-        return total_expense.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.value.toString().toFloat()
-                textView.text = "R$%.2f".format(value).replace(".", ",")
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
-    }
-
-    fun returnAvailableNow(textView : TextView, date: String): ValueEventListener {
-        return information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val exist = snapshot.exists()
-                if(snapshot.exists()){
-                    val value = snapshot.value.toString().toFloat()
-                    textView.text = "R$%.2f".format(value).replace(".", ",")
-                }else{
-                    textView.text = "---"
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
-    }
 
     fun returnMonthExpense(textView : TextView, date: String): ValueEventListener {
         return information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).addValueEventListener(object : ValueEventListener {
