@@ -26,7 +26,6 @@ class HomeFragment : Fragment(){
         _binding = FragmentHomeBinding.inflate(inflater,container,false)
         val rootView = binding.root
         setUpListeners()
-        viewModel.returnMonthExpense(binding.tvTotalExpensesThisMonthValue, viewModel.getCurrentYearMonth().toString())
         return rootView
     }
 
@@ -42,6 +41,7 @@ class HomeFragment : Fragment(){
         super.onResume()
         getAvailableNow()
         getTotalExpense()
+        getMonthExpense()
     }
 
     override fun onDestroyView() {
@@ -54,7 +54,7 @@ class HomeFragment : Fragment(){
         viewModel.getAvailableNow(viewModel.getCurrentlyDate()).thenAccept{availableNowText ->
             val handler = Handler(Looper.getMainLooper())
             handler.post {
-                if(availableNowText.toFloat() < 0){
+                if(availableNowText.substring(2,7).replace(",",".").toFloat() < 0){
                     val myColor = ContextCompat.getColor(requireContext(), R.color.red)
                     binding.tvAvailableThisMonthValue.setTextColor(myColor)
                     binding.tvAvailableThisMonthValue.text = availableNowText
@@ -73,6 +73,17 @@ class HomeFragment : Fragment(){
             val handler = Handler(Looper.getMainLooper())
             handler.post{
                 binding.tvTotalExpensesValue.text = totalExpense
+            }
+        }.exceptionally { throwable ->
+            return@exceptionally null }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getMonthExpense(){
+        viewModel.getMonthExpense(viewModel.getCurrentlyDate()).thenAccept { monthExpense ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post{
+                binding.tvTotalExpensesThisMonthValue.text = monthExpense
             }
         }.exceptionally { throwable ->
             return@exceptionally null }

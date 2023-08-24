@@ -39,13 +39,14 @@ class HomeViewModel : ViewModel() {
         return "$year-$month"
     }
 
-    fun returnMonthExpense(textView : TextView, date: String){
-        firebaseAPI.returnMonthExpense(textView, date)
-    }
-
     @RequiresApi(Build.VERSION_CODES.N)
     fun getAvailableNow(date: String): CompletableFuture<String> {
         return firebaseAPI.getAvailableNow(date)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getMonthExpense(date: String): CompletableFuture<String> {
+        return firebaseAPI.getMonthExpense(date)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

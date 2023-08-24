@@ -177,8 +177,13 @@ class FirebaseAPI private constructor() {
         var availableNow = CompletableFuture<String>()
         information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                val availableValue = snapshot.child(AppConstants.DATABASE.AVAILABLE_NOW).getValue(String::class.java)
-                availableNow.complete(availableValue ?: "")
+                if(snapshot.exists()){
+                    val availableValue = snapshot.child(AppConstants.DATABASE.AVAILABLE_NOW).getValue(String::class.java)?.toFloat()
+                    availableNow.complete("R$%.2f".format(availableValue).replace(".", ","))
+                }else{
+                    availableNow.complete("---")
+                }
+
             }
             override fun onCancelled(error: DatabaseError) {
 
@@ -205,6 +210,29 @@ class FirebaseAPI private constructor() {
         return totalExpense
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getMonthExpense(date: String) : CompletableFuture<String>{
+        var monthExpense = CompletableFuture<String>()
+        information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    val monthExpenseValue =
+                        snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java)
+                            ?.toFloat()
+                    monthExpense.complete("R$%.2f".format(monthExpenseValue).replace(".", ","))
+                }else{
+                    monthExpense.complete("---")
+                }
+
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        }
+        )
+        return monthExpense
+    }
+
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
         val current = snapshot.child(child).value.toString().toFloat()
         val add = expense.price.toFloat()
@@ -219,26 +247,6 @@ class FirebaseAPI private constructor() {
         val new = current - sub
         val floatFormat = "%.${2}f"
         return String.format(floatFormat, new)
-    }
-
-
-    fun returnMonthExpense(textView : TextView, date: String): ValueEventListener {
-        return information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    val value = snapshot.value.toString().toFloat()
-                    textView.text = "R$%.2f".format(value).replace(".", ",")
-                }else{
-                    textView.text = "---"
-                }
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
     }
 
     fun getExpenseList(recyclerView : RecyclerView, expenses : MutableList<Expense>){
