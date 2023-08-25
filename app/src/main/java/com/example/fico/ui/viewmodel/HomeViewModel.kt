@@ -6,8 +6,12 @@ import android.text.method.PasswordTransformationMethod
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.fico.R
 import com.example.fico.service.FirebaseAPI
+import com.google.firebase.inject.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
@@ -45,9 +49,12 @@ class HomeViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getMonthExpense(date: String): CompletableFuture<String> {
-        return firebaseAPI.getMonthExpense(date)
+    fun getMonthExpense(date: String): kotlinx.coroutines.Deferred<String> {
+        return viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.getMonthExpense(date)
+        }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun getTotalExpense(): CompletableFuture<String> {

@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -212,31 +213,29 @@ class FirebaseAPI private constructor() {
         )
         return totalExpense
     }
+
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getMonthExpense(date: String) : String = withContext(Dispatchers.IO){
+    suspend fun getMonthExpense(date: String): String = withContext(Dispatchers.IO) {
+        val deferredExpense = CompletableDeferred<String>()
 
-        var monthExpense = CompletableFuture<String>()
-
-        information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
+        information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    val monthExpenseValue =
-                        snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java)
-                            ?.toFloat()
-                    monthExpense.complete("R$%.2f".format(monthExpenseValue).replace(".", ","))
-                }else{
-                    monthExpense.complete("---")
+                if (snapshot.exists()) {
+                    val monthExpenseValue = snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java)
+                        ?.toFloat()
+                    deferredExpense.complete("R$%.2f".format(monthExpenseValue).replace(".", ","))
+                } else {
+                    deferredExpense.complete("---")
                 }
-
             }
+
             override fun onCancelled(error: DatabaseError) {
-                monthExpense.completeExceptionally(error.toException())
+                deferredExpense.completeExceptionally(error.toException())
             }
-        }
-        )
-        return@withContext monthExpense.await()
-    }
+        })
 
+        return@withContext deferredExpense.await()
+    }
 
 
 

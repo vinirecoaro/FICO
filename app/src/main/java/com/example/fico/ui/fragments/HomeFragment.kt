@@ -11,9 +11,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.viewmodel.HomeViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(){
 
@@ -79,13 +82,14 @@ class HomeFragment : Fragment(){
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getMonthExpense(){
-        viewModel.getMonthExpense(viewModel.getCurrentlyDate()).thenAccept { monthExpense ->
-            val handler = Handler(Looper.getMainLooper())
-            handler.post{
+    private fun getMonthExpense() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            try {
+                val monthExpense = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
                 binding.tvTotalExpensesThisMonthValue.text = monthExpense
+            } catch (exception: Exception) {
             }
-        }.exceptionally { throwable ->
-            return@exceptionally null }
+        }
     }
+
 }
