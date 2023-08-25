@@ -1,7 +1,6 @@
 package com.example.fico.service
 
 import android.os.Build
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.model.Expense
@@ -14,8 +13,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.coroutines.resumeWithException
+
 
 
 class FirebaseAPI private constructor() {
@@ -209,10 +212,11 @@ class FirebaseAPI private constructor() {
         )
         return totalExpense
     }
-
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getMonthExpense(date: String) : CompletableFuture<String>{
+    suspend fun getMonthExpense(date: String) : String = withContext(Dispatchers.IO){
+
         var monthExpense = CompletableFuture<String>()
+
         information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
@@ -226,12 +230,16 @@ class FirebaseAPI private constructor() {
 
             }
             override fun onCancelled(error: DatabaseError) {
-
+                monthExpense.completeExceptionally(error.toException())
             }
         }
         )
-        return monthExpense
+        return@withContext monthExpense.await()
     }
+
+
+
+
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
         val current = snapshot.child(child).value.toString().toFloat()
