@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,31 +55,28 @@ class HomeFragment : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getAvailableNow(){
-        viewModel.getAvailableNow(viewModel.getCurrentlyDate()).thenAccept{availableNowText ->
-            val handler = Handler(Looper.getMainLooper())
-            handler.post {
-                if(availableNowText.substring(2,7).replace(",",".").toFloat() < 0){
+        lifecycleScope.launch(Dispatchers.Main) {
+            try {
+                val availableNow = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
+                if(availableNow.substring(2,7).replace(",",".").toFloat() < 0){
                     val myColor = ContextCompat.getColor(requireContext(), R.color.red)
                     binding.tvAvailableThisMonthValue.setTextColor(myColor)
-                    binding.tvAvailableThisMonthValue.text = availableNowText
+                    binding.tvAvailableThisMonthValue.text = availableNow
                 }else {
-                    binding.tvAvailableThisMonthValue.text = availableNowText
+                    binding.tvAvailableThisMonthValue.text = availableNow
                 }
-            }
-        }.exceptionally { throwable ->
-            return@exceptionally null
+            }catch (exception:Exception){}
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun getTotalExpense(){
-        viewModel.getTotalExpense().thenAccept { totalExpense ->
-            val handler = Handler(Looper.getMainLooper())
-            handler.post{
+        lifecycleScope.launch(Dispatchers.Main) {
+            try {
+                val totalExpense = viewModel.getTotalExpense().await()
                 binding.tvTotalExpensesValue.text = totalExpense
-            }
-        }.exceptionally { throwable ->
-            return@exceptionally null }
+            }catch (exception:Exception){
+            } }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

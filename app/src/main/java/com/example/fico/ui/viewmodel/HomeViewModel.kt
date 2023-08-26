@@ -44,8 +44,10 @@ class HomeViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getAvailableNow(date: String): CompletableFuture<String> {
-        return firebaseAPI.getAvailableNow(date)
+    fun getAvailableNow(date: String): kotlinx.coroutines.Deferred<String> {
+        return viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.getAvailableNow(date)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -57,8 +59,9 @@ class HomeViewModel : ViewModel() {
 
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getTotalExpense(): CompletableFuture<String> {
-        return firebaseAPI.getTotalExpense()
+    fun getTotalExpense(): kotlinx.coroutines.Deferred<String> {
+        return viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.getTotalExpense() }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

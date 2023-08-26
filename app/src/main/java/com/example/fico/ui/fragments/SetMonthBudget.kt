@@ -10,10 +10,13 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.FragmentSetMonthBudgetBinding
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.SetMonthBudgetViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SetMonthBudget : Fragment() {
 
@@ -68,17 +71,18 @@ class SetMonthBudget : Fragment() {
             val dateModified = date?.substring(0,7)
 
             binding.btSave.setOnClickListener {
-
-                val budget = binding.etBudget.text.toString()
-                if (formatedNum != null && description != null && category != null && dateModified != null ) {
-                    viewModel.setUpBudget(budget,dateModified)
-                    viewModel.addExpense(formatedNum, description, category, date)
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val budget = binding.etBudget.text.toString()
+                    if (formatedNum != null && description != null && category != null && dateModified != null ) {
+                        viewModel.setUpBudget(budget,dateModified)
+                        viewModel.addExpense(formatedNum, description, category, date)
+                    }
+                    sharedViewModel.price.value = ""
+                    sharedViewModel.description.value = ""
+                    sharedViewModel.category.value = ""
+                    listener.onSaveButtonFragmentClick()
+                    binding.root.visibility = View.GONE
                 }
-                sharedViewModel.price.value = ""
-                sharedViewModel.description.value = ""
-                sharedViewModel.category.value = ""
-                listener.onSaveButtonFragmentClick()
-                binding.root.visibility = View.GONE
             }
         }
     }

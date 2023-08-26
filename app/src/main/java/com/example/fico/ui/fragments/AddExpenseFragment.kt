@@ -12,11 +12,14 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 class AddExpenseFragment : Fragment(), OnButtonClickListener{
@@ -41,18 +44,18 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners() {
         binding.btSave.setOnClickListener {
-            if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
-                val day = binding.etDate.text.toString().substring(0, 2)
-                val month = binding.etDate.text.toString().substring(3, 5)
-                val year = binding.etDate.text.toString().substring(6, 10)
-                val modifiedDate = "$year-$month-$day"
-                val checkDate = "$year-$month"
+            lifecycleScope.launch(Dispatchers.Main) {
+                if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
+                    val day = binding.etDate.text.toString().substring(0, 2)
+                    val month = binding.etDate.text.toString().substring(3, 5)
+                    val year = binding.etDate.text.toString().substring(6, 10)
+                    val modifiedDate = "$year-$month-$day"
+                    val checkDate = "$year-$month"
 
-                val formatNum = DecimalFormat("#.##")
-                val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
-
-                viewModel.checkIfExistsDateOnDatabse(checkDate).thenAccept { exists ->
-                    if (exists) {
+                    val formatNum = DecimalFormat("#.##")
+                    val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+                    val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
+                    if (existsDate) {
                         viewModel.addExpense(
                             formatedNum.toString(),
                             binding.etDescription.text.toString(),
@@ -78,7 +81,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                             .commit()
 
                     }
-                }
+            }
+
             }
         }
 

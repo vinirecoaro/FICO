@@ -17,9 +17,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
-import java.util.concurrent.CompletableFuture
-import kotlin.coroutines.resumeWithException
-
 
 
 class FirebaseAPI private constructor() {
@@ -76,7 +73,7 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun addExpense(expense: Expense, inputTime : String){
+    suspend fun addExpense(expense: Expense, inputTime : String){
         updateExpenseList(expense, inputTime)
         updateTotalExpense(expense.price)
         updateInformationPerMonth(expense)
@@ -88,9 +85,10 @@ class FirebaseAPI private constructor() {
         information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).setValue("0.00")
     }
 
+
     @RequiresApi(Build.VERSION_CODES.N)
-    fun checkIfExistsDateOnDatabse(date: String): CompletableFuture<Boolean> {
-        val futureResult = CompletableFuture<Boolean>()
+    suspend fun checkIfExistsDateOnDatabse(date: String): Boolean = withContext(Dispatchers.IO) {
+        val futureResult = CompletableDeferred<Boolean>()
 
         information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -102,12 +100,12 @@ class FirebaseAPI private constructor() {
             }
         })
 
-        return futureResult
+        return@withContext futureResult.await()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun checkIfExistsOnDatabse(reference: DatabaseReference): CompletableFuture<Boolean> {
-        val futureResult = CompletableFuture<Boolean>()
+    suspend fun checkIfExistsOnDatabse(reference: DatabaseReference): Boolean = withContext(Dispatchers.IO) {
+        val futureResult = CompletableDeferred<Boolean>()
 
         reference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -119,8 +117,9 @@ class FirebaseAPI private constructor() {
             }
         })
 
-        return futureResult
+        return@withContext futureResult.await()
     }
+
 
     private fun updateTotalExpense(value: String){
         total_expense.addListenerForSingleValueEvent(object : ValueEventListener{
@@ -139,23 +138,18 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun updateExpenseList(expense: Expense, inputTime : String){
-
-        val expenseId = generateRandomAddress(5)
-        val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
-        var control = 0;
-        checkIfExistsOnDatabse(reference).thenAccept {exists ->
-            while (control == 0){
-                if(!exists){
-                    reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
-                    reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
-                    reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
-                    reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
-                    control = 1
-                }else{
-                    updateExpenseList(expense, inputTime)
-                    control = 1
-                }
+    private suspend fun updateExpenseList(expense: Expense, inputTime : String) = withContext(Dispatchers.IO){
+        var control = false;
+        while (!control){
+            val expenseId = generateRandomAddress(5)
+            val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
+            val exists = checkIfExistsOnDatabse(reference)
+            if(!exists){
+                reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
+                reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
+                reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
+                control = true
             }
         }
 
@@ -177,8 +171,8 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getAvailableNow(date: String) : CompletableFuture<String>{
-        var availableNow = CompletableFuture<String>()
+    suspend fun getAvailableNow(date: String) : String = withContext(Dispatchers.IO) {
+        var availableNow = CompletableDeferred<String>()
         information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
@@ -194,12 +188,12 @@ class FirebaseAPI private constructor() {
             }
         }
         )
-        return availableNow
+        return@withContext availableNow.await()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getTotalExpense() : CompletableFuture<String>{
-        var totalExpense = CompletableFuture<String>()
+    suspend fun getTotalExpense() : String = withContext(Dispatchers.IO){
+        var totalExpense = CompletableDeferred<String>()
         total_expense.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.value.toString().toFloat()
@@ -211,7 +205,7 @@ class FirebaseAPI private constructor() {
             }
         }
         )
-        return totalExpense
+        return@withContext totalExpense.await()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
