@@ -121,7 +121,7 @@ class FirebaseAPI private constructor() {
     }
 
 
-    private fun updateTotalExpense(value: String){
+    private suspend fun updateTotalExpense(value: String) = withContext(Dispatchers.IO){
         total_expense.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val currentTotalExpense = snapshot.value.toString().toFloat()
@@ -155,7 +155,7 @@ class FirebaseAPI private constructor() {
 
     }
 
-    private fun updateInformationPerMonth(expense: Expense){
+    private suspend fun updateInformationPerMonth(expense: Expense)= withContext(Dispatchers.IO){
         information_per_month.child(expense.date.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
@@ -230,8 +230,6 @@ class FirebaseAPI private constructor() {
 
         return@withContext deferredExpense.await()
     }
-
-
 
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
