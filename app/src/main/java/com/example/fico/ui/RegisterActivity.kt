@@ -4,10 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityRegisterBinding
 import com.example.fico.ui.viewmodel.RegisterViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -23,14 +26,19 @@ class RegisterActivity : AppCompatActivity() {
     private fun setUpListeners(){
         binding.btRegister.setOnClickListener{
             if(viewModel.checkFields(binding.btRegister, binding.etEmail, binding.etPassword)){
-                viewModel.createUser(
+                lifecycleScope.launch(Dispatchers.Main) {
+                    viewModel.createUser(
                     binding.etEmail.text.toString(),
                     binding.etPassword.text.toString())
+                }
+
             }
         }
 
         viewModel.onUserCreated = {
-            viewModel.sendEmailVerificarion()
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.sendEmailVerificarion()
+            }
             startActivity(Intent(this, VerifyEmailActivity::class.java))
             finish()
         }

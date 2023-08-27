@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityVerifyEmailBinding
 import com.example.fico.service.FirebaseAPI
 import com.example.fico.ui.viewmodel.VerifyEmailViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 
 class VerifyEmailActivity : AppCompatActivity() {
@@ -27,11 +29,15 @@ class VerifyEmailActivity : AppCompatActivity() {
 
     private fun setUpListeners(){
         binding.btResentEmail.setOnClickListener {
-            viewModel.sendEmailVerificarion()
+            lifecycleScope.launch {
+                viewModel.sendEmailVerificarion()
+            }
         }
 
         binding.btLogin.setOnClickListener {
-            viewModel.logoff()
+            lifecycleScope.launch {
+                viewModel.logoff()
+            }
             startActivity(Intent(this, LoginActivity::class.java))
         }
 

@@ -42,24 +42,24 @@ class FirebaseAPI private constructor() {
         return@withContext auth.currentUser
     }
 
-    fun createUser(user: User) : Task<AuthResult> {
-        return auth.createUserWithEmailAndPassword(user.email, user.password)
+    suspend fun createUser(user: User) : Task<AuthResult> = withContext(Dispatchers.IO){
+        return@withContext auth.createUserWithEmailAndPassword(user.email, user.password)
     }
 
     suspend fun login(user: User) : Task<AuthResult> = withContext(Dispatchers.IO){
         return@withContext auth.signInWithEmailAndPassword(user.email, user.password)
     }
 
-    fun sendEmailVerification(): Task<Void>? {
-        return auth.currentUser?.sendEmailVerification()
+    suspend fun sendEmailVerification(): Task<Void>?  = withContext(Dispatchers.IO){
+        return@withContext auth.currentUser?.sendEmailVerification()
     }
 
     fun stateListener(){
         return auth.addAuthStateListener {  }
     }
 
-    fun logoff(){
-        return auth.signOut()
+    suspend fun logoff() = withContext(Dispatchers.IO){
+        return@withContext auth.signOut()
     }
 
     suspend fun verifyIfUserExists(): Task<SignInMethodQueryResult>  = withContext(Dispatchers.IO){

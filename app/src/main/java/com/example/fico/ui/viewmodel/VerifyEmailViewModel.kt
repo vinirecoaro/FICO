@@ -24,18 +24,23 @@ class VerifyEmailViewModel : ViewModel() {
 
     }
 
-    fun logoff(){
-        firebaseAPI.logoff()
+    suspend fun logoff(){
+        viewModelScope.async (Dispatchers.IO){
+            firebaseAPI.logoff()
+        }
     }
 
-    fun sendEmailVerificarion(){
-        firebaseAPI.sendEmailVerification()
-            ?.addOnCompleteListener{
-                onSendEmailSuccess()
-            }
-            ?.addOnFailureListener{
-                onSendEmailFailure()
-            }
+    suspend fun sendEmailVerificarion(){
+        viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.sendEmailVerification()
+                ?.addOnCompleteListener{
+                    onSendEmailSuccess()
+                }
+                ?.addOnFailureListener{
+                    onSendEmailFailure()
+                }
+        }
+
     }
 
     var onSendEmailSuccess: () -> Unit = {}

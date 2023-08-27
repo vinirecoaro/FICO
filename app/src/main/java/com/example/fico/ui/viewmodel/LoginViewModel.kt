@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class LoginViewModel : ViewModel() {
@@ -42,26 +43,49 @@ class LoginViewModel : ViewModel() {
 
     }
 
-    suspend fun isLogged() = viewModelScope.async(Dispatchers.IO){
-        val curretUser = firebaseAPI.currentUser()
-        if(curretUser != null){
-            firebaseAPI.verifyIfUserExists()
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val providers = task.result
-                        if (providers != null && providers.signInMethods?.isNotEmpty() == true) {
-                            onUserLogged()
+/*    suspend fun isLogged() {
+        viewModelScope.async (Dispatchers.IO){
+            val curretUser = firebaseAPI.currentUser()
+            if(curretUser != null){
+                firebaseAPI.verifyIfUserExists()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val providers = task.result
+                            if (providers != null && providers.signInMethods?.isNotEmpty() == true) {
+                                onUserLogged()
+                            } else {
+                                firebaseAPI.logoff()
+                                onError("Usuário não identificado")
+                            }
                         } else {
                             firebaseAPI.logoff()
                             onError("Usuário não identificado")
                         }
+                    }
+            }
+        }
+    }*/
+
+    suspend fun isLogged() {
+        viewModelScope.async(Dispatchers.IO) {
+            val currentUser = firebaseAPI.currentUser()
+            if (currentUser != null) {
+                try {
+                    val providers = firebaseAPI.verifyIfUserExists().await()
+                    if (providers.signInMethods?.isNotEmpty() == true) {
+                        onUserLogged()
                     } else {
                         firebaseAPI.logoff()
-                        onError("Usuário não identificado")
+                        onError("Erro ao verificar o usuário 1")
                     }
+                } catch (e: Exception) {
+                    firebaseAPI.logoff()
+                    onError("Erro ao verificar o usuário 2")
                 }
+            }
         }
     }
+
 
     var onUserLogged: () -> Unit = {}
     var onUserNotVerified : () -> Unit = {}
