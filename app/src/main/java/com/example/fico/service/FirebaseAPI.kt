@@ -38,16 +38,16 @@ class FirebaseAPI private constructor() {
 
     }
 
-    fun currentUser(): FirebaseUser? {
-        return auth.currentUser
+    suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO){
+        return@withContext auth.currentUser
     }
 
     fun createUser(user: User) : Task<AuthResult> {
         return auth.createUserWithEmailAndPassword(user.email, user.password)
     }
 
-    fun login(user: User) : Task<AuthResult> {
-        return auth.signInWithEmailAndPassword(user.email, user.password)
+    suspend fun login(user: User) : Task<AuthResult> = withContext(Dispatchers.IO){
+        return@withContext auth.signInWithEmailAndPassword(user.email, user.password)
     }
 
     fun sendEmailVerification(): Task<Void>? {
@@ -62,8 +62,8 @@ class FirebaseAPI private constructor() {
         return auth.signOut()
     }
 
-    fun verifyIfUserExists(): Task<SignInMethodQueryResult> {
-        return auth.fetchSignInMethodsForEmail(currentUser()?.email.toString())
+    suspend fun verifyIfUserExists(): Task<SignInMethodQueryResult>  = withContext(Dispatchers.IO){
+        return@withContext auth.fetchSignInMethodsForEmail(currentUser()?.email.toString())
     }
 
     fun addNewUserOnDatabase() {

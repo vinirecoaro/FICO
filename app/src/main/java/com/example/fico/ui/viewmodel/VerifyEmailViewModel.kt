@@ -3,7 +3,10 @@ package com.example.fico.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.fico.service.FirebaseAPI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 
 class VerifyEmailViewModel : ViewModel() {
 
@@ -12,10 +15,13 @@ class VerifyEmailViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance
 
     init{
-        firebaseAPI.stateListener().also {
-            val user = firebaseAPI.currentUser()
-            _isVerified.value = user?.isEmailVerified == true
+        viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.stateListener().also {
+                val user = firebaseAPI.currentUser()
+                _isVerified.value = user?.isEmailVerified == true
+            }
         }
+
     }
 
     fun logoff(){

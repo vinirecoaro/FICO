@@ -27,7 +27,7 @@ class AddExpenseViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun checkIfExistsDateOnDatabse(date: String): Deferred<Boolean> {
-        return viewModelScope.async {
+        return viewModelScope.async(Dispatchers.IO){
             firebaseAPI.checkIfExistsDateOnDatabse(date)
         }
     }

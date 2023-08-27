@@ -4,10 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityLoginBinding
 import com.example.fico.ui.viewmodel.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -22,14 +25,18 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         setUpListeners()
-        viewModel.isLogged()
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.isLogged()
+        }
     }
 
     private fun setUpListeners(){
         binding.btLogin.setOnClickListener {
-            viewModel.login(
-                binding.etEmail.text.toString(),
-                binding.etPassword.text.toString())
+            lifecycleScope.launch (Dispatchers.Main){
+                viewModel.login(
+                    binding.etEmail.text.toString(),
+                    binding.etPassword.text.toString())
+            }
         }
         binding.tvRegister.setOnClickListener{
             startActivity(Intent(this, RegisterActivity::class.java))
