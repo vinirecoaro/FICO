@@ -54,8 +54,8 @@ class FirebaseAPI private constructor() {
         return@withContext auth.currentUser?.sendEmailVerification()
     }
 
-    fun stateListener(){
-        return auth.addAuthStateListener {  }
+    suspend fun stateListener() = withContext(Dispatchers.IO){
+        return@withContext auth.addAuthStateListener {  }
     }
 
     suspend fun logoff() = withContext(Dispatchers.IO){
