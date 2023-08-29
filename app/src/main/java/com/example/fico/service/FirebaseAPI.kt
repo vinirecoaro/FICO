@@ -80,7 +80,7 @@ class FirebaseAPI private constructor() {
         updateInformationPerMonth(expense)
     }
 
-    fun setUpBudget(budget: String, date: String){
+    suspend fun setUpBudget(budget: String, date: String) = withContext(Dispatchers.IO){
         information_per_month.child(date).child(AppConstants.DATABASE.BUDGET).setValue(budget)
         information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(budget)
         information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).setValue("0.00")

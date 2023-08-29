@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.time.LocalTime
 
@@ -14,7 +15,9 @@ class SetMonthBudgetViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance
 
     fun setUpBudget(budget: String, date: String){
-        firebaseAPI.setUpBudget(budget, date)
+        viewModelScope.async (Dispatchers.IO){
+            firebaseAPI.setUpBudget(budget, date)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
