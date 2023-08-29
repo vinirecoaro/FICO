@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class RegisterViewModel : ViewModel() {
 
@@ -40,27 +41,29 @@ class RegisterViewModel : ViewModel() {
         snackbar.show()
     }
 
+
     suspend fun createUser(email: String, password: String) {
         val user = User(email, password)
-        viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.createUser(user)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        firebaseAPI.addNewUserOnDatabase()
-                        onUserCreated()
-                    } else {
-                        val message = when (task.exception) {
-                            is FirebaseAuthInvalidCredentialsException -> "E-mail ou senha inválidos."
-                            is FirebaseAuthUserCollisionException -> "Este e-mail já está em uso."
-                            is FirebaseAuthWeakPasswordException -> "A senha deve ter pelo menos 6 caracteres."
-                            else -> "Ocorreu um erro ao criar a conta. Tente novamente mais tarde."
-                        }
-                        // Chama a função que exibe a mensagem de erro
-                        onError(message)
-                    }
+        try {
+            viewModelScope.async(Dispatchers.IO){
+                val task = firebaseAPI.createUser(user).await()
+                if (task.user != null) {
+                    firebaseAPI.addNewUserOnDatabase()
+                    onUserCreated()
+                } else {
+                    val message = "Ocorreu um erro ao criar a conta. Tente novamente mais tarde."
+                    onError(message)
+                }
             }
+        }catch (exception : Exception){
+            val message = when (exception) {
+                is FirebaseAuthInvalidCredentialsException -> "E-mail ou senha inválidos."
+                is FirebaseAuthUserCollisionException -> "Este e-mail já está em uso."
+                is FirebaseAuthWeakPasswordException -> "A senha deve ter pelo menos 6 caracteres."
+                else -> "Ocorreu um erro ao criar a conta. Tente novamente mais tarde."
+            }
+            onError(message)
         }
-
     }
 
     suspend fun sendEmailVerificarion(){

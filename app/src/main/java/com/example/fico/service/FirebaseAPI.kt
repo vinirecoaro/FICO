@@ -66,7 +66,8 @@ class FirebaseAPI private constructor() {
         return@withContext auth.fetchSignInMethodsForEmail(currentUser()?.email.toString())
     }
 
-    fun addNewUserOnDatabase() {
+    suspend fun addNewUserOnDatabase() = withContext(Dispatchers.IO)
+    {
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).setValue("")
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
