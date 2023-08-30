@@ -17,6 +17,8 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 class FirebaseAPI private constructor() {
@@ -249,7 +251,7 @@ class FirebaseAPI private constructor() {
         return String.format(floatFormat, new)
     }
 
-    fun getExpenseList(callback: (List<Expense>) -> Unit) {
+    suspend fun getExpenseList(): List<Expense> = suspendCoroutine { continuation ->
         expense_list.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val expenses = mutableListOf<Expense>()
@@ -265,11 +267,11 @@ class FirebaseAPI private constructor() {
                         expenses.add(expense)
                     }
                 }
-                callback(expenses)
+                continuation.resume(expenses)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
+                continuation.resume(emptyList())
             }
         })
     }

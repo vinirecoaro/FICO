@@ -3,9 +3,11 @@ package com.example.fico.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
+import kotlinx.coroutines.async
 
 class ExpenseListViewModel: ViewModel() {
 
@@ -14,8 +16,10 @@ class ExpenseListViewModel: ViewModel() {
     val expensesLiveData: LiveData<List<Expense>> = _expensesLiveData
 
     fun getExpenseList() {
-        firebaseAPI.getExpenseList { expenses ->
+        viewModelScope.async{
+            val expenses = firebaseAPI.getExpenseList()
             _expensesLiveData.value = expenses
         }
     }
+
 }
