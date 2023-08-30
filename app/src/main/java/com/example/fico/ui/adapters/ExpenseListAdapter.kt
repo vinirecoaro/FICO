@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.model.Expense
 
-class ExpenseListAdapter(private val data: List<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>() {
+class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val description: TextView = itemView.findViewById(R.id.tv_description)
@@ -30,6 +30,11 @@ class ExpenseListAdapter(private val data: List<Expense>) : RecyclerView.Adapter
 
     override fun getItemCount(): Int {
         return data.size
+    }
+
+    fun updateExpenses(newExpenses: List<Expense>){
+        data = newExpenses
+        notifyDataSetChanged()
     }
 
 }

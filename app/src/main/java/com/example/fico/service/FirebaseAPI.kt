@@ -249,11 +249,12 @@ class FirebaseAPI private constructor() {
         return String.format(floatFormat, new)
     }
 
-    fun getExpenseList(recyclerView : RecyclerView, expenses : MutableList<Expense>){
-        expense_list.addValueEventListener(object : ValueEventListener{
+    fun getExpenseList(callback: (List<Expense>) -> Unit) {
+        expense_list.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    for (childSnapshot in snapshot.children){
+                val expenses = mutableListOf<Expense>()
+                if (snapshot.exists()) {
+                    for (childSnapshot in snapshot.children) {
                         val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
                         val priceFormated = "R$ %.2f".format(priceDatabase).replace(".", ",")
                         val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
@@ -264,17 +265,13 @@ class FirebaseAPI private constructor() {
                         expenses.add(expense)
                     }
                 }
-                val expensesFormated = expenses.reversed()
-                val adapter = ExpenseListAdapter(expensesFormated)
-                recyclerView.adapter = adapter
+                callback(expenses)
             }
 
             override fun onCancelled(error: DatabaseError) {
-
+                // Handle error
             }
-
         })
-
     }
 
     private fun generateRandomAddress(size: Int): String {
