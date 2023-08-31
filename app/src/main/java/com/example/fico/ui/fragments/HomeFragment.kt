@@ -58,11 +58,13 @@ class HomeFragment : Fragment(){
         lifecycleScope.launch(Dispatchers.Main) {
             try {
                 val availableNow = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
-                if(availableNow.substring(2,7).replace(",",".").toFloat() < 0){
+                if(availableNow == "---"){
+                    binding.tvAvailableThisMonthValue.text = availableNow
+                } else if(availableNow.substring(2,7).replace(",",".").toFloat() < 0){
                     val myColor = ContextCompat.getColor(requireContext(), R.color.red)
                     binding.tvAvailableThisMonthValue.setTextColor(myColor)
                     binding.tvAvailableThisMonthValue.text = availableNow
-                }else {
+                } else {
                     binding.tvAvailableThisMonthValue.text = availableNow
                 }
             }catch (exception:Exception){}
