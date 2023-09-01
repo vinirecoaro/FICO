@@ -8,9 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.fico.R
 import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.viewmodel.ExpenseListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ExpenseListFragment : Fragment() {
 
