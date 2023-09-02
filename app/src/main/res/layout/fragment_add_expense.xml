@@ -50,6 +50,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/actv_category" />
 
+    <ImageView
+        android:id="@+id/iv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/et_date"
+        app:layout_constraintTop_toTopOf="@id/et_date"
+        android:src="@drawable/baseline_calendar_month_24"
+        android:clickable="true"
+        android:focusable="true" />
+
     <DatePicker
         android:id="@+id/dp_date_expense"
         android:layout_width="wrap_content"

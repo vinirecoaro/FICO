@@ -103,7 +103,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
             binding.actvCategory.showDropDown()
         }
 
-        binding.etDate.setOnClickListener {
+        binding.ivDate.setOnClickListener{
             binding.fragSetBudget.visibility = View.GONE
             binding.btSave.visibility = View.VISIBLE
             binding.dpDateExpense.visibility = View.VISIBLE
@@ -113,8 +113,20 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
             }
         }
 
-        binding.etDate.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
+        binding.etPrice.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.dpDateExpense.visibility = View.GONE
+            }
+        }
+
+        binding.etDescription.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.dpDateExpense.visibility = View.GONE
+            }
+        }
+
+        binding.actvCategory.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
                 binding.dpDateExpense.visibility = View.GONE
             }
         }
