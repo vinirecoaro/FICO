@@ -101,6 +101,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
         binding.actvCategory.setOnClickListener {
             binding.actvCategory.showDropDown()
+            binding.dpDateExpense.visibility = View.GONE
         }
 
         binding.ivDate.setOnClickListener{
