@@ -3,9 +3,7 @@ package com.example.fico.ui.fragments
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.annotation.RequiresApi
@@ -13,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
@@ -40,6 +39,18 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         binding.etDate.inputType = InputType.TYPE_NULL
         return rootView
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.add_expense_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners() {
