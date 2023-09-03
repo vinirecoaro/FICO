@@ -30,4 +30,5 @@
     <string name="list">Lista</string>
     <string name="title_home">Home</string>
     <string name="title_add_expense">AddExpense</string>
+    <string name="purchase_in_installments">Compra Parcelada</string>
 </resources>

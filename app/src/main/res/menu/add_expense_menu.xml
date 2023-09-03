@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_expense_menu_installments"
+        android:icon="@drawable/config_image"
+        android:title="@string/purchase_in_installments"
+        />
+
+</menu>
