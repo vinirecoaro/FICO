@@ -8,11 +8,14 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
+import com.example.fico.databinding.FragmentAddInstallmentExpenseBinding
+import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
@@ -25,18 +28,31 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
     private var _binding : FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
+    private var _bindingInstallments : FragmentAddInstallmentExpenseBinding? = null
+    private val bindingInstallments get() = _bindingInstallments!!
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
+    private var purchaseType = AppConstants.ADDEXPENSE.COMMON
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddExpenseBinding.inflate(inflater,container,false)
-        val rootView = binding.root
-        setUpListeners()
-        actvConfig()
-        binding.etDate.setText(viewModel.getCurrentlyDate())
-        binding.etDate.inputType = InputType.TYPE_NULL
+        _bindingInstallments = FragmentAddInstallmentExpenseBinding.inflate(inflater,container,false)
+        var rootView = binding.root
+        if (purchaseType == AppConstants.ADDEXPENSE.COMMON){
+            rootView = binding.root
+            setUpListeners()
+            actvConfig()
+            binding.etDate.setText(viewModel.getCurrentlyDate())
+            binding.etDate.inputType = InputType.TYPE_NULL
+        }else if(purchaseType == AppConstants.ADDEXPENSE.INSTALLMENTS){
+            rootView = bindingInstallments.root
+            setUpListeners()
+            actvConfig()
+            bindingInstallments.etDate.setText(viewModel.getCurrentlyDate())
+            bindingInstallments.etDate.inputType = InputType.TYPE_NULL
+        }
         return rootView
     }
 
@@ -49,6 +65,17 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.add_expense_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.add_expense_menu_installments -> {
+                purchaseType = AppConstants.ADDEXPENSE.INSTALLMENTS
+                reloadFragment()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
 
@@ -161,6 +188,15 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
     override fun onSaveButtonFragmentClick() {
         binding.btSave.performClick()
+    }
+
+    private fun reloadFragment(){
+        val fragmentTransaction: FragmentTransaction = requireFragmentManager().beginTransaction()
+        val novoFragment = AddExpenseFragment() // Crie uma nova instância do seu Fragment
+
+        fragmentTransaction.replace(R.id.nav_host_fragment_activity_main, novoFragment) // Substitua o Fragment atual pelo novo
+        fragmentTransaction.addToBackStack(null) // Adicione a transação à pilha de retrocesso (se desejar)
+        fragmentTransaction.commit() // Execute a transação
     }
 
     override fun onDestroyView() {
