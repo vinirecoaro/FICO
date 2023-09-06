@@ -38,23 +38,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddExpenseBinding.inflate(inflater,container,false)
-        _bindingInstallments = FragmentAddInstallmentExpenseBinding.inflate(inflater,container,false)
         var rootView = binding.root
-        if (purchaseType == AppConstants.ADDEXPENSE.COMMON){
-            rootView = binding.root
-            setUpListeners()
-            actvConfig()
-            binding.etDate.setText(viewModel.getCurrentlyDate())
-            binding.etDate.inputType = InputType.TYPE_NULL
-        }else if(purchaseType == AppConstants.ADDEXPENSE.INSTALLMENTS){
-            rootView = bindingInstallments.root
-            setUpListeners()
-            actvConfig()
-            bindingInstallments.etDate.setText(viewModel.getCurrentlyDate())
-            bindingInstallments.etDate.inputType = InputType.TYPE_NULL
-        }
+        setUpListeners()
+        actvConfig()
+        binding.etDate.setText(viewModel.getCurrentlyDate())
+        binding.etDate.inputType = InputType.TYPE_NULL
         return rootView
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,11 +58,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_expense_menu_installments -> {
-                purchaseType = AppConstants.ADDEXPENSE.INSTALLMENTS
-                reloadFragment()
+                binding.etInstallments.visibility = View.VISIBLE
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -190,14 +181,32 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         binding.btSave.performClick()
     }
 
-    private fun reloadFragment(){
+/*    private fun reloadFragment(){
         val fragmentTransaction: FragmentTransaction = requireFragmentManager().beginTransaction()
         val novoFragment = AddExpenseFragment() // Crie uma nova instância do seu Fragment
 
         fragmentTransaction.replace(R.id.nav_host_fragment_activity_main, novoFragment) // Substitua o Fragment atual pelo novo
         fragmentTransaction.addToBackStack(null) // Adicione a transação à pilha de retrocesso (se desejar)
         fragmentTransaction.commit() // Execute a transação
+    }*/
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showInstallmentsLayout() {
+        // Altere o layout para o layout de parcelas ou qualquer outro layout desejado
+        if (purchaseType == AppConstants.ADDEXPENSE.COMMON) {
+            purchaseType = AppConstants.ADDEXPENSE.INSTALLMENTS
+            // Inflar o layout de parcelas e configurar as views aqui
+            val rootView = bindingInstallments.root
+            setUpListeners()
+            actvConfig()
+            bindingInstallments.etDate.setText(viewModel.getCurrentlyDate())
+            bindingInstallments.etDate.inputType = InputType.TYPE_NULL
+            // Substituir o layout atual pelo novo layout
+            _binding = null // Libere o binding do layout atual
+            _bindingInstallments = bindingInstallments
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

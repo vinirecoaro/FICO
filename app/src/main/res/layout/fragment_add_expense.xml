@@ -40,6 +40,17 @@
         app:layout_constraintTop_toBottomOf="@id/et_description" />
 
     <EditText
+        android:id="@+id/et_installments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="Parcelas"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@id/actv_category"
+        android:visibility="gone"
+        />
+
+    <EditText
         android:id="@+id/et_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,7 +60,7 @@
         android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/actv_category" />
+        app:layout_constraintTop_toBottomOf="@id/et_installments" />
 
     <ImageView
         android:id="@+id/iv_date"
