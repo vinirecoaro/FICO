@@ -29,7 +29,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
-    private var purchaseType = AppConstants.ADDEXPENSE.COMMON
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -57,6 +56,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.add_expense_menu_common -> {
+                binding.etInstallments.visibility = View.GONE
+                return true
+            }
             R.id.add_expense_menu_installments -> {
                 binding.etInstallments.visibility = View.VISIBLE
                 return true
