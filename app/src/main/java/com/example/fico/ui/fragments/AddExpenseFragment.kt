@@ -8,13 +8,11 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
-import com.example.fico.databinding.FragmentAddInstallmentExpenseBinding
 import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
@@ -28,8 +26,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
     private var _binding : FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
-    private var _bindingInstallments : FragmentAddInstallmentExpenseBinding? = null
-    private val bindingInstallments get() = _bindingInstallments!!
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
@@ -180,33 +176,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     override fun onSaveButtonFragmentClick() {
         binding.btSave.performClick()
     }
-
-/*    private fun reloadFragment(){
-        val fragmentTransaction: FragmentTransaction = requireFragmentManager().beginTransaction()
-        val novoFragment = AddExpenseFragment() // Crie uma nova instância do seu Fragment
-
-        fragmentTransaction.replace(R.id.nav_host_fragment_activity_main, novoFragment) // Substitua o Fragment atual pelo novo
-        fragmentTransaction.addToBackStack(null) // Adicione a transação à pilha de retrocesso (se desejar)
-        fragmentTransaction.commit() // Execute a transação
-    }*/
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun showInstallmentsLayout() {
-        // Altere o layout para o layout de parcelas ou qualquer outro layout desejado
-        if (purchaseType == AppConstants.ADDEXPENSE.COMMON) {
-            purchaseType = AppConstants.ADDEXPENSE.INSTALLMENTS
-            // Inflar o layout de parcelas e configurar as views aqui
-            val rootView = bindingInstallments.root
-            setUpListeners()
-            actvConfig()
-            bindingInstallments.etDate.setText(viewModel.getCurrentlyDate())
-            bindingInstallments.etDate.inputType = InputType.TYPE_NULL
-            // Substituir o layout atual pelo novo layout
-            _binding = null // Libere o binding do layout atual
-            _bindingInstallments = bindingInstallments
-        }
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
