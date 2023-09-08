@@ -4,9 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.ConfigurationFragment">
+    tools:context=".ui.fragments.ConfigurationFragment"
+    android:background="@color/grey_100"
+    android:padding="8dp">
 
-    <EditText
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_configuration_list"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"/>
+
+    <!--<EditText
         android:id="@+id/et_available_per_month"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -40,6 +48,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_available_per_month" />
+        app:layout_constraintTop_toBottomOf="@id/et_available_per_month" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

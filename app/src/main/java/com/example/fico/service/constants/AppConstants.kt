@@ -16,9 +16,5 @@ class AppConstants private constructor() {
         const val BUDGET = "budget"
     }
 
-    object ADDEXPENSE {
-        const val COMMON = "common"
-        const val INSTALLMENTS = "installments"
-    }
 
 }
