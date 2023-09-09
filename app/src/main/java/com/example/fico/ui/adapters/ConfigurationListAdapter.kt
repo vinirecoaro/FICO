@@ -6,8 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.ui.interfaces.OnItemClickListener
 
 class ConfigurationListAdapter(private var data: MutableList<String>) : RecyclerView.Adapter<ConfigurationListAdapter.ViewHolder>() {
+
+    private var listener: OnItemClickListener? = null
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val configuration: TextView = itemView.findViewById(R.id.tv_configuration_list_item)
@@ -21,10 +24,18 @@ class ConfigurationListAdapter(private var data: MutableList<String>) : Recycler
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
         holder.configuration.text = item
+
+        holder.itemView.setOnClickListener {
+            listener?.onConfigurationItemClick(position)
+        }
     }
 
     override fun getItemCount(): Int {
         return data.size
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
     }
 
 }

@@ -16,5 +16,8 @@ class AppConstants private constructor() {
         const val BUDGET = "budget"
     }
 
-
+    object CONFIGURATION_LIST {
+        const val DADOS_PESSOAIS = "Dados pessoais"
+        const val BUDGET = "Budget"
+    }
 }
