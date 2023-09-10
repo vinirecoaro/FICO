@@ -19,5 +19,11 @@ class AppConstants private constructor() {
     object CONFIGURATION_LIST {
         const val DADOS_PESSOAIS = "Dados pessoais"
         const val BUDGET = "Budget"
+        object BUDGET_LIST{
+            const val DEFAULT_BUDGET = "Budget padrão"
+            const val BUDGET_PER_MONTH = "Budget por mês"
+        }
     }
+
+
 }
