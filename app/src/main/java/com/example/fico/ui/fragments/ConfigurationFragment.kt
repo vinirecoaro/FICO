@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.databinding.FragmentConfigurationBinding
 import com.example.fico.service.constants.AppConstants
+import com.example.fico.ui.BudgetConfigurationListActivity
 import com.example.fico.ui.SetDefaultBudgetActivity
 import com.example.fico.ui.adapters.ConfigurationListAdapter
 import com.example.fico.ui.interfaces.OnItemClickListener
@@ -54,7 +55,7 @@ class ConfigurationFragment : Fragment(), OnItemClickListener {
     override fun onConfigurationItemClick(position: Int) {
         val item = viewModel.configurationList[position]
         if(item == AppConstants.CONFIGURATION_LIST.BUDGET){
-            startActivity(Intent(requireContext(), SetDefaultBudgetActivity::class.java))
+            startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
         }
     }
 
