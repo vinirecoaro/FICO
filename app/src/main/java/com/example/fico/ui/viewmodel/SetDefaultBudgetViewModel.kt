@@ -1,0 +1,7 @@
+package com.example.fico.ui.viewmodel
+
+import androidx.lifecycle.ViewModel
+
+class SetDefaultBudgetViewModel : ViewModel() {
+
+}

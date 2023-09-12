@@ -31,19 +31,7 @@ class ConfigurationFragment : Fragment(), OnConfigurationItemClick {
         configuratonListAdapter.setOnItemClickListener(this)
         binding.rvConfigurationList.adapter = configuratonListAdapter
 
-        setUpListeners()
-
         return rootView
-    }
-
-
-    private fun setUpListeners(){
-        /*binding.ivInfoMoney.setOnClickListener {
-            val snackbar = Snackbar.make(it, "Definir qual será o limite de gasto para o mês atual e os meses seguintes", Snackbar.LENGTH_LONG)
-            snackbar.show()
-        }*/
-        binding.rvConfigurationList
-
     }
 
     override fun onDestroyView() {
