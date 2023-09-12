@@ -1,6 +1,6 @@
 package com.example.fico.ui.interfaces;
 
-public interface OnItemClickListener {
+public interface OnConfigurationItemClick {
     void onConfigurationItemClick(int position);
 }
 
