@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -37,6 +38,7 @@ class FirebaseAPI private constructor() {
         private val total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
         private val information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
         private val expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
+        private val default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
 
     }
 
@@ -88,6 +90,26 @@ class FirebaseAPI private constructor() {
         information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).setValue("0.00")
     }
 
+    suspend fun setDefaultBudget(budget: String) = withContext(Dispatchers.IO){
+        default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(budget)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun getDefaultBudget() : String = withContext(Dispatchers.IO){
+        var defaultBudget = CompletableDeferred<String>()
+        default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val value = snapshot.value.toString().toFloat()
+                defaultBudget.complete("R$%.2f".format(value).replace(".", ","))
+
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        }
+        )
+        return@withContext defaultBudget.await()
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistsDateOnDatabse(date: String): Boolean = withContext(Dispatchers.IO) {
@@ -121,6 +143,11 @@ class FirebaseAPI private constructor() {
         })
 
         return@withContext futureResult.await()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun checkIfExistDefaultBudget(): Boolean {
+        return checkIfExistsOnDatabse(default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET))
     }
 
 

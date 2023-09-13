@@ -14,6 +14,8 @@ class AppConstants private constructor() {
         const val AVAILABLE_NOW = "availableNow"
         const val EXPENSE = "expense"
         const val BUDGET = "budget"
+        const val DEFAULT_BUDGET = "DefaultBudget"
+        const val DEFAULT_VALUES = "DefaultValues"
     }
 
     object CONFIGURATION_LIST {
