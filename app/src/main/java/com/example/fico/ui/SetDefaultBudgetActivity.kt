@@ -41,6 +41,12 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
                     Handler().postDelayed({
                         finish()
                     }, 1300)
+                }else{
+                    val snackbar = Snackbar.make(it, "Falha ao definir o Default Budget",Snackbar.LENGTH_LONG)
+                    snackbar.show()
+                    Handler().postDelayed({
+                        finish()
+                    }, 1300)
                 }
             }
 
