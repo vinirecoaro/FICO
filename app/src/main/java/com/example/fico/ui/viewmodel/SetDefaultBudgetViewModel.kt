@@ -14,11 +14,12 @@ class SetDefaultBudgetViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
 
-    suspend fun setDefaultBudget(budget: String) =
-        viewModelScope.async(Dispatchers.IO){
+    suspend fun setDefaultBudget(budget: String) : Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO) {
             val formatNum = DecimalFormat("#.##")
             val formattedBudget = formatNum.format(budget.toFloat()).toString()
             firebaseAPI.setDefaultBudget(formattedBudget)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

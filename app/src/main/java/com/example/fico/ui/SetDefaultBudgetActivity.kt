@@ -1,8 +1,11 @@
 package com.example.fico.ui
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
@@ -32,11 +35,20 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
         }
         binding.btSave.setOnClickListener {
             lifecycleScope.launch {
-                viewModel.setDefaultBudget(binding.etAvailablePerMonth.text.toString())
+                if(viewModel.setDefaultBudget(binding.etAvailablePerMonth.text.toString()).await()){
+                    val snackbar = Snackbar.make(it, "Default Budget definido com sucesso",Snackbar.LENGTH_LONG)
+                    snackbar.show()
+                    Handler().postDelayed({
+                        finish()
+                    }, 1300)
+                }
             }
+
         }
-        binding.etAvailablePerMonth.setOnClickListener {
-            binding.etAvailablePerMonth.setText("")
+        binding.etAvailablePerMonth.onFocusChangeListener = View.OnFocusChangeListener{ _, hasFocus ->
+            if(hasFocus){
+                binding.etAvailablePerMonth.setText("")
+            }
         }
     }
 

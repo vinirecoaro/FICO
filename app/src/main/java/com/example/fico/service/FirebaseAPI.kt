@@ -90,8 +90,15 @@ class FirebaseAPI private constructor() {
         information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).setValue("0.00")
     }
 
-    suspend fun setDefaultBudget(budget: String) = withContext(Dispatchers.IO){
-        default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(budget)
+    suspend fun setDefaultBudget(budget: String) : Boolean = withContext(Dispatchers.IO){
+        var result = CompletableDeferred<Boolean>()
+        try {
+            default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(budget)
+            result.complete(true)
+        }catch (e:Exception){
+            result.complete(false)
+        }
+        return@withContext result.await()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
