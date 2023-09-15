@@ -84,6 +84,23 @@ class FirebaseAPI private constructor() {
         updateInformationPerMonth(expense)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int){
+        for (i in 1..nOfInstallments){
+            var month = expense.date.substring(5,7).toInt()
+            var nextMonth = month + i
+            var year = expense.date.substring(0,4).toInt()
+            if(nextMonth > 12){
+                nextMonth -= 12
+                year += 1
+            }
+
+            updateExpenseList(expense, inputTime)
+            updateTotalExpense(expense.price)
+            updateInformationPerMonth(expense)
+        }
+    }
+
     suspend fun setUpBudget(budget: String, date: String) = withContext(Dispatchers.IO){
         information_per_month.child(date).child(AppConstants.DATABASE.BUDGET).setValue(budget)
         information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(budget)

@@ -73,44 +73,70 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     private fun setUpListeners() {
         binding.btSave.setOnClickListener {
             lifecycleScope.launch(Dispatchers.Main) {
-                if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
-                    val day = binding.etDate.text.toString().substring(0, 2)
-                    val month = binding.etDate.text.toString().substring(3, 5)
-                    val year = binding.etDate.text.toString().substring(6, 10)
-                    val modifiedDate = "$year-$month-$day"
-                    val checkDate = "$year-$month"
+                if(binding.etInstallments.visibility == View.GONE){
+                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
+                        val day = binding.etDate.text.toString().substring(0, 2)
+                        val month = binding.etDate.text.toString().substring(3, 5)
+                        val year = binding.etDate.text.toString().substring(6, 10)
+                        val modifiedDate = "$year-$month-$day"
+                        val checkDate = "$year-$month"
 
-                    val formatNum = DecimalFormat("#.##")
-                    val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
-                    val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
-                    if (existsDate) {
-                        viewModel.addExpense(
-                            formatedNum.toString(),
-                            binding.etDescription.text.toString(),
-                            binding.actvCategory.text.toString(),
-                            modifiedDate
-                        )
-                        binding.etPrice.setText("")
-                        binding.etDescription.setText("")
-                        binding.actvCategory.setText("")
-                    } else {
-                        binding.btSave.visibility = View.GONE
-                        binding.dpDateExpense.visibility = View.GONE
-                        binding.fragSetBudget.visibility = View.VISIBLE
-                        val setMonthBudget = SetMonthBudget.newInstance(
-                            formatedNum.toString(),
-                            binding.etDescription.text.toString(),
-                            binding.actvCategory.text.toString(),
-                            modifiedDate
-                        )
+                        val formatNum = DecimalFormat("#.##")
+                        val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+                        val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
+                        if (existsDate) {
+                            viewModel.addExpense(
+                                formatedNum.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                modifiedDate
+                            )
+                            binding.etPrice.setText("")
+                            binding.etDescription.setText("")
+                            binding.actvCategory.setText("")
+                        } else {
+                            binding.btSave.visibility = View.GONE
+                            binding.dpDateExpense.visibility = View.GONE
+                            binding.fragSetBudget.visibility = View.VISIBLE
+                            val setMonthBudget = SetMonthBudget.newInstance(
+                                formatedNum.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                modifiedDate
+                            )
 
-                        childFragmentManager.beginTransaction()
-                            .replace(binding.fragSetBudget.id, setMonthBudget)
-                            .commit()
+                            childFragmentManager.beginTransaction()
+                                .replace(binding.fragSetBudget.id, setMonthBudget)
+                                .commit()
 
+                        }
                     }
-            }
+                }else if(binding.etInstallments.visibility == View.VISIBLE){
+                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
+                        val day = binding.etDate.text.toString().substring(0, 2)
+                        val month = binding.etDate.text.toString().substring(3, 5)
+                        val year = binding.etDate.text.toString().substring(6, 10)
+                        val modifiedDate = "$year-$month-$day"
+                        val checkDate = "$year-$month"
 
+                        val formatNum = DecimalFormat("#.##")
+                        val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+                        val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                        if (existsDefaultBudget) {
+                            viewModel.addExpense(
+                                formatedNum.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                modifiedDate
+                            )
+                            binding.etPrice.setText("")
+                            binding.etDescription.setText("")
+                            binding.actvCategory.setText("")
+                        } else {
+
+                        }
+                    }
+                }
             }
         }
 

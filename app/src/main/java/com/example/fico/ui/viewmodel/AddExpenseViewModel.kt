@@ -39,6 +39,13 @@ class AddExpenseViewModel : ViewModel() {
         return currentDate.format(formatter)
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun checkIfExistDefaultBudget() : Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.checkIfExistDefaultBudget()
+        }
+    }
+
 
 
 }
