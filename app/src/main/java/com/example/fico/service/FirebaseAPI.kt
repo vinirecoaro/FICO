@@ -86,13 +86,20 @@ class FirebaseAPI private constructor() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int){
-        for (i in 1..nOfInstallments){
+        for (i in 0 until nOfInstallments){
             var month = expense.date.substring(5,7).toInt()
             var nextMonth = month + i
             var year = expense.date.substring(0,4).toInt()
-            if(nextMonth > 12){
-                nextMonth -= 12
-                year += 1
+            var sumYear : Int = 0
+            if(nextMonth > 12 ){
+                if(nextMonth % 12 == 0){
+                    sumYear = nextMonth/12 - 1
+                    nextMonth -= 12*sumYear
+                }else{
+                    sumYear = nextMonth/12
+                    nextMonth -= 12*sumYear
+                }
+                year += sumYear
             }
 
             updateExpenseList(expense, inputTime)
