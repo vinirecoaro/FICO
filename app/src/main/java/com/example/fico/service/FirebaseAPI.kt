@@ -87,24 +87,41 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int){
         for (i in 0 until nOfInstallments){
-            var month = expense.date.substring(5,7).toInt()
-            var nextMonth = month + i
+            val month = expense.date.substring(5,7).toInt()
+            var newMonth = month + i
             var year = expense.date.substring(0,4).toInt()
             var sumYear : Int = 0
-            if(nextMonth > 12 ){
-                if(nextMonth % 12 == 0){
-                    sumYear = nextMonth/12 - 1
-                    nextMonth -= 12*sumYear
+            var day = expense.date.substring(8,10).toInt()
+            if(newMonth > 12 ){
+                if(newMonth % 12 == 0){
+                    sumYear = newMonth/12 - 1
+                    newMonth -= 12*sumYear
                 }else{
-                    sumYear = nextMonth/12
-                    nextMonth -= 12*sumYear
+                    sumYear = newMonth/12
+                    newMonth -= 12*sumYear
+                }
+                if(newMonth == 2){
+                    if (day > 28){
+                        day = 28
+                    }
                 }
                 year += sumYear
             }
+            var newMonthFormatted = newMonth.toString()
+            if(newMonth < 10){
+                newMonthFormatted = "0$newMonth"
+            }
+            var dayFormatted = day.toString()
+            if(day < 10){
+                dayFormatted = "0$day"
+            }
 
-            updateExpenseList(expense, inputTime)
+            val date = "$year-$newMonthFormatted-$dayFormatted"
+            val newExpense = Expense(expense.price, expense.description, expense.description, date)
+
+            updateExpenseList(newExpense, inputTime)
             updateTotalExpense(expense.price)
-            updateInformationPerMonth(expense)
+            updateInformationPerMonth(newExpense)
         }
     }
 
@@ -115,7 +132,7 @@ class FirebaseAPI private constructor() {
     }
 
     suspend fun setDefaultBudget(budget: String) : Boolean = withContext(Dispatchers.IO){
-        var result = CompletableDeferred<Boolean>()
+        val result = CompletableDeferred<Boolean>()
         try {
             default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(budget)
             result.complete(true)
@@ -127,7 +144,7 @@ class FirebaseAPI private constructor() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getDefaultBudget() : String = withContext(Dispatchers.IO){
-        var defaultBudget = CompletableDeferred<String>()
+        val defaultBudget = CompletableDeferred<String>()
         default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.value.toString().toFloat()
@@ -233,7 +250,7 @@ class FirebaseAPI private constructor() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getAvailableNow(date: String) : String = withContext(Dispatchers.IO) {
-        var availableNow = CompletableDeferred<String>()
+        val availableNow = CompletableDeferred<String>()
         information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
@@ -254,7 +271,7 @@ class FirebaseAPI private constructor() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getTotalExpense() : String = withContext(Dispatchers.IO){
-        var totalExpense = CompletableDeferred<String>()
+        val totalExpense = CompletableDeferred<String>()
         total_expense.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.value.toString().toFloat()
