@@ -117,10 +117,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                         val month = binding.etDate.text.toString().substring(3, 5)
                         val year = binding.etDate.text.toString().substring(6, 10)
                         val modifiedDate = "$year-$month-$day"
-                        val checkDate = "$year-$month"
 
                         val formatNum = DecimalFormat("#.##")
-                        val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+                        val formatedNum = formatNum.format(
+                            binding.etPrice.text.toString().toFloat()/binding.etInstallments.text.toString().toInt())
                         val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                         if (existsDefaultBudget) {
                             viewModel.addInstallmentsExpense(

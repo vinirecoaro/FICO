@@ -92,6 +92,7 @@ class FirebaseAPI private constructor() {
             var year = expense.date.substring(0,4).toInt()
             var sumYear : Int = 0
             var day = expense.date.substring(8,10).toInt()
+            var newDescription = expense.description + " Parcela ${i+1}"
             if(newMonth > 12 ){
                 if(newMonth % 12 == 0){
                     sumYear = newMonth/12 - 1
@@ -117,7 +118,7 @@ class FirebaseAPI private constructor() {
             }
 
             val date = "$year-$newMonthFormatted-$dayFormatted"
-            val newExpense = Expense(expense.price, expense.description, expense.category, date)
+            val newExpense = Expense(expense.price, newDescription, expense.category, date)
 
             val dateInformationPerMonth = "$year-$newMonthFormatted"
             val existDate = checkIfExistsDateOnDatabse(dateInformationPerMonth)

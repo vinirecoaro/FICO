@@ -35,36 +35,12 @@ class LoginViewModel : ViewModel() {
                             is FirebaseAuthInvalidCredentialsException -> "E-mail ou senha inválidos."
                             else -> "Ocorreu um erro ao realizar o login. Tente novamente mais tarde."
                         }
-                        // Chama a função que exibe a mensagem de erro
                         onError(message)
                     }
                 }
 
 
     }
-
-/*    suspend fun isLogged() {
-        viewModelScope.async (Dispatchers.IO){
-            val curretUser = firebaseAPI.currentUser()
-            if(curretUser != null){
-                firebaseAPI.verifyIfUserExists()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val providers = task.result
-                            if (providers != null && providers.signInMethods?.isNotEmpty() == true) {
-                                onUserLogged()
-                            } else {
-                                firebaseAPI.logoff()
-                                onError("Usuário não identificado")
-                            }
-                        } else {
-                            firebaseAPI.logoff()
-                            onError("Usuário não identificado")
-                        }
-                    }
-            }
-        }
-    }*/
 
     suspend fun isLogged() {
         viewModelScope.async(Dispatchers.IO) {
