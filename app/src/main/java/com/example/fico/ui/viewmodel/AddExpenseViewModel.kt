@@ -39,6 +39,15 @@ class AddExpenseViewModel : ViewModel() {
         return currentDate.format(formatter)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun addInstallmentsExpense(price: String, description: String, category: String, date: String, nOfInstallments: Int)=
+        viewModelScope.async(Dispatchers.IO){
+            val expense = Expense(price, description, category, date)
+            val timeNow = LocalTime.now()
+            val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+            firebaseAPI.addInstallmentExpense(expense,inputTime,nOfInstallments)
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistDefaultBudget() : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO){

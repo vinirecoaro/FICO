@@ -123,15 +123,17 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                         val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
                         val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                         if (existsDefaultBudget) {
-                            viewModel.addExpense(
+                            viewModel.addInstallmentsExpense(
                                 formatedNum.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
-                                modifiedDate
+                                modifiedDate,
+                                binding.etInstallments.text.toString().toInt()
                             )
                             binding.etPrice.setText("")
                             binding.etDescription.setText("")
                             binding.actvCategory.setText("")
+                            binding.etInstallments.setText("")
                         } else {
 
                         }

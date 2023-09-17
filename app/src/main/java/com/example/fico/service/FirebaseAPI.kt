@@ -85,7 +85,7 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int){
+    suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) = withContext(Dispatchers.IO){
         for (i in 0 until nOfInstallments){
             val month = expense.date.substring(5,7).toInt()
             var newMonth = month + i
@@ -117,11 +117,22 @@ class FirebaseAPI private constructor() {
             }
 
             val date = "$year-$newMonthFormatted-$dayFormatted"
-            val newExpense = Expense(expense.price, expense.description, expense.description, date)
+            val newExpense = Expense(expense.price, expense.description, expense.category, date)
 
-            updateExpenseList(newExpense, inputTime)
-            updateTotalExpense(expense.price)
-            updateInformationPerMonth(newExpense)
+            val dateInformationPerMonth = "$year-$newMonthFormatted"
+            val existDate = checkIfExistsDateOnDatabse(dateInformationPerMonth)
+
+            if(existDate){
+                updateExpenseList(newExpense, inputTime)
+                updateTotalExpense(newExpense.price)
+                updateInformationPerMonth(newExpense)
+            }else{
+                setUpBudget(getDefaultBudget(),dateInformationPerMonth)
+                updateExpenseList(newExpense, inputTime)
+                updateTotalExpense(newExpense.price)
+                updateInformationPerMonth(newExpense)
+            }
+
         }
     }
 
