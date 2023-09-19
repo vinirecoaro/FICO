@@ -58,10 +58,17 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         when (item.itemId) {
             R.id.add_expense_menu_common -> {
                 binding.etInstallments.visibility = View.GONE
+                binding.etPrice.setText("")
+                binding.etDescription.setText("")
+                binding.actvCategory.setText("")
+                binding.etInstallments.setText("")
                 return true
             }
             R.id.add_expense_menu_installments -> {
                 binding.etInstallments.visibility = View.VISIBLE
+                binding.etPrice.setText("")
+                binding.etDescription.setText("")
+                binding.actvCategory.setText("")
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
