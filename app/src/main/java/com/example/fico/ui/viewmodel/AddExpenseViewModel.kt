@@ -44,7 +44,19 @@ class AddExpenseViewModel : ViewModel() {
         viewModelScope.async(Dispatchers.IO){
             val expense = Expense(price, description, category, date)
             val timeNow = LocalTime.now()
-            val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+            var hour = timeNow.hour.toString()
+            var minute = timeNow.minute.toString()
+            var second = timeNow.second.toString()
+            if(timeNow.hour < 10){
+                hour = "0${timeNow.hour}"
+            }
+            if(timeNow.minute < 10){
+                minute = "0${timeNow.minute}"
+            }
+            if(timeNow.second < 10){
+                second = "0${timeNow.second}"
+            }
+            val inputTime = "${hour}-${minute}-${second}"
             firebaseAPI.addInstallmentExpense(expense,inputTime,nOfInstallments)
     }
 
