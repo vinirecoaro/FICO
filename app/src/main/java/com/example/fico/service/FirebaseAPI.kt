@@ -2,11 +2,9 @@ package com.example.fico.service
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.model.Expense
 import com.example.fico.model.User
 import com.example.fico.service.constants.AppConstants
-import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -14,7 +12,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -344,7 +341,7 @@ class FirebaseAPI private constructor() {
     }
 
     suspend fun getExpenseList(): List<Expense> = suspendCoroutine { continuation ->
-        expense_list.addValueEventListener(object : ValueEventListener {
+        expense_list.orderByKey().addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val expenses = mutableListOf<Expense>()
                 if (snapshot.exists()) {
