@@ -19,7 +19,7 @@ class AddExpenseViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(price: String, description: String, category: String, date: String)=
         viewModelScope.async(Dispatchers.IO){
-        val expense = Expense(price, description, category, date)
+        val expense = Expense("", price, description, category, date)
         val timeNow = LocalTime.now()
         val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
         firebaseAPI.addExpense(expense, inputTime)
@@ -42,7 +42,7 @@ class AddExpenseViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addInstallmentsExpense(price: String, description: String, category: String, date: String, nOfInstallments: Int)=
         viewModelScope.async(Dispatchers.IO){
-            val expense = Expense(price, description, category, date)
+            val expense = Expense("",price, description, category, date)
             val timeNow = LocalTime.now()
             var hour = timeNow.hour.toString()
             var minute = timeNow.minute.toString()

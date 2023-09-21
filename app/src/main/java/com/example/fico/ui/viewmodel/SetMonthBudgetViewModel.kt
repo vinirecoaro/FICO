@@ -23,7 +23,7 @@ class SetMonthBudgetViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(price: String, description: String, category: String, date: String)
     = viewModelScope.async{
-        val expense = Expense(price, description, category, date)
+        val expense = Expense("",price, description, category, date)
         val timeNow = LocalTime.now()
         val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
         firebaseAPI.addExpense(expense, inputTime)

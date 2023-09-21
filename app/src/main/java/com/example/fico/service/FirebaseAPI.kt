@@ -115,7 +115,7 @@ class FirebaseAPI private constructor() {
             }
 
             val date = "$year-$newMonthFormatted-$dayFormatted"
-            val newExpense = Expense(expense.price, newDescription, expense.category, date)
+            val newExpense = Expense("",expense.price, newDescription, expense.category, date)
 
             val dateInformationPerMonth = "$year-$newMonthFormatted"
             val existDate = checkIfExistsDateOnDatabse(dateInformationPerMonth)
@@ -346,13 +346,14 @@ class FirebaseAPI private constructor() {
                 val expenses = mutableListOf<Expense>()
                 if (snapshot.exists()) {
                     for (childSnapshot in snapshot.children) {
+                        val id = childSnapshot.key.toString()
                         val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
                         val priceFormated = "R$ %.2f".format(priceDatabase).replace(".", ",")
                         val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                         val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                         val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
                         val dateFormated = "${dateDatabase.substring(8,10)}/${dateDatabase.substring(5,7)}/${dateDatabase.substring(0,4)}"
-                        val expense = Expense(priceFormated, description, category , dateFormated)
+                        val expense = Expense(id, priceFormated, description, category , dateFormated)
                         expenses.add(expense)
                     }
                 }
