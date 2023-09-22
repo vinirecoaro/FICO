@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ class ExpenseListFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModels<ExpenseListViewModel>()
     private val expenseListAdapter = ExpenseListAdapter(emptyList())
+    private var expenseMonthsList = listOf<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentExpenseListBinding.inflate(inflater,container,false)
@@ -33,7 +35,13 @@ class ExpenseListFragment : Fragment() {
             expenseListAdapter.updateExpenses(expenses)
         })
 
+        viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
+            expenseMonthsList = expenseMonths
+        })
+
+        actvConfig()
         viewModel.getExpenseList()
+        viewModel.getExpenseMonths()
 
         return rootView
     }
@@ -42,5 +50,11 @@ class ExpenseListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun actvConfig() {
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, expenseMonthsList)
+        binding.actvDate.setAdapter(adapter)
+    }
+
 
 }

@@ -366,6 +366,23 @@ class FirebaseAPI private constructor() {
         })
     }
 
+    suspend fun getExpenseMonths() : List<String> = suspendCoroutine{ continuation ->
+        information_per_month.addValueEventListener(object : ValueEventListener{
+            val expenseMonths = mutableListOf<String>()
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(month in snapshot.children){
+                    expenseMonths.add(month.key.toString())
+                }
+                continuation.resume(expenseMonths)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                continuation.resume(emptyList())
+            }
+
+        })
+    }
+
     private fun generateRandomAddress(size: Int): String {
         val caracteresPermitidos = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
         val random = Random(System.currentTimeMillis())
