@@ -26,7 +26,7 @@ class ExpenseListViewModel: ViewModel() {
 
     fun getExpenseMonths(){
         viewModelScope.async {
-            val expenseMonths = firebaseAPI.getExpenseMonths()
+            var expenseMonths = firebaseAPI.getExpenseMonths()
             _expenseMonthsLiveData.value = expenseMonths
         }
     }
