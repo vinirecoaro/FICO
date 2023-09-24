@@ -37,7 +37,7 @@ class ExpenseListFragment : Fragment() {
             actvConfig()
         })
 
-        viewModel.getExpenseList()
+        viewModel.getExpenseList(binding.actvDate.text.toString())
         viewModel.getExpenseMonths()
         setUpListeners()
 
@@ -52,6 +52,10 @@ class ExpenseListFragment : Fragment() {
     fun setUpListeners(){
         binding.actvDate.setOnClickListener {
             binding.actvDate.showDropDown()
+        }
+        binding.actvDate.setOnItemClickListener { parent, view, position, id ->
+            val selectedOption = parent.getItemAtPosition(position).toString()
+            viewModel.getExpenseList(selectedOption)
         }
     }
 

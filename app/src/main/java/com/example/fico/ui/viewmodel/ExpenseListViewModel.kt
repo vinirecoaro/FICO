@@ -16,9 +16,9 @@ class ExpenseListViewModel: ViewModel() {
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
 
-    fun getExpenseList() {
+    fun getExpenseList(filter : String) {
         viewModelScope.async{
-            val expenses = firebaseAPI.getExpenseList()
+            val expenses = firebaseAPI.getExpenseList(filter)
             val sortedExpenses = expenses.sortedByDescending { it.id }
             _expensesLiveData.value = sortedExpenses
         }
