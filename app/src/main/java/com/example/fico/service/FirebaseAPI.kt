@@ -349,25 +349,27 @@ class FirebaseAPI private constructor() {
                         for (childSnapshot in snapshot.children) {
                             val id = childSnapshot.key.toString()
                             val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
-                            val priceFormated = "R$ %.2f".format(priceDatabase).replace(".", ",")
+                            val priceFormatted = "R$ %.2f".format(priceDatabase).replace(".", ",")
                             val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                             val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                             val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
-                            val dateFormated = "${dateDatabase.substring(8,10)}/${dateDatabase.substring(5,7)}/${dateDatabase.substring(0,4)}"
-                            val expense = Expense(id, priceFormated, description, category , dateFormated)
+                            val dateFormatted = "${dateDatabase.substring(8,10)}/${dateDatabase.substring(5,7)}/${dateDatabase.substring(0,4)}"
+                            val expense = Expense(id, priceFormatted, description, category , dateFormatted)
                             expenses.add(expense)
                         }
                     } else{
                         for (childSnapshot in snapshot.children) {
                             val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
-                            val dateFormated = "${dateDatabase.substring(8,10)}/${dateDatabase.substring(5,7)}/${dateDatabase.substring(0,4)}"
-                            if(dateFormated == filter){
+                            val dateFromDatabase = "${dateDatabase.substring(0,4)}-${dateDatabase.substring(5,7)}"
+                            val dateFromFilter = formatDateForDatabase(filter)
+                            if(dateFromDatabase == dateFromFilter){
                                 val id = childSnapshot.key.toString()
                                 val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
-                                val priceFormated = "R$ %.2f".format(priceDatabase).replace(".", ",")
+                                val priceFormatted = "R$ %.2f".format(priceDatabase).replace(".", ",")
                                 val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                                 val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
-                                val expense = Expense(id, priceFormated, description, category , dateFormated)
+                                val dateFormatted = "${dateDatabase.substring(8,10)}/${dateDatabase.substring(5,7)}/${dateDatabase.substring(0,4)}"
+                                val expense = Expense(id, priceFormatted, description, category , dateFormatted)
                                 expenses.add(expense)
                             }
                         }
@@ -441,6 +443,41 @@ class FirebaseAPI private constructor() {
         }
         return formattedDate
     }
+
+    private fun formatDateForDatabase(date: String) : String{
+        var formattedDate = ""
+        val stringParts = date.split(" ")
+        val month = stringParts[0]
+        val year = stringParts[2]
+
+        if(month == "Janeiro"){
+            formattedDate = "$year-01}"
+        } else if(month == "Fevereiro"){
+            formattedDate = "$year-02"
+        }  else if(month == "Março"){
+            formattedDate = "$year-03"
+        } else if(month == "Abril"){
+            formattedDate = "$year-04"
+        } else if(month == "Maio"){
+            formattedDate = "$year-05"
+        } else if(month == "Junho"){
+            formattedDate = "$year-06"
+        } else if(month == "Julho"){
+            formattedDate = "$year-07"
+        } else if(month == "Agosto"){
+            formattedDate = "$year-08"
+        } else if(month == "Setembro"){
+            formattedDate = "$year-09"
+        } else if(month == "Outubro"){
+            formattedDate = "$year-10"
+        } else if(month == "Novembro"){
+            formattedDate = "$year-11"
+        } else if(month == "Dezembro"){
+            formattedDate = "$year-12"
+        }
+        return formattedDate
+    }
+
 
 }
 
