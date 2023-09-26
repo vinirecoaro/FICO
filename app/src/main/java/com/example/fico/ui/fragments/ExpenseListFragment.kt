@@ -57,6 +57,10 @@ class ExpenseListFragment : Fragment() {
             val selectedOption = parent.getItemAtPosition(position).toString()
             viewModel.getExpenseList(selectedOption)
         }
+        binding.ivClearFilter.setOnClickListener {
+            binding.actvDate.setText("")
+            viewModel.getExpenseList("")
+        }
     }
 
     private fun actvConfig() {

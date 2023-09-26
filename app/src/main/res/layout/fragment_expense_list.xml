@@ -19,6 +19,16 @@
         android:gravity="center"
         tools:text="Abril - 2023"/>
 
+    <ImageView
+        android:id="@+id/iv_clear_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_cancel_24"
+        app:layout_constraintStart_toEndOf="@id/actv_date"
+        app:layout_constraintTop_toTopOf="@id/actv_date"
+        app:layout_constraintBottom_toBottomOf="@id/actv_date"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_expense_list"
         android:layout_width="match_parent"
