@@ -1,9 +1,41 @@
 package com.example.fico.model
+import android.os.Parcel
+import android.os.Parcelable
 
 data class Expense(
-    internal val id: String,
-    internal val price : String,
-    internal val description : String,
-    internal var category : String,
-    internal val date : String
-)
+    val id: String,
+    val price: String,
+    val description: String,
+    val category: String,
+    val date: String
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: ""
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(price)
+        parcel.writeString(description)
+        parcel.writeString(category)
+        parcel.writeString(date)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Expense> {
+        override fun createFromParcel(parcel: Parcel): Expense {
+            return Expense(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Expense?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

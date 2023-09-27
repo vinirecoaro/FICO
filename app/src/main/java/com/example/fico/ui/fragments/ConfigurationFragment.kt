@@ -40,7 +40,7 @@ class ConfigurationFragment : Fragment(),
         _binding = null
     }
 
-    override fun onConfigurationItemClick(position: Int) {
+    override fun onListItemClick(position: Int) {
         val item = viewModel.configurationList[position]
         if(item == AppConstants.CONFIGURATION_LIST.BUDGET){
             startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
