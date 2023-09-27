@@ -11,9 +11,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.ui.adapters.ExpenseListAdapter
+import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.ExpenseListViewModel
 
-class ExpenseListFragment : Fragment() {
+class ExpenseListFragment : Fragment(){
 
     private var _binding : FragmentExpenseListBinding? = null
     private val binding get() = _binding!!
@@ -30,6 +31,12 @@ class ExpenseListFragment : Fragment() {
 
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
             expenseListAdapter.updateExpenses(expenses)
+            expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
+                override fun onListItemClick(position: Int) {
+                    val selectItem = expenses[position]
+
+                }
+            })
         })
 
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
@@ -68,5 +75,5 @@ class ExpenseListFragment : Fragment() {
         binding.actvDate.setAdapter(adapter)
     }
 
-
 }
+

@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.ui.interfaces.OnConfigurationItemClick
+import com.example.fico.ui.interfaces.OnListItemClick
 
 class BudgetConfigurationListAdapter(private var data: MutableList<String>) : RecyclerView.Adapter<BudgetConfigurationListAdapter.ViewHolder>() {
 
-    private var listener: OnConfigurationItemClick? = null
+    private var listener: OnListItemClick? = null
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val configuration: TextView = itemView.findViewById(R.id.tv_budget_configuration_list_item)
@@ -26,7 +26,7 @@ class BudgetConfigurationListAdapter(private var data: MutableList<String>) : Re
         holder.configuration.text = item
 
         holder.itemView.setOnClickListener {
-            listener?.onConfigurationItemClick(position)
+            listener?.onListItemClick(position)
         }
     }
 
@@ -34,7 +34,7 @@ class BudgetConfigurationListAdapter(private var data: MutableList<String>) : Re
         return data.size
     }
 
-    fun setOnItemClickListener(listener: OnConfigurationItemClick) {
+    fun setOnItemClickListener(listener: OnListItemClick) {
         this.listener = listener
     }
 

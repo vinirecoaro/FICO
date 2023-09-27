@@ -12,10 +12,11 @@ import com.example.fico.databinding.FragmentConfigurationBinding
 import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.BudgetConfigurationListActivity
 import com.example.fico.ui.adapters.ConfigurationListAdapter
-import com.example.fico.ui.interfaces.OnConfigurationItemClick
+import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.ConfigurationViewModel
 
-class ConfigurationFragment : Fragment(), OnConfigurationItemClick {
+class ConfigurationFragment : Fragment(),
+    OnListItemClick {
 
     private var _binding : FragmentConfigurationBinding? = null
     private val binding get() = _binding!!

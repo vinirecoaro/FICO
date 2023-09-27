@@ -7,8 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.model.Expense
+import com.example.fico.ui.interfaces.OnListItemClick
 
-class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>() {
+class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
+
+    private var listener: OnListItemClick? = null
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val description: TextView = itemView.findViewById(R.id.tv_description)
@@ -26,6 +29,10 @@ class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter
         holder.description.text = item.description
         holder.price.text = item.price
         holder.date.text = item.date
+
+        holder.itemView.setOnClickListener {
+            listener?.onListItemClick(position)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -35,6 +42,10 @@ class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter
     fun updateExpenses(newExpenses: List<Expense>){
         data = newExpenses
         notifyDataSetChanged()
+    }
+
+    fun setOnItemClickListener(listener: OnListItemClick) {
+        this.listener = listener
     }
 
 }
