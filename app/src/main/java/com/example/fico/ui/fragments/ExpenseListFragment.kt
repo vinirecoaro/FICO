@@ -1,5 +1,6 @@
 package com.example.fico.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
+import com.example.fico.ui.EditExpenseActivity
 import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.ExpenseListViewModel
@@ -78,9 +80,9 @@ class ExpenseListFragment : Fragment(){
         binding.actvDate.setAdapter(adapter)
     }
     fun editExpense(expense : Expense){
-        val bundle = Bundle()
-        bundle.putParcelable("expense", expense)
-        findNavController().navigate(R.id.navigation_add_expense, bundle)
+        val intent = Intent(requireContext(), EditExpenseActivity::class.java)
+        intent.putExtra("expense", expense)
+        startActivity(intent)
     }
 
 }
