@@ -17,7 +17,12 @@ class EditExpenseViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(expense:Expense, price: String, description: String, category: String, date: String) =
         viewModelScope.async(Dispatchers.IO){
-        val oldExpense = expense
+        val day = expense.date.substring(0, 2)
+        val month = expense.date.substring(3, 5)
+        val year = expense.date.substring(6, 10)
+        val modifiedDate = "$year-$month-$day"
+        val expencePrice = "-${expense.price.replace("R$ ","").replace(",",".")}"
+        val oldExpense = Expense(expense.id, expencePrice, expense.description,expense.category,modifiedDate)
         val newExpense = Expense(id = "", price, description, category, date)
         val timeNow = LocalTime.now()
         val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"

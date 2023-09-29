@@ -90,8 +90,7 @@ class FirebaseAPI private constructor() {
     }
 
     suspend fun deleteExpense(oldExpense : Expense) = withContext(Dispatchers.IO){
-        val removeValue = "-${oldExpense.price.replace("R$ ","").replace(",",".")}"
-        updateTotalExpense(removeValue)
+        updateTotalExpense(oldExpense.price)
         updateInformationPerMonth(oldExpense)
         val oldExpenseReference = expense_list.child(oldExpense.id)
         oldExpenseReference.removeValue()

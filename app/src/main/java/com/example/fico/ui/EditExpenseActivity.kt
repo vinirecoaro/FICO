@@ -33,7 +33,7 @@ class EditExpenseActivity : AppCompatActivity() {
         if(intent != null){
             val expense = intent.getParcelableExtra<Expense>("expense")
             if(expense != null){
-                binding.etPrice.setText(expense.price.replace("R$ ",""))
+                binding.etPrice.setText(expense.price.replace("R$ ","").replace(",","."))
                 binding.etDescription.setText(expense.description)
                 binding.actvCategory.setText(expense.category)
                 binding.etDate.setText(expense.date)
