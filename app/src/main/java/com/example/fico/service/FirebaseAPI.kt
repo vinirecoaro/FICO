@@ -82,6 +82,22 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun editExpense(oldExpense: Expense, newExpense : Expense, inputTime : String){
+        deleteExpense(oldExpense)
+        updateExpenseList(newExpense, inputTime)
+        updateTotalExpense(newExpense.price)
+        updateInformationPerMonth(newExpense)
+    }
+
+    suspend fun deleteExpense(oldExpense : Expense) = withContext(Dispatchers.IO){
+        val removeValue = "-${oldExpense.price.replace("R$ ","").replace(",",".")}"
+        updateTotalExpense(removeValue)
+        updateInformationPerMonth(oldExpense)
+        val oldExpenseReference = expense_list.child(oldExpense.id)
+        oldExpenseReference.removeValue()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) = withContext(Dispatchers.IO){
         for (i in 0 until nOfInstallments){
             val month = expense.date.substring(5,7).toInt()
