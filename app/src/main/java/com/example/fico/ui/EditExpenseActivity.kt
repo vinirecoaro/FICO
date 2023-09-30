@@ -46,7 +46,7 @@ class EditExpenseActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
         binding.btSave.setOnClickListener{
-            lifecycleScope.launch(Dispatchers.IO){
+            lifecycleScope.launch(Dispatchers.Main){
                 if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
                     val day = binding.etDate.text.toString().substring(0, 2)
                     val month = binding.etDate.text.toString().substring(3, 5)
@@ -61,6 +61,7 @@ class EditExpenseActivity : AppCompatActivity() {
                         binding.etDescription.text.toString(),
                         binding.actvCategory.text.toString(),
                         modifiedDate)
+                        finish()
                 }
             }
         }

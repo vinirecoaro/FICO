@@ -355,7 +355,8 @@ class FirebaseAPI private constructor() {
         return String.format(floatFormat, new)
     }
 
-    suspend fun getExpenseList(filter : String = ""): List<Expense> = suspendCoroutine { continuation ->
+    /*suspend fun getExpenseList(filter : String = ""): List<Expense> = suspendCoroutine { continuation ->
+        var isCompleted = false
         expense_list.orderByKey().addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val expenses = mutableListOf<Expense>()
@@ -390,16 +391,76 @@ class FirebaseAPI private constructor() {
                         }
                     }
                 }
-                continuation.resume(expenses)
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(expenses)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                continuation.resume(emptyList())
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(emptyList())
+                }
             }
         })
+    }*/
+
+    suspend fun getExpenseList(filter: String = ""): List<Expense> = withContext(Dispatchers.IO) {
+        return@withContext suspendCoroutine { continuation ->
+            var isCompleted = false
+            expense_list.orderByKey().addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val expenses = mutableListOf<Expense>()
+                    if (snapshot.exists()) {
+                        if (filter == "") {
+                            for (childSnapshot in snapshot.children) {
+                                val id = childSnapshot.key.toString()
+                                val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
+                                val priceFormatted = "R$ %.2f".format(priceDatabase).replace(".", ",")
+                                val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
+                                val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
+                                val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
+                                val dateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}"
+                                val expense = Expense(id, priceFormatted, description, category, dateFormatted)
+                                expenses.add(expense)
+                            }
+                        } else {
+                            for (childSnapshot in snapshot.children) {
+                                val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
+                                val dateFromDatabase = "${dateDatabase.substring(0, 4)}-${dateDatabase.substring(5, 7)}"
+                                val dateFromFilter = formatDateForDatabase(filter)
+                                if (dateFromDatabase == dateFromFilter) {
+                                    val id = childSnapshot.key.toString()
+                                    val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
+                                    val priceFormatted = "R$ %.2f".format(priceDatabase).replace(".", ",")
+                                    val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
+                                    val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
+                                    val dateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}"
+                                    val expense = Expense(id, priceFormatted, description, category, dateFormatted)
+                                    expenses.add(expense)
+                                }
+                            }
+                        }
+                    }
+                    if (!isCompleted) { // Verifica se já foi retomado
+                        isCompleted = true
+                        continuation.resume(expenses)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    if (!isCompleted) { // Verifica se já foi retomado
+                        isCompleted = true
+                        continuation.resume(emptyList())
+                    }
+                }
+            })
+        }
     }
 
     suspend fun getExpenseMonths() : List<String> = suspendCoroutine{ continuation ->
+        var isCompleted = false
         information_per_month.addValueEventListener(object : ValueEventListener{
             val expenseMonths = mutableListOf<String>()
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -407,11 +468,17 @@ class FirebaseAPI private constructor() {
                     val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
                     expenseMonths.add(formattedDate)
                 }
-                continuation.resume(expenseMonths)
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(expenseMonths)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                continuation.resume(emptyList())
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(emptyList())
+                }
             }
 
         })
