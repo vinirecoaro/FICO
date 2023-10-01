@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
@@ -18,6 +19,7 @@ import com.example.fico.ui.EditExpenseActivity
 import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.ExpenseListViewModel
+import kotlinx.coroutines.launch
 
 class ExpenseListFragment : Fragment(){
 
@@ -34,23 +36,6 @@ class ExpenseListFragment : Fragment(){
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
         binding.rvExpenseList.adapter = expenseListAdapter
 
-        viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
-            expenseListAdapter.updateExpenses(expenses)
-            expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
-                override fun onListItemClick(position: Int) {
-                    val selectItem = expenses[position]
-                    editExpense(selectItem)
-                }
-            })
-        })
-
-        viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
-            expenseMonthsList = expenseMonths.toTypedArray()
-            actvConfig()
-        })
-
-        viewModel.getExpenseList(binding.actvDate.text.toString())
-        viewModel.getExpenseMonths()
         setUpListeners()
 
         return rootView
@@ -73,6 +58,26 @@ class ExpenseListFragment : Fragment(){
             binding.actvDate.setText("")
             viewModel.getExpenseList("")
         }
+        lifecycleScope.launch {
+            viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
+                expenseListAdapter.updateExpenses(expenses)
+                expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
+                    override fun onListItemClick(position: Int) {
+                        val selectItem = expenses[position]
+                        editExpense(selectItem)
+                    }
+                })
+            })
+
+            viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
+                expenseMonthsList = expenseMonths.toTypedArray()
+                actvConfig()
+            })
+
+            viewModel.getExpenseList(binding.actvDate.text.toString())
+            viewModel.getExpenseMonths()
+        }
+
     }
 
     private fun actvConfig() {
@@ -83,6 +88,10 @@ class ExpenseListFragment : Fragment(){
         val intent = Intent(requireContext(), EditExpenseActivity::class.java)
         intent.putExtra("expense", expense)
         startActivity(intent)
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 
 }

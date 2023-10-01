@@ -34,6 +34,7 @@
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
             _binding = FragmentAddExpenseBinding.inflate(inflater,container,false)
             var rootView = binding.root
+
             setUpListeners()
             actvConfig()
             binding.etDate.setText(viewModel.getCurrentlyDate())
@@ -46,7 +47,6 @@
             super.onCreate(savedInstanceState)
             setHasOptionsMenu(true)
         }
-
 
         override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
             inflater.inflate(R.menu.add_expense_menu, menu)
