@@ -376,16 +376,16 @@ class FirebaseAPI private constructor() {
                             }
                         } else {
                             for (childSnapshot in snapshot.children) {
-                                val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString() ?: ""
-                                val dateFromDatabase = "${dateDatabase.substring(0, 4)}-${dateDatabase.substring(5, 7)}" ?: ""
-                                val dateFromFilter = formatDateForDatabase(filter) ?: ""
+                                val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
+                                val dateFromDatabase = "${dateDatabase.substring(0, 4)}-${dateDatabase.substring(5, 7)}"
+                                val dateFromFilter = formatDateForDatabase(filter)
                                 if (dateFromDatabase == dateFromFilter) {
-                                    val id = childSnapshot.key.toString() ?: ""
-                                    val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat() ?: ""
-                                    val priceFormatted = "R$ %.2f".format(priceDatabase).replace(".", ",") ?: ""
-                                    val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString() ?: ""
-                                    val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString() ?: ""
-                                    val dateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}" ?: ""
+                                    val id = childSnapshot.key.toString()
+                                    val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
+                                    val priceFormatted = "R$ %.2f".format(priceDatabase).replace(".", ",")
+                                    val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
+                                    val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
+                                    val dateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}"
                                     val expense = Expense(id, priceFormatted, description, category, dateFormatted)
                                     expenses.add(expense)
                                 }
@@ -482,7 +482,7 @@ class FirebaseAPI private constructor() {
         val year = stringParts[2]
 
         if(month == "Janeiro"){
-            formattedDate = "$year-01}"
+            formattedDate = "$year-01"
         } else if(month == "Fevereiro"){
             formattedDate = "$year-02"
         }  else if(month == "Março"){

@@ -90,9 +90,5 @@ class ExpenseListFragment : Fragment(){
         startActivity(intent)
     }
 
-    override fun onPause() {
-        super.onPause()
-    }
-
 }
 
