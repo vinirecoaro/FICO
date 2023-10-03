@@ -18,6 +18,8 @@
     import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
     import com.example.fico.ui.viewmodel.AddExpenseViewModel
     import com.google.android.material.snackbar.Snackbar
+    import kotlinx.coroutines.CompletableDeferred
+    import kotlinx.coroutines.Deferred
     import kotlinx.coroutines.Dispatchers
     import kotlinx.coroutines.launch
     import java.text.DecimalFormat
@@ -142,7 +144,19 @@
                                 binding.actvCategory.setText("")
                                 binding.etInstallments.setText("")
                             } else {
-                                setUpDefaultBudgetAlertDialog()
+                                if(setUpDefaultBudgetAlertDialog().await()){
+                                    viewModel.addInstallmentsExpense(
+                                        formatedNum.toString(),
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        modifiedDate,
+                                        binding.etInstallments.text.toString().toInt()
+                                    )
+                                    binding.etPrice.setText("")
+                                    binding.etDescription.setText("")
+                                    binding.actvCategory.setText("")
+                                    binding.etInstallments.setText("")
+                                }
                             }
                         }
                     }
@@ -215,8 +229,8 @@
             binding.btSave.performClick()
         }
 
-        private fun setUpDefaultBudgetAlertDialog() {
-
+        private fun setUpDefaultBudgetAlertDialog() : CompletableDeferred<Boolean> {
+            val result = CompletableDeferred<Boolean>()
             val builder = AlertDialog.Builder(requireContext())
 
             builder.setTitle("Definir o budget padrão")
@@ -233,12 +247,14 @@
                             if (rootView != null) {
                                 val snackbar = Snackbar.make(rootView, "Default Budget definido com sucesso", Snackbar.LENGTH_LONG)
                                 snackbar.show()
+                                result.complete(true)
                             }
                         }else{
                             val rootView: View? = activity?.findViewById(android.R.id.content)
                             if (rootView != null) {
                                 val snackbar = Snackbar.make(rootView, "Falha ao definir o Default Budget", Snackbar.LENGTH_LONG)
                                 snackbar.show()
+                                result.complete(false)
                             }
                         }
                     }
@@ -251,7 +267,7 @@
 
             val alertDialog = builder.create()
             alertDialog.show()
-
+         return result
         }
 
     override fun onDestroyView() {
