@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
 import kotlinx.coroutines.*
+import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -67,6 +68,13 @@ class AddExpenseViewModel : ViewModel() {
         }
     }
 
+    suspend fun setDefaultBudget(budget: String) : Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO) {
+            val formatNum = DecimalFormat("#.##")
+            val formattedBudget = formatNum.format(budget.toFloat()).toString()
+            firebaseAPI.setDefaultBudget(formattedBudget)
+        }
+    }
 
 
 }

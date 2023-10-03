@@ -1,5 +1,6 @@
     package com.example.fico.ui.fragments
 
+    import android.app.AlertDialog
     import android.os.Build
     import android.os.Bundle
     import android.text.InputType
@@ -13,7 +14,6 @@
     import androidx.lifecycle.lifecycleScope
     import com.example.fico.R
     import com.example.fico.databinding.FragmentAddExpenseBinding
-    import com.example.fico.service.constants.AppConstants
     import com.example.fico.ui.interfaces.OnButtonClickListener
     import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
     import com.example.fico.ui.viewmodel.AddExpenseViewModel
@@ -142,7 +142,7 @@
                                 binding.actvCategory.setText("")
                                 binding.etInstallments.setText("")
                             } else {
-
+                                setUpDefaultBudgetAlertDialog()
                             }
                         }
                     }
@@ -215,7 +215,46 @@
             binding.btSave.performClick()
         }
 
-        override fun onDestroyView() {
+        private fun setUpDefaultBudgetAlertDialog() {
+
+            val builder = AlertDialog.Builder(requireContext())
+
+            builder.setTitle("Definir o budget padrão")
+
+            val defaultBudget = EditText(requireContext())
+            defaultBudget.hint = "Budget Padrão"
+            builder.setView(defaultBudget)
+
+            builder.setPositiveButton("Salvar") { dialog, which ->
+                lifecycleScope.launch {
+                    if(defaultBudget.text.toString() != ""){
+                        if(viewModel.setDefaultBudget(defaultBudget.text.toString()).await()){
+                            val rootView: View? = activity?.findViewById(android.R.id.content)
+                            if (rootView != null) {
+                                val snackbar = Snackbar.make(rootView, "Default Budget definido com sucesso", Snackbar.LENGTH_LONG)
+                                snackbar.show()
+                            }
+                        }else{
+                            val rootView: View? = activity?.findViewById(android.R.id.content)
+                            if (rootView != null) {
+                                val snackbar = Snackbar.make(rootView, "Falha ao definir o Default Budget", Snackbar.LENGTH_LONG)
+                                snackbar.show()
+                            }
+                        }
+                    }
+                }
+            }
+
+            builder.setNegativeButton("Cancelar") { dialog, which ->
+
+            }
+
+            val alertDialog = builder.create()
+            alertDialog.show()
+
+        }
+
+    override fun onDestroyView() {
             super.onDestroyView()
             _binding = null
         }
