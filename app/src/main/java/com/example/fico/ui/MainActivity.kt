@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.databinding.FragmentAddExpenseBinding
+import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.fragments.AddExpenseFragment
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -40,5 +41,7 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
     override fun onSaveButtonFragmentClick() {
         bindingAdd.btSave.performClick()
     }
+
+
 
 }

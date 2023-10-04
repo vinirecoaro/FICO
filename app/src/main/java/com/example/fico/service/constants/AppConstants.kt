@@ -27,5 +27,4 @@ class AppConstants private constructor() {
         }
     }
 
-
 }

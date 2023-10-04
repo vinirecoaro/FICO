@@ -1,5 +1,6 @@
 package com.example.fico.ui
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,9 +12,11 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
+import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
@@ -60,7 +63,9 @@ class EditExpenseActivity : AppCompatActivity() {
                         binding.etDescription.text.toString(),
                         binding.actvCategory.text.toString(),
                         modifiedDate)
-                        finish()
+                    //delay necessary to return to Expense list with value updated
+                    delay(250)
+                    finish()
                 }
             }
         }
