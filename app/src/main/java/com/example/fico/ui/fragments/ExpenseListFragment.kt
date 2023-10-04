@@ -10,9 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.fico.R
 import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
 import com.example.fico.ui.EditExpenseActivity
@@ -88,6 +86,12 @@ class ExpenseListFragment : Fragment(){
         val intent = Intent(requireContext(), EditExpenseActivity::class.java)
         intent.putExtra("expense", expense)
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+            viewModel.getExpenseList(binding.actvDate.text.toString())
+            viewModel.getExpenseMonths()
     }
 
 }

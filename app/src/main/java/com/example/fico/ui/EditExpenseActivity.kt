@@ -9,7 +9,6 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
-import com.example.fico.R
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
