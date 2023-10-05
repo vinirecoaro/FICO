@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
 class ExpenseListViewModel: ViewModel() {
@@ -28,6 +29,12 @@ class ExpenseListViewModel: ViewModel() {
         viewModelScope.async {
             var expenseMonths = firebaseAPI.getExpenseMonths()
             _expenseMonthsLiveData.value = expenseMonths
+        }
+    }
+
+    fun deleteExpense(expense : Expense){
+        viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.deleteExpense(expense)
         }
     }
 
