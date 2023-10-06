@@ -1,5 +1,6 @@
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fico.model.Expense
 import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.viewmodel.ExpenseListViewModel
 
@@ -17,7 +18,12 @@ class SwipeToDeleteCallback(private val viewModel: ExpenseListViewModel, private
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val position = viewHolder.adapterPosition
         val deleteItem = adapter.getDataAtPosition(position)
-        viewModel.deleteExpense(deleteItem)
-        adapter.removeItem(position)
+        val day = deleteItem.date.substring(0, 2)
+        val month = deleteItem.date.substring(3, 5)
+        val year = deleteItem.date.substring(6, 10)
+        val modifiedDate = "$year-$month-$day"
+        val expencePrice = "-${deleteItem.price.replace("R$ ","").replace(",",".")}"
+        val deleteItemFormatted = Expense(deleteItem.id, expencePrice, deleteItem.description,deleteItem.category,modifiedDate)
+        viewModel.deleteExpense(deleteItemFormatted)
     }
 }

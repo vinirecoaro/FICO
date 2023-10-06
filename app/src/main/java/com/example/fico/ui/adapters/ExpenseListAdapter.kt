@@ -48,11 +48,6 @@ class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter
         this.listener = listener
     }
 
-    fun removeItem(position: Int) {
-        //data.removeAt(position)
-        notifyItemRemoved(position)
-    }
-
     fun getDataAtPosition(position: Int): Expense {
         return data[position]
     }
