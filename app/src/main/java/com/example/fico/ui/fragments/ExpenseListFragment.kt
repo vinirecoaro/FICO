@@ -36,7 +36,7 @@ class ExpenseListFragment : Fragment(){
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
         binding.rvExpenseList.adapter = expenseListAdapter
 
-        val swipeToDeleteCallback = SwipeToDeleteCallback(viewModel, expenseListAdapter)
+        val swipeToDeleteCallback = SwipeToDeleteCallback(binding.rvExpenseList,viewModel, expenseListAdapter)
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 

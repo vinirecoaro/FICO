@@ -1,5 +1,7 @@
 package com.example.fico.ui.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +10,7 @@ import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.time.LocalTime
 
 class ExpenseListViewModel: ViewModel() {
 
@@ -37,5 +40,11 @@ class ExpenseListViewModel: ViewModel() {
             firebaseAPI.deleteExpense(expense)
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun undoDeleteExpense(expense: Expense)=
+        viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.addExpense(expense, inputTime = "")
+        }
 
 }

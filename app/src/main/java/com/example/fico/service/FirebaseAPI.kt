@@ -248,16 +248,30 @@ class FirebaseAPI private constructor() {
     private suspend fun updateExpenseList(expense: Expense, inputTime : String) = withContext(Dispatchers.IO){
         var control = false;
         while (!control){
-            val expenseId = generateRandomAddress(5)
-            val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
-            val exists = checkIfExistsOnDatabse(reference)
-            if(!exists){
-                reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
-                reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
-                reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
-                reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
-                control = true
+            if(expense.id == ""){
+                val expenseId = generateRandomAddress(5)
+                val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
+                val exists = checkIfExistsOnDatabse(reference)
+                if(!exists){
+                    reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                    reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
+                    reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
+                    reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
+                    control = true
+                }
+            }else{
+                val reference = expense_list.child(expense.id)
+                val exists = checkIfExistsOnDatabse(reference)
+                if(!exists){
+                    reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                    reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
+                    reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
+                    reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
+                    control = true
+                }
             }
+
+
         }
 
     }
