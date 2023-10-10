@@ -91,11 +91,12 @@
                             val checkDate = "$year-$month"
 
                             val formatNum = DecimalFormat("#.##")
-                            val formatedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+                            val formatedNum = formatNum.format(binding.etPrice.text.toString().replace(",",".").toFloat())
+                            val formattedNumString = formatedNum.toString().replace(",",".")
                             val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
                             if (existsDate) {
                                 viewModel.addExpense(
-                                    formatedNum.toString(),
+                                    formattedNumString,
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
                                     modifiedDate
@@ -108,7 +109,7 @@
                                 binding.dpDateExpense.visibility = View.GONE
                                 binding.fragSetBudget.visibility = View.VISIBLE
                                 val setMonthBudget = SetMonthBudget.newInstance(
-                                    formatedNum.toString(),
+                                    formattedNumString,
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
                                     modifiedDate
@@ -129,11 +130,12 @@
 
                             val formatNum = DecimalFormat("#.##")
                             val formatedNum = formatNum.format(
-                                binding.etPrice.text.toString().toFloat()/binding.etInstallments.text.toString().toInt())
+                                binding.etPrice.text.toString().replace(",",".").toFloat()/binding.etInstallments.text.toString().toInt())
+                            val formattedNumString = formatedNum.toString().replace(",",".")
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {
                                 viewModel.addInstallmentsExpense(
-                                    formatedNum.toString(),
+                                    formattedNumString,
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
                                     modifiedDate,
@@ -146,7 +148,7 @@
                             } else {
                                 if(setUpDefaultBudgetAlertDialog().await()){
                                     viewModel.addInstallmentsExpense(
-                                        formatedNum.toString(),
+                                        formattedNumString,
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
                                         modifiedDate,

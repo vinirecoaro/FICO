@@ -43,7 +43,7 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
                 modifiedDate
             )
 
-            //Delete Item
+            //Delete Item and update expense list
             viewModel.deleteExpense(deleteItemFormatted)
 
             //Show snackbar to undo the action

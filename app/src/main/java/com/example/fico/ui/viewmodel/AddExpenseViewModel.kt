@@ -71,7 +71,7 @@ class AddExpenseViewModel : ViewModel() {
     suspend fun setDefaultBudget(budget: String) : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO) {
             val formatNum = DecimalFormat("#.##")
-            val formattedBudget = formatNum.format(budget.toFloat()).toString()
+            val formattedBudget = formatNum.format(budget.toFloat()).toString().replace(",",".")
             firebaseAPI.setDefaultBudget(formattedBudget)
         }
     }
