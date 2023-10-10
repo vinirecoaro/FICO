@@ -93,6 +93,7 @@
                             val formatNum = DecimalFormat("#.##")
                             val formatedNum = formatNum.format(binding.etPrice.text.toString().replace(",",".").toFloat())
                             val formattedNumString = formatedNum.toString().replace(",",".")
+
                             val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
                             if (existsDate) {
                                 viewModel.addExpense(

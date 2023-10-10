@@ -358,7 +358,7 @@ class FirebaseAPI private constructor() {
         val add = expense.price.toFloat()
         val new = current + add
         val floatFormat = "%.${2}f"
-        return String.format(floatFormat, new)
+        return String.format(floatFormat, new).replace(",",".")
     }
 
     fun subOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
@@ -366,7 +366,7 @@ class FirebaseAPI private constructor() {
         val sub = expense.price.toFloat()
         val new = current - sub
         val floatFormat = "%.${2}f"
-        return String.format(floatFormat, new)
+        return String.format(floatFormat, new).replace(",",".")
     }
 
     suspend fun getExpenseList(filter: String = ""): List<Expense> = withContext(Dispatchers.IO) {
