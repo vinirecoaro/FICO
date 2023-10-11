@@ -71,6 +71,7 @@ class ExpenseListFragment : Fragment(){
                         editExpense(selectItem)
                     }
                 })
+                viewModel.getExpenseList(binding.actvDate.text.toString())
             })
 
             viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
