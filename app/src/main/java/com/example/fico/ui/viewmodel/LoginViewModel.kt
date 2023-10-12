@@ -7,11 +7,8 @@ import com.example.fico.service.FirebaseAPI
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class LoginViewModel : ViewModel() {
 
@@ -20,17 +17,13 @@ class LoginViewModel : ViewModel() {
     suspend fun login(email: String, password: String)=
         viewModelScope.async(Dispatchers.IO){
             val user = User(email, password)
-            val currentUser = firebaseAPI.currentUser()
+            var successLogin = CompletableDeferred<Boolean>()
             firebaseAPI.login(user)
                 .addOnCompleteListener{ task ->
                     if (task.isSuccessful) {
-                        if(currentUser?.isEmailVerified == true){
-                            onUserLogged()
-                        }else{
-                            onUserNotVerified()
-                        }
-
+                        successLogin.complete(true)
                     } else {
+                        successLogin.complete(false)
                         val message = when (task.exception) {
                             is FirebaseAuthInvalidCredentialsException -> "E-mail ou senha inválidos."
                             else -> "Ocorreu um erro ao realizar o login. Tente novamente mais tarde."
@@ -39,7 +32,14 @@ class LoginViewModel : ViewModel() {
                     }
                 }
 
-
+            if(successLogin.await()){
+                val currentUser = firebaseAPI.currentUser()
+                if(currentUser?.isEmailVerified == true){
+                    onUserLogged()
+                }else{
+                    onUserNotVerified()
+                }
+            }
     }
 
     suspend fun isLogged() {
