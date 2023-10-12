@@ -45,6 +45,7 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
 
             //Delete Item and update expense list
             viewModel.deleteExpense(deleteItemFormatted)
+            viewModel.getExpenseList("")
 
             //Show snackbar to undo the action
             val snackbar = Snackbar.make(recyclerView, "Item excluido", Snackbar.LENGTH_LONG)
@@ -58,6 +59,7 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
                     modifiedDate
                 )
                 viewModel.undoDeleteExpense(expense)
+                viewModel.getExpenseList("")
                 adapter.updateExpenses(viewModel.expensesLiveData.value ?: emptyList())
             }.show()
     }

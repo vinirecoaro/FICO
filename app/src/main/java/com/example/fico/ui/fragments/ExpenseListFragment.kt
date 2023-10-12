@@ -19,7 +19,8 @@ import com.example.fico.ui.EditExpenseActivity
 import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.ExpenseListViewModel
-import kotlinx.coroutines.launch
+ import kotlinx.coroutines.delay
+ import kotlinx.coroutines.launch
 
 class ExpenseListFragment : Fragment(){
 
@@ -71,7 +72,6 @@ class ExpenseListFragment : Fragment(){
                         editExpense(selectItem)
                     }
                 })
-                viewModel.getExpenseList(binding.actvDate.text.toString())
             })
 
             viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
