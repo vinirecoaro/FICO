@@ -32,11 +32,18 @@ class FirebaseAPI private constructor() {
         private val auth: FirebaseAuth by lazy { HOLDER.mAuth }
         private val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
         private val rootRef = database.getReference(AppConstants.DATABASE.USERS)
-        private val total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
-        private val information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
-        private val expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
-        private val default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
+        private var total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
+        private var information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
+        private var expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
+        private var default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
 
+    }
+
+    fun updateReferences(){
+        total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
+        information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
+        expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
+        default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
     }
 
     suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO){
@@ -294,7 +301,8 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getAvailableNow(date: String) : String = withContext(Dispatchers.IO) {
         val availableNow = CompletableDeferred<String>()
-        information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
+        val reference = information_per_month
+        reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
                     val availableValue = snapshot.child(AppConstants.DATABASE.AVAILABLE_NOW).getValue(String::class.java)?.toFloat()
@@ -332,8 +340,8 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getMonthExpense(date: String): String = withContext(Dispatchers.IO) {
         val deferredExpense = CompletableDeferred<String>()
-
-        information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
+        val reference = information_per_month
+        reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val monthExpenseValue = snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java)

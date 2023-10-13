@@ -21,6 +21,7 @@ class LoginViewModel : ViewModel() {
             firebaseAPI.login(user)
                 .addOnCompleteListener{ task ->
                     if (task.isSuccessful) {
+                        firebaseAPI.updateReferences()
                         successLogin.complete(true)
                     } else {
                         successLogin.complete(false)
@@ -61,7 +62,6 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
-
 
     var onUserLogged: () -> Unit = {}
     var onUserNotVerified : () -> Unit = {}

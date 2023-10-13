@@ -9,6 +9,7 @@ import com.example.fico.R
 import com.example.fico.databinding.ActivityLoginBinding
 import com.example.fico.ui.viewmodel.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
