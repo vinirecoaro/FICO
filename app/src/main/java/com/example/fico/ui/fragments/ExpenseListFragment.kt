@@ -65,6 +65,8 @@ class ExpenseListFragment : Fragment(){
         }
         lifecycleScope.launch {
             viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
+                viewModel.getExpenseList(binding.actvDate.text.toString())
+                viewModel.getExpenseMonths()
                 expenseListAdapter.updateExpenses(expenses)
                 expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
                     override fun onListItemClick(position: Int) {

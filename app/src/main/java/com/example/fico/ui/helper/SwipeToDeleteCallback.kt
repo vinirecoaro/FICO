@@ -58,7 +58,6 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
                     modifiedDate
                 )
                 viewModel.undoDeleteExpense(expense)
-                adapter.updateExpenses(viewModel.expensesLiveData.value ?: emptyList())
             }.show()
     }
 }
