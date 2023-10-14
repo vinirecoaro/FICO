@@ -438,7 +438,7 @@ class FirebaseAPI private constructor() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(month in snapshot.children){
                     val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
-                    if(month.child(AppConstants.DATABASE.BUDGET).value.toString().split(".")[0] != month.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString().split(".")[0]){
+                    if(month.child(AppConstants.DATABASE.BUDGET).value!= month.child(AppConstants.DATABASE.AVAILABLE_NOW).value){
                         expenseMonths.add(formattedDate)
                     }
                 }

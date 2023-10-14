@@ -56,10 +56,11 @@ class EditExpenseActivity : AppCompatActivity() {
                     val modifiedDate = "$year-$month-$day"
                     val formatNum = DecimalFormat("#.##")
                     val formattedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+                    val formattedNumString = formattedNum.toString().replace(",",".")
                     val expense = intent.getParcelableExtra<Expense>("expense")
                     viewModel.saveEditExpense(
                         expense!!,
-                        formattedNum.toString(),
+                        formattedNumString,
                         binding.etDescription.text.toString(),
                         binding.actvCategory.text.toString(),
                         modifiedDate)
