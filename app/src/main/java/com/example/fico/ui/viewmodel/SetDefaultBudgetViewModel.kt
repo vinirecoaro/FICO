@@ -16,9 +16,9 @@ class SetDefaultBudgetViewModel : ViewModel() {
 
     suspend fun setDefaultBudget(budget: String) : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO) {
-            val formatNum = DecimalFormat("#.##")
-            val formattedBudget = formatNum.format(budget.toFloat()).toString()
-            firebaseAPI.setDefaultBudget(formattedBudget)
+            val value = budget.toFloat()
+            val formattedBudget = "%.2f".format(value)
+                firebaseAPI.setDefaultBudget(formattedBudget)
         }
     }
 

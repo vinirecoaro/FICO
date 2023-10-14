@@ -147,7 +147,8 @@ class FirebaseAPI private constructor() {
                 updateTotalExpense(newExpense.price)
                 updateInformationPerMonth(newExpense)
             }else{
-                setUpBudget(getDefaultBudget(false),dateInformationPerMonth)
+                val defaultBudget = getDefaultBudget(false)
+                setUpBudget(defaultBudget,dateInformationPerMonth)
                 updateExpenseList(newExpense, inputTime)
                 updateTotalExpense(newExpense.price)
                 updateInformationPerMonth(newExpense)
@@ -182,7 +183,7 @@ class FirebaseAPI private constructor() {
                 if(formatted){
                     defaultBudget.complete("R$%.2f".format(value).replace(".", ","))
                 }else{
-                    defaultBudget.complete(value.toString())
+                    defaultBudget.complete("%.2f".format(value))
                 }
 
 
@@ -437,7 +438,9 @@ class FirebaseAPI private constructor() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(month in snapshot.children){
                     val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
-                    expenseMonths.add(formattedDate)
+                    if(month.child(AppConstants.DATABASE.BUDGET).value.toString().split(".")[0] != month.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString().split(".")[0]){
+                        expenseMonths.add(formattedDate)
+                    }
                 }
                 if (!isCompleted) { // Verifica se já foi retomado
                     isCompleted = true
