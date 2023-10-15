@@ -33,6 +33,8 @@ class BudgetConfigurationListActivity : AppCompatActivity(),
         val item = viewModel.budgetConfigurationList[position]
         if(item == AppConstants.CONFIGURATION_LIST.BUDGET_LIST.DEFAULT_BUDGET){
             startActivity(Intent(this, SetDefaultBudgetActivity::class.java))
+        }else if(item == AppConstants.CONFIGURATION_LIST.BUDGET_LIST.BUDGET_PER_MONTH){
+            startActivity(Intent(this,BudgetPerMonthActivity::class.java))
         }
     }
 }

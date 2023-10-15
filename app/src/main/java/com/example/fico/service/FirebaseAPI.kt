@@ -2,6 +2,7 @@ package com.example.fico.service
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.fico.model.Budget
 import com.example.fico.model.Expense
 import com.example.fico.model.User
 import com.example.fico.service.constants.AppConstants
@@ -445,6 +446,34 @@ class FirebaseAPI private constructor() {
                 if (!isCompleted) { // Verifica se já foi retomado
                     isCompleted = true
                     continuation.resume(expenseMonths)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(emptyList())
+                }
+            }
+
+        })
+    }
+
+    suspend fun getBudgetPerMonth() : List<Budget> = suspendCoroutine{ continuation ->
+        var isCompleted = false
+        information_per_month.addValueEventListener(object : ValueEventListener{
+            val budgetPerMonth = mutableListOf<Budget>()
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(month in snapshot.children){
+                    val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
+                    val budget = month.child(AppConstants.DATABASE.BUDGET).value.toString().toFloat()
+                    val formattedBudget = "R$ %.2f".format(budget).replace(".", ",")
+                    val budgetItem = Budget(formattedBudget,formattedDate)
+                    budgetPerMonth.add(budgetItem)
+                }
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(budgetPerMonth)
                 }
             }
 
