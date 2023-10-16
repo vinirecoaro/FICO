@@ -3,7 +3,6 @@ package com.example.fico.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +13,7 @@ import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.viewmodel.BudgetPerMonthViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class BudgetPerMonthActivity : AppCompatActivity() {
 
@@ -33,13 +33,14 @@ class BudgetPerMonthActivity : AppCompatActivity() {
     }
 
     private fun setUpListeners(){
-        lifecycleScope.async(Dispatchers.Main){
+        lifecycleScope.launch {
+            viewModel.getBudgetPerMonth()
 
             viewModel.budgetPerMonthList.observe(this@BudgetPerMonthActivity, Observer {budgetList ->
                 budgetPerMonthListAdapter.updateList(budgetList)
+                budgetPerMonthListAdapter.notifyDataSetChanged()
             })
-
-            viewModel.getBudgetPerMonth()
         }
     }
+
 }

@@ -8,7 +8,7 @@
     >
 
     <TextView
-        android:id="@+id/tv_date"
+        android:id="@+id/tv_budget_per_month_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/tv_budget"
-        app:layout_constraintStart_toEndOf="@id/tv_date"
+        app:layout_constraintStart_toEndOf="@id/tv_budget_per_month_date"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:paddingStart="50dp"

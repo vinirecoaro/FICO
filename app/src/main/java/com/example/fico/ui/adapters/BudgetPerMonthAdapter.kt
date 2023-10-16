@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.model.Budget
 import com.example.fico.ui.interfaces.OnListItemClick
+import kotlinx.coroutines.Deferred
 
 class BudgetPerMonthAdapter(private var data : List<Budget>) : RecyclerView.Adapter<BudgetPerMonthAdapter.ViewHolder>(){
 
@@ -15,7 +16,7 @@ class BudgetPerMonthAdapter(private var data : List<Budget>) : RecyclerView.Adap
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val budget : TextView = itemView.findViewById(R.id.tv_budget)
-        val date : TextView = itemView.findViewById(R.id.tv_date)
+        val date : TextView = itemView.findViewById(R.id.tv_budget_per_month_date)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,7 +38,7 @@ class BudgetPerMonthAdapter(private var data : List<Budget>) : RecyclerView.Adap
         }
     }
 
-    fun updateList(newInputs : List<Budget>){
+    fun updateList(newInputs: List<Budget>){
         data = newInputs
     }
 
