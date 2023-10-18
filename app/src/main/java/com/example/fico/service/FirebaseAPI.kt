@@ -164,6 +164,7 @@ class FirebaseAPI private constructor() {
         information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).setValue("0.00")
     }
 
+
     suspend fun setDefaultBudget(budget: String) : Boolean = withContext(Dispatchers.IO){
         val result = CompletableDeferred<Boolean>()
         try {
@@ -174,6 +175,78 @@ class FirebaseAPI private constructor() {
         }
         return@withContext result.await()
     }
+
+    suspend fun getBudgetPerMonth() : List<Budget> = suspendCoroutine{ continuation ->
+        var isCompleted = false
+        information_per_month.addValueEventListener(object : ValueEventListener{
+            val budgetPerMonth = mutableListOf<Budget>()
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(month in snapshot.children){
+                    val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
+                    val budget = month.child(AppConstants.DATABASE.BUDGET).value.toString().toFloat()
+                    val formattedBudget = "R$ %.2f".format(budget).replace(".", ",")
+                    val budgetItem = Budget(formattedBudget,formattedDate)
+                    budgetPerMonth.add(budgetItem)
+                }
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(budgetPerMonth)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(emptyList())
+                }
+            }
+
+        })
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun editBudget(newBudget: String, budget: Budget) : Boolean = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Boolean>()
+        try {
+            val formattedDate = formatDateForDatabase(budget.date)
+            val oldBudget = getMonthBudget(formattedDate).toFloat()
+            val correction = newBudget.toFloat() - oldBudget
+            val newBudgetFormatted = "%.2f".format(newBudget.toFloat())
+            information_per_month.child(formattedDate).child(AppConstants.DATABASE.BUDGET).setValue(newBudgetFormatted)
+            val currentAvailable = getAvailableNow(formattedDate)
+            val currentAvalableFormatted = currentAvailable.replace("R$","").replace(",",".").toFloat()
+            val newAvailable = currentAvalableFormatted + correction
+            val newAvailableFormatted = "%.2f".format(newAvailable)
+            information_per_month.child(formattedDate).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(newAvailableFormatted)
+            result.complete(true)
+        }catch (e:Exception){
+            result.complete(false)
+        }
+        return@withContext result.await()
+    }
+
+    suspend fun getMonthBudget(date : String) : String = suspendCoroutine{ continuation ->
+        var isCompleted = false
+        information_per_month.child(date).child(AppConstants.DATABASE.BUDGET).addValueEventListener(object : ValueEventListener{
+            var budget : String = ""
+            override fun onDataChange(snapshot: DataSnapshot) {
+                budget = snapshot.value.toString()
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume(budget)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (!isCompleted) { // Verifica se já foi retomado
+                    isCompleted = true
+                    continuation.resume("")
+                }
+            }
+
+        })
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getDefaultBudget(formatted : Boolean = true) : String = withContext(Dispatchers.IO){
@@ -446,34 +519,6 @@ class FirebaseAPI private constructor() {
                 if (!isCompleted) { // Verifica se já foi retomado
                     isCompleted = true
                     continuation.resume(expenseMonths)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                if (!isCompleted) { // Verifica se já foi retomado
-                    isCompleted = true
-                    continuation.resume(emptyList())
-                }
-            }
-
-        })
-    }
-
-    suspend fun getBudgetPerMonth() : List<Budget> = suspendCoroutine{ continuation ->
-        var isCompleted = false
-        information_per_month.addValueEventListener(object : ValueEventListener{
-            val budgetPerMonth = mutableListOf<Budget>()
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for(month in snapshot.children){
-                    val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
-                    val budget = month.child(AppConstants.DATABASE.BUDGET).value.toString().toFloat()
-                    val formattedBudget = "R$ %.2f".format(budget).replace(".", ",")
-                    val budgetItem = Budget(formattedBudget,formattedDate)
-                    budgetPerMonth.add(budgetItem)
-                }
-                if (!isCompleted) { // Verifica se já foi retomado
-                    isCompleted = true
-                    continuation.resume(budgetPerMonth)
                 }
             }
 

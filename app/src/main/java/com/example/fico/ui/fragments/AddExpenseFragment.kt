@@ -240,6 +240,7 @@
 
             val defaultBudget = EditText(requireContext())
             defaultBudget.hint = "Budget Padrão"
+            defaultBudget.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
             builder.setView(defaultBudget)
 
             builder.setPositiveButton("Salvar") { dialog, which ->
@@ -248,14 +249,14 @@
                         if(viewModel.setDefaultBudget(defaultBudget.text.toString()).await()){
                             val rootView: View? = activity?.findViewById(android.R.id.content)
                             if (rootView != null) {
-                                val snackbar = Snackbar.make(rootView, "Default Budget definido com sucesso", Snackbar.LENGTH_LONG)
+                                val snackbar = Snackbar.make(rootView, "Budget editado com sucesso", Snackbar.LENGTH_LONG)
                                 snackbar.show()
                                 result.complete(true)
                             }
                         }else{
                             val rootView: View? = activity?.findViewById(android.R.id.content)
                             if (rootView != null) {
-                                val snackbar = Snackbar.make(rootView, "Falha ao definir o Default Budget", Snackbar.LENGTH_LONG)
+                                val snackbar = Snackbar.make(rootView, "Falha ao editar o Default", Snackbar.LENGTH_LONG)
                                 snackbar.show()
                                 result.complete(false)
                             }
