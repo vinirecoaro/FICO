@@ -182,10 +182,10 @@ class FirebaseAPI private constructor() {
             val budgetPerMonth = mutableListOf<Budget>()
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(month in snapshot.children){
-                    val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
+                    val date = month.key.toString()
                     val budget = month.child(AppConstants.DATABASE.BUDGET).value.toString().toFloat()
                     val formattedBudget = "R$ %.2f".format(budget).replace(".", ",")
-                    val budgetItem = Budget(formattedBudget,formattedDate)
+                    val budgetItem = Budget(formattedBudget,date)
                     budgetPerMonth.add(budgetItem)
                 }
                 if (!isCompleted) { // Verifica se já foi retomado
@@ -545,7 +545,7 @@ class FirebaseAPI private constructor() {
         return sequenciaAleatoria.toString()
     }
 
-    private fun formatDateForFilterOnExpenseList(date: String) : String{
+    fun formatDateForFilterOnExpenseList(date: String) : String{
         var formattedDate = ""
         val month = date.substring(5,7)
         if(month == "01"){

@@ -20,8 +20,16 @@ class BudgetPerMonthViewModel : ViewModel() {
     val budgetPerMonthList : LiveData<List<Budget>> = _budgetPerMonthList
 
    fun getBudgetPerMonth() = viewModelScope.async {
-            val budgetList = firebaseAPI.getBudgetPerMonth()
-            _budgetPerMonthList.value = budgetList
+       val budgetList = firebaseAPI.getBudgetPerMonth()
+       val sortedBudgetList = budgetList.sortedByDescending { it.date }
+       val budgetListFormatted  = mutableListOf<Budget>()
+       for(budget in sortedBudgetList){
+           val budgetDate = firebaseAPI.formatDateForFilterOnExpenseList(budget.date)
+           val budgetValue = budget.budget
+           val budgetItem = Budget(budgetValue,budgetDate)
+           budgetListFormatted.add(budgetItem)
+        }
+           _budgetPerMonthList.value = budgetListFormatted
         }
 
     @RequiresApi(Build.VERSION_CODES.N)
