@@ -1,11 +1,13 @@
 package com.example.fico.ui
 
 import android.app.AlertDialog
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,6 +58,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun editBudget(budget : Budget) : CompletableDeferred<Boolean>{
         val result = CompletableDeferred<Boolean>()
         val builder = AlertDialog.Builder(this)
@@ -74,6 +77,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                         if (rootView != null) {
                             val snackbar = Snackbar.make(rootView, "Default Budget definido com sucesso", Snackbar.LENGTH_LONG)
                             snackbar.show()
+                            viewModel.getBudgetPerMonth()
                             result.complete(true)
                         }
                     }else{

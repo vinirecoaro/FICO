@@ -19,8 +19,7 @@ class BudgetPerMonthViewModel : ViewModel() {
     private val _budgetPerMonthList = MutableLiveData<List<Budget>>()
     val budgetPerMonthList : LiveData<List<Budget>> = _budgetPerMonthList
 
-    suspend fun getBudgetPerMonth() =
-        withContext(viewModelScope.coroutineContext) {
+   fun getBudgetPerMonth() = viewModelScope.async {
             val budgetList = firebaseAPI.getBudgetPerMonth()
             _budgetPerMonthList.value = budgetList
         }
