@@ -1,18 +1,12 @@
-import android.content.Context
+
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fico.R
 import com.example.fico.model.Expense
 import com.example.fico.ui.adapters.ExpenseListAdapter
-import com.example.fico.ui.fragments.ExpenseListFragment
 import com.example.fico.ui.viewmodel.ExpenseListViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val viewModel: ExpenseListViewModel, private val adapter: ExpenseListAdapter) :
     ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -22,6 +16,7 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
+
         return false
     }
 
