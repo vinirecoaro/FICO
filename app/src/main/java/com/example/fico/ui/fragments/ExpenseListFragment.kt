@@ -3,11 +3,14 @@ package com.example.fico.ui.fragments
  import SwipeToDeleteCallback
  import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
+ import android.text.Editable
+ import android.text.TextWatcher
+ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
+ import androidx.core.widget.addTextChangedListener
+ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -41,6 +44,8 @@ class ExpenseListFragment : Fragment(){
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 
+        viewModel.updateFilter("")
+
         setUpListeners()
 
         return rootView
@@ -72,13 +77,31 @@ class ExpenseListFragment : Fragment(){
                         editExpense(selectItem)
                     }
                 })
-                /*viewModel.getExpenseList(binding.actvDate.text.toString())
-                viewModel.getExpenseMonths()*/
             })
 
             viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
                 expenseMonthsList = expenseMonths.toTypedArray()
                 actvConfig()
+            })
+
+            binding.actvDate.addTextChangedListener (object : TextWatcher{
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    viewModel.updateFilter(binding.actvDate.text.toString())
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+
             })
 
         }

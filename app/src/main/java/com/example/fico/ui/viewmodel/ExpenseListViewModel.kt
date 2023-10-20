@@ -19,6 +19,13 @@ class ExpenseListViewModel: ViewModel() {
     val expensesLiveData: LiveData<List<Expense>> = _expensesLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
+    private val _filterLiveData = MutableLiveData<String>()
+    val filterLiveData : LiveData<String>
+        get() = _filterLiveData
+
+    fun updateFilter(filter : String){
+        _filterLiveData.value = filter
+    }
 
     fun getExpenseList(filter : String) {
         viewModelScope.async{
@@ -38,6 +45,8 @@ class ExpenseListViewModel: ViewModel() {
     fun deleteExpense(expense : Expense){
         viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.deleteExpense(expense)
+            val filter = filterLiveData.value.toString()
+            getExpenseList(filter)
         }
     }
 
@@ -45,6 +54,7 @@ class ExpenseListViewModel: ViewModel() {
     fun undoDeleteExpense(expense: Expense)=
         viewModelScope.async(Dispatchers.IO){
             firebaseAPI.addExpense(expense, inputTime = "")
+            getExpenseList(filterLiveData.value.toString())
         }
 
 }
