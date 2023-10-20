@@ -211,12 +211,12 @@ class FirebaseAPI private constructor() {
             val formattedDate = formatDateForDatabase(budget.date)
             val oldBudget = getMonthBudget(formattedDate).toFloat()
             val correction = newBudget.toFloat() - oldBudget
-            val newBudgetFormatted = "%.2f".format(newBudget.toFloat())
-            information_per_month.child(formattedDate).child(AppConstants.DATABASE.BUDGET).setValue(newBudgetFormatted)
+            val newBudgetA = newBudget
+            information_per_month.child(formattedDate).child(AppConstants.DATABASE.BUDGET).setValue(newBudgetA)
             val currentAvailable = getAvailableNow(formattedDate)
             val currentAvalableFormatted = currentAvailable.replace("R$","").replace(",",".").toFloat()
             val newAvailable = currentAvalableFormatted + correction
-            val newAvailableFormatted = "%.2f".format(newAvailable)
+            val newAvailableFormatted = "%.2f".format(newAvailable).replace(",",".")
             information_per_month.child(formattedDate).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(newAvailableFormatted)
             result.complete(true)
         }catch (e:Exception){

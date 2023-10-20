@@ -35,9 +35,9 @@ class BudgetPerMonthViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun editBudget(newBudget: String, budget: Budget) : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO) {
-            val formatNum = DecimalFormat("#.##")
-            val formattedBudget = formatNum.format(newBudget.toFloat()).toString().replace(",",".")
-            firebaseAPI.editBudget(formattedBudget, budget)
+            val formattedBudget = "%.2f".format(newBudget.toFloat())
+            val formattedBudgetString = formattedBudget.replace(",",".")
+            firebaseAPI.editBudget(formattedBudgetString, budget)
         }
     }
 }

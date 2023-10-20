@@ -49,6 +49,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                 budgetPerMonthListAdapter.updateList(budgetList)
                 budgetPerMonthListAdapter.notifyDataSetChanged()
                 budgetPerMonthListAdapter.setOnItemClickListener(object : OnListItemClick {
+                    @RequiresApi(Build.VERSION_CODES.N)
                     override fun onListItemClick(position: Int) {
                         val selectItem = budgetList[position]
                         editBudget(selectItem)
@@ -75,7 +76,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     if(viewModel.editBudget(newBudget.text.toString(), budget).await()){
                         val rootView: View? = findViewById(android.R.id.content)
                         if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, "Default Budget definido com sucesso", Snackbar.LENGTH_LONG)
+                            val snackbar = Snackbar.make(rootView, "Budget redefinido com sucesso", Snackbar.LENGTH_LONG)
                             snackbar.show()
                             viewModel.getBudgetPerMonth()
                             result.complete(true)
@@ -83,7 +84,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     }else{
                         val rootView: View? = findViewById(android.R.id.content)
                         if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, "Falha ao definir o Default Budget", Snackbar.LENGTH_LONG)
+                            val snackbar = Snackbar.make(rootView, "Falha ao redefinir o Budget", Snackbar.LENGTH_LONG)
                             snackbar.show()
                             result.complete(false)
                         }
