@@ -75,6 +75,22 @@ class EditExpenseActivity : AppCompatActivity() {
             binding.actvCategory.showDropDown()
             binding.dpDateExpense.visibility = View.GONE
         }
+
+        binding.etPrice.setOnClickListener {
+            binding.dpDateExpense.visibility = View.GONE
+        }
+
+        binding.etDescription.setOnClickListener {
+            binding.dpDateExpense.visibility = View.GONE
+        }
+
+        binding.ivDate.setOnClickListener{
+            binding.dpDateExpense.visibility = View.VISIBLE
+            binding.dpDateExpense.setOnDateChangedListener { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
+                binding.etDate.setText(selectedDate)
+            }
+        }
     }
 
     private fun actvConfig() {
