@@ -106,7 +106,9 @@ class FirebaseAPI private constructor() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) = withContext(Dispatchers.IO){
+        val installmentId  = generateRandomAddress(5)
         for (i in 0 until nOfInstallments){
+            val installmentIdItem = "-$installmentId-P$i"
             val month = expense.date.substring(5,7).toInt()
             var newMonth = month + i
             var year = expense.date.substring(0,4).toInt()
@@ -144,13 +146,13 @@ class FirebaseAPI private constructor() {
             val existDate = checkIfExistsDateOnDatabse(dateInformationPerMonth)
 
             if(existDate){
-                updateExpenseList(newExpense, inputTime)
+                updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
                 updateTotalExpense(newExpense.price)
                 updateInformationPerMonth(newExpense)
             }else{
                 val defaultBudget = getDefaultBudget(false)
                 setUpBudget(defaultBudget,dateInformationPerMonth)
-                updateExpenseList(newExpense, inputTime)
+                updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
                 updateTotalExpense(newExpense.price)
                 updateInformationPerMonth(newExpense)
             }
@@ -327,20 +329,33 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private suspend fun updateExpenseList(expense: Expense, inputTime : String) = withContext(Dispatchers.IO){
+    private suspend fun updateExpenseList(expense: Expense, inputTime : String, installment : Boolean = false, installmentID : String = "") = withContext(Dispatchers.IO){
         var control = false;
         while (!control){
             if(expense.id == ""){
-                val expenseId = generateRandomAddress(5)
-                val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
-                val exists = checkIfExistsOnDatabse(reference)
-                if(!exists){
-                    reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
-                    reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
-                    reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
-                    reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
-                    control = true
+                if(!installment){
+                    val expenseId = generateRandomAddress(5)
+                    val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
+                    val exists = checkIfExistsOnDatabse(reference)
+                    if(!exists){
+                        reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                        reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
+                        reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
+                        reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
+                        control = true
+                    }
+                } else{
+                    val reference = expense_list.child("${expense.date}-${inputTime}${installmentID}")
+                    val exists = checkIfExistsOnDatabse(reference)
+                    if(!exists){
+                        reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                        reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
+                        reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
+                        reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
+                        control = true
+                    }
                 }
+
             }else{
                 val reference = expense_list.child(expense.id)
                 val exists = checkIfExistsOnDatabse(reference)
