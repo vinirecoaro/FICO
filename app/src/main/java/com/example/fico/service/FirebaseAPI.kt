@@ -90,11 +90,16 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun editExpense(oldExpense: Expense, newExpense : Expense, inputTime : String){
-        deleteExpense(oldExpense)
-        updateExpenseList(newExpense, inputTime)
-        updateTotalExpense(newExpense.price)
-        updateInformationPerMonth(newExpense)
+    suspend fun editExpense(oldExpense: Expense, newExpense : Expense, inputTime : String, installmentExpense : Boolean = false, nOfInstallments: Int = 1){
+        if(!installmentExpense){
+            deleteExpense(oldExpense)
+            updateExpenseList(newExpense, inputTime)
+            updateTotalExpense(newExpense.price)
+            updateInformationPerMonth(newExpense)
+        }else{
+            addInstallmentExpense(newExpense,inputTime,nOfInstallments)
+        }
+
     }
 
     suspend fun deleteExpense(oldExpense : Expense) = withContext(Dispatchers.IO){
@@ -108,7 +113,7 @@ class FirebaseAPI private constructor() {
     suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) = withContext(Dispatchers.IO){
         val installmentId  = generateRandomAddress(5)
         for (i in 0 until nOfInstallments){
-            val installmentIdItem = "-$installmentId-P$i"
+            val installmentIdItem = "-$installmentId-Parcela-${i+1}-${nOfInstallments}"
             val month = expense.date.substring(5,7).toInt()
             var newMonth = month + i
             var year = expense.date.substring(0,4).toInt()

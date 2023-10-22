@@ -15,7 +15,7 @@ class EditExpenseViewModel : ViewModel() {
     val firebaseAPI = FirebaseAPI.instance
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun saveEditExpense(expense:Expense, price: String, description: String, category: String, date: String) =
+    suspend fun saveEditExpense(expense:Expense, price: String, description: String, category: String, date: String, installmentExpense : Boolean = false, nOfInstallments: Int = 1) =
         viewModelScope.async(Dispatchers.IO){
         val day = expense.date.substring(0, 2)
         val month = expense.date.substring(3, 5)
@@ -26,6 +26,12 @@ class EditExpenseViewModel : ViewModel() {
         val newExpense = Expense(id = "", price, description, category, date)
         val timeNow = LocalTime.now()
         val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
-        firebaseAPI.editExpense(oldExpense,newExpense,inputTime)
+
+        if (!installmentExpense){
+            firebaseAPI.editExpense(oldExpense,newExpense,inputTime)
+        }else{
+            firebaseAPI.editExpense(oldExpense,newExpense,inputTime,installmentExpense = true, nOfInstallments)
+        }
+
     }
 }

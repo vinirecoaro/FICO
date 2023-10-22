@@ -35,10 +35,21 @@ class EditExpenseActivity : AppCompatActivity() {
         if(intent != null){
             val expense = intent.getParcelableExtra<Expense>("expense")
             if(expense != null){
-                binding.etPrice.setText(expense.price.replace("R$ ","").replace(",","."))
-                binding.etDescription.setText(expense.description)
-                binding.actvCategory.setText(expense.category)
-                binding.etDate.setText(expense.date)
+                //Verify if is a installment expense
+                if(expense.id.length == 37){
+                    binding.etInstallments.visibility = View.VISIBLE
+                    val price = expense.price.replace("R$ ","").replace(",",".").toFloat() * expense.id.substring(36,37).toInt()
+                    binding.etPrice.setText(price.toString())
+                    binding.etDescription.setText(expense.description)
+                    binding.actvCategory.setText(expense.category)
+                    binding.etInstallments.setText(expense.id.substring(36,37))
+                    binding.etDate.setText(expense.date)
+                }else{
+                    binding.etPrice.setText(expense.price.replace("R$ ","").replace(",","."))
+                    binding.etDescription.setText(expense.description)
+                    binding.actvCategory.setText(expense.category)
+                    binding.etDate.setText(expense.date)
+                }
             }
         }
         setUpListeners()
@@ -49,39 +60,78 @@ class EditExpenseActivity : AppCompatActivity() {
     private fun setUpListeners(){
         binding.btSave.setOnClickListener{
             lifecycleScope.launch(Dispatchers.Main){
-                if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
-                    val day = binding.etDate.text.toString().substring(0, 2)
-                    val month = binding.etDate.text.toString().substring(3, 5)
-                    val year = binding.etDate.text.toString().substring(6, 10)
-                    val modifiedDate = "$year-$month-$day"
-                    val formatNum = DecimalFormat("#.##")
-                    val formattedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
-                    val formattedNumString = formattedNum.toString().replace(",",".")
-                    val expense = intent.getParcelableExtra<Expense>("expense")
-                    viewModel.saveEditExpense(
-                        expense!!,
-                        formattedNumString,
-                        binding.etDescription.text.toString(),
-                        binding.actvCategory.text.toString(),
-                        modifiedDate)
-                    //delay necessary to return to Expense list with value updated
-                    delay(250)
-                    finish()
+                if(binding.etInstallments.visibility == View.GONE){
+                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
+                        val day = binding.etDate.text.toString().substring(0, 2)
+                        val month = binding.etDate.text.toString().substring(3, 5)
+                        val year = binding.etDate.text.toString().substring(6, 10)
+                        val modifiedDate = "$year-$month-$day"
+                        val formatNum = DecimalFormat("#.##")
+                        val formattedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
+                        val formattedNumString = formattedNum.toString().replace(",",".")
+                        val expense = intent.getParcelableExtra<Expense>("expense")
+                        viewModel.saveEditExpense(
+                            expense!!,
+                            formattedNumString,
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            modifiedDate)
+                        //delay necessary to return to Expense list with value updated
+                        delay(250)
+                        finish()
+                    }
+                }else if(binding.etInstallments.visibility == View.VISIBLE){
+                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etDate)){
+                        val day = binding.etDate.text.toString().substring(0, 2)
+                        val month = binding.etDate.text.toString().substring(3, 5)
+                        val year = binding.etDate.text.toString().substring(6, 10)
+                        val modifiedDate = "$year-$month-$day"
+                        val formatNum = DecimalFormat("#.##")
+                        val formatedNum = formatNum.format(
+                            binding.etPrice.text.toString().replace(",",".").toFloat()
+                                    /binding.etInstallments.text.toString().toInt())
+                        val formattedNumString = formatedNum.toString().replace(",",".")
+                        val expense = intent.getParcelableExtra<Expense>("expense")
+                        viewModel.saveEditExpense(
+                            expense!!,
+                            formattedNumString,
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            modifiedDate,
+                            installmentExpense = true,
+                            binding.etInstallments.text.toString().toInt())
+                        //delay necessary to return to Expense list with value updated
+                        delay(250)
+                        finish()
+                    }
                 }
             }
         }
 
-        binding.actvCategory.setOnClickListener {
+        binding.etPrice.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.dpDateExpense.visibility = View.GONE
+                binding.etPrice.setText("")
+            }
+        }
+
+        binding.etDescription.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.dpDateExpense.visibility = View.GONE
+                binding.etDescription.setText("")
+            }
+        }
+
+        binding.actvCategory.setOnClickListener{
+            binding.dpDateExpense.visibility = View.GONE
             binding.actvCategory.showDropDown()
-            binding.dpDateExpense.visibility = View.GONE
         }
 
-        binding.etPrice.setOnClickListener {
-            binding.dpDateExpense.visibility = View.GONE
-        }
-
-        binding.etDescription.setOnClickListener {
-            binding.dpDateExpense.visibility = View.GONE
+        binding.etInstallments.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.dpDateExpense.visibility = View.GONE
+                binding.etInstallments.setText("")
+            }
         }
 
         binding.ivDate.setOnClickListener{

@@ -128,7 +128,6 @@
                             val month = binding.etDate.text.toString().substring(3, 5)
                             val year = binding.etDate.text.toString().substring(6, 10)
                             val modifiedDate = "$year-$month-$day"
-
                             val formatNum = DecimalFormat("#.##")
                             val formatedNum = formatNum.format(
                                 binding.etPrice.text.toString().replace(",",".").toFloat()/binding.etInstallments.text.toString().toInt())
