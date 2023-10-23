@@ -40,7 +40,7 @@ class EditExpenseActivity : AppCompatActivity() {
                     binding.etInstallments.visibility = View.VISIBLE
                     val price = expense.price.replace("R$ ","").replace(",",".").toFloat() * expense.id.substring(36,37).toInt()
                     binding.etPrice.setText(price.toString())
-                    binding.etDescription.setText(expense.description)
+                    binding.etDescription.setText(expense.description.split("Parcela")[0])
                     binding.actvCategory.setText(expense.category)
                     binding.etInstallments.setText(expense.id.substring(36,37))
                     binding.etDate.setText(expense.date)

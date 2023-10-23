@@ -26,11 +26,11 @@ class EditExpenseViewModel : ViewModel() {
         val newExpense = Expense(id = "", price, description, category, date)
         val timeNow = LocalTime.now()
         val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
-
+        val nOfInstallments2 = nOfInstallments
         if (!installmentExpense){
             firebaseAPI.editExpense(oldExpense,newExpense,inputTime)
         }else{
-            firebaseAPI.editExpense(oldExpense,newExpense,inputTime,installmentExpense = true, nOfInstallments)
+            firebaseAPI.editExpense(oldExpense,newExpense,inputTime,installmentExpense = true, nOfInstallments2)
         }
 
     }
