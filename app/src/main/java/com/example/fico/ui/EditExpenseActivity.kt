@@ -75,7 +75,7 @@ class EditExpenseActivity : AppCompatActivity() {
                             formattedNumString,
                             binding.etDescription.text.toString(),
                             binding.actvCategory.text.toString(),
-                            modifiedDate)
+                            modifiedDate).await()
                         //delay necessary to return to Expense list with value updated
                         delay(250)
                         finish()
@@ -92,14 +92,13 @@ class EditExpenseActivity : AppCompatActivity() {
                                     /binding.etInstallments.text.toString().toInt())
                         val formattedNumString = formatedNum.toString().replace(",",".")
                         val expense = intent.getParcelableExtra<Expense>("expense")
-                        viewModel.saveEditExpense(
+                        viewModel.saveEditInstallmentExpense(
                             expense!!,
                             formattedNumString,
                             binding.etDescription.text.toString(),
                             binding.actvCategory.text.toString(),
                             modifiedDate,
-                            installmentExpense = true,
-                            binding.etInstallments.text.toString().toInt())
+                            binding.etInstallments.text.toString().toInt()).await()
                         //delay necessary to return to Expense list with value updated
                         delay(250)
                         finish()

@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -90,7 +91,7 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun editExpense(oldExpense: Expense, newExpense : Expense, inputTime : String, installmentExpense : Boolean = false, nOfInstallments: Int = 1){
+    suspend fun editExpense(oldExpense: Expense, newExpense : Expense, inputTime : String, installmentExpense : Boolean = false, nOfInstallments: Int = 1) = withContext(Dispatchers.IO){
         if(!installmentExpense){
             deleteExpense(oldExpense)
             updateExpenseList(newExpense, inputTime)
@@ -99,7 +100,6 @@ class FirebaseAPI private constructor() {
         }else{
             addInstallmentExpense(newExpense,inputTime,nOfInstallments)
         }
-
     }
 
     suspend fun deleteExpense(oldExpense : Expense) = withContext(Dispatchers.IO){
@@ -112,7 +112,8 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) = withContext(Dispatchers.IO){
         val installmentId  = generateRandomAddress(5)
-        for (i in 0 until nOfInstallments){
+        val nOfInstallments2 = nOfInstallments
+        for (i in 0 until nOfInstallments2){
             val installmentIdItem = "-$installmentId-Parcela-${i+1}-${nOfInstallments}"
             val month = expense.date.substring(5,7).toInt()
             var newMonth = month + i
@@ -163,6 +164,19 @@ class FirebaseAPI private constructor() {
             }
 
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun addEditedInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) : Boolean =
+    withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Boolean>()
+        try {
+            addInstallmentExpense(expense,inputTime,nOfInstallments)
+            result.complete(true)
+        }catch (e : java.lang.Exception){
+            result.complete(false)
+        }
+        return@withContext result.await()
     }
 
     suspend fun setUpBudget(budget: String, date: String) = withContext(Dispatchers.IO){
