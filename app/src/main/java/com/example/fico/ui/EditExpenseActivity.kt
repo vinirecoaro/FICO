@@ -43,7 +43,7 @@ class EditExpenseActivity : AppCompatActivity() {
                     binding.etDescription.setText(expense.description.split("Parcela")[0])
                     binding.actvCategory.setText(expense.category)
                     binding.etInstallments.setText(expense.id.substring(36,37))
-                    binding.etDate.setText(expense.date)
+                    binding.etDate.setText(returnInitialDate(expense.id, expense.date))
                 }else{
                     binding.etPrice.setText(expense.price.replace("R$ ","").replace(",","."))
                     binding.etDescription.setText(expense.description)
@@ -93,12 +93,13 @@ class EditExpenseActivity : AppCompatActivity() {
                         val formattedNumString = formatedNum.toString().replace(",",".")
                         val expense = intent.getParcelableExtra<Expense>("expense")
                         viewModel.saveEditInstallmentExpense(
-                            expense!!,
                             formattedNumString,
                             binding.etDescription.text.toString(),
                             binding.actvCategory.text.toString(),
                             modifiedDate,
                             binding.etInstallments.text.toString().toInt()).await()
+                        viewModel.deleteOldInstallmentExpense(expense!!).await()
+                        viewModel.updateTotalExpenseAfterEditInstallmentExpense(expense).await()
                         //delay necessary to return to Expense list with value updated
                         delay(250)
                         finish()
@@ -156,4 +157,31 @@ class EditExpenseActivity : AppCompatActivity() {
         }
         return true
     }
+
+    private fun returnInitialDate(id: String, date: String) : String{
+        val currentInstallment = id.substring(34,35)
+        var day = date.substring(0, 2)
+        val month = date.substring(3, 5)
+        val year = date.substring(6, 10)
+        var initialYear = year.toInt() - (currentInstallment.toInt()/12)
+        var initialMonth = 1
+        var initialMonthString = ""
+        if(month.toInt() < currentInstallment.toInt()%12){
+            initialMonth = 12 + (currentInstallment.toInt()%12 - month.toInt())
+            initialMonthString = initialMonth.toString()
+            initialYear -= 1
+        }else if(month.toInt() > currentInstallment.toInt()%12){
+            initialMonth = month.toInt() - currentInstallment.toInt()%12 + 1
+            initialMonthString = initialMonth.toString()
+        }
+        if(day.toInt() < 10){
+            day = "0${day}"
+        }
+        if(initialMonth < 10){
+            initialMonthString = "0${initialMonth}"
+        }
+
+        return "${day}/${initialMonthString}/${initialYear}"
+    }
+
 }

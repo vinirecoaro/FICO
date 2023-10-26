@@ -57,7 +57,6 @@ class EditExpenseViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditInstallmentExpense(
-        expense: Expense,
         price: String,
         description: String,
         category: String,
@@ -65,18 +64,6 @@ class EditExpenseViewModel : ViewModel() {
         nOfInstallments: Int
     ): Deferred<Boolean> {
         return viewModelScope.async {
-            val day = expense.date.substring(0, 2)
-            val month = expense.date.substring(3, 5)
-            val year = expense.date.substring(6, 10)
-            val modifiedDate = "$year-$month-$day"
-            val expencePrice = "-${expense.price.replace("R$ ", "").replace(",", ".")}"
-            val oldExpense = Expense(
-                expense.id,
-                expencePrice,
-                expense.description,
-                expense.category,
-                modifiedDate
-            )
             val newExpense = Expense(id = "", price, description, category, date)
             val timeNow = LocalTime.now()
             var hour = timeNow.hour.toString()
@@ -93,6 +80,42 @@ class EditExpenseViewModel : ViewModel() {
             }
             val inputTime = "${hour}-${minute}-${second}"
             firebaseAPI.addEditedInstallmentExpense(newExpense, inputTime, nOfInstallments)
+        }
+    }
+
+    suspend fun deleteOldInstallmentExpense(expense : Expense) : Deferred<Boolean> {
+        return viewModelScope.async{
+            val day = expense.date.substring(0, 2)
+            val month = expense.date.substring(3, 5)
+            val year = expense.date.substring(6, 10)
+            val modifiedDate = "$year-$month-$day"
+            val expencePrice = "-${expense.price.replace("R$ ", "").replace(",", ".")}"
+            val oldExpense = Expense(
+                expense.id,
+                expencePrice,
+                expense.description,
+                expense.category,
+                modifiedDate
+            )
+            firebaseAPI.deleteInstallmentExpense(oldExpense)
+        }
+    }
+
+    suspend fun updateTotalExpenseAfterEditInstallmentExpense(expense : Expense) : Deferred<Boolean> {
+        return viewModelScope.async{
+            val day = expense.date.substring(0, 2)
+            val month = expense.date.substring(3, 5)
+            val year = expense.date.substring(6, 10)
+            val modifiedDate = "$year-$month-$day"
+            val expencePrice = "-${expense.price.replace("R$ ", "").replace(",", ".")}"
+            val oldExpense = Expense(
+                expense.id,
+                expencePrice,
+                expense.description,
+                expense.category,
+                modifiedDate
+            )
+            firebaseAPI.updateTotalExpenseAfterEditInstallmentExpense(oldExpense)
         }
     }
 }

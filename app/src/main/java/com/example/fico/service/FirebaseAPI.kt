@@ -12,10 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -107,6 +104,67 @@ class FirebaseAPI private constructor() {
         updateInformationPerMonth(oldExpense)
         val oldExpenseReference = expense_list.child(oldExpense.id)
         oldExpenseReference.removeValue()
+    }
+
+    suspend fun deleteInstallmentExpense(oldExpense : Expense) : Boolean = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Boolean>()
+        try{
+            val deleteItemList = getDeleteExpenseList(oldExpense)
+            for(expense in deleteItemList){
+                updateInformationPerMonth(expense)
+                val oldExpenseReference = expense_list.child(expense.id)
+                oldExpenseReference.removeValue()
+            }
+            result.complete(true)
+        }catch (e : Exception){
+            result.complete(false)
+        }
+    }
+
+    suspend fun updateTotalExpenseAfterEditInstallmentExpense(oldExpense : Expense) : Boolean = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Boolean>()
+        try{
+            val nOfInstallments = oldExpense.id.substring(36,37).toInt()
+            val installmentPrice = nOfInstallments * oldExpense.price.toFloat()
+            updateTotalExpense(installmentPrice.toString())
+            result.complete(true)
+        }catch (e : Exception){
+            result.complete(false)
+        }
+    }
+
+    suspend fun getDeleteExpenseList(oldExpense : Expense): List<Expense> = withContext(Dispatchers.IO) {
+        return@withContext suspendCoroutine { continuation ->
+            var isCompleted = false
+            val commonID = oldExpense.id.substring(11,25)
+            expense_list.orderByKey().addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val deleteItemList = mutableListOf<Expense>()
+                    for (childSnapshot in snapshot.children) {
+                        if(childSnapshot.key.toString().substring(11,25) == commonID){
+                            val id = childSnapshot.key.toString()
+                            val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
+                            val date = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
+                            val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
+                            val price = "-${childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString()}"
+                            val expense = Expense(id,price,description,category,date)
+                            deleteItemList.add(expense)
+                        }
+                    }
+                    if (!isCompleted) { // Verifica se já foi retomado
+                        isCompleted = true
+                        continuation.resume(deleteItemList)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    if (!isCompleted) { // Verifica se já foi retomado
+                        isCompleted = true
+                        continuation.resume(emptyList())
+                    }
+                }
+            })
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
