@@ -3,7 +3,9 @@
     import android.app.AlertDialog
     import android.os.Build
     import android.os.Bundle
+    import android.text.Editable
     import android.text.InputType
+    import android.text.TextWatcher
     import android.view.*
     import android.widget.ArrayAdapter
     import android.widget.EditText
@@ -23,6 +25,7 @@
     import kotlinx.coroutines.Dispatchers
     import kotlinx.coroutines.launch
     import java.text.DecimalFormat
+    import java.text.NumberFormat
 
     class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
@@ -210,6 +213,25 @@
                     binding.dpDateExpense.visibility = View.GONE
                 }
             }
+
+            binding.etPrice.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val text = s.toString()
+                    if (!text.isEmpty()) {
+                        val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
+                        val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0)).replace("$","R$ ")
+                        binding.etPrice.removeTextChangedListener(this)
+                        binding.etPrice.setText(formatted)
+                        binding.etPrice.setSelection(formatted.length)
+                        binding.etPrice.addTextChangedListener(this)
+                    }
+                }
+            })
+
         }
 
         private fun actvConfig() {
