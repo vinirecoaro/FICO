@@ -94,7 +94,7 @@
                             val checkDate = "$year-$month"
 
                             val formatNum = DecimalFormat("#.##")
-                            val formatedNum = formatNum.format(binding.etPrice.text.toString().replace(",",".").toFloat())
+                            val formatedNum = formatNum.format(binding.etPrice.text.toString().replace("R$ ","").replace(",",".").toFloat())
                             val formattedNumString = formatedNum.toString().replace(",",".")
 
                             val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
@@ -133,7 +133,7 @@
                             val modifiedDate = "$year-$month-$day"
                             val formatNum = DecimalFormat("#.##")
                             val formatedNum = formatNum.format(
-                                binding.etPrice.text.toString().replace(",",".").toFloat()/binding.etInstallments.text.toString().toInt())
+                                binding.etPrice.text.toString().replace("R$ ","").replace(",",".").toFloat()/binding.etInstallments.text.toString().toInt())
                             val formattedNumString = formatedNum.toString().replace(",",".")
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {
