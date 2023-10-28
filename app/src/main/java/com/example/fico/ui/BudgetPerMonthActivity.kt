@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import androidx.activity.viewModels
@@ -23,6 +25,8 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class BudgetPerMonthActivity : AppCompatActivity() {
 
@@ -70,10 +74,36 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         newBudget.hint = "Digite o novo Budget"
         builder.setView(newBudget)
 
+        newBudget.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val text = s.toString()
+                if (!text.isEmpty()) {
+                    val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
+                    val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
+                    newBudget.removeTextChangedListener(this)
+                    newBudget.setText(formatted)
+                    newBudget.setSelection(formatted.length)
+                    newBudget.addTextChangedListener(this)
+                }
+            }
+        })
+
         builder.setPositiveButton("Salvar") { dialog, which ->
             lifecycleScope.launch {
                 if(newBudget.text.toString() != ""){
-                    if(viewModel.editBudget(newBudget.text.toString(), budget).await()){
+
+                    val regex = Regex("[\\d,.]+")
+                    val justNumber = regex.find(newBudget.text.toString())
+                    val formatNum = DecimalFormat("#.##")
+                    val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                    val formatedNum = formatNum.format(numClean/100)
+                    val formattedNumString = formatedNum.toString().replace(",",".")
+
+                    if(viewModel.editBudget(formattedNumString, budget).await()){
                         val rootView: View? = findViewById(android.R.id.content)
                         if (rootView != null) {
                             val snackbar = Snackbar.make(rootView, "Budget redefinido com sucesso", Snackbar.LENGTH_LONG)

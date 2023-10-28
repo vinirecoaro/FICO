@@ -5,6 +5,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -14,6 +16,8 @@ import com.example.fico.ui.viewmodel.SetDefaultBudgetViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class SetDefaultBudgetActivity : AppCompatActivity() {
 
@@ -35,7 +39,15 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
         }
         binding.btSave.setOnClickListener {
             lifecycleScope.launch {
-                if(viewModel.setDefaultBudget(binding.etAvailablePerMonth.text.toString()).await()){
+
+                val regex = Regex("[\\d,.]+")
+                val justNumber = regex.find(binding.etAvailablePerMonth.text.toString())
+                val formatNum = DecimalFormat("#.##")
+                val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                val formatedNum = formatNum.format(numClean/100)
+                val formattedNumString = formatedNum.toString().replace(",",".")
+
+                if(viewModel.setDefaultBudget(formattedNumString).await() && binding.etAvailablePerMonth.text.toString() != ""){
                     val snackbar = Snackbar.make(it, "Default Budget definido com sucesso",Snackbar.LENGTH_LONG)
                     snackbar.show()
                     Handler().postDelayed({
@@ -56,6 +68,25 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
                 binding.etAvailablePerMonth.setText("")
             }
         }
+
+        binding.etAvailablePerMonth.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val text = s.toString()
+                if (!text.isEmpty()) {
+                    val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
+                    val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
+                    binding.etAvailablePerMonth.removeTextChangedListener(this)
+                    binding.etAvailablePerMonth.setText(formatted)
+                    binding.etAvailablePerMonth.setSelection(formatted.length)
+                    binding.etAvailablePerMonth.addTextChangedListener(this)
+                }
+            }
+        })
+
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

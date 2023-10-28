@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -19,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class EditExpenseActivity : AppCompatActivity() {
 
@@ -66,9 +69,14 @@ class EditExpenseActivity : AppCompatActivity() {
                         val month = binding.etDate.text.toString().substring(3, 5)
                         val year = binding.etDate.text.toString().substring(6, 10)
                         val modifiedDate = "$year-$month-$day"
+
+                        val regex = Regex("[\\d,.]+")
+                        val justNumber = regex.find(binding.etPrice.text.toString())
                         val formatNum = DecimalFormat("#.##")
-                        val formattedNum = formatNum.format(binding.etPrice.text.toString().toFloat())
-                        val formattedNumString = formattedNum.toString().replace(",",".")
+                        val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                        val formatedNum = formatNum.format(numClean/100)
+                        val formattedNumString = formatedNum.toString().replace(",",".")
+
                         val expense = intent.getParcelableExtra<Expense>("expense")
                         viewModel.saveEditExpense(
                             expense!!,
@@ -86,11 +94,14 @@ class EditExpenseActivity : AppCompatActivity() {
                         val month = binding.etDate.text.toString().substring(3, 5)
                         val year = binding.etDate.text.toString().substring(6, 10)
                         val modifiedDate = "$year-$month-$day"
+                        
+                        val regex = Regex("[\\d,.]+")
+                        val justNumber = regex.find(binding.etPrice.text.toString())
                         val formatNum = DecimalFormat("#.##")
-                        val formatedNum = formatNum.format(
-                            binding.etPrice.text.toString().replace(",",".").toFloat()
-                                    /binding.etInstallments.text.toString().toInt())
+                        val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()/binding.etInstallments.text.toString().toInt()
+                        val formatedNum = formatNum.format(numClean/100)
                         val formattedNumString = formatedNum.toString().replace(",",".")
+
                         val expense = intent.getParcelableExtra<Expense>("expense")
                         viewModel.saveEditInstallmentExpense(
                             formattedNumString,
@@ -141,6 +152,24 @@ class EditExpenseActivity : AppCompatActivity() {
                 binding.etDate.setText(selectedDate)
             }
         }
+
+        binding.etPrice.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val text = s.toString()
+                if (!text.isEmpty()) {
+                    val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
+                    val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
+                    binding.etPrice.removeTextChangedListener(this)
+                    binding.etPrice.setText(formatted)
+                    binding.etPrice.setSelection(formatted.length)
+                    binding.etPrice.addTextChangedListener(this)
+                }
+            }
+        })
     }
 
     private fun actvConfig() {
