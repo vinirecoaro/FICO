@@ -169,10 +169,26 @@ class FirebaseAPI private constructor() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) = withContext(Dispatchers.IO){
+
         val installmentId  = generateRandomAddress(5)
-        val nOfInstallments2 = nOfInstallments
-        for (i in 0 until nOfInstallments2){
-            val installmentIdItem = "-$installmentId-Parcela-${i+1}-${nOfInstallments}"
+
+        var nOfInstallmentsFormatted = nOfInstallments.toString()
+        if(nOfInstallments < 10){
+            nOfInstallmentsFormatted = "00$nOfInstallmentsFormatted"
+        }else if(nOfInstallments < 100){
+            nOfInstallmentsFormatted = "0$nOfInstallmentsFormatted"
+        }
+
+        for (i in 0 until nOfInstallments){
+
+            var currentInstallment = "${i+1}"
+            if(i+1 < 10){
+                currentInstallment = "00$currentInstallment"
+            }else if(i+1 < 100){
+                currentInstallment = "0$currentInstallment"
+            }
+
+            val installmentIdItem = "-$installmentId-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
             val month = expense.date.substring(5,7).toInt()
             var newMonth = month + i
             var year = expense.date.substring(0,4).toInt()
