@@ -93,8 +93,11 @@
                             val modifiedDate = "$year-$month-$day"
                             val checkDate = "$year-$month"
 
+                            val regex = Regex("[\\d,.]+")
+                            val justNumber = regex.find(binding.etPrice.text.toString())
                             val formatNum = DecimalFormat("#.##")
-                            val formatedNum = formatNum.format(binding.etPrice.text.toString().replace("R$ ","").replace(",",".").toFloat())
+                            val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                            val formatedNum = formatNum.format(numClean/100)
                             val formattedNumString = formatedNum.toString().replace(",",".")
 
                             val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
@@ -131,10 +134,14 @@
                             val month = binding.etDate.text.toString().substring(3, 5)
                             val year = binding.etDate.text.toString().substring(6, 10)
                             val modifiedDate = "$year-$month-$day"
+
+                            val regex = Regex("[\\d,.]+")
+                            val justNumber = regex.find(binding.etPrice.text.toString())
                             val formatNum = DecimalFormat("#.##")
-                            val formatedNum = formatNum.format(
-                                binding.etPrice.text.toString().replace("R$ ","").replace(",",".").toFloat()/binding.etInstallments.text.toString().toInt())
+                            val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()/binding.etInstallments.text.toString().toInt()
+                            val formatedNum = formatNum.format(numClean/100)
                             val formattedNumString = formatedNum.toString().replace(",",".")
+
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {
                                 viewModel.addInstallmentsExpense(
@@ -223,7 +230,7 @@
                     val text = s.toString()
                     if (!text.isEmpty()) {
                         val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
-                        val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0)).replace("$","R$ ")
+                        val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
                         binding.etPrice.removeTextChangedListener(this)
                         binding.etPrice.setText(formatted)
                         binding.etPrice.setSelection(formatted.length)
@@ -264,10 +271,36 @@
             defaultBudget.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
             builder.setView(defaultBudget)
 
+            defaultBudget.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val text = s.toString()
+                    if (!text.isEmpty()) {
+                        val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
+                        val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
+                        defaultBudget.removeTextChangedListener(this)
+                        defaultBudget.setText(formatted)
+                        defaultBudget.setSelection(formatted.length)
+                        defaultBudget.addTextChangedListener(this)
+                    }
+                }
+            })
+
             builder.setPositiveButton("Salvar") { dialog, which ->
                 lifecycleScope.launch {
                     if(defaultBudget.text.toString() != ""){
-                        if(viewModel.setDefaultBudget(defaultBudget.text.toString()).await()){
+
+                        val regex = Regex("[\\d,.]+")
+                        val justNumber = regex.find(defaultBudget.text.toString())
+                        val formatNum = DecimalFormat("#.##")
+                        val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                        val formatedNum = formatNum.format(numClean/100)
+                        val formattedNumString = formatedNum.toString().replace(",",".")
+
+                        if(viewModel.setDefaultBudget(formattedNumString).await()){
                             val rootView: View? = activity?.findViewById(android.R.id.content)
                             if (rootView != null) {
                                 val snackbar = Snackbar.make(rootView, "Budget editado com sucesso", Snackbar.LENGTH_LONG)

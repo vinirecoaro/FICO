@@ -3,6 +3,8 @@ package com.example.fico.ui.fragments
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +19,8 @@ import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.SetMonthBudgetViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class SetMonthBudget : Fragment() {
 
@@ -64,7 +68,7 @@ class SetMonthBudget : Fragment() {
     private fun setUpListeners() {
 
         arguments?.let {
-            val formatedNum = it.getString(VALUE)
+            val formatedExpense = it.getString(VALUE)
             val description = it.getString(DESCRIPTION)
             val category = it.getString(CATEGORY)
             val date = it.getString(DATE)
@@ -72,10 +76,17 @@ class SetMonthBudget : Fragment() {
 
             binding.btSave.setOnClickListener {
                 lifecycleScope.launch(Dispatchers.Main) {
-                    val budget = binding.etBudget.text.toString()
-                    if (formatedNum != null && description != null && category != null && dateModified != null ) {
-                        viewModel.setUpBudget(budget,dateModified)
-                        viewModel.addExpense(formatedNum, description, category, date)
+
+                    val regex = Regex("[\\d,.]+")
+                    val justNumber = regex.find(binding.etBudget.text.toString())
+                    val formatNum = DecimalFormat("#.##")
+                    val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                    val formatedNum = formatNum.format(numClean/100)
+                    val formattedNumString = formatedNum.toString().replace(",",".")
+
+                    if (formatedExpense != null && description != null && category != null && dateModified != null ) {
+                        viewModel.setUpBudget(formattedNumString,dateModified)
+                        viewModel.addExpense(formatedExpense, description, category, date)
                     }
                     sharedViewModel.price.value = ""
                     sharedViewModel.description.value = ""
@@ -84,6 +95,24 @@ class SetMonthBudget : Fragment() {
                     binding.root.visibility = View.GONE
                 }
             }
+
+            binding.etBudget.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val text = s.toString()
+                    if (!text.isEmpty()) {
+                        val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
+                        val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
+                        binding.etBudget.removeTextChangedListener(this)
+                        binding.etBudget.setText(formatted)
+                        binding.etBudget.setSelection(formatted.length)
+                        binding.etBudget.addTextChangedListener(this)
+                    }
+                }
+            })
         }
     }
 
