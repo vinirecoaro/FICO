@@ -40,14 +40,16 @@ class EditExpenseActivity : AppCompatActivity() {
         if(intent != null){
             val expense = intent.getParcelableExtra<Expense>("expense")
             if(expense != null){
+                val lenght = expense.id.length
                 //Verify if is a installment expense
-                if(expense.id.length == 37){
+                if(lenght == 41){
                     binding.etInstallments.visibility = View.VISIBLE
-                    val price = expense.price.replace("R$ ","").replace(",",".").toFloat() * expense.id.substring(36,37).toInt()
-                    binding.etPrice.setText(price.toString())
+                    val price = expense.price.replace("R$ ","").replace(",",".").toFloat() * expense.id.substring(38,41).replace("00","").replace("0","").toInt()
+                    val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
+                    binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description.split("Parcela")[0])
                     binding.actvCategory.setText(expense.category)
-                    binding.etInstallments.setText(expense.id.substring(36,37))
+                    binding.etInstallments.setText(expense.id.substring(38,41).replace("00","").replace("0",""))
                     binding.etDate.setText(returnInitialDate(expense.id, expense.date))
                 }else{
                     binding.etPrice.setText(expense.price.replace("R$ ","").replace(",","."))
@@ -194,7 +196,7 @@ class EditExpenseActivity : AppCompatActivity() {
     }
 
     private fun returnInitialDate(id: String, date: String) : String{
-        val currentInstallment = id.substring(34,35)
+        val currentInstallment = id.substring(35,37).replace("00","").replace("0","")
         var day = date.substring(0, 2)
         val month = date.substring(3, 5)
         val year = date.substring(6, 10)

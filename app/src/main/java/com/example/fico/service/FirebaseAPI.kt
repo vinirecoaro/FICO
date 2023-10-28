@@ -124,7 +124,7 @@ class FirebaseAPI private constructor() {
     suspend fun updateTotalExpenseAfterEditInstallmentExpense(oldExpense : Expense) : Boolean = withContext(Dispatchers.IO){
         val result = CompletableDeferred<Boolean>()
         try{
-            val nOfInstallments = oldExpense.id.substring(36,37).toInt()
+            val nOfInstallments = oldExpense.id.substring(38,41).replace("00","").replace("0","").toInt()
             val installmentPrice = nOfInstallments * oldExpense.price.toFloat()
             updateTotalExpense(installmentPrice.toString())
             result.complete(true)
