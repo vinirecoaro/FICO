@@ -5,6 +5,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
+import android.text.Spanned
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
@@ -55,8 +57,12 @@ class EditExpenseActivity : AppCompatActivity() {
                 }
             }
         }
+
         setUpListeners()
         actvConfig()
+
+        setMaxLength(binding.etInstallments,3)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -94,7 +100,7 @@ class EditExpenseActivity : AppCompatActivity() {
                         val month = binding.etDate.text.toString().substring(3, 5)
                         val year = binding.etDate.text.toString().substring(6, 10)
                         val modifiedDate = "$year-$month-$day"
-                        
+
                         val regex = Regex("[\\d,.]+")
                         val justNumber = regex.find(binding.etPrice.text.toString())
                         val formatNum = DecimalFormat("#.##")
@@ -211,6 +217,34 @@ class EditExpenseActivity : AppCompatActivity() {
         }
 
         return "${day}/${initialMonthString}/${initialYear}"
+    }
+
+    fun setMaxLength(editText: EditText, maxLength: Int) {
+        val inputFilter = object : InputFilter {
+            override fun filter(
+                source: CharSequence?,
+                start: Int,
+                end: Int,
+                dest: Spanned?,
+                dstart: Int,
+                dend: Int
+            ): CharSequence? {
+                val inputText = editText.text.toString() + source.toString()
+                if (inputText.length <= maxLength) {
+                    return null // Aceita a entrada
+                }
+                return "" // Rejeita a entrada se exceder o limite
+            }
+        }
+        val filters = editText.filters
+        val newFilters = if (filters != null) {
+            val newFilters = filters.copyOf(filters.size + 1)
+            newFilters[filters.size] = inputFilter
+            newFilters
+        } else {
+            arrayOf(inputFilter)
+        }
+        editText.filters = newFilters
     }
 
 }

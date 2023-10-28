@@ -3,9 +3,7 @@
     import android.app.AlertDialog
     import android.os.Build
     import android.os.Bundle
-    import android.text.Editable
-    import android.text.InputType
-    import android.text.TextWatcher
+    import android.text.*
     import android.view.*
     import android.widget.ArrayAdapter
     import android.widget.EditText
@@ -42,8 +40,12 @@
 
             setUpListeners()
             actvConfig()
+
             binding.etDate.setText(viewModel.getCurrentlyDate())
             binding.etDate.inputType = InputType.TYPE_NULL
+
+            setMaxLength(binding.etInstallments, 3)
+
             return rootView
         }
 
@@ -326,6 +328,34 @@
             val alertDialog = builder.create()
             alertDialog.show()
          return result
+        }
+
+        fun setMaxLength(editText: EditText, maxLength: Int) {
+            val inputFilter = object : InputFilter {
+                override fun filter(
+                    source: CharSequence?,
+                    start: Int,
+                    end: Int,
+                    dest: Spanned?,
+                    dstart: Int,
+                    dend: Int
+                ): CharSequence? {
+                    val inputText = editText.text.toString() + source.toString()
+                    if (inputText.length <= maxLength) {
+                        return null // Aceita a entrada
+                    }
+                    return "" // Rejeita a entrada se exceder o limite
+                }
+            }
+            val filters = editText.filters
+            val newFilters = if (filters != null) {
+                val newFilters = filters.copyOf(filters.size + 1)
+                newFilters[filters.size] = inputFilter
+                newFilters
+            } else {
+                arrayOf(inputFilter)
+            }
+            editText.filters = newFilters
         }
 
     override fun onDestroyView() {
