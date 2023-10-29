@@ -44,8 +44,8 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
                 val justNumber = regex.find(binding.etAvailablePerMonth.text.toString())
                 val formatNum = DecimalFormat("#.##")
                 val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
-                val formatedNum = formatNum.format(numClean/100)
-                val formattedNumString = formatedNum.toString().replace(",",".")
+                val formatedNum = formatNum.format(numClean/100).replace(",",".")
+                val formattedNumString = formatedNum
 
                 if(viewModel.setDefaultBudget(formattedNumString).await() && binding.etAvailablePerMonth.text.toString() != ""){
                     val snackbar = Snackbar.make(it, "Default Budget definido com sucesso",Snackbar.LENGTH_LONG)
