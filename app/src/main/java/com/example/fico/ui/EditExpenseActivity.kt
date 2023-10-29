@@ -196,7 +196,7 @@ class EditExpenseActivity : AppCompatActivity() {
     }
 
     private fun returnInitialDate(id: String, date: String) : String{
-        val currentInstallment = id.substring(35,37).replace("00","").replace("0","")
+        val currentInstallment = id.substring(35,37).toInt().toString()
         var day = date.substring(0, 2)
         val month = date.substring(3, 5)
         val year = date.substring(6, 10)
@@ -204,12 +204,14 @@ class EditExpenseActivity : AppCompatActivity() {
         var initialMonth = 1
         var initialMonthString = ""
 
-        if(month.toInt() < currentInstallment.toInt()%12){
-            initialMonth = 12 + (currentInstallment.toInt()%12 - month.toInt())
+        val restAfterDivideTwelve = currentInstallment.toInt()%12
+
+        if(month.toInt() < restAfterDivideTwelve){
+            initialMonth = 12 + (month.toInt() - restAfterDivideTwelve) + 1
             initialMonthString = initialMonth.toString()
             initialYear -= 1
-        }else if(month.toInt() > currentInstallment.toInt()%12){
-            initialMonth = month.toInt() - currentInstallment.toInt()%12 + 1
+        }else if(month.toInt() > restAfterDivideTwelve){
+            initialMonth = month.toInt() - restAfterDivideTwelve + 1
             initialMonthString = initialMonth.toString()
         }
         if(day.toInt() < 10){
