@@ -44,12 +44,12 @@ class EditExpenseActivity : AppCompatActivity() {
                 //Verify if is a installment expense
                 if(lenght == 41){
                     binding.etInstallments.visibility = View.VISIBLE
-                    val price = expense.price.replace("R$ ","").replace(",",".").toFloat() * expense.id.substring(38,41).replace("00","").replace("0","").toInt()
+                    val price = expense.price.replace("R$ ","").replace(",",".").toFloat() * expense.id.substring(38,41).toInt()
                     val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description.split("Parcela")[0])
                     binding.actvCategory.setText(expense.category)
-                    binding.etInstallments.setText(expense.id.substring(38,41).replace("00","").replace("0",""))
+                    binding.etInstallments.setText(expense.id.substring(38,41).toInt().toString())
                     binding.etDate.setText(returnInitialDate(expense.id, expense.date))
                 }else{
                     binding.etPrice.setText(expense.price.replace("R$ ","").replace(",","."))
@@ -203,6 +203,7 @@ class EditExpenseActivity : AppCompatActivity() {
         var initialYear = year.toInt() - (currentInstallment.toInt()/12)
         var initialMonth = 1
         var initialMonthString = ""
+
         if(month.toInt() < currentInstallment.toInt()%12){
             initialMonth = 12 + (currentInstallment.toInt()%12 - month.toInt())
             initialMonthString = initialMonth.toString()

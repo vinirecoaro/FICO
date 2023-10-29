@@ -352,7 +352,7 @@ class FirebaseAPI private constructor() {
                 if(formatted){
                     defaultBudget.complete("R$%.2f".format(value).replace(".", ","))
                 }else{
-                    defaultBudget.complete("%.2f".format(value))
+                    defaultBudget.complete("%.2f".format(value).replace(",","."))
                 }
 
 
