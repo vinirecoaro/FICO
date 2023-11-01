@@ -1,5 +1,6 @@
 package com.example.fico.ui.fragments
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -18,6 +19,12 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.viewmodel.HomeViewModel
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -35,6 +42,10 @@ class HomeFragment : Fragment(){
         binding.tvTotalExpensesValue.transformationMethod = PasswordTransformationMethod()
         binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
         setUpListeners()
+
+        initAvailableNowChart()
+        initMonthExpenseChart()
+
         return rootView
     }
 
@@ -95,6 +106,86 @@ class HomeFragment : Fragment(){
             } catch (exception: Exception) {
             }
         }
+    }
+
+    private fun initMonthExpenseChart(){
+        val pieChart = binding.pcMonthExpense
+
+        // Create a entries list for Pie Chart
+        val entries = mutableListOf<PieEntry>()
+        entries.add(PieEntry(70f))
+        entries.add(PieEntry(30f))
+
+        // Colors for parts of chart
+        val colors = listOf(
+            Color.parseColor("#19d14e"), // FirstColor
+            Color.parseColor("#9aa19c")  // SecondColor
+        )
+
+        // Create a data set from entries
+        val dataSet = PieDataSet(entries, "Uso de Recursos")
+        dataSet.colors = colors
+
+        // Data set customizing
+        dataSet.sliceSpace = 2f
+
+        // Create an PieData object from data set
+        val pieData = PieData(dataSet)
+        pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
+
+        // Configure the PieChart
+        pieChart.data = pieData
+        pieChart.setUsePercentValues(false)
+        pieChart.description.isEnabled = false
+        pieChart.setHoleRadius(80f) // middle chart hole size
+        pieChart.setTransparentCircleRadius(85f) // Transparent area size
+        pieChart.legend.isEnabled = false
+
+        // Ocult label values
+        pieData.setDrawValues(false)
+
+        // Update the chart
+        pieChart.invalidate()
+    }
+
+    private fun initAvailableNowChart(){
+        val pieChart = binding.pcAvailableNow
+
+        // Create a entries list for Pie Chart
+        val entries = mutableListOf<PieEntry>()
+        entries.add(PieEntry(70f))
+        entries.add(PieEntry(30f))
+
+        // Colors for parts of chart
+        val colors = listOf(
+            Color.parseColor("#19d14e"), // FirstColor
+            Color.parseColor("#9aa19c")  // SecondColor
+        )
+
+        // Create a data set from entries
+        val dataSet = PieDataSet(entries, "Uso de Recursos")
+        dataSet.colors = colors
+
+        // Data set customizing
+        dataSet.sliceSpace = 2f
+
+        // Create an PieData object from data set
+        val pieData = PieData(dataSet)
+        pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
+
+        // Configure the PieChart
+        pieChart.data = pieData
+        pieChart.setUsePercentValues(false)
+        pieChart.description.isEnabled = false
+        pieChart.setHoleRadius(75f) // middle chart hole size
+        pieChart.setTransparentCircleRadius(80f) // Transparent area size
+        pieChart.legend.isEnabled = false
+
+        // Ocult label values
+        pieData.setDrawValues(false)
+
+        // Update the chart
+        pieChart.invalidate()
     }
 
 }
