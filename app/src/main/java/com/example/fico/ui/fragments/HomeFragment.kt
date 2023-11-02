@@ -1,5 +1,6 @@
 package com.example.fico.ui.fragments
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -106,6 +108,7 @@ class HomeFragment : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initMonthExpenseChart() = lifecycleScope.launch{
         val pieChart = binding.pcMonthExpense
+        var holeColor = 1
 
         val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
         val monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
@@ -121,6 +124,17 @@ class HomeFragment : Fragment(){
             monthExpenseColor = "#ebe23b" // Yellow
         }else if(monthExpenseValueFormatted > (budget*0.85)){
             monthExpenseColor = "#ed2b15" // Red
+        }
+
+        // Defining chart insede hole color
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                holeColor = Color.rgb(104,110,106)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                holeColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
 
         // Create a entries list for Pie Chart
@@ -151,6 +165,7 @@ class HomeFragment : Fragment(){
         pieChart.description.isEnabled = false
         pieChart.setHoleRadius(80f) // middle chart hole size
         pieChart.setTransparentCircleRadius(85f) // Transparent area size
+        pieChart.setHoleColor(holeColor)
         pieChart.legend.isEnabled = false
 
         // Ocult label values
@@ -166,6 +181,7 @@ class HomeFragment : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initAvailableNowChart() = lifecycleScope.launch{
         val pieChart = binding.pcAvailableNow
+        var holeColor = 1
 
         val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
         val monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
@@ -181,6 +197,17 @@ class HomeFragment : Fragment(){
             availableNowColor = "#ebe23b" // Yellow
         }else if(availableNowValueFormatted < (budget*0.15)){
             availableNowColor = "#ed2b15" // Red
+        }
+
+        // Defining chart insede hole color
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                holeColor = Color.rgb(104,110,106)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                holeColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
 
         // Create a entries list for Pie Chart
@@ -211,6 +238,7 @@ class HomeFragment : Fragment(){
         pieChart.description.isEnabled = false
         pieChart.setHoleRadius(75f) // middle chart hole size
         pieChart.setTransparentCircleRadius(80f) // Transparent area size
+        pieChart.setHoleColor(holeColor)
         pieChart.legend.isEnabled = false
 
         // Ocult label values
