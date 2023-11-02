@@ -10,4 +10,11 @@
     <color name="grey_100">#EEEEEE</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
+    <color name="blue_10">#F1F9FD</color>
+    <color name="blue_50">#C4DDED</color>
+    <color name="blue_100">#7EBEEA</color>
+    <color name="blue_200">#43A7DC</color>
+    <color name="blue_300">#277FAD</color>
+    <color name="blue_400">#1C5068</color>
+    <color name="blue_500">#002E3C</color>
 </resources>
