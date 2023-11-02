@@ -20,7 +20,6 @@ import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -41,7 +40,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
         setUpListeners()
         actvConfig()
-        setIconColor()
+        setColorBasedOnTheme()
 
         binding.etDate.setText(viewModel.getCurrentlyDate())
         binding.etDate.inputType = InputType.TYPE_NULL
@@ -365,7 +364,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
             _binding = null
         }
 
-    private fun setIconColor(){
+    private fun setColorBasedOnTheme(){
         when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
                 binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_light)

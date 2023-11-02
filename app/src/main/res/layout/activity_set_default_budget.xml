@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="@id/et_available_per_month"
         app:layout_constraintStart_toEndOf="@id/et_available_per_month"
         app:layout_constraintBottom_toBottomOf="@id/et_available_per_month"
-        android:src="@drawable/baseline_info_24"/>
+        android:src="@drawable/baseline_info_dark"/>
 
     <Button
         android:id="@+id/bt_save"

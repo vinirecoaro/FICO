@@ -49,7 +49,7 @@ class ExpenseListFragment : Fragment(){
         viewModel.updateFilter("")
 
         setUpListeners()
-        setIconColor()
+        setColorBasedOnTheme()
 
         return rootView
     }
@@ -127,7 +127,7 @@ class ExpenseListFragment : Fragment(){
             viewModel.getExpenseMonths()
     }
 
-    private fun setIconColor(){
+    private fun setColorBasedOnTheme(){
         when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
                 binding.ivClearFilter.setImageResource(R.drawable.baseline_cancel_light)

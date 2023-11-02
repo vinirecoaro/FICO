@@ -1,6 +1,6 @@
 package com.example.fico.ui
 
-import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +11,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
+import com.example.fico.R
 import com.example.fico.databinding.ActivitySetDefaultBudgetBinding
 import com.example.fico.ui.viewmodel.SetDefaultBudgetViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -30,6 +31,7 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
         setContentView(binding.root)
         setUpListeners()
         getDefaultBudget()
+        setColorBasedOnTheme()
     }
 
     private fun setUpListeners(){
@@ -95,6 +97,18 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
         if(existBudget){
             val defaultBudget = viewModel.getDefaultBudget().await()
             binding.etAvailablePerMonth.setText(defaultBudget)
+        }
+    }
+
+    private fun setColorBasedOnTheme(){
+        when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.ivInfoMoney.setImageResource(R.drawable.baseline_info_light)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                binding.ivInfoMoney.setImageResource(R.drawable.baseline_info_dark)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
 
