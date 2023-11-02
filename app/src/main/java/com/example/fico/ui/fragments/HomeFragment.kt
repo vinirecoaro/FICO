@@ -3,11 +3,8 @@ package com.example.fico.ui.fragments
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.InputType
 import android.text.method.PasswordTransformationMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +16,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.viewmodel.HomeViewModel
-import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -43,9 +38,6 @@ class HomeFragment : Fragment(){
         binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
         setUpListeners()
 
-        initAvailableNowChart()
-        initMonthExpenseChart()
-
         return rootView
     }
 
@@ -62,6 +54,8 @@ class HomeFragment : Fragment(){
         getAvailableNow()
         getTotalExpense()
         getMonthExpense()
+        initMonthExpenseChart()
+        initAvailableNowChart()
     }
 
     override fun onDestroyView() {
@@ -108,13 +102,19 @@ class HomeFragment : Fragment(){
         }
     }
 
-    private fun initMonthExpenseChart(){
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initMonthExpenseChart() = lifecycleScope.launch{
         val pieChart = binding.pcMonthExpense
+
+        val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
+        val monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+        val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
+        val availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
 
         // Create a entries list for Pie Chart
         val entries = mutableListOf<PieEntry>()
-        entries.add(PieEntry(70f))
-        entries.add(PieEntry(30f))
+        entries.add(PieEntry(monthExpenseValueFormatted))
+        entries.add(PieEntry(availableNowValueFormatted))
 
         // Colors for parts of chart
         val colors = listOf(
@@ -148,13 +148,19 @@ class HomeFragment : Fragment(){
         pieChart.invalidate()
     }
 
-    private fun initAvailableNowChart(){
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initAvailableNowChart() = lifecycleScope.launch{
         val pieChart = binding.pcAvailableNow
+
+        val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
+        val monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+        val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
+        val availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
 
         // Create a entries list for Pie Chart
         val entries = mutableListOf<PieEntry>()
-        entries.add(PieEntry(70f))
-        entries.add(PieEntry(30f))
+        entries.add(PieEntry(availableNowValueFormatted))
+        entries.add(PieEntry(monthExpenseValueFormatted))
 
         // Colors for parts of chart
         val colors = listOf(
