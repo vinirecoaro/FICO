@@ -111,10 +111,17 @@ class HomeFragment : Fragment(){
         var holeColor = 1
 
         val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
-        val monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+        var monthExpenseValueFormatted = 0f
+        if(monthExpenseValue != "---"){
+            monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+        }
         var monthExpenseColor = ""
         val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
-        val availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
+        var availableNowValueFormatted = 1f
+        if(availableNowValue != "---"){
+            availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
+        }
+
         val budget = monthExpenseValueFormatted + availableNowValueFormatted
 
         // Defining color of availableNow part
@@ -184,9 +191,15 @@ class HomeFragment : Fragment(){
         var holeColor = 1
 
         val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
-        val monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+        var monthExpenseValueFormatted = 0f
+        if(monthExpenseValue != "---"){
+            monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+        }
         val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
-        val availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
+        var availableNowValueFormatted = 1f
+        if(availableNowValue != "---"){
+            availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
+        }
         var availableNowColor = ""
         val budget = monthExpenseValueFormatted + availableNowValueFormatted
 

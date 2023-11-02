@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.databinding.FragmentConfigurationBinding
+import com.example.fico.service.FirebaseAPI
 import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.BudgetConfigurationListActivity
+import com.example.fico.ui.LoginActivity
 import com.example.fico.ui.adapters.ConfigurationListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.ConfigurationViewModel
@@ -22,6 +24,7 @@ class ConfigurationFragment : Fragment(),
     private val binding get() = _binding!!
     private val viewModel by viewModels<ConfigurationViewModel>()
     private lateinit var configuratonListAdapter: ConfigurationListAdapter
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentConfigurationBinding.inflate(inflater,container,false)
@@ -44,6 +47,10 @@ class ConfigurationFragment : Fragment(),
         val item = viewModel.configurationList[position]
         if(item == AppConstants.CONFIGURATION_LIST.BUDGET){
             startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
+        }
+        if(item == AppConstants.CONFIGURATION_LIST.LOGOUT){
+            viewModel.logoff()
+            startActivity(Intent(requireContext(),LoginActivity::class.java))
         }
     }
 
