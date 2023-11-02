@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.viewmodel.HomeViewModel
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -108,8 +109,19 @@ class HomeFragment : Fragment(){
 
         val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
         val monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+        var monthExpenseColor = ""
         val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
         val availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
+        val budget = monthExpenseValueFormatted + availableNowValueFormatted
+
+        // Defining color of availableNow part
+        if(monthExpenseValueFormatted <= (budget/2)){
+            monthExpenseColor = "#19d14e" // Green
+        }else if(monthExpenseValueFormatted <= (budget*0.85)){
+            monthExpenseColor = "#ebe23b" // Yellow
+        }else if(monthExpenseValueFormatted > (budget*0.85)){
+            monthExpenseColor = "#ed2b15" // Red
+        }
 
         // Create a entries list for Pie Chart
         val entries = mutableListOf<PieEntry>()
@@ -118,7 +130,7 @@ class HomeFragment : Fragment(){
 
         // Colors for parts of chart
         val colors = listOf(
-            Color.parseColor("#19d14e"), // FirstColor
+            Color.parseColor(monthExpenseColor), // FirstColor
             Color.parseColor("#9aa19c")  // SecondColor
         )
 
@@ -144,6 +156,9 @@ class HomeFragment : Fragment(){
         // Ocult label values
         pieData.setDrawValues(false)
 
+        // Circular animation on create chart
+        pieChart.animateY(1400, Easing.EaseInOutQuad)
+
         // Update the chart
         pieChart.invalidate()
     }
@@ -156,6 +171,17 @@ class HomeFragment : Fragment(){
         val monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
         val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
         val availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
+        var availableNowColor = ""
+        val budget = monthExpenseValueFormatted + availableNowValueFormatted
+
+        // Defining color of availableNow part
+        if(availableNowValueFormatted >= (budget/2)){
+            availableNowColor = "#19d14e" // Green
+        }else if(availableNowValueFormatted >= (budget*0.15)){
+            availableNowColor = "#ebe23b" // Yellow
+        }else if(availableNowValueFormatted < (budget*0.15)){
+            availableNowColor = "#ed2b15" // Red
+        }
 
         // Create a entries list for Pie Chart
         val entries = mutableListOf<PieEntry>()
@@ -164,7 +190,7 @@ class HomeFragment : Fragment(){
 
         // Colors for parts of chart
         val colors = listOf(
-            Color.parseColor("#19d14e"), // FirstColor
+            Color.parseColor(availableNowColor), // FirstColor
             Color.parseColor("#9aa19c")  // SecondColor
         )
 
@@ -189,6 +215,9 @@ class HomeFragment : Fragment(){
 
         // Ocult label values
         pieData.setDrawValues(false)
+
+        // Circular animation on create chart
+        pieChart.animateY(1400, Easing.EaseInOutQuad)
 
         // Update the chart
         pieChart.invalidate()
