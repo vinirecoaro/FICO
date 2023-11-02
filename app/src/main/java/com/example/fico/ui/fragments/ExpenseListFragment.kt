@@ -2,7 +2,8 @@ package com.example.fico.ui.fragments
 
  import SwipeToDeleteCallback
  import android.content.Intent
-import android.os.Bundle
+ import android.content.res.Configuration
+ import android.os.Bundle
  import android.text.Editable
  import android.text.TextWatcher
  import android.view.LayoutInflater
@@ -16,7 +17,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
  import androidx.recyclerview.widget.ItemTouchHelper
  import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.fico.databinding.FragmentExpenseListBinding
+ import com.example.fico.R
+ import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
 import com.example.fico.ui.EditExpenseActivity
 import com.example.fico.ui.adapters.ExpenseListAdapter
@@ -47,6 +49,7 @@ class ExpenseListFragment : Fragment(){
         viewModel.updateFilter("")
 
         setUpListeners()
+        setIconColor()
 
         return rootView
     }
@@ -124,6 +127,17 @@ class ExpenseListFragment : Fragment(){
             viewModel.getExpenseMonths()
     }
 
+    private fun setIconColor(){
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.ivClearFilter.setImageResource(R.drawable.baseline_cancel_light)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                binding.ivClearFilter.setImageResource(R.drawable.baseline_cancel_dark)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+    }
 
 
 }
