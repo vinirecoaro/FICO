@@ -29,16 +29,20 @@ class VerifyEmailActivity : AppCompatActivity() {
 
     private fun setUpListeners(){
         binding.btResentEmail.setOnClickListener {
+            binding.btResentEmail.isEnabled = false
             lifecycleScope.launch {
                 viewModel.sendEmailVerificarion()
+                binding.btResentEmail.isEnabled = true
             }
         }
 
         binding.btLogin.setOnClickListener {
+            binding.btLogin.isEnabled = false
             lifecycleScope.launch {
                 viewModel.logoff()
             }
             startActivity(Intent(this, LoginActivity::class.java))
+            binding.btLogin.isEnabled = true
         }
 
         viewModel.isVerified.observe(this, Observer {isVerified ->

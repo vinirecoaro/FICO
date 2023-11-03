@@ -87,6 +87,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners() {
         binding.btSave.setOnClickListener {
+            binding.btSave.isEnabled = false
             lifecycleScope.launch(Dispatchers.Main) {
                 if(binding.etInstallments.visibility == View.GONE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
@@ -176,6 +177,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     }
                 }
             }
+            binding.btSave.isEnabled = true
         }
 
         sharedViewModel.price.observe(viewLifecycleOwner) { price ->
@@ -293,6 +295,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         })
 
         builder.setPositiveButton("Salvar") { dialog, which ->
+            val saveButton =  (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            saveButton.isEnabled = false
             lifecycleScope.launch {
                 if(defaultBudget.text.toString() != ""){
 
@@ -320,6 +324,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     }
                 }
             }
+            saveButton.isEnabled = true
         }
 
         builder.setNegativeButton("Cancelar") { dialog, which ->

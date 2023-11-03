@@ -40,8 +40,8 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
             snackbar.show()
         }
         binding.btSave.setOnClickListener {
+            binding.btSave.isEnabled = false
             lifecycleScope.launch {
-
                 val regex = Regex("[\\d,.]+")
                 val justNumber = regex.find(binding.etAvailablePerMonth.text.toString())
                 val formatNum = DecimalFormat("#.##")
@@ -63,7 +63,7 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
                     }, 1300)
                 }
             }
-
+            binding.btSave.isEnabled = true
         }
         binding.etAvailablePerMonth.onFocusChangeListener = View.OnFocusChangeListener{ _, hasFocus ->
             if(hasFocus){

@@ -113,13 +113,13 @@ class HomeFragment : Fragment(){
         val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
         var monthExpenseValueFormatted = 0f
         if(monthExpenseValue != "---"){
-            monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+            monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",",".").toFloat()
         }
         var monthExpenseColor = ""
         val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
         var availableNowValueFormatted = 1f
         if(availableNowValue != "---"){
-            availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
+            availableNowValueFormatted = availableNowValue.replace("R$","").replace(",",".").toFloat()
         }
 
         val budget = monthExpenseValueFormatted + availableNowValueFormatted
@@ -193,12 +193,12 @@ class HomeFragment : Fragment(){
         val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
         var monthExpenseValueFormatted = 0f
         if(monthExpenseValue != "---"){
-            monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",00","").toFloat()
+            monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",",".").toFloat()
         }
         val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
         var availableNowValueFormatted = 1f
         if(availableNowValue != "---"){
-            availableNowValueFormatted = availableNowValue.replace("R$","").replace(",00","").toFloat()
+            availableNowValueFormatted = availableNowValue.replace("R$","").replace(",",".").toFloat()
         }
         var availableNowColor = ""
         val budget = monthExpenseValueFormatted + availableNowValueFormatted

@@ -93,6 +93,8 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         })
 
         builder.setPositiveButton("Salvar") { dialog, which ->
+            val saveButton =  (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            saveButton.isEnabled = false
             lifecycleScope.launch {
                 if(newBudget.text.toString() != ""){
 
@@ -121,6 +123,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     }
                 }
             }
+            saveButton.isEnabled = true
         }
 
         builder.setNegativeButton("Cancelar") { dialog, which ->

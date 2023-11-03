@@ -33,11 +33,13 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setUpListeners(){
         binding.btLogin.setOnClickListener {
+            binding.btLogin.isEnabled = false
             lifecycleScope.launch (Dispatchers.Main){
                 viewModel.login(
                     binding.etEmail.text.toString(),
                     binding.etPassword.text.toString())
             }
+            binding.btLogin.isEnabled = true
         }
         binding.tvRegister.setOnClickListener{
             startActivity(Intent(this, RegisterActivity::class.java))

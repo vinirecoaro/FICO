@@ -70,6 +70,7 @@ class EditExpenseActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
         binding.btSave.setOnClickListener{
+            binding.btSave.isEnabled = false
             lifecycleScope.launch(Dispatchers.Main){
                 if(binding.etInstallments.visibility == View.GONE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
@@ -125,6 +126,7 @@ class EditExpenseActivity : AppCompatActivity() {
                     }
                 }
             }
+            binding.btSave.isEnabled = true
         }
 
         binding.etPrice.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->

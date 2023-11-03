@@ -25,6 +25,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setUpListeners(){
         binding.btRegister.setOnClickListener{
+            binding.btRegister.isEnabled = false
             if(viewModel.checkFields(binding.btRegister, binding.etEmail, binding.etPassword)){
                 lifecycleScope.launch(Dispatchers.Main) {
                     viewModel.createUser(
@@ -33,6 +34,7 @@ class RegisterActivity : AppCompatActivity() {
                 }
 
             }
+            binding.btRegister.isEnabled = true
         }
 
         viewModel.onUserCreated = {
