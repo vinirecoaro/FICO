@@ -35,4 +35,5 @@
     <string name="common_purchase">Compra Comum</string>
     <string name="filter">Filtro</string>
     <string name="forgot_my_password">Esqueci minha senha</string>
+    <string name="send">Enviar</string>
 </resources>
