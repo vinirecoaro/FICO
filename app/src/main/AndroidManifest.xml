@@ -13,25 +13,28 @@
         android:theme="@style/Theme.FICO"
         tools:targetApi="31">
         <activity
+            android:name=".ui.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.BudgetPerMonthActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.EditExpenseActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.BudgetConfigurationListActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SetDefaultBudgetActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.VerifyEmailActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="false"

@@ -1,8 +1,10 @@
 package com.example.fico.ui
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
@@ -12,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 class LoginActivity : AppCompatActivity() {
 
@@ -40,6 +43,9 @@ class LoginActivity : AppCompatActivity() {
                     binding.etPassword.text.toString())
             }
             binding.btLogin.isEnabled = true
+        }
+        binding.tvRedifinePassword.setOnClickListener {
+            startActivity(Intent(this, ResetPasswordActivity::class.java))
         }
         binding.tvRegister.setOnClickListener{
             startActivity(Intent(this, RegisterActivity::class.java))
