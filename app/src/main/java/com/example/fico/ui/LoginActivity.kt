@@ -24,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        resetPasswordSucess()
     }
 
     override fun onStart() {
@@ -58,6 +59,13 @@ class LoginActivity : AppCompatActivity() {
         }
         viewModel.onError = { message ->
             Snackbar.make(binding.btLogin, message, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun resetPasswordSucess(){
+        val result = intent.getBooleanExtra("Email Enviado",false)
+        if(result){
+            Toast.makeText(this,"Email de redefinição de senha enviado com sucesso", Toast.LENGTH_LONG).show()
         }
     }
 

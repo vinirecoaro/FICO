@@ -1,14 +1,18 @@
 package com.example.fico.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityResetPasswordBinding
 import com.example.fico.ui.viewmodel.ResetPasswordViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class ResetPasswordActivity : AppCompatActivity() {
 
@@ -32,11 +36,13 @@ class ResetPasswordActivity : AppCompatActivity() {
         }
 
         viewModel.onResetPasswordSuccess = {
-            Toast.makeText(this,"Email de redefinição de senha enviado com sucesso", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.putExtra("Email Enviado", true)
+            startActivity(intent)
         }
 
         viewModel.onResetPasswordFail = {
-            Toast.makeText(this,"Falha ao enviar email de redefinição de senha", Toast.LENGTH_LONG).show()
+            Snackbar.make(binding.btSend,"Falha ao enviar email de redefinição de senha", Snackbar.LENGTH_LONG).show()
         }
     }
 
