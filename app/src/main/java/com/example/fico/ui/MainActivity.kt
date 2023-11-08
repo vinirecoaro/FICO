@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
             R.id.navigation_add_expense,
             R.id.navigation_expense_list,
             R.id.navigation_config
-        ))
+        ),binding.drawerLayout)
         setupActionBarWithNavController(navController,appBarConfiguration)
         navView.setupWithNavController(navController)
 
