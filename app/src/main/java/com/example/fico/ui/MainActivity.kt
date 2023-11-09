@@ -25,6 +25,9 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
+
         val navView: BottomNavigationView = binding.bottomNavigation
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         val appBarConfiguration = AppBarConfiguration(
@@ -35,6 +38,8 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         ),binding.drawerLayout)
         setupActionBarWithNavController(navController,appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
 
     }
 
