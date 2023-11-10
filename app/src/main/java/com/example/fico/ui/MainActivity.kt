@@ -39,7 +39,9 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         setupActionBarWithNavController(navController,appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
+        binding.toolbar.setNavigationOnClickListener {
+            binding.drawerLayout.open()
+        }
 
     }
 
