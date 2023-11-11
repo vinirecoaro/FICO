@@ -36,4 +36,6 @@
     <string name="filter">Filtro</string>
     <string name="forgot_my_password">Esqueci minha senha</string>
     <string name="send">Enviar</string>
+    <string name="nav_header_description">Nav Header Description</string>
+    <string name="name_nav_header">Nome</string>
 </resources>
