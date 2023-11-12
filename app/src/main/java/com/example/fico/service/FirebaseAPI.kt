@@ -84,6 +84,11 @@ class FirebaseAPI private constructor() {
         rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
     }
 
+    suspend fun getUserEmail() : String = withContext(Dispatchers.IO){
+        val email = currentUser()?.email.toString()
+        return@withContext  email ?: ""
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun addExpense(expense: Expense, inputTime : String){
         updateExpenseList(expense, inputTime)

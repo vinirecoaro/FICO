@@ -3,7 +3,10 @@ package com.example.fico.ui
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -14,12 +17,16 @@ import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.fragments.AddExpenseFragment
 import com.example.fico.ui.interfaces.OnButtonClickListener
+import com.example.fico.ui.viewmodel.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), OnButtonClickListener{
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val bindingAdd by lazy { FragmentAddExpenseBinding.inflate(layoutInflater) }
+    private val viewModel by viewModels<MainViewModel>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,12 +50,20 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
             binding.drawerLayout.open()
         }
 
+        setUserEmail()
     }
 
     override fun onSaveButtonFragmentClick() {
         bindingAdd.btSave.performClick()
     }
 
-
-
+    private fun setUserEmail(){
+        val navigationView = findViewById<NavigationView>(R.id.nv_main)
+        val headerView = navigationView.getHeaderView(0)
+        val headerUserEmail = headerView.findViewById<TextView>(R.id.nv_header_user_email)
+        lifecycleScope.launch {
+            val email = viewModel.getUserEmail().await()
+            headerUserEmail.text = email
+        }
+    }
 }

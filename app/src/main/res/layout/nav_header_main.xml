@@ -28,7 +28,7 @@
         android:text="@string/name_nav_header"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-    <TextView
+        <TextView
         android:id="@+id/nv_header_user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
