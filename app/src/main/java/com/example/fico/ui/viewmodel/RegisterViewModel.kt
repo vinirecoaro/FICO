@@ -42,14 +42,19 @@ class RegisterViewModel : ViewModel() {
     }
 
 
-    suspend fun createUser(email: String, password: String) {
-        val user = User(email, password)
+    private fun setUserName(name : String) = viewModelScope.async{
+        firebaseAPI.setUserName(name).await()
+    }
+
+    suspend fun createUser(name : String, email: String, password: String) {
+        val user = User(name, email, password)
         try {
             viewModelScope.async(Dispatchers.IO){
                 val task = firebaseAPI.createUser(user).await()
                 if (task.user != null) {
                     firebaseAPI.addNewUserOnDatabase()
                     onUserCreated()
+                    setUserName(user.name)
                 } else {
                     val message = "Ocorreu um erro ao criar a conta. Tente novamente mais tarde."
                     onError(message)

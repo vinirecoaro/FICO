@@ -16,6 +16,8 @@ class AppConstants private constructor() {
         const val BUDGET = "budget"
         const val DEFAULT_BUDGET = "DefaultBudget"
         const val DEFAULT_VALUES = "DefaultValues"
+        const val USER_INFO = "userInfo"
+        const val NAME = "name"
     }
 
     object CONFIGURATION_LIST {

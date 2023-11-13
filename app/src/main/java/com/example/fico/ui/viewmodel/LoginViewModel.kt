@@ -16,7 +16,7 @@ class LoginViewModel : ViewModel() {
 
     suspend fun login(email: String, password: String)=
         viewModelScope.async(Dispatchers.IO){
-            val user = User(email, password)
+            val user = User("",email, password)
             var successLogin = CompletableDeferred<Boolean>()
             firebaseAPI.login(user)
                 .addOnCompleteListener{ task ->

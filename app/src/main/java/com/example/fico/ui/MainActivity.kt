@@ -14,8 +14,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.databinding.FragmentAddExpenseBinding
-import com.example.fico.service.constants.AppConstants
-import com.example.fico.ui.fragments.AddExpenseFragment
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,14 +48,14 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
             binding.drawerLayout.open()
         }
 
-        setUserEmail()
+        getUserEmail()
     }
 
     override fun onSaveButtonFragmentClick() {
         bindingAdd.btSave.performClick()
     }
 
-    private fun setUserEmail(){
+    private fun getUserEmail(){
         val navigationView = findViewById<NavigationView>(R.id.nv_main)
         val headerView = navigationView.getHeaderView(0)
         val headerUserEmail = headerView.findViewById<TextView>(R.id.nv_header_user_email)

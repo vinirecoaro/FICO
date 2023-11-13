@@ -89,6 +89,10 @@ class FirebaseAPI private constructor() {
         return@withContext  email ?: ""
     }
 
+    suspend fun setUserName(name : String) = withContext(Dispatchers.IO){
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO).child(AppConstants.DATABASE.NAME).setValue(name)
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun addExpense(expense: Expense, inputTime : String){
         updateExpenseList(expense, inputTime)

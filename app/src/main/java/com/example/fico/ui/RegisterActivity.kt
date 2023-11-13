@@ -29,10 +29,10 @@ class RegisterActivity : AppCompatActivity() {
             if(viewModel.checkFields(binding.btRegister, binding.etEmail, binding.etPassword)){
                 lifecycleScope.launch(Dispatchers.Main) {
                     viewModel.createUser(
-                    binding.etEmail.text.toString(),
-                    binding.etPassword.text.toString())
+                        binding.etName.text.toString(),
+                        binding.etEmail.text.toString(),
+                        binding.etPassword.text.toString())
                 }
-
             }
             binding.btRegister.isEnabled = true
         }
