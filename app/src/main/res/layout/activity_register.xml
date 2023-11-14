@@ -11,7 +11,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:drawableStart="@drawable/baseline_person_24"
+        android:drawableStart="@drawable/baseline_person_24_black"
         android:drawablePadding="8dp"
         android:hint="@string/name"
         app:layout_constraintBottom_toTopOf="@+id/et_email"

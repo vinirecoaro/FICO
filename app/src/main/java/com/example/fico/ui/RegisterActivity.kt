@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -20,6 +21,7 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        setColorBasedOnTheme()
         setUpListeners()
     }
 
@@ -55,6 +57,18 @@ class RegisterActivity : AppCompatActivity() {
 
         viewModel.onSendEmailFailure = {
             Snackbar.make(binding.btRegister, "Erro ao enviar email de verificação.", Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun setColorBasedOnTheme(){
+        when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.etName.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.baseline_person_24_light,0, 0, 0)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                binding.etName.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.baseline_person_24_black,0, 0, 0)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
 
