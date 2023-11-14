@@ -13,7 +13,13 @@ class MainViewModel : ViewModel() {
 
     fun getUserEmail() : Deferred<String> =
         viewModelScope.async{
-        var email = firebaseAPI.getUserEmail()
+        val email = firebaseAPI.getUserEmail()
         return@async email
+    }
+
+    fun getUserName() : Deferred<String> =
+        viewModelScope.async {
+        val name = firebaseAPI.getUserName()
+        return@async name
     }
 }

@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         }
 
         getUserEmail()
+        getUserName()
     }
 
     override fun onSaveButtonFragmentClick() {
@@ -62,6 +63,16 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         lifecycleScope.launch {
             val email = viewModel.getUserEmail().await()
             headerUserEmail.text = email
+        }
+    }
+
+    private fun getUserName(){
+        val navigationView = findViewById<NavigationView>(R.id.nv_main)
+        val headerView = navigationView.getHeaderView(0)
+        val headerUserName = headerView.findViewById<TextView>(R.id.nv_header_user_name)
+        lifecycleScope.launch {
+            val name = viewModel.getUserName().await()
+            headerUserName.text = name
         }
     }
 }

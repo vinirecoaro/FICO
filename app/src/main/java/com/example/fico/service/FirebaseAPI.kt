@@ -35,6 +35,7 @@ class FirebaseAPI private constructor() {
         private var information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
         private var expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
         private var default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
+        private var user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
 
     }
 
@@ -90,7 +91,26 @@ class FirebaseAPI private constructor() {
     }
 
     suspend fun setUserName(name : String) = withContext(Dispatchers.IO){
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO).child(AppConstants.DATABASE.NAME).setValue(name)
+        user_info.child(AppConstants.DATABASE.NAME).setValue(name)
+    }
+
+    suspend fun getUserName() : String = withContext(Dispatchers.IO){
+        val userName = CompletableDeferred<String>()
+        user_info.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.child(AppConstants.DATABASE.NAME).exists()){
+                    val username2 = snapshot.child(AppConstants.DATABASE.NAME).value.toString()
+                    userName.complete(username2)
+                }else{
+                    userName.complete("User")
+                }
+
+            }
+            override fun onCancelled(error: DatabaseError) {
+                userName.complete("User")
+            }
+        })
+        return@withContext userName.await()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
