@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.content.res.Configuration
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.fico.R
@@ -13,7 +14,8 @@ class UserDataActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
+        binding.toolbar.setTitle("Dados Pessoais")
+        binding.toolbar.setTitleTextColor(Color.WHITE)
         setColorBasedOnTheme()
     }
 
