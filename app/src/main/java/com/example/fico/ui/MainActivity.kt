@@ -1,5 +1,7 @@
 package com.example.fico.ui
 
+import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -81,7 +83,8 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         val navigationView = findViewById<NavigationView>(R.id.nv_main)
         val headerView = navigationView.getHeaderView(0)
         headerView.setOnClickListener {
-
+            startActivity(Intent(this,UserDataActivity::class.java))
         }
     }
+
 }

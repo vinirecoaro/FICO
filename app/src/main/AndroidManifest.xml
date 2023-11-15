@@ -13,6 +13,9 @@
         android:theme="@style/Theme.FICO"
         tools:targetApi="31">
         <activity
+            android:name=".ui.UserDataActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.ResetPasswordActivity"
             android:exported="false" />
         <activity
