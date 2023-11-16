@@ -90,6 +90,17 @@ class FirebaseAPI private constructor() {
         return@withContext  email ?: ""
     }
 
+    suspend fun editUserName(name : String) : Boolean = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Boolean>()
+        try {
+            user_info.child(AppConstants.DATABASE.NAME).setValue(name)
+            result.complete(true)
+        }catch (e : Exception){
+            result.complete(false)
+        }
+        return@withContext result.await()
+    }
+
     suspend fun setUserName(name : String) = withContext(Dispatchers.IO){
         user_info.child(AppConstants.DATABASE.NAME).setValue(name)
     }

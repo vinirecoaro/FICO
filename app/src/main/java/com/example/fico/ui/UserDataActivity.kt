@@ -1,16 +1,22 @@
 package com.example.fico.ui
 
+import android.app.AlertDialog
 import android.content.res.Configuration
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityUserDataBinding
 import com.example.fico.ui.viewmodel.UserDataViewModel
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 
 class UserDataActivity : AppCompatActivity() {
 
@@ -25,6 +31,13 @@ class UserDataActivity : AppCompatActivity() {
         setColorBasedOnTheme()
         getUserEmail()
         getUserName()
+        setUpListeners()
+    }
+
+    private fun setUpListeners(){
+        binding.ivEditName.setOnClickListener {
+            setUserNameAlertDialog()
+        }
     }
 
     private fun setColorBasedOnTheme(){
@@ -51,5 +64,51 @@ class UserDataActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main){
             binding.tvEmailValue.text = viewModel.getUserEmail().await()
         }
+    }
+
+    private fun setUserNameAlertDialog() : CompletableDeferred<Boolean>{
+        val result = CompletableDeferred<Boolean>()
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle("Editar Nome")
+
+        val newUserName = EditText(this)
+        newUserName.hint = "Nome"
+        builder.setView(newUserName)
+
+        builder.setPositiveButton("Salvar") { dialog, which ->
+            val saveButton =  (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            saveButton.isEnabled = false
+            lifecycleScope.launch {
+                if(newUserName.text.toString() != ""){
+
+                    if(viewModel.editUserName(newUserName.text.toString()).await()){
+                        val rootView: View? = findViewById(android.R.id.content)
+                        if (rootView != null) {
+                            val snackbar = Snackbar.make(rootView, "Nome redefinido com sucesso", Snackbar.LENGTH_LONG)
+                            snackbar.show()
+                            getUserName()
+                            result.complete(true)
+                        }
+                    }else{
+                        val rootView: View? = findViewById(android.R.id.content)
+                        if (rootView != null) {
+                            val snackbar = Snackbar.make(rootView, "Falha ao redefinir o nome", Snackbar.LENGTH_LONG)
+                            snackbar.show()
+                            result.complete(false)
+                        }
+                    }
+                }
+            }
+            saveButton.isEnabled = true
+        }
+
+        builder.setNegativeButton("Cancelar") { dialog, which ->
+
+        }
+
+        val alertDialog = builder.create()
+        alertDialog.show()
+        return result
     }
 }

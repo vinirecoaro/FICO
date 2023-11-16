@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -41,9 +42,9 @@ class RegisterViewModel : ViewModel() {
         snackbar.show()
     }
 
-
-    private fun setUserName(name : String) = viewModelScope.async{
-        firebaseAPI.setUserName(name).await()
+    fun setUserName(name : String) =
+        viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.setUserName(name).await()
     }
 
     suspend fun createUser(name : String, email: String, password: String) {
@@ -54,7 +55,7 @@ class RegisterViewModel : ViewModel() {
                 if (task.user != null) {
                     firebaseAPI.addNewUserOnDatabase()
                     onUserCreated()
-                    setUserName(user.name)
+                    setUserName(user.name).await()
                 } else {
                     val message = "Ocorreu um erro ao criar a conta. Tente novamente mais tarde."
                     onError(message)

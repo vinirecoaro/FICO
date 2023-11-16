@@ -6,6 +6,7 @@ import com.example.fico.service.FirebaseAPI
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class UserDataViewModel : ViewModel() {
 
@@ -22,5 +23,11 @@ class UserDataViewModel : ViewModel() {
             val name = firebaseAPI.getUserName()
             return@async name
         }
+
+    fun editUserName(name : String) : Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.editUserName(name)
+        }
+    }
 
 }
