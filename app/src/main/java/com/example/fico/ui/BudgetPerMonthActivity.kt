@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -37,7 +38,9 @@ class BudgetPerMonthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(bindind.root)
-        setTitle("Budget por mês")
+
+        bindind.budgetPerMonthToolbar.setTitle("Orçamento por mês")
+        bindind.budgetPerMonthToolbar.setTitleTextColor(Color.WHITE)
 
         bindind.rvBudgetPerMonth.layoutManager = LinearLayoutManager(this)
         bindind.rvBudgetPerMonth.adapter = budgetPerMonthListAdapter
