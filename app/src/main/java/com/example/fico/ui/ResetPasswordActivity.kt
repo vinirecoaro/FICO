@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
@@ -22,7 +23,8 @@ class ResetPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setTitle("Redefinir Senha")
+        binding.resetPasswordToolbar.setTitle("Redefinir Senha")
+        binding.resetPasswordToolbar.setTitleTextColor(Color.WHITE)
 
         setUpListeners()
 
