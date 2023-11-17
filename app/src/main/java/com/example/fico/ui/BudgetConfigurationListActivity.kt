@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -26,6 +27,9 @@ class BudgetConfigurationListActivity : AppCompatActivity(),
         budgetConfiguratonListAdapter = BudgetConfigurationListAdapter(viewModel.budgetConfigurationList)
         budgetConfiguratonListAdapter.setOnItemClickListener(this)
         binding.rvBudgetConfigurationList.adapter = budgetConfiguratonListAdapter
+
+        binding.budgetConfigurationListToobar.setTitle("Orçamento")
+        binding.budgetConfigurationListToobar.setTitleTextColor(Color.WHITE)
 
     }
 
