@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -29,6 +30,10 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        binding.setDefaultBudgetToolbar.setTitle("Orçamento padrão")
+        binding.setDefaultBudgetToolbar.setTitleTextColor(Color.WHITE)
+
         setUpListeners()
         getDefaultBudget()
         setColorBasedOnTheme()
