@@ -23,6 +23,7 @@ class ResetPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         binding.resetPasswordToolbar.setTitle("Redefinir Senha")
         binding.resetPasswordToolbar.setTitleTextColor(Color.WHITE)
 
