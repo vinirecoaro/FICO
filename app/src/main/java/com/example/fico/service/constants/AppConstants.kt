@@ -30,4 +30,11 @@ class AppConstants private constructor() {
         }
     }
 
+    object XLS {
+        val TITLES : Array<String> = arrayOf("Preço", "Descrição", "Categoria", "Data")
+        val INDEX_NAME : Array<String> = arrayOf("price", "description", "category", "date")
+        const val SHEET_NAME = "Gastos"
+        const val FILE_NAME = "expenses"
+    }
+
 }

@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+
         if (arePermissionsGranted()){
             setSupportActionBar(binding.toolbar)
             binding.toolbar.setTitleTextColor(Color.WHITE)

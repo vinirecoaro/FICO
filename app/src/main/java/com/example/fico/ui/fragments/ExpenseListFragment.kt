@@ -2,14 +2,17 @@ package com.example.fico.ui.fragments
 
  import SwipeToDeleteCallback
  import android.content.Intent
+ import android.content.pm.PackageManager
+ import android.content.pm.ResolveInfo
  import android.content.res.Configuration
+ import android.os.Build
  import android.os.Bundle
  import android.text.Editable
  import android.text.TextWatcher
- import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
+ import android.view.*
+ import android.widget.ArrayAdapter
+ import androidx.annotation.RequiresApi
+ import androidx.core.content.FileProvider
  import androidx.core.widget.addTextChangedListener
  import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,14 +23,18 @@ import androidx.lifecycle.lifecycleScope
  import com.example.fico.R
  import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
-import com.example.fico.ui.EditExpenseActivity
+ import com.example.fico.service.constants.AppConstants
+ import com.example.fico.ui.EditExpenseActivity
 import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
-import com.example.fico.ui.viewmodel.ExpenseListViewModel
+ import com.example.fico.ui.interfaces.XLSInterface
+ import com.example.fico.ui.viewmodel.ExpenseListViewModel
+ import com.google.gson.Gson
  import kotlinx.coroutines.delay
  import kotlinx.coroutines.launch
+ import java.io.File
 
-class ExpenseListFragment : Fragment(){
+class ExpenseListFragment : Fragment(), XLSInterface{
 
     private var _binding : FragmentExpenseListBinding? = null
     private val binding get() = _binding!!
@@ -57,6 +64,49 @@ class ExpenseListFragment : Fragment(){
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.expense_list_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.expense_list_menu_generate_excel_file -> {
+                val expenseList = getExpenseList()
+                val gson = Gson()
+                var jsonArray =gson.toJsonTree(expenseList).asJsonArray
+
+                var file = generateXlsFile(requireActivity(), AppConstants.XLS.TITLES,
+                    AppConstants.XLS.INDEX_NAME, jsonArray, HashMap(), AppConstants.XLS.SHEET_NAME,
+                    AppConstants.XLS.FILE_NAME, 0)
+
+                if (file != null) {
+                    shareFile(file)
+                }
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun getExpenseList() : MutableList<Expense> {
+        val expenseList : MutableList<Expense> = ArrayList()
+        viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
+            for(expense in expenses){
+                var modifiedExpense = Expense("",expense.price.replace("R$ ",""),expense.description,expense.category, expense.date)
+                expenseList.add(modifiedExpense)
+            }
+        })
+        return expenseList
     }
 
     fun setUpListeners(){
@@ -139,6 +189,32 @@ class ExpenseListFragment : Fragment(){
         }
     }
 
+    private fun shareFile(filePath: File) {
+        val fileUri = FileProvider.getUriForFile(
+            requireContext(),
+            "com.example.fico.fileprovider", // authorities deve corresponder ao valor definido no AndroidManifest.xml
+            filePath
+        )
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "application/vnd.ms-excel"
+        intent.putExtra(Intent.EXTRA_STREAM, fileUri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        val chooser = Intent.createChooser(intent, "Share File")
+
+        val resInfoList: List<ResolveInfo> =
+            requireActivity().packageManager.queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY)
+
+        for (resolveInfo in resInfoList) {
+            val packageName: String = resolveInfo.activityInfo.packageName
+            requireActivity().grantUriPermission(
+                packageName,
+                fileUri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
+        startActivity(chooser)
+    }
 
 }
 

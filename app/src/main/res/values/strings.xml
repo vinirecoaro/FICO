@@ -38,4 +38,5 @@
     <string name="send">Enviar</string>
     <string name="nav_header_description">Nav Header Description</string>
     <string name="name_nav_header">Nome</string>
+    <string name="generate_spreadsheet">Gerar Planilha</string>
 </resources>
