@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -9,6 +10,8 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -28,33 +31,69 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val bindingAdd by lazy { FragmentAddExpenseBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<MainViewModel>()
+    private val permissions = arrayOf(
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+    private val permissionRequestCode = 123
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        binding.toolbar.setTitleTextColor(Color.WHITE)
+        if (arePermissionsGranted()){
+            setSupportActionBar(binding.toolbar)
+            binding.toolbar.setTitleTextColor(Color.WHITE)
 
-        val navView: BottomNavigationView = binding.bottomNavigation
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.navigation_home,
-            R.id.navigation_add_expense,
-            R.id.navigation_expense_list,
-            R.id.navigation_config
-        ),binding.drawerLayout)
-        setupActionBarWithNavController(navController,appBarConfiguration)
-        navView.setupWithNavController(navController)
+            val navView: BottomNavigationView = binding.bottomNavigation
+            val navController = findNavController(R.id.nav_host_fragment_activity_main)
+            val appBarConfiguration = AppBarConfiguration(
+                setOf(R.id.navigation_home,
+                    R.id.navigation_add_expense,
+                    R.id.navigation_expense_list,
+                    R.id.navigation_config
+                ),binding.drawerLayout)
+            setupActionBarWithNavController(navController,appBarConfiguration)
+            navView.setupWithNavController(navController)
 
-        binding.toolbar.setNavigationOnClickListener {
-            binding.drawerLayout.open()
+            binding.toolbar.setNavigationOnClickListener {
+                binding.drawerLayout.open()
+            }
+
+            getUserEmail()
+            getUserName()
+            setupListeners()
+        }else{
+            requestPermissions()
         }
 
-        getUserEmail()
-        getUserName()
-        setupListeners()
+    }
+
+    private fun arePermissionsGranted(): Boolean {
+        return permissions.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(this, permissions, permissionRequestCode)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == permissionRequestCode) {
+            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // Todas as permissões foram concedidas, você pode executar sua lógica aqui
+            } else {
+                // Algumas ou todas as permissões foram negadas, lide com isso conforme necessário
+            }
+        }
     }
 
     override fun onSaveButtonFragmentClick() {
