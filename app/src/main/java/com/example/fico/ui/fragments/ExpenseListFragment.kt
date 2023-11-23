@@ -192,7 +192,7 @@ class ExpenseListFragment : Fragment(), XLSInterface{
     private fun shareFile(filePath: File) {
         val fileUri = FileProvider.getUriForFile(
             requireContext(),
-            "com.example.fico.fileprovider", // authorities deve corresponder ao valor definido no AndroidManifest.xml
+            AppConstants.FILE_PROVIDER.AUTHORITY, // authorities deve corresponder ao valor definido no AndroidManifest.xml
             filePath
         )
         val intent = Intent(Intent.ACTION_SEND)

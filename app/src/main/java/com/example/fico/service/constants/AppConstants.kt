@@ -37,4 +37,8 @@ class AppConstants private constructor() {
         const val FILE_NAME = "expenses"
     }
 
+    object FILE_PROVIDER {
+        const val AUTHORITY = "com.example.fico.fileprovider"
+    }
+
 }
