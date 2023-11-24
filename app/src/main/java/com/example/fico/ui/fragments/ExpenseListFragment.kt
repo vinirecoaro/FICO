@@ -32,7 +32,10 @@ import com.example.fico.ui.interfaces.OnListItemClick
  import com.google.gson.Gson
  import kotlinx.coroutines.delay
  import kotlinx.coroutines.launch
+ import org.apache.poi.hssf.usermodel.HSSFWorkbook
+ import org.apache.poi.ss.usermodel.WorkbookFactory
  import java.io.File
+ import java.io.FileInputStream
 
 class ExpenseListFragment : Fragment(), XLSInterface{
 
@@ -186,6 +189,30 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                 binding.ivClearFilter.setImageResource(R.drawable.baseline_cancel_dark)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+    }
+
+    fun readXLSFile() {
+
+        val nomeArquivo = "caminho/do/seu/arquivo.xls"
+
+        try {
+            val arquivo = FileInputStream(File(nomeArquivo))
+            val workbook = HSSFWorkbook(arquivo)
+
+            val sheet = workbook.getSheetAt(0) // Obter a primeira planilha
+
+            for (linha in sheet) {
+                for (celula in linha) {
+                    // Processar cada célula conforme necessário
+                    val valorCelula = celula.toString()
+                    println("Valor da célula: $valorCelula")
+                }
+            }
+
+            arquivo.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
