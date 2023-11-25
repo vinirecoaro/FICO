@@ -192,29 +192,6 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         }
     }
 
-    fun readXLSFile() {
-
-        val nomeArquivo = "caminho/do/seu/arquivo.xls"
-
-        try {
-            val arquivo = FileInputStream(File(nomeArquivo))
-            val workbook = HSSFWorkbook(arquivo)
-
-            val sheet = workbook.getSheetAt(0) // Obter a primeira planilha
-
-            for (linha in sheet) {
-                for (celula in linha) {
-                    // Processar cada célula conforme necessário
-                    val valorCelula = celula.toString()
-                    println("Valor da célula: $valorCelula")
-                }
-            }
-
-            arquivo.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     private fun shareFile(filePath: File) {
         val fileUri = FileProvider.getUriForFile(

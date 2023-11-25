@@ -1,6 +1,7 @@
 package com.example.fico.ui.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -22,6 +23,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import java.io.File
+import java.io.FileInputStream
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -32,6 +36,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
+    private val PICK_XLS_FILE = 1
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -379,6 +384,37 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
+    }
+
+    fun readXLSFile() {
+
+        val nomeArquivo = "caminho/do/seu/arquivo.xls"
+
+        try {
+            val arquivo = FileInputStream(File(nomeArquivo))
+            val workbook = HSSFWorkbook(arquivo)
+
+            val sheet = workbook.getSheetAt(0) // Obter a primeira planilha
+
+            for (linha in sheet) {
+                for (celula in linha) {
+                    // Processar cada célula conforme necessário
+                    val valorCelula = celula.toString()
+                    println("Valor da célula: $valorCelula")
+                }
+            }
+
+            arquivo.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun selectArchive() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "application/vnd.ms-excel" // Filtrar para apenas arquivos .xls (ou .xlsx)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        startActivityForResult(Intent.createChooser(intent, "Selecione um arquivo .xls"), PICK_XLS_FILE)
     }
 
 }
