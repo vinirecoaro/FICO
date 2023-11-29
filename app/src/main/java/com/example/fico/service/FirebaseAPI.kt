@@ -711,6 +711,8 @@ class FirebaseAPI private constructor() {
             formattedDate = "Abril - ${date.substring(0,4)}"
         } else if(month == "05"){
             formattedDate = "Maio - ${date.substring(0,4)}"
+        } else if(month == "06"){
+            formattedDate = "Junho - ${date.substring(0,4)}"
         } else if(month == "07"){
             formattedDate = "Julho - ${date.substring(0,4)}"
         } else if(month == "08"){

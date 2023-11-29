@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         }else{
             requestPermissions()
         }
-
     }
 
     private fun arePermissionsGranted(): Boolean {
