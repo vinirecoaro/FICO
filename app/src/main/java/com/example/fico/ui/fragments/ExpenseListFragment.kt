@@ -12,6 +12,8 @@ package com.example.fico.ui.fragments
  import android.view.*
  import android.widget.ArrayAdapter
  import androidx.annotation.RequiresApi
+ import androidx.core.app.ActivityCompat
+ import androidx.core.content.ContextCompat
  import androidx.core.content.FileProvider
  import androidx.core.widget.addTextChangedListener
  import androidx.fragment.app.Fragment
@@ -44,6 +46,11 @@ class ExpenseListFragment : Fragment(), XLSInterface{
     private val viewModel by viewModels<ExpenseListViewModel>()
     private val expenseListAdapter = ExpenseListAdapter(emptyList())
     private var expenseMonthsList = arrayOf<String>()
+    private val permissionRequestCode = 123
+    private val permissions = arrayOf(
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentExpenseListBinding.inflate(inflater,container,false)
@@ -83,18 +90,24 @@ class ExpenseListFragment : Fragment(), XLSInterface{
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.expense_list_menu_generate_excel_file -> {
-                val expenseList = getExpenseList()
-                val gson = Gson()
-                var jsonArray =gson.toJsonTree(expenseList).asJsonArray
+                if (arePermissionsGranted()){
+                    val expenseList = getExpenseList()
+                    val gson = Gson()
+                    var jsonArray =gson.toJsonTree(expenseList).asJsonArray
 
-                var file = generateXlsFile(requireActivity(), AppConstants.XLS.TITLES,
-                    AppConstants.XLS.INDEX_NAME, jsonArray, HashMap(), AppConstants.XLS.SHEET_NAME,
-                    AppConstants.XLS.FILE_NAME, 0)
+                    var file = generateXlsFile(requireActivity(), AppConstants.XLS.TITLES,
+                        AppConstants.XLS.INDEX_NAME, jsonArray, HashMap(), AppConstants.XLS.SHEET_NAME,
+                        AppConstants.XLS.FILE_NAME, 0)
 
-                if (file != null) {
-                    shareFile(file)
+                    if (file != null) {
+                        shareFile(file)
+                    }
+                    return true
+                }else{
+                    requestPermissions()
+                    return true
                 }
-                return true
+
             }
 
             else -> return super.onOptionsItemSelected(item)
@@ -218,6 +231,33 @@ class ExpenseListFragment : Fragment(), XLSInterface{
             )
         }
         startActivity(chooser)
+    }
+
+
+    private fun arePermissionsGranted(): Boolean {
+        return permissions.all {
+            ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(requireActivity(), permissions, permissionRequestCode)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == permissionRequestCode) {
+            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // Todas as permissões foram concedidas, você pode executar sua lógica aqui
+            } else {
+                // Algumas ou todas as permissões foram negadas, lide com isso conforme necessário
+            }
+        }
     }
 
 }
