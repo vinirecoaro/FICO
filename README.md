@@ -6,8 +6,21 @@ intuitive way and informs the user of their spending for the month, available ba
 predicted in your budget, total amount spent and other functions to assist in
 financial control.
 
-![image](https://github.com/vinirecoaro/FICO/assets/123481891/80c58492-78c5-42cb-aded-8726498cf4af)  ![image](https://github.com/vinirecoaro/FICO/assets/123481891/486b581e-0b6f-458b-8bd5-d9a0c4c8f0cd)  ![image](https://github.com/vinirecoaro/FICO/assets/123481891/e679852d-828a-4a32-8461-3fe0905e6c1c)  
-![image](https://github.com/vinirecoaro/FICO/assets/123481891/efbb5927-404e-47f4-bac4-f0370587d012)
+![image](https://github.com/vinirecoaro/FICO/assets/123481891/f3377999-d41b-423b-b587-80ff453a2252)   ![image](https://github.com/vinirecoaro/FICO/assets/123481891/b85282a4-4c17-4e2a-993c-f6d9a007cc69)
+
+
+![image](https://github.com/vinirecoaro/FICO/assets/123481891/4b53b94f-06e3-427c-823b-19a42402d32a)   ![image](https://github.com/vinirecoaro/FICO/assets/123481891/1f04e6a5-0bb2-4ddd-991e-97eaa1c1a72d)
+
+
+![image](https://github.com/vinirecoaro/FICO/assets/123481891/0e0718bb-e818-493f-a559-81fedb15c002)   ![image](https://github.com/vinirecoaro/FICO/assets/123481891/496b63ce-a446-4824-9bb7-231d04604b9c)
+
+
+
+
+
+
+
+
 
 
 
