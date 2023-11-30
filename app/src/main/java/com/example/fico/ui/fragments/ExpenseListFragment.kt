@@ -5,10 +5,13 @@ package com.example.fico.ui.fragments
  import android.content.pm.PackageManager
  import android.content.pm.ResolveInfo
  import android.content.res.Configuration
+ import android.net.Uri
  import android.os.Build
  import android.os.Bundle
+ import android.provider.Settings
  import android.text.Editable
  import android.text.TextWatcher
+ import android.util.Log
  import android.view.*
  import android.widget.ArrayAdapter
  import androidx.annotation.RequiresApi
@@ -22,6 +25,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
  import androidx.recyclerview.widget.ItemTouchHelper
  import androidx.recyclerview.widget.LinearLayoutManager
+ import com.example.fico.Manifest
  import com.example.fico.R
  import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
@@ -51,6 +55,11 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
+
+    private companion object{
+        private const val STORAGE_PERMISSION_CODE = 100
+        private const val TAG = "PERMISSION_TAG"
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentExpenseListBinding.inflate(inflater,container,false)
@@ -242,6 +251,27 @@ class ExpenseListFragment : Fragment(), XLSInterface{
 
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(requireActivity(), permissions, permissionRequestCode)
+    }
+
+    private fun requestPermission(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            try {
+                Log.d(TAG, "requestPermission: try")
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+                val uri = Uri.fromParts("package", requireActivity().packageName, null)
+                intent.data = uri
+            }catch (e : java.lang.Exception){
+                Log.d(TAG, "RequestPermission: ", e)
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+            }
+        }
+        else{
+            ActivityCompat.requestPermissions(requireActivity(), permissions,
+                STORAGE_PERMISSION_CODE
+            )
+        }
     }
 
     override fun onRequestPermissionsResult(
