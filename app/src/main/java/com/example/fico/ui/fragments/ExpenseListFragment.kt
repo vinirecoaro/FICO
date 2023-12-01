@@ -8,24 +8,25 @@ package com.example.fico.ui.fragments
  import android.net.Uri
  import android.os.Build
  import android.os.Bundle
+ import android.os.Environment
  import android.provider.Settings
  import android.text.Editable
  import android.text.TextWatcher
  import android.util.Log
  import android.view.*
  import android.widget.ArrayAdapter
+ import android.widget.Toast
+ import androidx.activity.result.contract.ActivityResultContracts
  import androidx.annotation.RequiresApi
  import androidx.core.app.ActivityCompat
  import androidx.core.content.ContextCompat
  import androidx.core.content.FileProvider
- import androidx.core.widget.addTextChangedListener
  import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
  import androidx.recyclerview.widget.ItemTouchHelper
  import androidx.recyclerview.widget.LinearLayoutManager
- import com.example.fico.Manifest
  import com.example.fico.R
  import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
@@ -36,12 +37,8 @@ import com.example.fico.ui.interfaces.OnListItemClick
  import com.example.fico.ui.interfaces.XLSInterface
  import com.example.fico.ui.viewmodel.ExpenseListViewModel
  import com.google.gson.Gson
- import kotlinx.coroutines.delay
  import kotlinx.coroutines.launch
- import org.apache.poi.hssf.usermodel.HSSFWorkbook
- import org.apache.poi.ss.usermodel.WorkbookFactory
  import java.io.File
- import java.io.FileInputStream
 
 class ExpenseListFragment : Fragment(), XLSInterface{
 
@@ -99,24 +96,13 @@ class ExpenseListFragment : Fragment(), XLSInterface{
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.expense_list_menu_generate_excel_file -> {
-                if (arePermissionsGranted()){
-                    val expenseList = getExpenseList()
-                    val gson = Gson()
-                    var jsonArray =gson.toJsonTree(expenseList).asJsonArray
+                if (checkPermission()){
+                    generateFileAndShare()
 
-                    var file = generateXlsFile(requireActivity(), AppConstants.XLS.TITLES,
-                        AppConstants.XLS.INDEX_NAME, jsonArray, HashMap(), AppConstants.XLS.SHEET_NAME,
-                        AppConstants.XLS.FILE_NAME, 0)
-
-                    if (file != null) {
-                        shareFile(file)
-                    }
-                    return true
                 }else{
-                    requestPermissions()
-                    return true
+                    requestPermission()
                 }
-
+                return true
             }
 
             else -> return super.onOptionsItemSelected(item)
@@ -261,16 +247,44 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                 intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
                 val uri = Uri.fromParts("package", requireActivity().packageName, null)
                 intent.data = uri
+                storageActivityResultLauncher.launch(intent)
             }catch (e : java.lang.Exception){
                 Log.d(TAG, "RequestPermission: ", e)
                 val intent = Intent()
                 intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                storageActivityResultLauncher.launch(intent)
             }
         }
         else{
             ActivityCompat.requestPermissions(requireActivity(), permissions,
                 STORAGE_PERMISSION_CODE
             )
+        }
+    }
+
+    private val storageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        Log.d(TAG, "storageActivityResultLauncher: ")
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            if(Environment.isExternalStorageManager()){
+                Log.d(TAG, "storageActivityResultLauncher: ")
+                generateFileAndShare()
+            }else{
+                Log.d(TAG, "storageActivityResultLauncher: ")
+                Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",Toast.LENGTH_LONG).show()
+            }
+        }
+        else{
+
+        }
+    }
+
+    private fun checkPermission() : Boolean{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            Environment.isExternalStorageManager()
+        }else{
+            val write = ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            val read = ContextCompat.checkSelfPermission(requireContext(),  android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            write == PackageManager.PERMISSION_GRANTED && read == PackageManager.PERMISSION_GRANTED
         }
     }
 
@@ -282,11 +296,31 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == permissionRequestCode) {
-            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                // Todas as permissões foram concedidas, você pode executar sua lógica aqui
-            } else {
-                // Algumas ou todas as permissões foram negadas, lide com isso conforme necessário
+            if(grantResults.isNotEmpty()){
+                val write = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val read = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                if(write && read){
+                    Log.d(TAG, "onRequestPermissionResult: External Storage Permission granted")
+                    generateFileAndShare()
+                }else{
+                    Log.d(TAG, "onRequestPermissionResult: External Storage Permission denied ...")
+                    Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",Toast.LENGTH_LONG).show()
+                }
             }
+        }
+    }
+
+    private fun generateFileAndShare(){
+        val expenseList = getExpenseList()
+        val gson = Gson()
+        var jsonArray =gson.toJsonTree(expenseList).asJsonArray
+
+        var file = generateXlsFile(requireActivity(), AppConstants.XLS.TITLES,
+            AppConstants.XLS.INDEX_NAME, jsonArray, HashMap(), AppConstants.XLS.SHEET_NAME,
+            AppConstants.XLS.FILE_NAME, 0)
+
+        if (file != null) {
+            shareFile(file)
         }
     }
 
