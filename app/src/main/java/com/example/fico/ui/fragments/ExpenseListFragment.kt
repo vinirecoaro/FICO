@@ -37,6 +37,7 @@ import com.example.fico.ui.interfaces.OnListItemClick
  import com.example.fico.ui.interfaces.XLSInterface
  import com.example.fico.ui.viewmodel.ExpenseListViewModel
  import com.google.gson.Gson
+ import kotlinx.coroutines.delay
  import kotlinx.coroutines.launch
  import java.io.File
 
@@ -100,7 +101,10 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                     generateFileAndShare()
 
                 }else{
-                    requestPermission()
+                    lifecycleScope.launch {
+                        requestPermission()
+                    }
+
                 }
                 return true
             }
@@ -256,7 +260,10 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             if(Environment.isExternalStorageManager()){
                 Log.d(TAG, "storageActivityResultLauncher: ")
-                generateFileAndShare()
+                lifecycleScope.launch {
+                    delay(500)
+                    generateFileAndShare()
+                }
             }else{
                 Log.d(TAG, "storageActivityResultLauncher: ")
                 Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",Toast.LENGTH_LONG).show()
