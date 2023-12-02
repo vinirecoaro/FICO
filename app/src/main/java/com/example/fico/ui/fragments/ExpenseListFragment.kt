@@ -228,17 +228,6 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         startActivity(chooser)
     }
 
-
-    private fun arePermissionsGranted(): Boolean {
-        return permissions.all {
-            ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(requireActivity(), permissions, permissionRequestCode)
-    }
-
     private fun requestPermission(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             try {
