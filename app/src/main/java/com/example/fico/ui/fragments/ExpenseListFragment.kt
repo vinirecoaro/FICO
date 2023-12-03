@@ -1,6 +1,7 @@
 package com.example.fico.ui.fragments
 
  import SwipeToDeleteCallback
+ import android.app.Activity
  import android.content.Intent
  import android.content.pm.PackageManager
  import android.content.pm.ResolveInfo
@@ -39,7 +40,10 @@ import com.example.fico.ui.interfaces.OnListItemClick
  import com.google.gson.Gson
  import kotlinx.coroutines.delay
  import kotlinx.coroutines.launch
+ import org.apache.poi.ss.usermodel.*
+ import org.apache.poi.xssf.usermodel.XSSFWorkbook
  import java.io.File
+
 
 class ExpenseListFragment : Fragment(), XLSInterface{
 
@@ -53,6 +57,7 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
+    private val READ_REQUEST_CODE: Int = 42
 
     private companion object{
         private const val STORAGE_PERMISSION_CODE = 100
@@ -318,6 +323,55 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         if (file != null) {
             shareFile(file)
         }
+    }
+
+    private fun performFileSearch() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/vnd.ms-excel" // Define o tipo MIME para arquivos Excel
+        }
+
+        startActivityForResult(intent, READ_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        super.onActivityResult(requestCode, resultCode, resultData)
+
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            resultData?.data?.also { uri ->
+                // Aqui você pode ler os dados do arquivo usando o URI selecionado
+                // Implemente a lógica para ler o arquivo XLS a partir do URI
+            }
+        }
+    }
+
+    fun lerArquivoXLS(arquivoSelecionado : File): List<List<String>> {
+
+
+            val listaDeDados = mutableListOf<List<String>>()
+
+            val workbook: Workbook = XSSFWorkbook(arquivoSelecionado)
+            val sheet: Sheet = workbook.getSheetAt(0) // Pega a primeira planilha (índice 0)
+
+            for (i in 0..sheet.lastRowNum) {
+                val row: Row = sheet.getRow(i) ?: continue
+                val rowData = mutableListOf<String>()
+
+                for (j in 0 until row.lastCellNum) {
+                    val cell: Cell = row.getCell(j) ?: continue
+
+                    val cellValue: String = when (cell.cellType) {
+                        CellType.STRING -> cell.stringCellValue
+                        CellType.NUMERIC -> cell.numericCellValue.toString()
+                        CellType.BOOLEAN -> cell.booleanCellValue.toString()
+                        else -> ""
+                    }
+                    rowData.add(cellValue)
+                }
+                listaDeDados.add(rowData)
+            }
+            workbook.close()
+            return listaDeDados
     }
 
 }
