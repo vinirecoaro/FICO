@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item
-    android:id="@+id/expense_list_menu_generate_excel_file"
-    android:icon="@drawable/config_image"
-    android:title="@string/generate_spreadsheet"
-    />
+    <item
+        android:id="@+id/expense_list_menu_generate_excel_file"
+        android:icon="@drawable/config_image"
+        android:title="@string/generate_spreadsheet"
+        />
+
+    <item
+        android:id="@+id/expense_list_menu_get_data_from_file"
+        android:icon="@drawable/config_image"
+        android:title="@string/import_data"
+        />
 </menu>

@@ -2,6 +2,8 @@ package com.example.fico.ui.fragments
 
  import SwipeToDeleteCallback
  import android.app.Activity
+ import android.content.ContentResolver
+ import android.content.Context
  import android.content.Intent
  import android.content.pm.PackageManager
  import android.content.pm.ResolveInfo
@@ -43,6 +45,7 @@ import com.example.fico.ui.interfaces.OnListItemClick
  import org.apache.poi.ss.usermodel.*
  import org.apache.poi.xssf.usermodel.XSSFWorkbook
  import java.io.File
+ import java.io.FileOutputStream
 
 
 class ExpenseListFragment : Fragment(), XLSInterface{
@@ -111,6 +114,13 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                     }
 
                 }
+                return true
+            }
+
+            R.id.expense_list_menu_get_data_from_file -> {
+
+                performFileSearch()
+
                 return true
             }
 
@@ -339,18 +349,16 @@ class ExpenseListFragment : Fragment(), XLSInterface{
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { uri ->
-                // Aqui você pode ler os dados do arquivo usando o URI selecionado
-                // Implemente a lógica para ler o arquivo XLS a partir do URI
+                val selectedFile = uriToFile(requireContext(), uri)
+                val expenseListFromFile = selectedFile?.let { readXLSFile(it) }
             }
         }
     }
 
-    fun lerArquivoXLS(arquivoSelecionado : File): List<List<String>> {
-
-
+    fun readXLSFile(selectedFile : File): List<List<String>> {
             val listaDeDados = mutableListOf<List<String>>()
 
-            val workbook: Workbook = XSSFWorkbook(arquivoSelecionado)
+            val workbook: Workbook = XSSFWorkbook(selectedFile)
             val sheet: Sheet = workbook.getSheetAt(0) // Pega a primeira planilha (índice 0)
 
             for (i in 0..sheet.lastRowNum) {
@@ -372,6 +380,24 @@ class ExpenseListFragment : Fragment(), XLSInterface{
             }
             workbook.close()
             return listaDeDados
+    }
+
+    fun uriToFile(context: Context, uri: Uri): File? {
+        val contentResolver: ContentResolver = context.contentResolver
+
+        val inputStream = contentResolver.openInputStream(uri)
+        val file = File.createTempFile("temp_file", ".xls", context.cacheDir)
+        inputStream?.use { input ->
+            FileOutputStream(file).use { output ->
+                val buffer = ByteArray(4 * 1024)
+                var read: Int
+                while (input.read(buffer).also { read = it } != -1) {
+                    output.write(buffer, 0, read)
+                }
+                output.flush()
+            }
+        }
+        return file
     }
 
 }
