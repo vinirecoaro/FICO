@@ -45,6 +45,7 @@ import com.example.fico.ui.interfaces.OnListItemClick
  import org.apache.poi.ss.usermodel.*
  import org.apache.poi.xssf.usermodel.XSSFWorkbook
  import java.io.File
+ import java.io.FileInputStream
  import java.io.FileOutputStream
 
 
@@ -349,8 +350,10 @@ class ExpenseListFragment : Fragment(), XLSInterface{
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { uri ->
-                val selectedFile = uriToFile(requireContext(), uri)
-                val expenseListFromFile = selectedFile?.let { readXLSFile(it) }
+                val uriValue = uri.path.toString()
+                readFromExcelFile(uriValue)
+                /*val selectedFile = uriToFile(requireContext(), uri)
+                val expenseListFromFile = selectedFile?.let { readXLSFile(it) }*/
             }
         }
     }
@@ -398,6 +401,21 @@ class ExpenseListFragment : Fragment(), XLSInterface{
             }
         }
         return file
+    }
+
+    fun readFromExcelFile(filepath: String) {
+        val inputStream = FileInputStream(filepath)
+        //Instantiate Excel workbook using existing file:
+        var xlWb = WorkbookFactory.create(inputStream)
+
+        //Row index specifies the row in the worksheet (starting at 0):
+        val rowNumber = 0
+        //Cell index specifies the column within the chosen row (starting at 0):
+        val columnNumber = 0
+
+        //Get reference to first sheet:
+        val xlWs = xlWb.getSheetAt(0)
+        println(xlWs.getRow(rowNumber).getCell(columnNumber))
     }
 
 }
