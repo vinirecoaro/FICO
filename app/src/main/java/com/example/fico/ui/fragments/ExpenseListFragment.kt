@@ -350,18 +350,32 @@ class ExpenseListFragment : Fragment(), XLSInterface{
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { uri ->
-                val uriValue = uri.path.toString()
-                readFromExcelFile(uriValue)
-                /*val selectedFile = uriToFile(requireContext(), uri)
-                val expenseListFromFile = selectedFile?.let { readXLSFile(it) }*/
+                val inputStream = requireContext().contentResolver.openInputStream(uri)
+
+                if (inputStream != null) {
+                    val outputStream = FileOutputStream(getNewFileUri().path) // Substitua getNewFileUri() pelo método que você usa para obter a URI do novo arquivo.
+
+                    inputStream.use { input ->
+                        outputStream.use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+
+                    // Agora você pode trabalhar com o novo arquivo (cópia) no código.
+                    val newPath = getNewFileUri().path.toString()
+                    readFromExcelFile(newPath)
+                }
+
             }
         }
     }
 
-    fun readXLSFile(selectedFile : File): List<List<String>> {
+    fun readXLSFile(filePath: String): List<List<String>> {
             val listaDeDados = mutableListOf<List<String>>()
 
-            val workbook: Workbook = XSSFWorkbook(selectedFile)
+            val file = File(filePath)
+            val inputStream = FileInputStream(file)
+            val workbook: Workbook = XSSFWorkbook(inputStream)
             val sheet: Sheet = workbook.getSheetAt(0) // Pega a primeira planilha (índice 0)
 
             for (i in 0..sheet.lastRowNum) {
@@ -385,37 +399,42 @@ class ExpenseListFragment : Fragment(), XLSInterface{
             return listaDeDados
     }
 
-    fun uriToFile(context: Context, uri: Uri): File? {
-        val contentResolver: ContentResolver = context.contentResolver
-
-        val inputStream = contentResolver.openInputStream(uri)
-        val file = File.createTempFile("temp_file", ".xls", context.cacheDir)
-        inputStream?.use { input ->
-            FileOutputStream(file).use { output ->
-                val buffer = ByteArray(4 * 1024)
-                var read: Int
-                while (input.read(buffer).also { read = it } != -1) {
-                    output.write(buffer, 0, read)
-                }
-                output.flush()
-            }
-        }
-        return file
-    }
-
     fun readFromExcelFile(filepath: String) {
         val inputStream = FileInputStream(filepath)
         //Instantiate Excel workbook using existing file:
         var xlWb = WorkbookFactory.create(inputStream)
-
-        //Row index specifies the row in the worksheet (starting at 0):
-        val rowNumber = 0
-        //Cell index specifies the column within the chosen row (starting at 0):
-        val columnNumber = 0
-
         //Get reference to first sheet:
         val xlWs = xlWb.getSheetAt(0)
-        println(xlWs.getRow(rowNumber).getCell(columnNumber))
+
+        for (rowIndex in xlWs.firstRowNum..xlWs.lastRowNum) {
+            val row = xlWs.getRow(rowIndex) ?: continue
+
+            // Iterando pelas colunas dentro da linha atual
+            for (columnIndex in row.firstCellNum until row.lastCellNum) {
+                val cell = row.getCell(columnIndex)
+                val cellValue = getCellValueAsString(cell)
+                println("Valor na célula [$rowIndex][$columnIndex]: $cellValue")
+            }
+        }
+        xlWb.close()
+        inputStream.close()
+
+    }
+
+    fun getCellValueAsString(cell: org.apache.poi.ss.usermodel.Cell?): String {
+        return when (cell?.cellType) {
+            org.apache.poi.ss.usermodel.CellType.STRING -> cell.stringCellValue
+            org.apache.poi.ss.usermodel.CellType.NUMERIC -> cell.numericCellValue.toString()
+            org.apache.poi.ss.usermodel.CellType.BOOLEAN -> cell.booleanCellValue.toString()
+            else -> ""
+        }
+    }
+
+    // Método para gerar uma URI para o novo arquivo (exemplo).
+    private fun getNewFileUri(): Uri {
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val newFile = File(downloadsDir, "expenses.xlsx")
+        return Uri.fromFile(newFile)
     }
 
 }
