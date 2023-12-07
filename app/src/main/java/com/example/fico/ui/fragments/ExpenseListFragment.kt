@@ -108,20 +108,22 @@ class ExpenseListFragment : Fragment(), XLSInterface{
             R.id.expense_list_menu_generate_excel_file -> {
                 if (checkPermission()){
                     generateFileAndShare()
-
                 }else{
                     lifecycleScope.launch {
                         requestPermission()
                     }
-
                 }
                 return true
             }
 
             R.id.expense_list_menu_get_data_from_file -> {
-
-                performFileSearch()
-
+                if (checkPermission()){
+                    performFileSearch()
+                }else{
+                    lifecycleScope.launch {
+                        requestPermission()
+                    }
+                }
                 return true
             }
 
@@ -360,7 +362,6 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                             input.copyTo(output)
                         }
                     }
-
                     // Agora você pode trabalhar com o novo arquivo (cópia) no código.
                     val newPath = getNewFileUri().path.toString()
                     readFromExcelFile(newPath)
@@ -370,62 +371,64 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         }
     }
 
-    fun readXLSFile(filePath: String): List<List<String>> {
-            val listaDeDados = mutableListOf<List<String>>()
-
-            val file = File(filePath)
-            val inputStream = FileInputStream(file)
-            val workbook: Workbook = XSSFWorkbook(inputStream)
-            val sheet: Sheet = workbook.getSheetAt(0) // Pega a primeira planilha (índice 0)
-
-            for (i in 0..sheet.lastRowNum) {
-                val row: Row = sheet.getRow(i) ?: continue
-                val rowData = mutableListOf<String>()
-
-                for (j in 0 until row.lastCellNum) {
-                    val cell: Cell = row.getCell(j) ?: continue
-
-                    val cellValue: String = when (cell.cellType) {
-                        CellType.STRING -> cell.stringCellValue
-                        CellType.NUMERIC -> cell.numericCellValue.toString()
-                        CellType.BOOLEAN -> cell.booleanCellValue.toString()
-                        else -> ""
-                    }
-                    rowData.add(cellValue)
-                }
-                listaDeDados.add(rowData)
-            }
-            workbook.close()
-            return listaDeDados
-    }
-
-    fun readFromExcelFile(filepath: String) {
+    fun readFromExcelFile(filepath: String) : MutableList<Expense>{
         val inputStream = FileInputStream(filepath)
         //Instantiate Excel workbook using existing file:
         var xlWb = WorkbookFactory.create(inputStream)
         //Get reference to first sheet:
         val xlWs = xlWb.getSheetAt(0)
 
-        for (rowIndex in xlWs.firstRowNum..xlWs.lastRowNum) {
+        var price = ""
+        var description = ""
+        var category = ""
+        var date = ""
+
+        val expenseList = mutableListOf<Expense>()
+
+        for (rowIndex in xlWs.firstRowNum+1..xlWs.lastRowNum) {
             val row = xlWs.getRow(rowIndex) ?: continue
 
             // Iterando pelas colunas dentro da linha atual
             for (columnIndex in row.firstCellNum until row.lastCellNum) {
                 val cell = row.getCell(columnIndex)
                 val cellValue = getCellValueAsString(cell)
-                println("Valor na célula [$rowIndex][$columnIndex]: $cellValue")
+                when (columnIndex) {
+                    0 -> {
+                        price = cellValue.replace("R$","")
+                        price = cellValue.replace("R$ ","")
+                        price = cellValue.replace("$","")
+                        price = cellValue.replace("$ ","")
+                        price = cellValue.replace(",",".")
+
+                    }
+                    1 -> {
+                        description = cellValue.replace("  "," ")
+                        description = cellValue.replace("  "," ")
+                    }
+                    2 -> {
+                        category = cellValue
+                    }
+                    3 -> {
+                        date = cellValue
+                    }
+                }
+
             }
+            val expense = Expense("", price, description, category, date)
+            expenseList.add(expense)
         }
         xlWb.close()
         inputStream.close()
+        println("ExpenseList = $expenseList")
 
+        return expenseList
     }
 
-    fun getCellValueAsString(cell: org.apache.poi.ss.usermodel.Cell?): String {
+    fun getCellValueAsString(cell: Cell?): String {
         return when (cell?.cellType) {
-            org.apache.poi.ss.usermodel.CellType.STRING -> cell.stringCellValue
-            org.apache.poi.ss.usermodel.CellType.NUMERIC -> cell.numericCellValue.toString()
-            org.apache.poi.ss.usermodel.CellType.BOOLEAN -> cell.booleanCellValue.toString()
+            CellType.STRING -> cell.stringCellValue
+            CellType.NUMERIC -> cell.numericCellValue.toString()
+            CellType.BOOLEAN -> cell.booleanCellValue.toString()
             else -> ""
         }
     }
