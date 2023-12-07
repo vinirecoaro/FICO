@@ -1,31 +1,47 @@
 package com.example.fico.ui.fragments
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.text.*
+import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
+import com.example.fico.model.Expense
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.CellType
+import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -36,7 +52,17 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
-    private val PICK_XLS_FILE = 1
+    private val READ_REQUEST_CODE: Int = 42
+    private val permissionRequestCode = 123
+    private val permissions = arrayOf(
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+
+    private companion object{
+        private const val STORAGE_PERMISSION_CODE = 100
+        private const val TAG = "PERMISSION_TAG"
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -84,6 +110,18 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                 binding.actvCategory.setText("")
                 return true
             }
+
+            R.id.add_expense_menu_get_data_from_file -> {
+                if (checkPermission()){
+                    performFileSearch()
+                }else{
+                    lifecycleScope.launch {
+                        requestPermission()
+                    }
+                }
+                return true
+            }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -386,35 +424,188 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         }
     }
 
-    fun readXLSFile() {
+    private fun performFileSearch() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/vnd.ms-excel" // Define o tipo MIME para arquivos Excel
+        }
 
-        val nomeArquivo = "caminho/do/seu/arquivo.xls"
+        startActivityForResult(intent, READ_REQUEST_CODE)
+    }
 
-        try {
-            val arquivo = FileInputStream(File(nomeArquivo))
-            val workbook = HSSFWorkbook(arquivo)
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        super.onActivityResult(requestCode, resultCode, resultData)
 
-            val sheet = workbook.getSheetAt(0) // Obter a primeira planilha
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            resultData?.data?.also { uri ->
+                val inputStream = requireContext().contentResolver.openInputStream(uri)
 
-            for (linha in sheet) {
-                for (celula in linha) {
-                    // Processar cada célula conforme necessário
-                    val valorCelula = celula.toString()
-                    println("Valor da célula: $valorCelula")
+                if (inputStream != null) {
+                    val outputStream = FileOutputStream(getNewFileUri().path) // Substitua getNewFileUri() pelo método que você usa para obter a URI do novo arquivo.
+
+                    inputStream.use { input ->
+                        outputStream.use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    // Agora você pode trabalhar com o novo arquivo (cópia) no código.
+                    val newPath = getNewFileUri().path.toString()
+                    var expenseList = readFromExcelFile(newPath)
+                    lifecycleScope.launch(Dispatchers.Main){
+                        for (expense in expenseList){
+                            viewModel.addExpense(expense.price, expense.description, expense.category, expense.date)
+                        }
+                    }
                 }
             }
-
-            arquivo.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
-    private fun selectArchive() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "application/vnd.ms-excel" // Filtrar para apenas arquivos .xls (ou .xlsx)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        startActivityForResult(Intent.createChooser(intent, "Selecione um arquivo .xls"), PICK_XLS_FILE)
+    fun readFromExcelFile(filepath: String) : MutableList<Expense>{
+        val inputStream = FileInputStream(filepath)
+        //Instantiate Excel workbook using existing file:
+        var xlWb = WorkbookFactory.create(inputStream)
+        //Get reference to first sheet:
+        val xlWs = xlWb.getSheetAt(0)
+
+        var price = ""
+        var description = ""
+        var category = ""
+        var date = ""
+
+        val expenseList = mutableListOf<Expense>()
+
+        for (rowIndex in xlWs.firstRowNum+1..xlWs.lastRowNum) {
+            val row = xlWs.getRow(rowIndex) ?: continue
+
+            // Iterando pelas colunas dentro da linha atual
+            for (columnIndex in row.firstCellNum until row.lastCellNum) {
+                val cell = row.getCell(columnIndex)
+                val cellValue = getCellValueAsString(cell)
+                when (columnIndex) {
+                    0 -> {
+                        price = cellValue.replace("R$","")
+                        price = cellValue.replace("R$ ","")
+                        price = cellValue.replace("$","")
+                        price = cellValue.replace("$ ","")
+                        price = cellValue.replace(",",".")
+
+                    }
+                    1 -> {
+                        description = cellValue.replace("  "," ")
+                        description = cellValue.replace("  "," ")
+                    }
+                    2 -> {
+                        category = cellValue
+                    }
+                    3 -> {
+                        date = cellValue
+                        val day = date.substring(0, 2)
+                        val month = date.substring(3, 5)
+                        val year = date.substring(6, 10)
+                        date = "$year-$month-$day"
+                    }
+                }
+
+            }
+            val expense = Expense("", price, description, category, date)
+            expenseList.add(expense)
+        }
+        xlWb.close()
+        inputStream.close()
+
+        return expenseList
+    }
+
+    fun getCellValueAsString(cell: Cell?): String {
+        return when (cell?.cellType) {
+            CellType.STRING -> cell.stringCellValue
+            CellType.NUMERIC -> cell.numericCellValue.toString()
+            CellType.BOOLEAN -> cell.booleanCellValue.toString()
+            else -> ""
+        }
+    }
+
+    // Método para gerar uma URI para o novo arquivo (exemplo).
+    private fun getNewFileUri(): Uri {
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val newFile = File(downloadsDir, "expenses.xlsx")
+        return Uri.fromFile(newFile)
+    }
+
+    private fun requestPermission(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            try {
+                Log.d(TAG, "requestPermission: try")
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+                val uri = Uri.fromParts("package", requireActivity().packageName, null)
+                intent.data = uri
+                storageActivityResultLauncher.launch(intent)
+            }catch (e : java.lang.Exception){
+                Log.d(TAG, "RequestPermission: ", e)
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                storageActivityResultLauncher.launch(intent)
+            }
+        }
+        else{
+            ActivityCompat.requestPermissions(requireActivity(), permissions,
+                STORAGE_PERMISSION_CODE
+            )
+        }
+    }
+
+    private val storageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        Log.d(TAG, "storageActivityResultLauncher: ")
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            if(Environment.isExternalStorageManager()){
+                Log.d(TAG, "storageActivityResultLauncher: ")
+                lifecycleScope.launch {
+                    delay(500)
+                }
+            }else{
+                Log.d(TAG, "storageActivityResultLauncher: ")
+                Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",
+                    Toast.LENGTH_LONG).show()
+            }
+        }
+        else{
+
+        }
+    }
+
+    private fun checkPermission() : Boolean{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            Environment.isExternalStorageManager()
+        }else{
+            val write = ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            val read = ContextCompat.checkSelfPermission(requireContext(),  android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            write == PackageManager.PERMISSION_GRANTED && read == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == permissionRequestCode) {
+            if(grantResults.isNotEmpty()){
+                val write = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val read = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                if(write && read){
+                    Log.d(TAG, "onRequestPermissionResult: External Storage Permission granted")
+                }else{
+                    Log.d(TAG, "onRequestPermissionResult: External Storage Permission denied ...")
+                    Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",
+                        Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
 }

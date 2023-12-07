@@ -40,6 +40,7 @@ import com.example.fico.ui.interfaces.OnListItemClick
  import com.example.fico.ui.interfaces.XLSInterface
  import com.example.fico.ui.viewmodel.ExpenseListViewModel
  import com.google.gson.Gson
+ import kotlinx.coroutines.Dispatchers
  import kotlinx.coroutines.delay
  import kotlinx.coroutines.launch
  import org.apache.poi.ss.usermodel.*
@@ -61,11 +62,11 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
-    private val READ_REQUEST_CODE: Int = 42
+
 
     private companion object{
         private const val STORAGE_PERMISSION_CODE = 100
-        private const val TAG = "PERMISSION_TAG"
+        internal const val TAG = "PERMISSION_TAG"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -108,17 +109,6 @@ class ExpenseListFragment : Fragment(), XLSInterface{
             R.id.expense_list_menu_generate_excel_file -> {
                 if (checkPermission()){
                     generateFileAndShare()
-                }else{
-                    lifecycleScope.launch {
-                        requestPermission()
-                    }
-                }
-                return true
-            }
-
-            R.id.expense_list_menu_get_data_from_file -> {
-                if (checkPermission()){
-                    performFileSearch()
                 }else{
                     lifecycleScope.launch {
                         requestPermission()
@@ -280,7 +270,6 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                 Log.d(TAG, "storageActivityResultLauncher: ")
                 lifecycleScope.launch {
                     delay(500)
-                    generateFileAndShare()
                 }
             }else{
                 Log.d(TAG, "storageActivityResultLauncher: ")
@@ -315,7 +304,6 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                 val read = grantResults[1] == PackageManager.PERMISSION_GRANTED
                 if(write && read){
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission granted")
-                    generateFileAndShare()
                 }else{
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission denied ...")
                     Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",Toast.LENGTH_LONG).show()
@@ -338,107 +326,6 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         }
     }
 
-    private fun performFileSearch() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/vnd.ms-excel" // Define o tipo MIME para arquivos Excel
-        }
-
-        startActivityForResult(intent, READ_REQUEST_CODE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            resultData?.data?.also { uri ->
-                val inputStream = requireContext().contentResolver.openInputStream(uri)
-
-                if (inputStream != null) {
-                    val outputStream = FileOutputStream(getNewFileUri().path) // Substitua getNewFileUri() pelo método que você usa para obter a URI do novo arquivo.
-
-                    inputStream.use { input ->
-                        outputStream.use { output ->
-                            input.copyTo(output)
-                        }
-                    }
-                    // Agora você pode trabalhar com o novo arquivo (cópia) no código.
-                    val newPath = getNewFileUri().path.toString()
-                    readFromExcelFile(newPath)
-                }
-
-            }
-        }
-    }
-
-    fun readFromExcelFile(filepath: String) : MutableList<Expense>{
-        val inputStream = FileInputStream(filepath)
-        //Instantiate Excel workbook using existing file:
-        var xlWb = WorkbookFactory.create(inputStream)
-        //Get reference to first sheet:
-        val xlWs = xlWb.getSheetAt(0)
-
-        var price = ""
-        var description = ""
-        var category = ""
-        var date = ""
-
-        val expenseList = mutableListOf<Expense>()
-
-        for (rowIndex in xlWs.firstRowNum+1..xlWs.lastRowNum) {
-            val row = xlWs.getRow(rowIndex) ?: continue
-
-            // Iterando pelas colunas dentro da linha atual
-            for (columnIndex in row.firstCellNum until row.lastCellNum) {
-                val cell = row.getCell(columnIndex)
-                val cellValue = getCellValueAsString(cell)
-                when (columnIndex) {
-                    0 -> {
-                        price = cellValue.replace("R$","")
-                        price = cellValue.replace("R$ ","")
-                        price = cellValue.replace("$","")
-                        price = cellValue.replace("$ ","")
-                        price = cellValue.replace(",",".")
-
-                    }
-                    1 -> {
-                        description = cellValue.replace("  "," ")
-                        description = cellValue.replace("  "," ")
-                    }
-                    2 -> {
-                        category = cellValue
-                    }
-                    3 -> {
-                        date = cellValue
-                    }
-                }
-
-            }
-            val expense = Expense("", price, description, category, date)
-            expenseList.add(expense)
-        }
-        xlWb.close()
-        inputStream.close()
-        println("ExpenseList = $expenseList")
-
-        return expenseList
-    }
-
-    fun getCellValueAsString(cell: Cell?): String {
-        return when (cell?.cellType) {
-            CellType.STRING -> cell.stringCellValue
-            CellType.NUMERIC -> cell.numericCellValue.toString()
-            CellType.BOOLEAN -> cell.booleanCellValue.toString()
-            else -> ""
-        }
-    }
-
-    // Método para gerar uma URI para o novo arquivo (exemplo).
-    private fun getNewFileUri(): Uri {
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val newFile = File(downloadsDir, "expenses.xlsx")
-        return Uri.fromFile(newFile)
-    }
 
 }
 
