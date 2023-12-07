@@ -112,10 +112,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
             }
 
             R.id.add_expense_menu_get_data_from_file -> {
-                if (checkPermission()){
-                    performFileSearch()
-                }else{
-                    lifecycleScope.launch {
+                lifecycleScope.launch {
+                    if (checkPermission()){
+                        if(viewModel.checkIfExistDefaultBudget().await()){
+                            performFileSearch()
+                        }else{
+                            setUpDefaultBudgetAlertDialog()
+                        }
+                    }else{
                         requestPermission()
                     }
                 }
