@@ -458,7 +458,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     var expenseList = readFromExcelFile(newPath)
                     lifecycleScope.launch(Dispatchers.Main){
                         for (expense in expenseList){
-                            viewModel.addExpense(expense.price, expense.description, expense.category, expense.date)
+                            val dateToCheck = expense.date.substring(0,7)
+                            val existDate = viewModel.checkIfExistsDateOnDatabse(dateToCheck)
+                            if(existDate.await()){
+                                viewModel.addExpense(expense.price, expense.description, expense.category, expense.date)
+                            }else{
+                                viewModel.setUpBudget(viewModel.getDefaultBudget(formatted = false).await(), dateToCheck)
+                                viewModel.addExpense(expense.price, expense.description, expense.category, expense.date)
+                            }
                         }
                     }
                 }

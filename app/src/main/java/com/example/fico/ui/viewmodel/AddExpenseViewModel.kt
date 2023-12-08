@@ -76,5 +76,18 @@ class AddExpenseViewModel : ViewModel() {
         }
     }
 
+    fun setUpBudget(budget: String, date: String){
+        viewModelScope.async (Dispatchers.IO){
+            firebaseAPI.setUpBudget(budget, date)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun getDefaultBudget(formatted : Boolean = true):Deferred<String>{
+        return viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.getDefaultBudget(formatted)
+        }
+    }
+
 
 }
