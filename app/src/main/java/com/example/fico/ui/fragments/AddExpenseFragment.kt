@@ -455,25 +455,47 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     }
                     // Agora você pode trabalhar com o novo arquivo (cópia) no código.
                     val newPath = getNewFileUri().path.toString()
-                    var expenseList = readFromExcelFile(newPath)
-                    lifecycleScope.launch(Dispatchers.Main){
-                        for (expense in expenseList){
-                            val dateToCheck = expense.date.substring(0,7)
-                            val existDate = viewModel.checkIfExistsDateOnDatabse(dateToCheck)
-                            if(existDate.await()){
-                                viewModel.addExpense(expense.price, expense.description, expense.category, expense.date)
-                            }else{
-                                viewModel.setUpBudget(viewModel.getDefaultBudget(formatted = false).await(), dateToCheck)
-                                viewModel.addExpense(expense.price, expense.description, expense.category, expense.date)
+                    var readFileResult  = readFromExcelFile(newPath)
+                    if(readFileResult.second){
+                        lifecycleScope.launch(Dispatchers.Main){
+                            for (expense in readFileResult.first){
+                                val dateToCheck = expense.date.substring(0,7)
+                                val existDate = viewModel.checkIfExistsDateOnDatabse(dateToCheck)
+                                if(existDate.await()){
+                                    viewModel.addExpense(expense.price,
+                                        expense.description,
+                                        expense.category,
+                                        expense.date)
+                                }else{
+                                    viewModel.setUpBudget(
+                                        viewModel.getDefaultBudget(formatted = false).await(),
+                                        dateToCheck)
+                                    viewModel.addExpense(
+                                        expense.price,
+                                        expense.description,
+                                        expense.category,
+                                        expense.date)
+                                }
                             }
                         }
+                        Toast.makeText(
+                            requireContext(),
+                            "Dados importados com sucesso",
+                            Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(
+                            requireContext(),
+                            "Não foi possível importador os dados, " +
+                                    "verifique se os dados na " +
+                                    "planilha estão corretos",
+                            Toast.LENGTH_LONG).show()
                     }
                 }
             }
         }
     }
 
-    fun readFromExcelFile(filepath: String) : MutableList<Expense>{
+    fun readFromExcelFile(filepath: String) : Pair<MutableList<Expense>,Boolean>{
         val inputStream = FileInputStream(filepath)
         //Instantiate Excel workbook using existing file:
         var xlWb = WorkbookFactory.create(inputStream)
@@ -484,6 +506,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         var description = ""
         var category = ""
         var date = ""
+
+        var result = true
 
         val expenseList = mutableListOf<Expense>()
 
@@ -501,7 +525,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                         price = cellValue.replace("$","")
                         price = cellValue.replace("$ ","")
                         price = cellValue.replace(",",".")
-
+                        if(price.toDoubleOrNull() == null){
+                            result = false
+                            expenseList.clear()
+                            return Pair(expenseList, result)
+                        }
                     }
                     1 -> {
                         description = cellValue.replace("  "," ")
@@ -512,10 +540,16 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     }
                     3 -> {
                         date = cellValue
-                        val day = date.substring(0, 2)
-                        val month = date.substring(3, 5)
-                        val year = date.substring(6, 10)
-                        date = "$year-$month-$day"
+                        if(verifyDateFormat(date)){
+                            val day = date.substring(0, 2)
+                            val month = date.substring(3, 5)
+                            val year = date.substring(6, 10)
+                            date = "$year-$month-$day"
+                        }else{
+                            result = false
+                            expenseList.clear()
+                            return Pair(expenseList, result)
+                        }
                     }
                 }
 
@@ -526,7 +560,12 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         xlWb.close()
         inputStream.close()
 
-        return expenseList
+        return Pair(expenseList, result)
+    }
+
+    private fun verifyDateFormat(date: String) : Boolean{
+        val formatoData = "\\d{2}/\\d{2}/\\d{4}" // Expressão regular para o formato "dd/mm/aaaa"
+        return date.matches(Regex(formatoData))
     }
 
     fun getCellValueAsString(cell: Cell?): String {
