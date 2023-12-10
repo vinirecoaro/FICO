@@ -27,6 +27,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.model.Expense
+import com.example.fico.model.ImportFileInstructionsComponents
+import com.example.fico.ui.ImportFileInstructionsActivity
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
@@ -104,6 +106,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                 binding.etInstallments.setText("")
                 return true
             }
+
             R.id.add_expense_menu_installments -> {
                 binding.etInstallments.visibility = View.VISIBLE
                 binding.etPrice.setText("")
@@ -664,7 +667,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
             .setTitle("Importar Dados")
             .setMessage("Os dados devem estar no formato correto")
             .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                // Respond to neutral button press
+                startActivity(Intent(requireContext(),ImportFileInstructionsActivity::class.java))
             }
             .setPositiveButton("Selecionar Arquivo") { dialog, which ->
                 performFileSearch()
