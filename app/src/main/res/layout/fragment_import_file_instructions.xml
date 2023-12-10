@@ -37,6 +37,8 @@
         android:layout_marginTop="30dp"
         android:textAlignment="center"
         android:textSize="16sp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Descrição"/>
@@ -50,6 +52,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        tools:text="Finalizar"
+        android:text="@string/understood"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
