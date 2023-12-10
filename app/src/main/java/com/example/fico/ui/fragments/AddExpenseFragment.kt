@@ -30,6 +30,7 @@ import com.example.fico.model.Expense
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -115,7 +116,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                 lifecycleScope.launch {
                     if (checkPermission()){
                         if(viewModel.checkIfExistDefaultBudget().await()){
-                            performFileSearch()
+                            importDataAlertDialog()
                         }else{
                             setUpDefaultBudgetAlertDialog()
                         }
@@ -656,6 +657,19 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                 }
             }
         }
+    }
+
+    private fun importDataAlertDialog(){
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Importar Dados")
+            .setMessage("Os dados devem estar no formato correto")
+            .setNeutralButton("Ver Formato Correto") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Selecionar Arquivo") { dialog, which ->
+                performFileSearch()
+            }
+            .show()
     }
 
 }
