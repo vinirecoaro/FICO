@@ -35,6 +35,8 @@ class ImportFileInstructionsFragment : Fragment() {
             }
         }
 
+        setUpListeners()
+
         return rootView
     }
 
@@ -49,5 +51,11 @@ class ImportFileInstructionsFragment : Fragment() {
                     putBoolean(BUTTON_STATE, instructionsComponents.buttonState)
                 }
             }
+    }
+
+    private fun setUpListeners(){
+        binding.btFinish.setOnClickListener {
+            requireActivity().finish()
+        }
     }
 }

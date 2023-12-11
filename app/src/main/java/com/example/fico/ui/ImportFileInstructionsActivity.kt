@@ -1,5 +1,6 @@
 package com.example.fico.ui
 
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
@@ -18,7 +19,8 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        var contentIndex = 0
+        setColorBasedOnTheme()
+        setUpListeners()
 
         importFileInstructionsAdapter = ImportFileInstructionsAdapter(this, getImportFileInstructionsComponents())
         binding.vpInstructions.adapter = importFileInstructionsAdapter
@@ -44,9 +46,9 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
                 "Coluna Preço",
                 R.drawable.ic_add_24,
                 "Na coluna preço os valores podem \nestar no seguinte formato:\n\n" +
-                        "- R$ 20,00\n" +
-                        "- $ 20,00\n" +
-                        "- 20,00",
+                        "R$ 20,00\n" +
+                        "$ 20,00\n" +
+                        "20,00",
                 false
             ),
             ImportFileInstructionsComponents(
@@ -60,12 +62,55 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
         return contents
     }
 
- /*   private fun replaceFragment(contents : List<ImportFileInstructionsComponents>, contentIndex : Int){
-        val fragment = ImportFileInstructionsFragment.newInstance(contents[contentIndex])
+    private fun setColorBasedOnTheme(){
+        when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.dot1.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot2.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot3.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot4.setImageResource(R.drawable.ic_dot_unselected_light)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+    }
 
-        supportFragmentManager.beginTransaction()
-            .replace(binding.flContainer.id, fragment)
-            .commit()
-    }*/
+    private fun setUpListeners(){
+        binding.vpInstructions.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                updateIndicator(position)
+            }
+        })
+    }
+
+    private fun updateIndicator(currentPosition: Int) {
+        if(currentPosition == 0){
+            binding.dot1.setImageResource(R.drawable.ic_dot_selected)
+            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
+        } else if(currentPosition == 1){
+            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot2.setImageResource(R.drawable.ic_dot_selected)
+            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
+        } else if(currentPosition == 2){
+            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot3.setImageResource(R.drawable.ic_dot_selected)
+            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
+        } else if(currentPosition == 3){
+            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot4.setImageResource(R.drawable.ic_dot_selected)
+        }
+    }
 
 }

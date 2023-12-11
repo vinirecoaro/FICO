@@ -66,7 +66,7 @@ class ExpenseListFragment : Fragment(), XLSInterface{
 
     private companion object{
         private const val STORAGE_PERMISSION_CODE = 100
-        internal const val TAG = "PERMISSION_TAG"
+        const val TAG = "PERMISSION_TAG"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
