@@ -31,7 +31,7 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
         val contents = listOf(
             ImportFileInstructionsComponents(
                 "Extensão do arquivo",
-                R.drawable.ic_add_24,
+                R.drawable.import_file_instructions_table_xls,
                 "O arquivo deve ser com extensão xls",
                 false
             ),
