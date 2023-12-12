@@ -37,7 +37,7 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
             ),
             ImportFileInstructionsComponents(
                 "Cebeçalho",
-                R.drawable.ic_add_24,
+                R.drawable.import_file_instructions_complete_table,
                 "O cabeçalho deve ser conforme ilustrado na imagem acima, " +
                         "portanto deve ter as colunas Preço, Descrição, Categoria e Data nessa ordem",
                 false
