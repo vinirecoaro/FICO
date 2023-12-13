@@ -31,29 +31,26 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
         val contents = listOf(
             ImportFileInstructionsComponents(
                 "Extensão do arquivo",
-                R.drawable.import_file_instructions_table_xls,
-                "O arquivo deve ser com extensão xls",
+                setXlsImageBasedOnTheme(),
+                "O arquivo deve ser com extensão xls.",
                 false
             ),
             ImportFileInstructionsComponents(
                 "Cebeçalho",
                 R.drawable.import_file_instructions_complete_table,
                 "O cabeçalho deve ser conforme ilustrado na imagem acima, " +
-                        "portanto deve ter as colunas Preço, Descrição, Categoria e Data nessa ordem",
+                        "portanto deve ter as colunas Preço, Descrição, Categoria e Data nessa ordem.",
                 false
             ),
             ImportFileInstructionsComponents(
                 "Coluna Preço",
-                R.drawable.ic_add_24,
-                "Na coluna preço os valores podem \nestar no seguinte formato:\n\n" +
-                        "R$ 20,00\n" +
-                        "$ 20,00\n" +
-                        "20,00",
+                R.drawable.import_file_instructions_price_column,
+                "Na coluna preço os valores podem \nestar nos formatos acima.",
                 false
             ),
             ImportFileInstructionsComponents(
                 "Coluna Data",
-                R.drawable.ic_add_24,
+                R.drawable.import_file_instructions_date_column,
                 "Na coluna data os valores devem ser no formato:\n\n" +
                         "dd/mm/aaaa",
                 true
@@ -78,6 +75,19 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
+    }
+
+    private fun setXlsImageBasedOnTheme() : Int{
+        when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                return R.drawable.import_file_instructions_table_xls_light
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                return R.drawable.import_file_instructions_table_xls_black
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+        return R.drawable.import_file_instructions_table_xls_black
     }
 
     private fun setUpListeners(){
