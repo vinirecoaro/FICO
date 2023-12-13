@@ -484,14 +484,13 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                         }
                         Toast.makeText(
                             requireContext(),
-                            "Dados importados com sucesso",
+                            "Dados importados com sucesso !",
                             Toast.LENGTH_LONG).show()
                     }else{
                         Toast.makeText(
                             requireContext(),
-                            "Não foi possível importador os dados, " +
-                                    "verifique se os dados na " +
-                                    "planilha estão corretos",
+                            "Falha ao importar os dados, " +
+                                    "verifique se os dados estão corretos !",
                             Toast.LENGTH_LONG).show()
                     }
                 }
