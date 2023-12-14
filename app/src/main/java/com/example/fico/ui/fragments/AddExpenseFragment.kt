@@ -41,12 +41,14 @@ import kotlinx.coroutines.launch
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
+import org.apache.poi.ss.usermodel.DateUtil
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.DecimalFormat
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 
 class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
@@ -542,7 +544,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                         category = cellValue
                     }
                     3 -> {
-                        date = cellValue
+                        if(cell.cellType == CellType.STRING){
+                            date = cellValue
+                        }else if(cell.cellType == CellType.NUMERIC){
+                            val dateDouble = cell.numericCellValue
+                            val dateformat = SimpleDateFormat("dd/MM/yyyy")
+                            date = dateformat.format(DateUtil.getJavaDate(dateDouble))
+                        }
+
                         if(verifyDateFormat(date)){
                             val day = date.substring(0, 2)
                             val month = date.substring(3, 5)
