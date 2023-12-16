@@ -472,6 +472,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                                         expense.description,
                                         expense.category,
                                         expense.date)
+                                    delay(500)
                                 }else{
                                     viewModel.setUpBudget(
                                         viewModel.getDefaultBudget(formatted = false).await(),
@@ -481,6 +482,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                                         expense.description,
                                         expense.category,
                                         expense.date)
+                                    delay(500)
                                 }
                             }
                         }
@@ -516,11 +518,15 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
         val expenseList = mutableListOf<Expense>()
 
-        for (rowIndex in xlWs.firstRowNum+1..xlWs.lastRowNum) {
+        val numberOfRows = xlWs.lastRowNum
+
+        for (rowIndex in xlWs.firstRowNum+1..numberOfRows) {
             val row = xlWs.getRow(rowIndex) ?: continue
 
+            val numberOfColumns = row.lastCellNum
+
             // Iterando pelas colunas dentro da linha atual
-            for (columnIndex in row.firstCellNum until row.lastCellNum) {
+            for (columnIndex in row.firstCellNum until numberOfColumns) {
                 val cell = row.getCell(columnIndex)
                 val cellValue = getCellValueAsString(cell)
                 when (columnIndex) {
