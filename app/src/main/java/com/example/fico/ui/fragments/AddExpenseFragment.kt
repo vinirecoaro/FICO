@@ -472,7 +472,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                                         expense.description,
                                         expense.category,
                                         expense.date)
-                                    delay(500)
+                                    delay(100)
                                 }else{
                                     viewModel.setUpBudget(
                                         viewModel.getDefaultBudget(formatted = false).await(),
@@ -482,7 +482,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                                         expense.description,
                                         expense.category,
                                         expense.date)
-                                    delay(500)
+                                    delay(100)
                                 }
                             }
                         }
@@ -536,7 +536,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                         price = cellValue.replace("$","")
                         price = cellValue.replace("$ ","")
                         price = cellValue.replace(",",".")
-                        if(price.toDoubleOrNull() == null){
+                        if(price == "xxx" || price == "XXX"){
+                            return Pair(expenseList, result)
+                        }
+                        else if(price.toDoubleOrNull() == null){
                             result = false
                             expenseList.clear()
                             return Pair(expenseList, result)
