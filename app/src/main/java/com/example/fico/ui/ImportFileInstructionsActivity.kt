@@ -60,6 +60,12 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
                 R.drawable.import_file_instructions_final_line_identificator,
                 "Para identificar a última linha a ser lida use\no identificador abaixo na linha posterior:\n\n" +
                         "xxx",
+                false
+            ),
+            ImportFileInstructionsComponents(
+                "Gastos Parcelados",
+                setWarningImageBaseOnTheme(),
+                "Não inserir gastos parcelados através\ndesta opção.",
                 true
             ),
         )
@@ -74,6 +80,7 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
                 binding.dot3.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot4.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot5.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot6.setImageResource(R.drawable.ic_dot_unselected_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -81,6 +88,7 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
                 binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
@@ -93,6 +101,19 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 return R.drawable.import_file_instructions_table_xls_black
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+        return R.drawable.import_file_instructions_table_xls_black
+    }
+
+    private fun setWarningImageBaseOnTheme() : Int{
+        when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                return R.drawable.import_file_instructions_warning_light
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                return R.drawable.import_file_instructions_warning_black
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
@@ -115,24 +136,28 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
         } else if(currentPosition == 1){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot2.setImageResource(R.drawable.ic_dot_selected)
             binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
         } else if(currentPosition == 2){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot3.setImageResource(R.drawable.ic_dot_selected)
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
         } else if(currentPosition == 3){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot4.setImageResource(R.drawable.ic_dot_selected)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 4){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -140,6 +165,15 @@ class ImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_selected)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
+        }
+        else if(currentPosition == 5){
+            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_selected)
         }
     }
 
