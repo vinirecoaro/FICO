@@ -35,7 +35,9 @@ class EditExpenseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         setTitle("Editar gasto")
+
         val intent = intent
         if(intent != null){
             val expense = intent.getParcelableExtra<Expense>("expense")
@@ -52,7 +54,7 @@ class EditExpenseActivity : AppCompatActivity() {
                     binding.etInstallments.setText(expense.id.substring(38,41).toInt().toString())
                     binding.etDate.setText(returnInitialDate(expense.id, expense.date))
                 }else{
-                    binding.etPrice.setText(expense.price.replace("R$ ","").replace(",","."))
+                    binding.etPrice.setText(expense.price)
                     binding.etDescription.setText(expense.description)
                     binding.actvCategory.setText(expense.category)
                     binding.etDate.setText(expense.date)
