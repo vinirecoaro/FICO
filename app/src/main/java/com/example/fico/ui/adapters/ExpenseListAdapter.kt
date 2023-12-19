@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.model.Expense
 import com.example.fico.ui.interfaces.OnListItemClick
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
 
 class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
 
@@ -27,7 +30,16 @@ class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data[position]
         holder.description.text = item.description
-        holder.price.text = item.price
+
+        val regex = Regex("[\\d,.]+")
+        val justNumber = regex.find(item.price)
+        val formatNum = DecimalFormat("#.##")
+        val justNumberValue = justNumber!!.value.replace(",",".").toFloat()
+        val formattedNum = formatNum.format(justNumberValue).replace(",",".").toFloat()
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
+        val formattedPrice = currencyFormat.format(formattedNum)
+        holder.price.text = formattedPrice
+
         holder.date.text = item.date
 
         holder.itemView.setOnClickListener {

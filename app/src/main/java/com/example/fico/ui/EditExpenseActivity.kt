@@ -46,7 +46,10 @@ class EditExpenseActivity : AppCompatActivity() {
                 //Verify if is a installment expense
                 if(lenght == 41){
                     binding.etInstallments.visibility = View.VISIBLE
-                    val price = expense.price.replace("R$ ","").replace(",",".").toFloat() * expense.id.substring(38,41).toInt()
+
+                    val regex = Regex("[\\d,.]+")
+                    val justNumber = regex.find(expense.price)!!.value.replace(",",".").toFloat()
+                    val price = justNumber * expense.id.substring(38,41).toInt()
                     val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description.split("Parcela")[0])

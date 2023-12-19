@@ -593,7 +593,7 @@ class FirebaseAPI private constructor() {
         val current = snapshot.child(child).value.toString().toFloat()
         val add = expense.price.toFloat()
         val new = current + add
-        val floatFormat = "%.${2}f"
+        val floatFormat = "%.${5}f"
         return String.format(floatFormat, new).replace(",",".")
     }
 
@@ -601,7 +601,7 @@ class FirebaseAPI private constructor() {
         val current = snapshot.child(child).value.toString().toFloat()
         val sub = expense.price.toFloat()
         val new = current - sub
-        val floatFormat = "%.${2}f"
+        val floatFormat = "%.${5}f"
         return String.format(floatFormat, new).replace(",",".")
     }
 
@@ -616,7 +616,7 @@ class FirebaseAPI private constructor() {
                             for (childSnapshot in snapshot.children) {
                                 val id = childSnapshot.key.toString()
                                 val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
-                                val priceFormatted = "R$ %.2f".format(priceDatabase).replace(".", ",")
+                                val priceFormatted = "R$ %.5f".format(priceDatabase).replace(".", ",")
                                 val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                                 val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                                 val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
@@ -632,7 +632,7 @@ class FirebaseAPI private constructor() {
                                 if (dateFromDatabase == dateFromFilter) {
                                     val id = childSnapshot.key.toString()
                                     val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
-                                    val priceFormatted = "R$ %.2f".format(priceDatabase).replace(".", ",")
+                                    val priceFormatted = "R$ %.5f".format(priceDatabase).replace(".", ",")
                                     val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                                     val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                                     val dateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}"

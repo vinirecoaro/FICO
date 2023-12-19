@@ -152,7 +152,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
                         val regex = Regex("[\\d,.]+")
                         val justNumber = regex.find(binding.etPrice.text.toString())
-                        val formatNum = DecimalFormat("#.##")
+                        val formatNum = DecimalFormat("#.#####")
                         val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
                         val formatedNum = formatNum.format(numClean/100)
                         val formattedNumString = formatedNum.toString().replace(",",".")
@@ -194,7 +194,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
                         val regex = Regex("[\\d,.]+")
                         val justNumber = regex.find(binding.etPrice.text.toString())
-                        val formatNum = DecimalFormat("#.##")
+                        val formatNum = DecimalFormat("#.#####")
                         val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()/binding.etInstallments.text.toString().toInt()
                         val formatedNum = formatNum.format(numClean/100)
                         val formattedNumString = formatedNum.toString().replace(",",".")
