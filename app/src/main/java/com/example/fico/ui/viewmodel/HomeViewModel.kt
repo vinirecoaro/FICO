@@ -35,16 +35,36 @@ class HomeViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getAvailableNow(date: String): kotlinx.coroutines.Deferred<String> {
+    fun getAvailableNow(date: String, formatted : Boolean = true): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO) {
-            firebaseAPI.getAvailableNow(date)
+            val availableNow = firebaseAPI.getAvailableNow(date)
+            if(availableNow == "---"){
+                availableNow
+            }else{
+                if (formatted){
+                    val availableNowFormatted = (NumberFormat.getCurrencyInstance().format(availableNow.toFloat()))
+                    availableNowFormatted
+                }else{
+                    availableNow
+                }
+            }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun getMonthExpense(date: String): kotlinx.coroutines.Deferred<String> {
+    fun getMonthExpense(date: String, formatted : Boolean = true): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO) {
-            firebaseAPI.getMonthExpense(date)
+            val monthExpense = firebaseAPI.getMonthExpense(date)
+            if(monthExpense == "---"){
+                monthExpense
+            }else{
+                if (formatted){
+                    val monthExpenseFormatted = (NumberFormat.getCurrencyInstance().format(monthExpense.toFloat()))
+                    monthExpenseFormatted
+                }else{
+                    monthExpense
+                }
+            }
         }
     }
 

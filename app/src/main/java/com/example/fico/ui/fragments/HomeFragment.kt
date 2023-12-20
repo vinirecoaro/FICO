@@ -74,9 +74,10 @@ class HomeFragment : Fragment(){
         lifecycleScope.launch(Dispatchers.Main) {
             try {
                 val availableNow = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
+                val availableNowJustNumber = viewModel.getAvailableNow(viewModel.getCurrentlyDate(), formatted = false).await()
                 if(availableNow == "---"){
                     binding.tvAvailableThisMonthValue.text = availableNow
-                } else if(availableNow.substring(2,7).replace(",",".").toFloat() < 0){
+                } else if(availableNowJustNumber.toFloat() < 0){
                     val myColor = ContextCompat.getColor(requireContext(), R.color.red)
                     binding.tvAvailableThisMonthValue.setTextColor(myColor)
                     binding.tvAvailableThisMonthValue.text = availableNow
@@ -107,22 +108,22 @@ class HomeFragment : Fragment(){
             }
         }
     }
-
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initMonthExpenseChart() = lifecycleScope.launch{
         val pieChart = binding.pcMonthExpense
         var holeColor = 1
 
-        val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
+        val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate(), formatted = false).await()
         var monthExpenseValueFormatted = 0f
         if(monthExpenseValue != "---"){
-            monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",",".").toFloat()
+            monthExpenseValueFormatted = monthExpenseValue.toFloat()
         }
         var monthExpenseColor = ""
-        val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
+
+        val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate(), formatted = false).await()
         var availableNowValueFormatted = 1f
         if(availableNowValue != "---"){
-            availableNowValueFormatted = availableNowValue.replace("R$","").replace(",",".").toFloat()
+            availableNowValueFormatted = availableNowValue.toFloat()
         }
 
         val budget = monthExpenseValueFormatted + availableNowValueFormatted
@@ -193,15 +194,17 @@ class HomeFragment : Fragment(){
         val pieChart = binding.pcAvailableNow
         var holeColor = 1
 
-        val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
+
+        val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate(), formatted = false).await()
         var monthExpenseValueFormatted = 0f
         if(monthExpenseValue != "---"){
-            monthExpenseValueFormatted = monthExpenseValue.replace("R$","").replace(",",".").toFloat()
+            monthExpenseValueFormatted = monthExpenseValue.toFloat()
         }
-        val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
+
+        val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate(), formatted = false).await()
         var availableNowValueFormatted = 1f
         if(availableNowValue != "---"){
-            availableNowValueFormatted = availableNowValue.replace("R$","").replace(",",".").toFloat()
+            availableNowValueFormatted = availableNowValue.toFloat()
         }
         var availableNowColor = ""
         val budget = monthExpenseValueFormatted + availableNowValueFormatted

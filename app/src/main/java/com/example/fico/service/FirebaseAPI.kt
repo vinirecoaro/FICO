@@ -533,8 +533,8 @@ class FirebaseAPI private constructor() {
         reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
-                    val availableValue = snapshot.child(AppConstants.DATABASE.AVAILABLE_NOW).getValue(String::class.java)?.toFloat()
-                    availableNow.complete("R$%.2f".format(availableValue).replace(".", ","))
+                    val availableValue = snapshot.child(AppConstants.DATABASE.AVAILABLE_NOW).getValue(String::class.java)
+                    availableNow.complete(availableValue.toString())
                 }else{
                     availableNow.complete("---")
                 }
@@ -546,6 +546,28 @@ class FirebaseAPI private constructor() {
         }
         )
         return@withContext availableNow.await()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun getMonthExpense(date: String): String = withContext(Dispatchers.IO) {
+        val deferredExpense = CompletableDeferred<String>()
+        val reference = information_per_month
+        reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val monthExpenseValue = snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java)
+                    deferredExpense.complete(monthExpenseValue.toString())
+                } else {
+                    deferredExpense.complete("---")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                deferredExpense.completeExceptionally(error.toException())
+            }
+        })
+
+        return@withContext deferredExpense.await()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -563,30 +585,6 @@ class FirebaseAPI private constructor() {
         )
         return@withContext totalExpense.await()
     }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getMonthExpense(date: String): String = withContext(Dispatchers.IO) {
-        val deferredExpense = CompletableDeferred<String>()
-        val reference = information_per_month
-        reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val monthExpenseValue = snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java)
-                        ?.toFloat()
-                    deferredExpense.complete("R$%.2f".format(monthExpenseValue).replace(".", ","))
-                } else {
-                    deferredExpense.complete("---")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                deferredExpense.completeExceptionally(error.toException())
-            }
-        })
-
-        return@withContext deferredExpense.await()
-    }
-
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
         val current = snapshot.child(child).value.toString().toFloat()
