@@ -12,6 +12,7 @@ import com.example.fico.service.FirebaseAPI
 import com.google.firebase.inject.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
@@ -33,16 +34,6 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentYearMonth() : String{
-        val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val formatedDate = currentDate.format(formatter)
-        val month = formatedDate.toString().substring(3,5)
-        val year = formatedDate.toString().substring(6,10)
-        return "$year-$month"
-    }
-
     @RequiresApi(Build.VERSION_CODES.N)
     fun getAvailableNow(date: String): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO) {
@@ -57,11 +48,12 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.N)
     fun getTotalExpense(): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.getTotalExpense() }
+            val totalExpense = firebaseAPI.getTotalExpense().toFloat()
+            val priceFormatted = (NumberFormat.getCurrencyInstance().format(totalExpense))
+            priceFormatted.toString()}
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -553,9 +553,8 @@ class FirebaseAPI private constructor() {
         val totalExpense = CompletableDeferred<String>()
         total_expense.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.value.toString().toFloat()
-                totalExpense.complete("R$%.2f".format(value).replace(".", ","))
-
+                val value = snapshot.value.toString()
+                totalExpense.complete(value)
             }
             override fun onCancelled(error: DatabaseError) {
 
