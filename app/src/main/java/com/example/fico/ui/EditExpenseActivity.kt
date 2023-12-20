@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -36,7 +37,8 @@ class EditExpenseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        setTitle("Editar gasto")
+        binding.editExpenseToolbar.setTitle("Editar Gasto")
+        binding.editExpenseToolbar.setTitleTextColor(Color.WHITE)
 
         val intent = intent
         if(intent != null){
@@ -64,6 +66,10 @@ class EditExpenseActivity : AppCompatActivity() {
                 }
             }
         }
+
+        //Insert a back button on Navigation bar
+        setSupportActionBar(binding.editExpenseToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setUpListeners()
         actvConfig()
@@ -185,6 +191,10 @@ class EditExpenseActivity : AppCompatActivity() {
                 }
             }
         })
+
+        binding.editExpenseToolbar.setNavigationOnClickListener {
+            finish()
+        }
     }
 
     private fun actvConfig() {

@@ -14,36 +14,36 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.fico.R
 import com.example.fico.databinding.ActivityBudgetPerMonthBinding
 import com.example.fico.model.Budget
 import com.example.fico.ui.adapters.BudgetPerMonthAdapter
-import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.BudgetPerMonthViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
 class BudgetPerMonthActivity : AppCompatActivity() {
 
-    private val bindind by lazy { ActivityBudgetPerMonthBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityBudgetPerMonthBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<BudgetPerMonthViewModel>()
     private val budgetPerMonthListAdapter = BudgetPerMonthAdapter(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(bindind.root)
+        setContentView(binding.root)
 
-        bindind.budgetPerMonthToolbar.setTitle("Orçamento por mês")
-        bindind.budgetPerMonthToolbar.setTitleTextColor(Color.WHITE)
+        binding.budgetPerMonthToolbar.setTitle("Orçamento por mês")
+        binding.budgetPerMonthToolbar.setTitleTextColor(Color.WHITE)
 
-        bindind.rvBudgetPerMonth.layoutManager = LinearLayoutManager(this)
-        bindind.rvBudgetPerMonth.adapter = budgetPerMonthListAdapter
+        binding.rvBudgetPerMonth.layoutManager = LinearLayoutManager(this)
+        binding.rvBudgetPerMonth.adapter = budgetPerMonthListAdapter
+
+        //Insert a back button on Navigation bar
+        setSupportActionBar(binding.budgetPerMonthToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setUpListeners()
     }
@@ -63,6 +63,10 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     }
                 })
             })
+        }
+
+        binding.budgetPerMonthToolbar.setNavigationOnClickListener {
+            finish()
         }
     }
 

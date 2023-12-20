@@ -27,6 +27,10 @@ class ResetPasswordActivity : AppCompatActivity() {
         binding.resetPasswordToolbar.setTitle("Redefinir Senha")
         binding.resetPasswordToolbar.setTitleTextColor(Color.WHITE)
 
+        //Insert a back button on Navigation bar
+        setSupportActionBar(binding.resetPasswordToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         setUpListeners()
 
     }
@@ -46,6 +50,10 @@ class ResetPasswordActivity : AppCompatActivity() {
 
         viewModel.onResetPasswordFail = {
             Snackbar.make(binding.btSend,"Falha ao enviar email de redefinição de senha", Snackbar.LENGTH_LONG).show()
+        }
+
+        binding.resetPasswordToolbar.setNavigationOnClickListener {
+            finish()
         }
     }
 

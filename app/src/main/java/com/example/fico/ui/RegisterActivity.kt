@@ -2,6 +2,7 @@ package com.example.fico.ui
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -21,6 +22,14 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        binding.registerToolbar.setTitle("Registrar")
+        binding.registerToolbar.setTitleTextColor(Color.WHITE)
+
+        //Insert a back button on Navigation bar
+        setSupportActionBar(binding.registerToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         setColorBasedOnTheme()
         setUpListeners()
     }
@@ -57,6 +66,10 @@ class RegisterActivity : AppCompatActivity() {
 
         viewModel.onSendEmailFailure = {
             Snackbar.make(binding.btRegister, "Erro ao enviar email de verificação.", Snackbar.LENGTH_LONG).show()
+        }
+
+        binding.registerToolbar.setNavigationOnClickListener {
+            finish()
         }
     }
 

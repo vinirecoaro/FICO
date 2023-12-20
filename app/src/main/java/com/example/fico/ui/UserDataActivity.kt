@@ -26,8 +26,13 @@ class UserDataActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        binding.toolbar.setTitle("Dados Pessoais")
-        binding.toolbar.setTitleTextColor(Color.WHITE)
+
+        binding.userDataToolbar.setTitle("Dados Pessoais")
+        binding.userDataToolbar.setTitleTextColor(Color.WHITE)
+
+        setSupportActionBar(binding.userDataToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         setColorBasedOnTheme()
         getUserEmail()
         getUserName()
@@ -37,6 +42,10 @@ class UserDataActivity : AppCompatActivity() {
     private fun setUpListeners(){
         binding.ivEditName.setOnClickListener {
             setUserNameAlertDialog()
+        }
+
+        binding.userDataToolbar.setNavigationOnClickListener {
+            finish()
         }
     }
 

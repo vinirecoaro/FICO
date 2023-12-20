@@ -34,6 +34,10 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
         binding.setDefaultBudgetToolbar.setTitle("Orçamento padrão")
         binding.setDefaultBudgetToolbar.setTitleTextColor(Color.WHITE)
 
+        //Insert a back button on Navigation bar
+        setSupportActionBar(binding.setDefaultBudgetToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         setUpListeners()
         getDefaultBudget()
         setColorBasedOnTheme()
@@ -93,6 +97,10 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
                 }
             }
         })
+
+        binding.setDefaultBudgetToolbar.setNavigationOnClickListener {
+            finish()
+        }
 
     }
 

@@ -28,8 +28,14 @@ class BudgetConfigurationListActivity : AppCompatActivity(),
         budgetConfiguratonListAdapter.setOnItemClickListener(this)
         binding.rvBudgetConfigurationList.adapter = budgetConfiguratonListAdapter
 
-        binding.budgetConfigurationListToobar.setTitle("Orçamento")
-        binding.budgetConfigurationListToobar.setTitleTextColor(Color.WHITE)
+        binding.budgetConfigurationListToolbar.setTitle("Orçamento")
+        binding.budgetConfigurationListToolbar.setTitleTextColor(Color.WHITE)
+
+        //Insert a back button on Navigation bar
+        setSupportActionBar(binding.budgetConfigurationListToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        setUpListeners()
 
     }
 
@@ -39,6 +45,12 @@ class BudgetConfigurationListActivity : AppCompatActivity(),
             startActivity(Intent(this, SetDefaultBudgetActivity::class.java))
         }else if(item == AppConstants.CONFIGURATION_LIST.BUDGET_LIST.BUDGET_PER_MONTH){
             startActivity(Intent(this,BudgetPerMonthActivity::class.java))
+        }
+    }
+
+    private fun setUpListeners(){
+        binding.budgetConfigurationListToolbar.setNavigationOnClickListener {
+            finish()
         }
     }
 }
