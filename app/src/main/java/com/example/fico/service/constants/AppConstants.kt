@@ -41,4 +41,8 @@ class AppConstants private constructor() {
         const val AUTHORITY = "com.example.fico.fileprovider"
     }
 
+    object UPLOAD_FILE_SERVICE {
+        const val SUCCESS_UPLOAD = "SUCCESS_UPLOAD"
+    }
+
 }

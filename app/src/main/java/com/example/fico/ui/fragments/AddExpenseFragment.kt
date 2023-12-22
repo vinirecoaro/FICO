@@ -2,7 +2,10 @@ package com.example.fico.ui.fragments
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
@@ -29,6 +32,7 @@ import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.model.ImportFileInstructionsComponents
 import com.example.fico.service.UploadFile
+import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.ImportFileInstructionsActivity
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
@@ -87,6 +91,19 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         return rootView
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        val filter = IntentFilter().apply {
+            addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+        }
+        requireContext().registerReceiver(receiver, filter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireContext().unregisterReceiver(receiver)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -468,35 +485,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
                             val expensesList = readFileResult.first
 
+                            // innit the upload data to database service
                             val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
                             serviceIntent.putParcelableArrayListExtra("expensesList",ArrayList(expensesList))
                             requireContext().startService(serviceIntent)
-
-                            /*for (expense in readFileResult.first){
-                                val dateToCheck = expense.date.substring(0,7)
-                                val existDate = viewModel.checkIfExistsDateOnDatabse(dateToCheck)
-                                if(existDate.await()){
-                                    viewModel.addExpense(expense.price,
-                                        expense.description,
-                                        expense.category,
-                                        expense.date)
-                                    delay(100)
-                                }else{
-                                    viewModel.setUpBudget(
-                                        viewModel.getDefaultBudget(formatted = false).await(),
-                                        dateToCheck)
-                                    viewModel.addExpense(
-                                        expense.price,
-                                        expense.description,
-                                        expense.category,
-                                        expense.date)
-                                    delay(100)
-                                }
-                            }*/
                         }
                         Toast.makeText(
                             requireContext(),
-                            "Dados importados com sucesso !",
+                            "Dados corretos, salvando dados !",
                             Toast.LENGTH_LONG).show()
                     }else{
                         Toast.makeText(
@@ -698,6 +694,16 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                 performFileSearch()
             }
             .show()
+    }
+
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            // Action when receive Broadcast
+            if (intent?.action == AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD) {
+                // Show message to user
+                Toast.makeText(context, "Dados salvos com sucesso !!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 }

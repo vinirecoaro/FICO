@@ -7,10 +7,11 @@ import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
+import com.example.fico.service.constants.AppConstants
 import kotlinx.coroutines.*
 import java.time.LocalTime
 
-class UploadFile() : Service() {
+class UploadFile : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Default)
     private val firebaseAPI = FirebaseAPI.instance
@@ -43,8 +44,9 @@ class UploadFile() : Service() {
                         delay(100)
                     }
                 }
+                val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+                sendBroadcast(intentConcludedWarning)
             }
-
         }
 
         return START_NOT_STICKY
