@@ -1,6 +1,7 @@
 package com.example.fico.ui
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -24,7 +25,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         resetPasswordSucess()
+        setColorBasedOnTheme()
     }
 
     override fun onStart() {
@@ -66,6 +69,18 @@ class LoginActivity : AppCompatActivity() {
         val result = intent.getBooleanExtra("Email Enviado",false)
         if(result){
             Toast.makeText(this,"Email de redefinição de senha enviado com sucesso", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun setColorBasedOnTheme(){
+        when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.ivLogo.setImageResource(R.drawable.login_logo_light)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                binding.ivLogo.setImageResource(R.drawable.login_logo_black)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
 
