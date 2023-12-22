@@ -10,35 +10,38 @@ import com.example.fico.model.Expense
 import kotlinx.coroutines.*
 import java.time.LocalTime
 
-class UploadFile(expenses : MutableList<Expense>) : Service() {
+class UploadFile() : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Default)
     private val firebaseAPI = FirebaseAPI.instance
-    private val _expenses = expenses
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
+        val _expenses = intent?.getParcelableArrayListExtra<Expense>("expensesList")
+
         serviceScope.launch {
 
-            for (expense in _expenses){
-                val dateToCheck = expense.date.substring(0,7)
-                val existDate = checkIfExistsDateOnDatabse(dateToCheck)
-                if(existDate.await()){
-                    val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
-                    val timeNow = LocalTime.now()
-                    val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
-                    firebaseAPI.addExpense(_expense, inputTime)
-                    delay(100)
-                }else{
-                    setUpBudget(
-                        getDefaultBudget(formatted = false).await(),
-                        dateToCheck)
-                    val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
-                    val timeNow = LocalTime.now()
-                    val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
-                    firebaseAPI.addExpense(_expense, inputTime)
-                    delay(100)
+            if (_expenses != null) {
+                for (expense in _expenses){
+                    val dateToCheck = expense.date.substring(0,7)
+                    val existDate = checkIfExistsDateOnDatabse(dateToCheck)
+                    if(existDate.await()){
+                        val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
+                        val timeNow = LocalTime.now()
+                        val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+                        firebaseAPI.addExpense(_expense, inputTime)
+                        delay(100)
+                    }else{
+                        setUpBudget(
+                            getDefaultBudget(formatted = false).await(),
+                            dateToCheck)
+                        val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
+                        val timeNow = LocalTime.now()
+                        val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+                        firebaseAPI.addExpense(_expense, inputTime)
+                        delay(100)
+                    }
                 }
             }
 

@@ -466,7 +466,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     if(readFileResult.second){
                         lifecycleScope.launch(Dispatchers.Main){
 
-                            val serviceIntent = Intent(requireContext(), UploadFile(readFileResult.first)::class.java)
+                            val expensesList = readFileResult.first
+
+                            val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
+                            serviceIntent.putParcelableArrayListExtra("expensesList",ArrayList(expensesList))
                             requireContext().startService(serviceIntent)
 
                             /*for (expense in readFileResult.first){
