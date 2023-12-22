@@ -28,6 +28,7 @@ import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.model.ImportFileInstructionsComponents
+import com.example.fico.service.UploadFile
 import com.example.fico.ui.ImportFileInstructionsActivity
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
@@ -464,7 +465,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     var readFileResult  = readFromExcelFile(newPath)
                     if(readFileResult.second){
                         lifecycleScope.launch(Dispatchers.Main){
-                            for (expense in readFileResult.first){
+
+                            val serviceIntent = Intent(requireContext(), UploadFile(readFileResult.first)::class.java)
+                            requireContext().startService(serviceIntent)
+
+                            /*for (expense in readFileResult.first){
                                 val dateToCheck = expense.date.substring(0,7)
                                 val existDate = viewModel.checkIfExistsDateOnDatabse(dateToCheck)
                                 if(existDate.await()){
@@ -484,7 +489,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                                         expense.date)
                                     delay(100)
                                 }
-                            }
+                            }*/
                         }
                         Toast.makeText(
                             requireContext(),
