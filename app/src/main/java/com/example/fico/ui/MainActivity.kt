@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -37,27 +38,28 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-            setSupportActionBar(binding.toolbar)
-            binding.toolbar.setTitleTextColor(Color.WHITE)
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.setTitleTextColor(Color.WHITE)
 
-            val navView: BottomNavigationView = binding.bottomNavigation
-            val navController = findNavController(R.id.nav_host_fragment_activity_main)
-            val appBarConfiguration = AppBarConfiguration(
-                setOf(R.id.navigation_home,
-                    R.id.navigation_add_expense,
-                    R.id.navigation_expense_list,
-                    R.id.navigation_config
-                ),binding.drawerLayout)
-            setupActionBarWithNavController(navController,appBarConfiguration)
-            navView.setupWithNavController(navController)
+        val navView: BottomNavigationView = binding.bottomNavigation
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.navigation_home,
+                R.id.navigation_add_expense,
+                R.id.navigation_expense_list,
+                R.id.navigation_config
+            ),binding.drawerLayout)
+        setupActionBarWithNavController(navController,appBarConfiguration)
+        navView.setupWithNavController(navController)
 
-            binding.toolbar.setNavigationOnClickListener {
-                binding.drawerLayout.open()
-            }
+        binding.toolbar.setNavigationOnClickListener {
+            binding.drawerLayout.open()
+        }
 
-            getUserEmail()
-            getUserName()
-            setupListeners()
+        getUserEmail()
+        getUserName()
+        setupListeners()
+        removeTintOfMenuIcons()
 
     }
 
@@ -84,6 +86,11 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
             val name = viewModel.getUserName().await()
             headerUserName.text = name
         }
+    }
+
+    private fun removeTintOfMenuIcons(){
+        val navigationView = findViewById<NavigationView>(R.id.nv_main)
+        navigationView.itemIconTintList = null
     }
 
     private fun setupListeners(){

@@ -41,4 +41,6 @@
     <string name="generate_spreadsheet">Gerar Planilha</string>
     <string name="import_data">Importar Dados</string>
     <string name="understood">Entendido</string>
+    <string name="expenses">Gastos</string>
+    <string name="earnings">Ganhos</string>
 </resources>

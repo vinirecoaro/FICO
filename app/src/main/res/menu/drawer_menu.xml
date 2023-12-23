@@ -3,11 +3,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/drawer_menu_item1"
-            android:icon="@drawable/ic_list_24"
-            android:title="Item 1" />
+            android:icon="@drawable/expenses_drawer_icon"
+            android:title="@string/expenses" />
         <item
             android:id="@+id/nav_item_2"
-            android:icon="@drawable/ic_add_24"
-            android:title="Item 2" />
+            android:icon="@drawable/earnings_drawer_icon"
+            android:title="@string/earnings" />
     </group>
 </menu>
