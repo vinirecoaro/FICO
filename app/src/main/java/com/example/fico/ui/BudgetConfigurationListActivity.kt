@@ -41,9 +41,9 @@ class BudgetConfigurationListActivity : AppCompatActivity(),
 
     override fun onListItemClick(position: Int) {
         val item = viewModel.budgetConfigurationList[position]
-        if(item == AppConstants.CONFIGURATION_LIST.BUDGET_LIST.DEFAULT_BUDGET){
+        if(item == AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET_LIST.DEFAULT_BUDGET){
             startActivity(Intent(this, SetDefaultBudgetActivity::class.java))
-        }else if(item == AppConstants.CONFIGURATION_LIST.BUDGET_LIST.BUDGET_PER_MONTH){
+        }else if(item == AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET_LIST.BUDGET_PER_MONTH){
             startActivity(Intent(this,BudgetPerMonthActivity::class.java))
         }
     }

@@ -20,14 +20,19 @@ class AppConstants private constructor() {
         const val NAME = "name"
     }
 
-    object CONFIGURATION_LIST {
-        const val DADOS_PESSOAIS = "Dados pessoais"
+    object EXPENSE_CONFIGURATION_LIST {
         const val BUDGET = "Orçamento"
-        const val LOGOUT = "Sair"
+        const val CATEGORIES = "Categorias"
+
         object BUDGET_LIST{
             const val DEFAULT_BUDGET = "Orçamento padrão"
             const val BUDGET_PER_MONTH = "Orçamento por mês"
         }
+    }
+
+    object GENERAL_CONFIGURATION_LIST {
+        const val DADOS_PESSOAIS = "Dados pessoais"
+        const val LOGOUT = "Sair"
     }
 
     object XLS {

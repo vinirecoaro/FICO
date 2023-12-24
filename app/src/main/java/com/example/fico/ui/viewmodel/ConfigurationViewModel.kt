@@ -11,9 +11,8 @@ class ConfigurationViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance
 
     val configurationList : MutableList<String> = mutableListOf(
-        AppConstants.CONFIGURATION_LIST.DADOS_PESSOAIS,
-        AppConstants.CONFIGURATION_LIST.BUDGET,
-        AppConstants.CONFIGURATION_LIST.LOGOUT,
+        AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET,
+        AppConstants.EXPENSE_CONFIGURATION_LIST.CATEGORIES
     )
 
     fun logoff() = viewModelScope.async{

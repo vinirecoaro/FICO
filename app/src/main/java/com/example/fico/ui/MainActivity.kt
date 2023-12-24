@@ -111,6 +111,11 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
 
                     true
                 }
+                R.id.nav_menu_item_config -> {
+                    startActivity(Intent(this,GeneralConfigurationActivity::class.java))
+                    true
+                }
+
                 else -> false
             }
         }

@@ -46,15 +46,8 @@ class ConfigurationFragment : Fragment(),
 
     override fun onListItemClick(position: Int) {
         val item = viewModel.configurationList[position]
-        if(item == AppConstants.CONFIGURATION_LIST.BUDGET){
+        if(item == AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET){
             startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
-        }
-        else if(item == AppConstants.CONFIGURATION_LIST.LOGOUT){
-            viewModel.logoff()
-            startActivity(Intent(requireContext(),LoginActivity::class.java))
-        }
-        else if(item == AppConstants.CONFIGURATION_LIST.DADOS_PESSOAIS){
-            startActivity(Intent(requireContext(),UserDataActivity::class.java))
         }
     }
 
