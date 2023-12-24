@@ -99,6 +99,21 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         headerView.setOnClickListener {
             startActivity(Intent(this,UserDataActivity::class.java))
         }
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when(menuItem.itemId){
+                R.id.nav_menu_item_expenses -> {
+                    startActivity(Intent(this,MainActivity::class.java))
+                    true
+                }
+
+                R.id.nav_menu_item_earnings -> {
+
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
 }

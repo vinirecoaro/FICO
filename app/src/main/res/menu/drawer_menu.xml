@@ -2,12 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/drawer_menu_item1"
+            android:id="@+id/nav_menu_item_expenses"
             android:icon="@drawable/expenses_drawer_icon"
             android:title="@string/expenses" />
         <item
-            android:id="@+id/nav_item_2"
+            android:id="@+id/nav_menu_item_earnings"
             android:icon="@drawable/earnings_drawer_icon"
             android:title="@string/earnings" />
+        <item
+            android:id="@+id/nav_menu_item_config"
+            android:icon="@drawable/config_image"
+            android:title="@string/configurations" />
     </group>
 </menu>
