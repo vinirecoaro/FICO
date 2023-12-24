@@ -1,6 +1,5 @@
-package com.example.fico.ui.fragments
+package com.example.fico.ui.fragments.expense
 
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -11,8 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -36,12 +33,13 @@ class HomeFragment : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentHomeBinding.inflate(inflater,container,false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
             binding.tvTotalExpensesValue.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             binding.tvTotalExpensesValue.transformationMethod = PasswordTransformationMethod()
-            binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
+            binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                R.drawable.ic_visibility_off_24, 0)
             setUpListeners()
 
         return rootView
@@ -140,7 +138,7 @@ class HomeFragment : Fragment(){
         // Defining chart insede hole color
         when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                holeColor = Color.rgb(104,110,106)
+                holeColor = Color.rgb(104, 110, 106)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 holeColor = Color.WHITE
@@ -221,7 +219,7 @@ class HomeFragment : Fragment(){
         // Defining chart insede hole color
         when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                holeColor = Color.rgb(104,110,106)
+                holeColor = Color.rgb(104, 110, 106)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 holeColor = Color.WHITE

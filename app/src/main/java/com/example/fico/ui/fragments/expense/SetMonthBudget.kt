@@ -1,15 +1,15 @@
-package com.example.fico.ui.fragments
+package com.example.fico.ui.fragments.expense
 
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +24,7 @@ import java.text.NumberFormat
 
 class SetMonthBudget : Fragment() {
 
-    private val binding by lazy {FragmentSetMonthBudgetBinding.inflate(layoutInflater)}
+    private val binding by lazy { FragmentSetMonthBudgetBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<SetMonthBudgetViewModel>()
     private lateinit var listener: OnButtonClickListener
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()

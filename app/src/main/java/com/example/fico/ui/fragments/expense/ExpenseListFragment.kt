@@ -1,56 +1,48 @@
-package com.example.fico.ui.fragments
+package com.example.fico.ui.fragments.expense
 
- import SwipeToDeleteCallback
- import android.app.Activity
- import android.content.ContentResolver
- import android.content.Context
- import android.content.Intent
- import android.content.pm.PackageManager
- import android.content.pm.ResolveInfo
- import android.content.res.Configuration
- import android.net.Uri
- import android.os.Build
- import android.os.Bundle
- import android.os.Environment
- import android.provider.Settings
- import android.text.Editable
- import android.text.TextWatcher
- import android.util.Log
- import android.view.*
- import android.widget.ArrayAdapter
- import android.widget.Toast
- import androidx.activity.result.contract.ActivityResultContracts
- import androidx.annotation.RequiresApi
- import androidx.core.app.ActivityCompat
- import androidx.core.content.ContextCompat
- import androidx.core.content.FileProvider
- import androidx.fragment.app.Fragment
+import SwipeToDeleteCallback
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
+import android.content.res.Configuration
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.*
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
- import androidx.recyclerview.widget.ItemTouchHelper
- import androidx.recyclerview.widget.LinearLayoutManager
- import com.example.fico.R
- import com.example.fico.databinding.FragmentExpenseListBinding
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fico.R
+import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
- import com.example.fico.service.constants.AppConstants
- import com.example.fico.ui.EditExpenseActivity
+import com.example.fico.service.constants.AppConstants
+import com.example.fico.ui.EditExpenseActivity
 import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
- import com.example.fico.ui.interfaces.XLSInterface
- import com.example.fico.ui.viewmodel.ExpenseListViewModel
- import com.google.gson.Gson
- import kotlinx.coroutines.Dispatchers
- import kotlinx.coroutines.delay
- import kotlinx.coroutines.launch
- import org.apache.poi.ss.usermodel.*
- import org.apache.poi.xssf.usermodel.XSSFWorkbook
- import java.io.File
- import java.io.FileInputStream
- import java.io.FileOutputStream
+import com.example.fico.ui.interfaces.XLSInterface
+import com.example.fico.ui.viewmodel.ExpenseListViewModel
+import com.google.gson.Gson
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.io.File
 
-
-class ExpenseListFragment : Fragment(), XLSInterface{
+class ExpenseListFragment : Fragment(), XLSInterface {
 
     private var _binding : FragmentExpenseListBinding? = null
     private val binding get() = _binding!!
@@ -70,13 +62,14 @@ class ExpenseListFragment : Fragment(), XLSInterface{
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentExpenseListBinding.inflate(inflater,container,false)
+        _binding = FragmentExpenseListBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
         binding.rvExpenseList.adapter = expenseListAdapter
 
-        val swipeToDeleteCallback = SwipeToDeleteCallback(binding.rvExpenseList,viewModel, expenseListAdapter)
+        val swipeToDeleteCallback =
+            SwipeToDeleteCallback(binding.rvExpenseList, viewModel, expenseListAdapter)
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 
@@ -125,7 +118,13 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         val expenseList : MutableList<Expense> = ArrayList()
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
             for(expense in expenses){
-                var modifiedExpense = Expense("",expense.price.replace("R$ ",""),expense.description,expense.category, expense.date)
+                var modifiedExpense = Expense(
+                    "",
+                    expense.price.replace("R$ ", ""),
+                    expense.description,
+                    expense.category,
+                    expense.date
+                )
                 expenseList.add(modifiedExpense)
             }
         })
@@ -160,7 +159,7 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                 actvConfig()
             })
 
-            binding.actvDate.addTextChangedListener (object : TextWatcher{
+            binding.actvDate.addTextChangedListener (object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -185,7 +184,11 @@ class ExpenseListFragment : Fragment(), XLSInterface{
     }
 
     private fun actvConfig() {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, expenseMonthsList)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            expenseMonthsList
+        )
         binding.actvDate.setAdapter(adapter)
     }
     fun editExpense(expense : Expense){
@@ -227,7 +230,9 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         val chooser = Intent.createChooser(intent, "Share File")
 
         val resInfoList: List<ResolveInfo> =
-            requireActivity().packageManager.queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY)
+            requireActivity().packageManager.queryIntentActivities(chooser,
+                PackageManager.MATCH_DEFAULT_ONLY
+            )
 
         for (resolveInfo in resInfoList) {
             val packageName: String = resolveInfo.activityInfo.packageName
@@ -257,7 +262,8 @@ class ExpenseListFragment : Fragment(), XLSInterface{
             }
         }
         else{
-            ActivityCompat.requestPermissions(requireActivity(), permissions,
+            ActivityCompat.requestPermissions(
+                requireActivity(), permissions,
                 STORAGE_PERMISSION_CODE
             )
         }
@@ -273,7 +279,11 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                 }
             }else{
                 Log.d(TAG, "storageActivityResultLauncher: ")
-                Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Manage External Storage Permission is denied ...",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         else{
@@ -285,8 +295,14 @@ class ExpenseListFragment : Fragment(), XLSInterface{
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             Environment.isExternalStorageManager()
         }else{
-            val write = ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            val read = ContextCompat.checkSelfPermission(requireContext(),  android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            val write = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            val read = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
             write == PackageManager.PERMISSION_GRANTED && read == PackageManager.PERMISSION_GRANTED
         }
     }
@@ -306,7 +322,11 @@ class ExpenseListFragment : Fragment(), XLSInterface{
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission granted")
                 }else{
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission denied ...")
-                    Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Manage External Storage Permission is denied ...",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -328,4 +348,3 @@ class ExpenseListFragment : Fragment(), XLSInterface{
 
 
 }
-

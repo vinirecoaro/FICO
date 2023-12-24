@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".ui.fragments.AddExpenseFragment">
+    tools:context=".ui.fragments.expense.AddExpenseFragment">
 
     <EditText
         android:id="@+id/et_price"
@@ -98,7 +98,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_set_budget"
-        android:name="com.example.fico.ui.fragments.SetMonthBudget"
+        android:name="com.example.fico.ui.fragments.expense.SetMonthBudget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"

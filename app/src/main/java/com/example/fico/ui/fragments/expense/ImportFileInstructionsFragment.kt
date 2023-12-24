@@ -1,27 +1,24 @@
-package com.example.fico.ui.fragments
+package com.example.fico.ui.fragments.expense
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.fico.R
-import com.example.fico.databinding.FragmentAddExpenseBinding
+import androidx.fragment.app.Fragment
 import com.example.fico.databinding.FragmentImportFileInstructionsBinding
 import com.example.fico.model.ImportFileInstructionsComponents
-
-private const val TITLE = "title"
-private const val IMAGE = "image"
-private const val DESCRIPTION = "description"
-private const val BUTTON_STATE = "button_state"
 
 class ImportFileInstructionsFragment : Fragment() {
 
     private var _binding : FragmentImportFileInstructionsBinding? = null
     private val binding get() = _binding!!
+    private val TITLE = "title"
+    private val IMAGE = "image"
+    private val DESCRIPTION = "description"
+    private val BUTTON_STATE = "button_state"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentImportFileInstructionsBinding.inflate(inflater,container,false)
+        _binding = FragmentImportFileInstructionsBinding.inflate(inflater, container, false)
         var rootView = binding.root
 
         arguments?.let {

@@ -1,5 +1,6 @@
-package com.example.fico.ui.fragments
+package com.example.fico.ui.fragments.expense
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
@@ -30,7 +31,6 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.model.Expense
-import com.example.fico.model.ImportFileInstructionsComponents
 import com.example.fico.service.UploadFile
 import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.ImportFileInstructionsActivity
@@ -43,7 +43,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DateUtil
@@ -55,7 +54,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 
-class AddExpenseFragment : Fragment(), OnButtonClickListener{
+class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
     private var _binding : FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
@@ -76,7 +75,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentAddExpenseBinding.inflate(inflater,container,false)
+        _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
         var rootView = binding.root
 
         setUpListeners()
@@ -318,14 +317,18 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
     }
 
     private fun actvConfig() {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categoryOptions)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            categoryOptions
+        )
         binding.actvCategory.setAdapter(adapter)
     }
 
     private fun verifyFields(vararg text: EditText) : Boolean{
         for (i in text){
             if (i.text.toString() == "" || i == null){
-                Snackbar.make(binding.btSave,"Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.btSave, "Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG).show()
                 return false
             }
         }
@@ -381,14 +384,22 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     if(viewModel.setDefaultBudget(formattedNumString).await()){
                         val rootView: View? = activity?.findViewById(android.R.id.content)
                         if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, "Budget editado com sucesso", Snackbar.LENGTH_LONG)
+                            val snackbar = Snackbar.make(
+                                rootView,
+                                "Budget editado com sucesso",
+                                Snackbar.LENGTH_LONG
+                            )
                             snackbar.show()
                             result.complete(true)
                         }
                     }else{
                         val rootView: View? = activity?.findViewById(android.R.id.content)
                         if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, "Falha ao editar o Default", Snackbar.LENGTH_LONG)
+                            val snackbar = Snackbar.make(
+                                rootView,
+                                "Falha ao editar o Default",
+                                Snackbar.LENGTH_LONG
+                            )
                             snackbar.show()
                             result.complete(false)
                         }
@@ -470,7 +481,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
-                    val outputStream = FileOutputStream(getNewFileUri().path) // Substitua getNewFileUri() pelo método que você usa para obter a URI do novo arquivo.
+                    val outputStream =
+                        FileOutputStream(getNewFileUri().path) // Substitua getNewFileUri() pelo método que você usa para obter a URI do novo arquivo.
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -493,13 +505,15 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                         Toast.makeText(
                             requireContext(),
                             "Dados corretos, salvando dados !",
-                            Toast.LENGTH_LONG).show()
+                            Toast.LENGTH_LONG
+                        ).show()
                     }else{
                         Toast.makeText(
                             requireContext(),
                             "Falha ao importar os dados, " +
                                     "verifique se os dados estão corretos !",
-                            Toast.LENGTH_LONG).show()
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
@@ -604,7 +618,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
 
     // Método para gerar uma URI para o novo arquivo (exemplo).
     private fun getNewFileUri(): Uri {
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val downloadsDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val newFile = File(downloadsDir, "expenses.xlsx")
         return Uri.fromFile(newFile)
     }
@@ -626,7 +641,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
             }
         }
         else{
-            ActivityCompat.requestPermissions(requireActivity(), permissions,
+            ActivityCompat.requestPermissions(
+                requireActivity(), permissions,
                 STORAGE_PERMISSION_CODE
             )
         }
@@ -642,8 +658,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                 }
             }else{
                 Log.d(TAG, "storageActivityResultLauncher: ")
-                Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",
-                    Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(), "Manage External Storage Permission is denied ...",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         else{
@@ -655,8 +673,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             Environment.isExternalStorageManager()
         }else{
-            val write = ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            val read = ContextCompat.checkSelfPermission(requireContext(),  android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            val write = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            val read = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
             write == PackageManager.PERMISSION_GRANTED && read == PackageManager.PERMISSION_GRANTED
         }
     }
@@ -676,8 +700,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission granted")
                 }else{
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission denied ...")
-                    Toast.makeText(requireContext(),"Manage External Storage Permission is denied ...",
-                        Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(), "Manage External Storage Permission is denied ...",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -688,7 +714,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener{
             .setTitle("Importar Dados")
             .setMessage("Os dados devem estar no formato correto")
             .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                startActivity(Intent(requireContext(),ImportFileInstructionsActivity::class.java))
+                startActivity(Intent(requireContext(), ImportFileInstructionsActivity::class.java))
             }
             .setPositiveButton("Selecionar Arquivo") { dialog, which ->
                 performFileSearch()
