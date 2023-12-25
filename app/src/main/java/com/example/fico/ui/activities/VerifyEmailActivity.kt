@@ -1,15 +1,13 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.example.fico.R
 import com.example.fico.databinding.ActivityVerifyEmailBinding
-import com.example.fico.service.FirebaseAPI
+import com.example.fico.ui.activities.expense.MainActivity
 import com.example.fico.ui.viewmodel.VerifyEmailViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch

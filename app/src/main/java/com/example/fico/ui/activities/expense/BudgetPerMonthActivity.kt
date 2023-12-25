@@ -1,4 +1,4 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities.expense
 
 import android.app.AlertDialog
 import android.graphics.Color

@@ -1,4 +1,4 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

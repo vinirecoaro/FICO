@@ -1,19 +1,14 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities
 
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.example.fico.R
 import com.example.fico.databinding.ActivityResetPasswordBinding
 import com.example.fico.ui.viewmodel.ResetPasswordViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class ResetPasswordActivity : AppCompatActivity() {
 

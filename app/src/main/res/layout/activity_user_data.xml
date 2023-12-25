@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
-        tools:context=".ui.UserDataActivity">
+        tools:context=".ui.activities.UserDataActivity">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_profile_image"

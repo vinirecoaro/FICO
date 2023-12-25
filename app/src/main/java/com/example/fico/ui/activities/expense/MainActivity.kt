@@ -1,18 +1,13 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities.expense
 
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -21,6 +16,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.databinding.FragmentAddExpenseBinding
+import com.example.fico.ui.activities.GeneralConfigurationActivity
+import com.example.fico.ui.activities.UserDataActivity
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -97,13 +94,13 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         val navigationView = findViewById<NavigationView>(R.id.nv_main)
         val headerView = navigationView.getHeaderView(0)
         headerView.setOnClickListener {
-            startActivity(Intent(this,UserDataActivity::class.java))
+            startActivity(Intent(this, UserDataActivity::class.java))
         }
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when(menuItem.itemId){
                 R.id.nav_menu_item_expenses -> {
-                    startActivity(Intent(this,MainActivity::class.java))
+                    startActivity(Intent(this, MainActivity::class.java))
                     true
                 }
 
@@ -112,7 +109,7 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
                     true
                 }
                 R.id.nav_menu_item_config -> {
-                    startActivity(Intent(this,GeneralConfigurationActivity::class.java))
+                    startActivity(Intent(this, GeneralConfigurationActivity::class.java))
                     true
                 }
 

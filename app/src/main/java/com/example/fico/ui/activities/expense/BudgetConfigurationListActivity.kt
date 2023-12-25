@@ -1,4 +1,4 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities.expense
 
 import android.content.Intent
 import android.graphics.Color
@@ -44,7 +44,7 @@ class BudgetConfigurationListActivity : AppCompatActivity(),
         if(item == AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET_LIST.DEFAULT_BUDGET){
             startActivity(Intent(this, SetDefaultBudgetActivity::class.java))
         }else if(item == AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET_LIST.BUDGET_PER_MONTH){
-            startActivity(Intent(this,BudgetPerMonthActivity::class.java))
+            startActivity(Intent(this, BudgetPerMonthActivity::class.java))
         }
     }
 

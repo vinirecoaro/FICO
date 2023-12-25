@@ -32,7 +32,7 @@ import com.example.fico.R
 import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
 import com.example.fico.service.constants.AppConstants
-import com.example.fico.ui.EditExpenseActivity
+import com.example.fico.ui.activities.expense.EditExpenseActivity
 import com.example.fico.ui.adapters.ExpenseListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.interfaces.XLSInterface

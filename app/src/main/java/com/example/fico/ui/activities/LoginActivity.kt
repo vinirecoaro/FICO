@@ -1,8 +1,7 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -10,12 +9,11 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityLoginBinding
+import com.example.fico.ui.activities.expense.MainActivity
 import com.example.fico.ui.viewmodel.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 
 class LoginActivity : AppCompatActivity() {
 

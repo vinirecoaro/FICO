@@ -33,7 +33,7 @@ import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.service.UploadFile
 import com.example.fico.service.constants.AppConstants
-import com.example.fico.ui.ImportFileInstructionsActivity
+import com.example.fico.ui.activities.expense.ImportFileInstructionsActivity
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel

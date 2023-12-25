@@ -1,6 +1,5 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities.expense
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +16,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
-import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers

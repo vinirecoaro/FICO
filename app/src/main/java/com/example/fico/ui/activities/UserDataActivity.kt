@@ -1,4 +1,4 @@
-package com.example.fico.ui
+package com.example.fico.ui.activities
 
 import android.app.AlertDialog
 import android.content.res.Configuration
