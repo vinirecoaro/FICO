@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.ui.interfaces.OnListItemClick
 
-class ConfigurationListAdapter(private var data: MutableList<String>) : RecyclerView.Adapter<ConfigurationListAdapter.ViewHolder>() {
+class ExpenseConfigurationListAdapter(private var data: MutableList<String>) : RecyclerView.Adapter<ExpenseConfigurationListAdapter.ViewHolder>() {
 
     private var listener: OnListItemClick? = null
 

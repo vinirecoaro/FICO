@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.databinding.FragmentConfigurationBinding
 import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.activities.expense.BudgetConfigurationListActivity
-import com.example.fico.ui.adapters.ConfigurationListAdapter
+import com.example.fico.ui.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.ConfigurationViewModel
 
@@ -21,7 +21,7 @@ class ConfigurationFragment : Fragment(),
     private var _binding : FragmentConfigurationBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<ConfigurationViewModel>()
-    private lateinit var configuratonListAdapter: ConfigurationListAdapter
+    private lateinit var configuratonListAdapter: ExpenseConfigurationListAdapter
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,7 +29,7 @@ class ConfigurationFragment : Fragment(),
         val rootView = binding.root
 
         binding.rvConfigurationList.layoutManager = LinearLayoutManager(requireContext())
-        configuratonListAdapter = ConfigurationListAdapter(viewModel.configurationList)
+        configuratonListAdapter = ExpenseConfigurationListAdapter(viewModel.configurationList)
         configuratonListAdapter.setOnItemClickListener(this)
         binding.rvConfigurationList.adapter = configuratonListAdapter
 
