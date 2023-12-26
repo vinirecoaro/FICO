@@ -6,7 +6,7 @@ import com.example.fico.service.FirebaseAPI
 import com.example.fico.service.constants.AppConstants
 import kotlinx.coroutines.async
 
-class ConfigurationViewModel : ViewModel() {
+class ExpenseConfigurationViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
 
@@ -14,9 +14,5 @@ class ConfigurationViewModel : ViewModel() {
         AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET,
         AppConstants.EXPENSE_CONFIGURATION_LIST.CATEGORIES
     )
-
-    fun logoff() = viewModelScope.async{
-        firebaseAPI.logoff()
-    }
 
 }

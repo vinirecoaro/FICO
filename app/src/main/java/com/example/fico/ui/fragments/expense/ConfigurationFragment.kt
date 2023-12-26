@@ -13,16 +13,15 @@ import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.activities.expense.BudgetConfigurationListActivity
 import com.example.fico.ui.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
-import com.example.fico.ui.viewmodel.ConfigurationViewModel
+import com.example.fico.ui.viewmodel.ExpenseConfigurationViewModel
 
 class ConfigurationFragment : Fragment(),
     OnListItemClick {
 
     private var _binding : FragmentConfigurationBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<ConfigurationViewModel>()
+    private val viewModel by viewModels<ExpenseConfigurationViewModel>()
     private lateinit var configuratonListAdapter: ExpenseConfigurationListAdapter
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentConfigurationBinding.inflate(inflater, container, false)

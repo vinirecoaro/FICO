@@ -31,7 +31,7 @@ class AppConstants private constructor() {
     }
 
     object GENERAL_CONFIGURATION_LIST {
-        const val DADOS_PESSOAIS = "Dados pessoais"
+        const val PERSONAL_DATA = "Dados pessoais"
         const val LOGOUT = "Sair"
     }
 
