@@ -45,7 +45,14 @@ class GeneralConfigurationActivity : AppCompatActivity(),OnListItemClick {
             startActivity(Intent(this, UserDataActivity::class.java))
         }
         else if(item == AppConstants.GENERAL_CONFIGURATION_LIST.LOGOUT){
-           viewModel.logoff()
+            viewModel.logoff()
+            finish()
+            val intent = Intent(this, LoginActivity::class.java)
+
+            // Create a new task to restart de app and clear the old activities stack
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+            startActivity(intent)
         }
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -101,6 +102,7 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
             when(menuItem.itemId){
                 R.id.nav_menu_item_expenses -> {
                     startActivity(Intent(this, MainActivity::class.java))
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
 
@@ -110,6 +112,7 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
                 }
                 R.id.nav_menu_item_config -> {
                     startActivity(Intent(this, GeneralConfigurationActivity::class.java))
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
 
