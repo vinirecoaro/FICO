@@ -56,9 +56,10 @@ import java.text.SimpleDateFormat
 
 class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
-    private var _binding : FragmentAddExpenseBinding? = null
+    private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
-    private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
+    private val categoryOptions =
+        arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
     private val READ_REQUEST_CODE: Int = 42
@@ -68,13 +69,15 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
-    private companion object{
+    private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
         private const val TAG = "PERMISSION_TAG"
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
         var rootView = binding.root
 
@@ -136,13 +139,13 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
             R.id.add_expense_menu_get_data_from_file -> {
                 lifecycleScope.launch {
-                    if (checkPermission()){
-                        if(viewModel.checkIfExistDefaultBudget().await()){
+                    if (checkPermission()) {
+                        if (viewModel.checkIfExistDefaultBudget().await()) {
                             importDataAlertDialog()
-                        }else{
+                        } else {
                             setUpDefaultBudgetAlertDialog()
                         }
-                    }else{
+                    } else {
                         requestPermission()
                     }
                 }
@@ -159,8 +162,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         binding.btSave.setOnClickListener {
             binding.btSave.isEnabled = false
             lifecycleScope.launch(Dispatchers.Main) {
-                if(binding.etInstallments.visibility == View.GONE){
-                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
+                if (binding.etInstallments.visibility == View.GONE) {
+                    if (verifyFields(
+                            binding.etPrice,
+                            binding.etDescription,
+                            binding.actvCategory,
+                            binding.etDate
+                        )
+                    ) {
                         val day = binding.etDate.text.toString().substring(0, 2)
                         val month = binding.etDate.text.toString().substring(3, 5)
                         val year = binding.etDate.text.toString().substring(6, 10)
@@ -170,9 +179,12 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         val regex = Regex("[\\d,.]+")
                         val justNumber = regex.find(binding.etPrice.text.toString())
                         val formatNum = DecimalFormat("#.#####")
-                        val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
-                        val formatedNum = formatNum.format(numClean/100)
-                        val formattedNumString = formatedNum.toString().replace(",",".")
+                        val numClean =
+                            justNumber!!.value.replace(",", "")
+                                .replace(".", "").toFloat()
+                        val formatedNum = formatNum.format(numClean / 100)
+                        val formattedNumString = formatedNum.toString()
+                            .replace(",", ".")
 
                         val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
                         if (existsDate) {
@@ -197,13 +209,18 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             )
 
                             childFragmentManager.beginTransaction()
-                                .replace(binding.fragSetBudget.id, setMonthBudget)
-                                .commit()
+                                .replace(binding.fragSetBudget.id, setMonthBudget).commit()
 
                         }
                     }
-                }else if(binding.etInstallments.visibility == View.VISIBLE){
-                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
+                } else if (binding.etInstallments.visibility == View.VISIBLE) {
+                    if (verifyFields(
+                            binding.etPrice,
+                            binding.etDescription,
+                            binding.actvCategory,
+                            binding.etDate
+                        )
+                    ) {
                         val day = binding.etDate.text.toString().substring(0, 2)
                         val month = binding.etDate.text.toString().substring(3, 5)
                         val year = binding.etDate.text.toString().substring(6, 10)
@@ -212,9 +229,13 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         val regex = Regex("[\\d,.]+")
                         val justNumber = regex.find(binding.etPrice.text.toString())
                         val formatNum = DecimalFormat("#.#####")
-                        val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()/binding.etInstallments.text.toString().toInt()
-                        val formatedNum = formatNum.format(numClean/100)
-                        val formattedNumString = formatedNum.toString().replace(",",".")
+                        val numClean = justNumber!!.value
+                            .replace(",", "")
+                            .replace(".", "")
+                            .toFloat() / binding.etInstallments.text.toString().toInt()
+                        val formatedNum = formatNum.format(numClean / 100)
+                        val formattedNumString = formatedNum.toString()
+                            .replace(",", ".")
 
                         val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                         if (existsDefaultBudget) {
@@ -230,7 +251,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             binding.actvCategory.setText("")
                             binding.etInstallments.setText("")
                         } else {
-                            if(setUpDefaultBudgetAlertDialog().await()){
+                            if (setUpDefaultBudgetAlertDialog().await()) {
                                 viewModel.addInstallmentsExpense(
                                     formattedNumString,
                                     binding.etDescription.text.toString(),
@@ -268,12 +289,15 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
             binding.dpDateExpense.visibility = View.GONE
         }
 
-        binding.ivDate.setOnClickListener{
+        binding.ivDate.setOnClickListener {
             binding.fragSetBudget.visibility = View.GONE
             binding.btSave.visibility = View.VISIBLE
             binding.dpDateExpense.visibility = View.VISIBLE
-            binding.dpDateExpense.setOnDateChangedListener { _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
+            binding.dpDateExpense.setOnDateChangedListener {
+                    _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = String.format(
+                    "%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear
+                )
                 binding.etDate.setText(selectedDate)
             }
         }
@@ -305,7 +329,9 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 val text = s.toString()
                 if (!text.isEmpty()) {
                     val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
-                    val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
+                    val formatted = (
+                            NumberFormat.getCurrencyInstance().format(parsed / 100.0)
+                            )
                     binding.etPrice.removeTextChangedListener(this)
                     binding.etPrice.setText(formatted)
                     binding.etPrice.setSelection(formatted.length)
@@ -318,17 +344,17 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
     private fun actvConfig() {
         val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            categoryOptions
+            requireContext(), android.R.layout.simple_dropdown_item_1line, categoryOptions
         )
         binding.actvCategory.setAdapter(adapter)
     }
 
-    private fun verifyFields(vararg text: EditText) : Boolean{
-        for (i in text){
-            if (i.text.toString() == "" || i == null){
-                Snackbar.make(binding.btSave, "Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG).show()
+    private fun verifyFields(vararg text: EditText): Boolean {
+        for (i in text) {
+            if (i.text.toString() == "" || i == null) {
+                Snackbar.make(
+                    binding.btSave, "Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG
+                ).show()
                 return false
             }
         }
@@ -339,7 +365,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         binding.btSave.performClick()
     }
 
-    private fun setUpDefaultBudgetAlertDialog() : CompletableDeferred<Boolean> {
+    private fun setUpDefaultBudgetAlertDialog(): CompletableDeferred<Boolean> {
         val result = CompletableDeferred<Boolean>()
         val builder = AlertDialog.Builder(requireContext())
 
@@ -359,7 +385,9 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 val text = s.toString()
                 if (!text.isEmpty()) {
                     val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
-                    val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
+                    val formatted = (
+                            NumberFormat.getCurrencyInstance().format(parsed / 100.0)
+                            )
                     defaultBudget.removeTextChangedListener(this)
                     defaultBudget.setText(formatted)
                     defaultBudget.setSelection(formatted.length)
@@ -369,36 +397,35 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         })
 
         builder.setPositiveButton("Salvar") { dialog, which ->
-            val saveButton =  (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
             saveButton.isEnabled = false
             lifecycleScope.launch {
-                if(defaultBudget.text.toString() != ""){
+                if (defaultBudget.text.toString() != "") {
 
                     val regex = Regex("[\\d,.]+")
                     val justNumber = regex.find(defaultBudget.text.toString())
                     val formatNum = DecimalFormat("#.##")
-                    val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
-                    val formatedNum = formatNum.format(numClean/100)
-                    val formattedNumString = formatedNum.toString().replace(",",".")
+                    val numClean = justNumber!!.value
+                        .replace(",", "")
+                        .replace(".", "").toFloat()
+                    val formatedNum = formatNum.format(numClean / 100)
+                    val formattedNumString = formatedNum.toString()
+                        .replace(",", ".")
 
-                    if(viewModel.setDefaultBudget(formattedNumString).await()){
+                    if (viewModel.setDefaultBudget(formattedNumString).await()) {
                         val rootView: View? = activity?.findViewById(android.R.id.content)
                         if (rootView != null) {
                             val snackbar = Snackbar.make(
-                                rootView,
-                                "Budget editado com sucesso",
-                                Snackbar.LENGTH_LONG
+                                rootView, "Budget editado com sucesso", Snackbar.LENGTH_LONG
                             )
                             snackbar.show()
                             result.complete(true)
                         }
-                    }else{
+                    } else {
                         val rootView: View? = activity?.findViewById(android.R.id.content)
                         if (rootView != null) {
                             val snackbar = Snackbar.make(
-                                rootView,
-                                "Falha ao editar o Default",
-                                Snackbar.LENGTH_LONG
+                                rootView, "Falha ao editar o Default", Snackbar.LENGTH_LONG
                             )
                             snackbar.show()
                             result.complete(false)
@@ -415,18 +442,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
         val alertDialog = builder.create()
         alertDialog.show()
-     return result
+        return result
     }
 
     fun setMaxLength(editText: EditText, maxLength: Int) {
         val inputFilter = object : InputFilter {
             override fun filter(
-                source: CharSequence?,
-                start: Int,
-                end: Int,
-                dest: Spanned?,
-                dstart: Int,
-                dend: Int
+                source: CharSequence?, start: Int,
+                end: Int, dest: Spanned?, dstart: Int, dend: Int
             ): CharSequence? {
                 val inputText = editText.text.toString() + source.toString()
                 if (inputText.length <= maxLength) {
@@ -447,11 +470,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
     }
 
     override fun onDestroyView() {
-            super.onDestroyView()
-            _binding = null
-        }
+        super.onDestroyView()
+        _binding = null
+    }
 
-    private fun setColorBasedOnTheme(){
+    private fun setColorBasedOnTheme() {
         when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
                 binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_light)
@@ -481,8 +504,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
-                    val outputStream =
-                        FileOutputStream(getNewFileUri().path) // Substitua getNewFileUri() pelo método que você usa para obter a URI do novo arquivo.
+                    val outputStream = FileOutputStream(getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -491,15 +513,17 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                     }
                     // Agora você pode trabalhar com o novo arquivo (cópia) no código.
                     val newPath = getNewFileUri().path.toString()
-                    var readFileResult  = readFromExcelFile(newPath)
-                    if(readFileResult.second){
-                        lifecycleScope.launch(Dispatchers.Main){
+                    var readFileResult = readFromExcelFile(newPath)
+                    if (readFileResult.second) {
+                        lifecycleScope.launch(Dispatchers.Main) {
 
                             val expensesList = readFileResult.first
 
                             // innit the upload data to database service
                             val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
-                            serviceIntent.putParcelableArrayListExtra("expensesList",ArrayList(expensesList))
+                            serviceIntent.putParcelableArrayListExtra(
+                                "expensesList", ArrayList(expensesList)
+                            )
                             requireContext().startService(serviceIntent)
                         }
                         Toast.makeText(
@@ -507,7 +531,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             "Dados corretos, salvando dados !",
                             Toast.LENGTH_LONG
                         ).show()
-                    }else{
+                    } else {
                         Toast.makeText(
                             requireContext(),
                             "Falha ao importar os dados, " +
@@ -520,7 +544,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         }
     }
 
-    fun readFromExcelFile(filepath: String) : Pair<MutableList<Expense>,Boolean>{
+    fun readFromExcelFile(filepath: String): Pair<MutableList<Expense>, Boolean> {
         val inputStream = FileInputStream(filepath)
         //Instantiate Excel workbook using existing file:
         var xlWb = WorkbookFactory.create(inputStream)
@@ -538,7 +562,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
         val numberOfRows = xlWs.lastRowNum
 
-        for (rowIndex in xlWs.firstRowNum+1..numberOfRows) {
+        for (rowIndex in xlWs.firstRowNum + 1..numberOfRows) {
             val row = xlWs.getRow(rowIndex) ?: continue
 
             val numberOfColumns = row.lastCellNum
@@ -549,42 +573,41 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 val cellValue = getCellValueAsString(cell)
                 when (columnIndex) {
                     0 -> {
-                        price = cellValue.replace("R$","")
-                        price = cellValue.replace("R$ ","")
-                        price = cellValue.replace("$","")
-                        price = cellValue.replace("$ ","")
-                        price = cellValue.replace(",",".")
-                        if(price == "xxx" || price == "XXX"){
+                        price = cellValue.replace("R$", "")
+                        price = cellValue.replace("R$ ", "")
+                        price = cellValue.replace("$", "")
+                        price = cellValue.replace("$ ", "")
+                        price = cellValue.replace(",", ".")
+                        if (price == "xxx" || price == "XXX") {
                             return Pair(expenseList, result)
-                        }
-                        else if(price.toDoubleOrNull() == null){
+                        } else if (price.toDoubleOrNull() == null) {
                             result = false
                             expenseList.clear()
                             return Pair(expenseList, result)
                         }
                     }
                     1 -> {
-                        description = cellValue.replace("  "," ")
-                        description = cellValue.replace("  "," ")
+                        description = cellValue.replace("  ", " ")
+                        description = cellValue.replace("  ", " ")
                     }
                     2 -> {
                         category = cellValue
                     }
                     3 -> {
-                        if(cell.cellType == CellType.STRING){
+                        if (cell.cellType == CellType.STRING) {
                             date = cellValue
-                        }else if(cell.cellType == CellType.NUMERIC){
+                        } else if (cell.cellType == CellType.NUMERIC) {
                             val dateDouble = cell.numericCellValue
                             val dateformat = SimpleDateFormat("dd/MM/yyyy")
                             date = dateformat.format(DateUtil.getJavaDate(dateDouble))
                         }
 
-                        if(verifyDateFormat(date)){
+                        if (verifyDateFormat(date)) {
                             val day = date.substring(0, 2)
                             val month = date.substring(3, 5)
                             val year = date.substring(6, 10)
                             date = "$year-$month-$day"
-                        }else{
+                        } else {
                             result = false
                             expenseList.clear()
                             return Pair(expenseList, result)
@@ -602,7 +625,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         return Pair(expenseList, result)
     }
 
-    private fun verifyDateFormat(date: String) : Boolean{
+    private fun verifyDateFormat(date: String): Boolean {
         val formatoData = "\\d{2}/\\d{2}/\\d{4}" // Expressão regular para o formato "dd/mm/aaaa"
         return date.matches(Regex(formatoData))
     }
@@ -624,84 +647,89 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         return Uri.fromFile(newFile)
     }
 
-    private fun requestPermission(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 Log.d(TAG, "requestPermission: try")
                 val intent = Intent()
                 intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
-                val uri = Uri.fromParts("package", requireActivity().packageName, null)
+                val uri = Uri.fromParts(
+                    "package", requireActivity().packageName, null
+                )
                 intent.data = uri
                 storageActivityResultLauncher.launch(intent)
-            }catch (e : java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 Log.d(TAG, "RequestPermission: ", e)
                 val intent = Intent()
                 intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
                 storageActivityResultLauncher.launch(intent)
             }
-        }
-        else{
+        } else {
             ActivityCompat.requestPermissions(
-                requireActivity(), permissions,
-                STORAGE_PERMISSION_CODE
+                requireActivity(), permissions, STORAGE_PERMISSION_CODE
             )
         }
     }
 
-    private val storageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+    private val storageActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
         Log.d(TAG, "storageActivityResultLauncher: ")
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            if(Environment.isExternalStorageManager()){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
                 Log.d(TAG, "storageActivityResultLauncher: ")
                 lifecycleScope.launch {
                     delay(500)
                 }
-            }else{
+            } else {
                 Log.d(TAG, "storageActivityResultLauncher: ")
                 Toast.makeText(
-                    requireContext(), "Manage External Storage Permission is denied ...",
+                    requireContext(),
+                    "Manage External Storage Permission is denied ...",
                     Toast.LENGTH_LONG
                 ).show()
             }
-        }
-        else{
+        } else {
 
         }
     }
 
-    private fun checkPermission() : Boolean{
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+    private fun checkPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
-        }else{
+        } else {
             val write = ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
             val read = ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE
             )
             write == PackageManager.PERMISSION_GRANTED && read == PackageManager.PERMISSION_GRANTED
         }
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == permissionRequestCode) {
-            if(grantResults.isNotEmpty()){
+            if (grantResults.isNotEmpty()) {
                 val write = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val read = grantResults[1] == PackageManager.PERMISSION_GRANTED
-                if(write && read){
-                    Log.d(TAG, "onRequestPermissionResult: External Storage Permission granted")
-                }else{
-                    Log.d(TAG, "onRequestPermissionResult: External Storage Permission denied ...")
+                if (write && read) {
+                    Log.d(
+                        TAG,
+                        "onRequestPermissionResult: External Storage Permission granted"
+                    )
+                } else {
+                    Log.d(
+                        TAG,
+                        "onRequestPermissionResult: External Storage Permission denied ..."
+                    )
                     Toast.makeText(
-                        requireContext(), "Manage External Storage Permission is denied ...",
+                        requireContext(),
+                        "Manage External Storage Permission is denied ...",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -709,17 +737,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         }
     }
 
-    private fun importDataAlertDialog(){
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Importar Dados")
+    private fun importDataAlertDialog() {
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Dados")
             .setMessage("Os dados devem estar no formato correto")
             .setNeutralButton("Ver Formato Correto") { dialog, which ->
                 startActivity(Intent(requireContext(), ImportFileInstructionsActivity::class.java))
-            }
-            .setPositiveButton("Selecionar Arquivo") { dialog, which ->
+            }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
                 performFileSearch()
-            }
-            .show()
+            }.show()
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -727,7 +752,9 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
             // Action when receive Broadcast
             if (intent?.action == AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD) {
                 // Show message to user
-                Toast.makeText(context, "Dados salvos com sucesso !!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context, "Dados salvos com sucesso !!", Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
