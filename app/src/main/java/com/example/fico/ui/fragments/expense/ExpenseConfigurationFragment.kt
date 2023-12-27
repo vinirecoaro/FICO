@@ -15,7 +15,7 @@ import com.example.fico.ui.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.ExpenseConfigurationViewModel
 
-class ConfigurationFragment : Fragment(),
+class ExpenseConfigurationFragment : Fragment(),
     OnListItemClick {
 
     private var _binding : FragmentConfigurationBinding? = null
