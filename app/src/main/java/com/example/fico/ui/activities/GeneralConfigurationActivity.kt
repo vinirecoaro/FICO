@@ -33,9 +33,16 @@ class GeneralConfigurationActivity : AppCompatActivity(),OnListItemClick {
         binding.generalConfigToolbar.setTitleTextColor(Color.WHITE)
 
         binding.rvGeneralConfiguration.layoutManager = LinearLayoutManager(this)
-        generalConfigurationListAdapter = GeneralConfigurationListAdapter(viewModel.configurationList)
+        generalConfigurationListAdapter = GeneralConfigurationListAdapter(
+            viewModel.configurationList
+        )
         generalConfigurationListAdapter.setOnItemClickListener(this)
         binding.rvGeneralConfiguration.adapter = generalConfigurationListAdapter
+
+        setSupportActionBar(binding.generalConfigToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        setUpListeners()
 
     }
 
@@ -50,9 +57,16 @@ class GeneralConfigurationActivity : AppCompatActivity(),OnListItemClick {
             val intent = Intent(this, LoginActivity::class.java)
 
             // Create a new task to restart de app and clear the old activities stack
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
 
             startActivity(intent)
+        }
+    }
+
+    private fun setUpListeners(){
+        binding.generalConfigToolbar.setNavigationOnClickListener {
+            finish()
         }
     }
 }
