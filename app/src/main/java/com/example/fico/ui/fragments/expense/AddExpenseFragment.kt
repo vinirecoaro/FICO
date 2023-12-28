@@ -58,15 +58,18 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
-    private val categoryOptions =
-        arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
+    private val categoryOptions = arrayOf(
+        "Comida", "Transporte",
+        "Investimento", "Necessidade",
+        "Remédio", "Entretenimento"
+    )
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
     private val READ_REQUEST_CODE: Int = 42
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
-        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        android.Manifest.permission.READ_EXTERNAL_STORAGE
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
     private companion object {
@@ -78,7 +81,9 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddExpenseBinding.inflate(inflater, container, false)
+        _binding = FragmentAddExpenseBinding.inflate(
+            inflater, container, false
+        )
         var rootView = binding.root
 
         setUpListeners()

@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
 import kotlinx.coroutines.*
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalTime
@@ -70,24 +72,10 @@ class AddExpenseViewModel : ViewModel() {
 
     suspend fun setDefaultBudget(budget: String) : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO) {
-            val formatNum = DecimalFormat("#.##")
-            val formattedBudget = formatNum.format(budget.toFloat()).toString().replace(",",".")
+            val bigNum = BigDecimal(budget)
+            val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
             firebaseAPI.setDefaultBudget(formattedBudget)
         }
     }
-
-    fun setUpBudget(budget: String, date: String){
-        viewModelScope.async (Dispatchers.IO){
-            firebaseAPI.setUpBudget(budget, date)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getDefaultBudget(formatted : Boolean = true):Deferred<String>{
-        return viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.getDefaultBudget(formatted)
-        }
-    }
-
 
 }

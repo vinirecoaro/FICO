@@ -13,6 +13,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
 import kotlinx.coroutines.*
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -299,8 +302,10 @@ class FirebaseAPI private constructor() {
     }
 
     suspend fun setUpBudget(budget: String, date: String) = withContext(Dispatchers.IO){
-        information_per_month.child(date).child(AppConstants.DATABASE.BUDGET).setValue(budget)
-        information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(budget)
+        val bigNum = BigDecimal(budget)
+        val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
+        information_per_month.child(date).child(AppConstants.DATABASE.BUDGET).setValue(formattedBudget)
+        information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(formattedBudget)
         information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).setValue("0.00")
     }
 
@@ -308,7 +313,9 @@ class FirebaseAPI private constructor() {
     suspend fun setDefaultBudget(budget: String) : Boolean = withContext(Dispatchers.IO){
         val result = CompletableDeferred<Boolean>()
         try {
-            default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(budget)
+            val bigNum = BigDecimal(budget)
+            val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
+            default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(formattedBudget)
             result.complete(true)
         }catch (e:Exception){
             result.complete(false)
@@ -356,7 +363,7 @@ class FirebaseAPI private constructor() {
             val currentAvailable = getAvailableNow(formattedDate)
             val currentAvalableFormatted = currentAvailable.replace("R$","").replace(",",".").toFloat()
             val newAvailable = currentAvalableFormatted + correction
-            val newAvailableFormatted = "%.2f".format(newAvailable).replace(",",".")
+            val newAvailableFormatted = "%.5f".format(newAvailable).replace(",",".")
             information_per_month.child(formattedDate).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(newAvailableFormatted)
             result.complete(true)
         }catch (e:Exception){
@@ -454,9 +461,12 @@ class FirebaseAPI private constructor() {
         total_expense.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val currentTotalExpense = snapshot.value.toString().toFloat()
-                val addValue = value.toFloat()
+                val bigNum = BigDecimal(value)
+                val addValue = bigNum.setScale(8, RoundingMode.HALF_UP).toFloat()
                 val newValue = currentTotalExpense + addValue
-                total_expense.setValue(newValue.toString())
+                val newBigNum = BigDecimal(newValue.toString())
+                val newFormatted = newBigNum.setScale(8, RoundingMode.HALF_UP)
+                total_expense.setValue(newFormatted.toString())
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -476,7 +486,9 @@ class FirebaseAPI private constructor() {
                     val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
                     val exists = checkIfExistsOnDatabse(reference)
                     if(!exists){
-                        reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                        val bigNum = BigDecimal(expense.price)
+                        val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
+                        reference.child(AppConstants.DATABASE.PRICE).setValue(priceFormatted.toString())
                         reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
                         reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
                         reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
@@ -486,7 +498,9 @@ class FirebaseAPI private constructor() {
                     val reference = expense_list.child("${expense.date}-${inputTime}${installmentID}")
                     val exists = checkIfExistsOnDatabse(reference)
                     if(!exists){
-                        reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                        val bigNum = BigDecimal(expense.price)
+                        val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
+                        reference.child(AppConstants.DATABASE.PRICE).setValue(priceFormatted.toString())
                         reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
                         reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
                         reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
@@ -498,7 +512,9 @@ class FirebaseAPI private constructor() {
                 val reference = expense_list.child(expense.id)
                 val exists = checkIfExistsOnDatabse(reference)
                 if(!exists){
-                    reference.child(AppConstants.DATABASE.PRICE).setValue(expense.price)
+                    val bigNum = BigDecimal(expense.price)
+                    val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
+                    reference.child(AppConstants.DATABASE.PRICE).setValue(priceFormatted.toString())
                     reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
                     reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
                     reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
@@ -587,19 +603,25 @@ class FirebaseAPI private constructor() {
     }
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
-        val current = snapshot.child(child).value.toString().toFloat()
-        val add = expense.price.toFloat()
+        val currentBigNum = BigDecimal(snapshot.child(child).value.toString())
+        val current = currentBigNum.setScale(8, RoundingMode.HALF_UP).toFloat()
+        val addBigDecimalNumber = BigDecimal(expense.price)
+        val add = addBigDecimalNumber.setScale(8, RoundingMode.HALF_UP).toFloat()
         val new = current + add
-        val floatFormat = "%.${5}f"
-        return String.format(floatFormat, new).replace(",",".")
+        val newBigDecimalNumber = BigDecimal(new.toString())
+        val newFormatted = newBigDecimalNumber.setScale(8, RoundingMode.HALF_UP)
+        return newFormatted.toString()
     }
 
     fun subOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
-        val current = snapshot.child(child).value.toString().toFloat()
-        val sub = expense.price.toFloat()
+        val currentBigNum = BigDecimal(snapshot.child(child).value.toString())
+        val current = currentBigNum.setScale(8, RoundingMode.HALF_UP).toFloat()
+        val subBigDecimalNumber = BigDecimal(expense.price)
+        val sub = subBigDecimalNumber.setScale(8, RoundingMode.HALF_UP).toFloat()
         val new = current - sub
-        val floatFormat = "%.${5}f"
-        return String.format(floatFormat, new).replace(",",".")
+        val newBigDecimalNumber = BigDecimal(new.toString())
+        val newFormatted = newBigDecimalNumber.setScale(8, RoundingMode.HALF_UP)
+        return newFormatted.toString()
     }
 
     suspend fun getExpenseList(filter: String = ""): List<Expense> = withContext(Dispatchers.IO) {

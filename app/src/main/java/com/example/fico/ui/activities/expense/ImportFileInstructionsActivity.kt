@@ -8,7 +8,6 @@ import com.example.fico.R
 import com.example.fico.databinding.ActivityImportFileInstructionsBinding
 import com.example.fico.model.ImportFileInstructionsComponents
 import com.example.fico.ui.adapters.ImportFileInstructionsAdapter
-import com.example.fico.ui.fragments.expense.ImportFileInstructionsFragment
 
 class ImportFileInstructionsActivity : AppCompatActivity() {
 
