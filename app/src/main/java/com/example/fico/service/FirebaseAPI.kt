@@ -631,8 +631,8 @@ class FirebaseAPI private constructor() {
                         if (filter == "") {
                             for (childSnapshot in snapshot.children) {
                                 val id = childSnapshot.key.toString()
-                                val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
-                                val priceFormatted = "R$ %.5f".format(priceDatabase).replace(".", ",")
+                                val priceDatabase = BigDecimal(childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString())
+                                val priceFormatted = priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
                                 val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                                 val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                                 val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()

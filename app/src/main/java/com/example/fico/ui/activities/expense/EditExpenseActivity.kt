@@ -54,7 +54,7 @@ class EditExpenseActivity : AppCompatActivity() {
                     val price = justNumber * expense.id.substring(38,41).toInt()
                     val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
                     binding.etPrice.setText(priceFormatted)
-                    binding.etDescription.setText(expense.description.split("Parcela")[0])
+                    binding.etDescription.setText(expense.description.split(" Parcela")[0])
                     binding.actvCategory.setText(expense.category)
                     binding.etInstallments.setText(expense.id.substring(38,41).toInt().toString())
                     binding.etDate.setText(returnInitialDate(expense.id, expense.date))
