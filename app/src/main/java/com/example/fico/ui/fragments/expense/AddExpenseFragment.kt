@@ -50,6 +50,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -183,14 +185,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
                         val regex = Regex("[\\d,.]+")
                         val justNumber = regex.find(binding.etPrice.text.toString())
-                        val formatNum = DecimalFormat("#.#####")
-                        val numClean =
-                            justNumber!!.value.replace(",", "")
-                                .replace(".", "").toFloat()
-                        val formatedNum = formatNum.format(numClean / 100)
-                        val formattedNumString = formatedNum.toString()
-                            .replace(",", ".")
-
+                        val correction = BigDecimal("100")
+                        val numClean = BigDecimal(justNumber!!.value.replace(",","").replace(".",""))
+                        val formatedNum = numClean.divide(correction)
+                        val formattedNumString = formatedNum.toString().replace(",",".")
                         val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
                         if (existsDate) {
                             viewModel.addExpense(
@@ -233,14 +231,15 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
                         val regex = Regex("[\\d,.]+")
                         val justNumber = regex.find(binding.etPrice.text.toString())
-                        val formatNum = DecimalFormat("#.#####")
-                        val numClean = justNumber!!.value
-                            .replace(",", "")
-                            .replace(".", "")
-                            .toFloat() / binding.etInstallments.text.toString().toInt()
-                        val formatedNum = formatNum.format(numClean / 100)
-                        val formattedNumString = formatedNum.toString()
-                            .replace(",", ".")
+                        val divisor = BigDecimal(binding.etInstallments.text.toString())
+                        val denominator = BigDecimal(justNumber!!.value
+                            .replace(",","")
+                            .replace(".",""))
+                        val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
+                        val correction = BigDecimal("100")
+                        val installmentPriceFormatted = installmentPrice.divide(correction)
+                        val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
+                        val formattedNumString = formatedNum.toString().replace(",",".")
 
                         val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                         if (existsDefaultBudget) {
