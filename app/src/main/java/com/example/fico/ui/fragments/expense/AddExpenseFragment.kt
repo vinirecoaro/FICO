@@ -603,6 +603,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         var description = ""
         var category = ""
         var date = ""
+        var installment = ""
 
         var result = true
 
@@ -661,10 +662,13 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             return Pair(expenseList, result)
                         }
                     }
+                    4 -> {
+                        installment = cellValue
+                    }
                 }
 
             }
-            val expense = Expense("", price, description, category, date)
+            val expense = Expense("", price, description, category, date, installment)
             expenseList.add(expense)
         }
         xlWb.close()

@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.service.constants.AppConstants
 import kotlinx.coroutines.*
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalTime
 
 class UploadFile : Service() {
@@ -31,7 +33,19 @@ class UploadFile : Service() {
                         if(existDate.await()){
                             val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
                             val timeNow = LocalTime.now()
-                            val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+                            var hour = timeNow.hour.toString()
+                            var minute = timeNow.minute.toString()
+                            var second = timeNow.second.toString()
+                            if(timeNow.hour < 10){
+                                hour = "0${timeNow.hour}"
+                            }
+                            if(timeNow.minute < 10){
+                                minute = "0${timeNow.minute}"
+                            }
+                            if(timeNow.second < 10){
+                                second = "0${timeNow.second}"
+                            }
+                            val inputTime = "${hour}-${minute}-${second}"
                             firebaseAPI.addExpense(_expense, inputTime)
                             delay(100)
                         }else{
@@ -40,7 +54,19 @@ class UploadFile : Service() {
                                 dateToCheck)
                             val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
                             val timeNow = LocalTime.now()
-                            val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+                            var hour = timeNow.hour.toString()
+                            var minute = timeNow.minute.toString()
+                            var second = timeNow.second.toString()
+                            if(timeNow.hour < 10){
+                                hour = "0${timeNow.hour}"
+                            }
+                            if(timeNow.minute < 10){
+                                minute = "0${timeNow.minute}"
+                            }
+                            if(timeNow.second < 10){
+                                second = "0${timeNow.second}"
+                            }
+                            val inputTime = "${hour}-${minute}-${second}"
                             firebaseAPI.addExpense(_expense, inputTime)
                             delay(100)
                         }
@@ -49,7 +75,32 @@ class UploadFile : Service() {
                     sendBroadcast(intentConcludedWarning)
                 }
             } else{
-
+                if (_expenses != null) {
+                    for (expense in _expenses){
+                        val denominator = BigDecimal(expense.price)
+                        val divisor = BigDecimal(expense.nOfInstallment)
+                        val expenseInstallment = denominator.divide(divisor, 8, RoundingMode.HALF_UP).toString()
+                        val _expense = Expense("", expenseInstallment, expense.description, expense.category, expense.date, expense.nOfInstallment)
+                        val timeNow = LocalTime.now()
+                        var hour = timeNow.hour.toString()
+                        var minute = timeNow.minute.toString()
+                        var second = timeNow.second.toString()
+                        if(timeNow.hour < 10){
+                            hour = "0${timeNow.hour}"
+                        }
+                        if(timeNow.minute < 10){
+                            minute = "0${timeNow.minute}"
+                        }
+                        if(timeNow.second < 10){
+                            second = "0${timeNow.second}"
+                        }
+                        val inputTime = "${hour}-${minute}-${second}"
+                        firebaseAPI.addInstallmentExpense(_expense, inputTime, _expense.nOfInstallment.toFloat().toInt())
+                        delay(100)
+                    }
+                    val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+                    sendBroadcast(intentConcludedWarning)
+                }
             }
         }
 

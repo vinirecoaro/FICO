@@ -50,8 +50,9 @@ class EditExpenseActivity : AppCompatActivity() {
                     binding.etInstallments.visibility = View.VISIBLE
 
                     val regex = Regex("[\\d,.]+")
-                    val justNumber = regex.find(expense.price)!!.value.replace(",",".").toFloat()
-                    val price = justNumber * expense.id.substring(38,41).toInt()
+                    val expenseInstallment = BigDecimal(regex.find(expense.price)!!.value.replace(",","."))
+                    val nOfInstallment = BigDecimal(expense.id.substring(38,41))
+                    val price = expenseInstallment.multiply(nOfInstallment)
                     val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description.split(" Parcela")[0])
@@ -59,7 +60,10 @@ class EditExpenseActivity : AppCompatActivity() {
                     binding.etInstallments.setText(expense.id.substring(38,41).toInt().toString())
                     binding.etDate.setText(returnInitialDate(expense.id, expense.date))
                 }else{
-                    binding.etPrice.setText(expense.price)
+                    val regex = Regex("[\\d,.]+")
+                    val justNumber = BigDecimal(regex.find(expense.price)!!.value.replace(",","."))
+                    val priceFormatted = NumberFormat.getCurrencyInstance().format(justNumber)
+                    binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description)
                     binding.actvCategory.setText(expense.category)
                     binding.etDate.setText(expense.date)
@@ -237,7 +241,7 @@ class EditExpenseActivity : AppCompatActivity() {
             initialMonthString = initialMonth.toString()
         }
         if(day.toInt() < 10){
-            day = "0${day}"
+            day = "0${day.toInt()}"
         }
         if(initialMonth < 10){
             initialMonthString = "0${initialMonth}"
