@@ -7,14 +7,16 @@ data class Expense(
     val price: String,
     val description: String,
     val category: String,
-    val date: String
+    val date: String,
+    val nOfInstallment: String = "1"
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readString() ?: ""
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -23,6 +25,7 @@ data class Expense(
         parcel.writeString(description)
         parcel.writeString(category)
         parcel.writeString(date)
+        parcel.writeString(nOfInstallment)
     }
 
     override fun describeContents(): Int {

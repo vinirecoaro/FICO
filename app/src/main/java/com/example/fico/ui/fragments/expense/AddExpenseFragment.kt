@@ -67,7 +67,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
     )
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
-    private val READ_REQUEST_CODE: Int = 42
+    private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
+    private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -490,20 +491,20 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         }
     }
 
-    private fun performFileSearch() {
+    private fun performFileSearch(requestCode : Int) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/vnd.ms-excel" // Define o tipo MIME para arquivos Excel
         }
 
-        startActivityForResult(intent, READ_REQUEST_CODE)
+        startActivityForResult(intent, requestCode)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
 
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == READ_COMON_EXPENSE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { uri ->
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
@@ -528,6 +529,49 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             serviceIntent.putParcelableArrayListExtra(
                                 "expensesList", ArrayList(expensesList)
                             )
+                            requireContext().startService(serviceIntent)
+                        }
+                        Toast.makeText(
+                            requireContext(),
+                            "Dados corretos, salvando dados !",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Falha ao importar os dados, " +
+                                    "verifique se os dados estão corretos !",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        } else if ( requestCode == READ_INSTALLMENT_EXPENSE_REQUEST_CODE && resultCode == Activity.RESULT_OK ){
+            resultData?.data?.also { uri ->
+                val inputStream = requireContext().contentResolver.openInputStream(uri)
+
+                if (inputStream != null) {
+                    val outputStream = FileOutputStream(getNewFileUri().path)
+
+                    inputStream.use { input ->
+                        outputStream.use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    // Agora você pode trabalhar com o novo arquivo (cópia) no código.
+                    val newPath = getNewFileUri().path.toString()
+                    var readFileResult = readFromExcelFile(newPath)
+                    if (readFileResult.second) {
+                        lifecycleScope.launch(Dispatchers.Main) {
+
+                            val expensesList = readFileResult.first
+
+                            // innit the upload data to database service
+                            val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
+                            serviceIntent.putParcelableArrayListExtra(
+                                "expensesList", ArrayList(expensesList)
+                            )
+                            serviceIntent.putExtra("installmentExpense", true)
                             requireContext().startService(serviceIntent)
                         }
                         Toast.makeText(
@@ -742,12 +786,32 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
     }
 
     private fun importDataAlertDialog() {
-        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Dados")
-            .setMessage("Os dados devem estar no formato correto")
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos")
+            .setMessage("Selecione o tipo de gasto que deseja importar.")
+            .setNeutralButton("Gastos Parcelados") { dialog, which ->
+                importInstallmentExpenseTypeAlertDialog()
+            }.setPositiveButton("Gastos Comuns") { dialog, which ->
+                importComonExpenseTypeAlertDialog()
+            }.show()
+    }
+
+    private fun importComonExpenseTypeAlertDialog() {
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Comuns")
+            .setMessage("Os dados devem estar no formato correto.")
             .setNeutralButton("Ver Formato Correto") { dialog, which ->
                 startActivity(Intent(requireContext(), ImportFileInstructionsActivity::class.java))
             }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
-                performFileSearch()
+                performFileSearch(READ_COMON_EXPENSE_REQUEST_CODE)
+            }.show()
+    }
+
+    private fun importInstallmentExpenseTypeAlertDialog() {
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Parcelados")
+            .setMessage("Os dados devem estar no formato correto.")
+            .setNeutralButton("Ver Formato Correto") { dialog, which ->
+
+            }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
+                performFileSearch(READ_INSTALLMENT_EXPENSE_REQUEST_CODE)
             }.show()
     }
 

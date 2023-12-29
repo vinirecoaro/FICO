@@ -39,7 +39,8 @@
     <string name="nav_header_description">Nav Header Description</string>
     <string name="name_nav_header">Nome</string>
     <string name="generate_spreadsheet">Gerar Planilha</string>
-    <string name="import_data">Importar Dados</string>
+    <string name="import_expenses">Importar Gastos</string>
+    <string name="import_installment_expenses">Importar Gastos Parcelados</string>
     <string name="understood">Entendido</string>
     <string name="expenses">Gastos</string>
     <string name="earnings">Ganhos</string>

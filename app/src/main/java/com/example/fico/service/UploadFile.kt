@@ -20,32 +20,36 @@ class UploadFile : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         val _expenses = intent?.getParcelableArrayListExtra<Expense>("expensesList")
+        val installmentExpense : Boolean = intent?.getBooleanExtra("installmentExpense", false) == true
 
         serviceScope.launch {
-
-            if (_expenses != null) {
-                for (expense in _expenses){
-                    val dateToCheck = expense.date.substring(0,7)
-                    val existDate = checkIfExistsDateOnDatabse(dateToCheck)
-                    if(existDate.await()){
-                        val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
-                        val timeNow = LocalTime.now()
-                        val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
-                        firebaseAPI.addExpense(_expense, inputTime)
-                        delay(100)
-                    }else{
-                        setUpBudget(
-                            getDefaultBudget(formatted = false).await(),
-                            dateToCheck)
-                        val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
-                        val timeNow = LocalTime.now()
-                        val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
-                        firebaseAPI.addExpense(_expense, inputTime)
-                        delay(100)
+            if(!installmentExpense){
+                if (_expenses != null) {
+                    for (expense in _expenses){
+                        val dateToCheck = expense.date.substring(0,7)
+                        val existDate = checkIfExistsDateOnDatabse(dateToCheck)
+                        if(existDate.await()){
+                            val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
+                            val timeNow = LocalTime.now()
+                            val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+                            firebaseAPI.addExpense(_expense, inputTime)
+                            delay(100)
+                        }else{
+                            setUpBudget(
+                                getDefaultBudget(formatted = false).await(),
+                                dateToCheck)
+                            val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
+                            val timeNow = LocalTime.now()
+                            val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
+                            firebaseAPI.addExpense(_expense, inputTime)
+                            delay(100)
+                        }
                     }
+                    val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+                    sendBroadcast(intentConcludedWarning)
                 }
-                val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
-                sendBroadcast(intentConcludedWarning)
+            } else{
+
             }
         }
 

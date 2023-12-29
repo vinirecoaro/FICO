@@ -14,7 +14,7 @@
     <item
         android:id="@+id/add_expense_menu_get_data_from_file"
         android:icon="@drawable/config_image"
-        android:title="@string/import_data"
+        android:title="@string/import_expenses"
         />
 
 </menu>
