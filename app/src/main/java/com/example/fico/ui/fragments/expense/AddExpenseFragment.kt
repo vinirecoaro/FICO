@@ -33,7 +33,8 @@ import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.service.UploadFile
 import com.example.fico.service.constants.AppConstants
-import com.example.fico.ui.activities.expense.ImportFileInstructionsActivity
+import com.example.fico.ui.activities.expense.ComonExpenseImportFileInstructionsActivity
+import com.example.fico.ui.activities.expense.InstallmentExpenseImportFileInstructionsActivity
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
@@ -803,7 +804,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Comuns")
             .setMessage("Os dados devem estar no formato correto.")
             .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                startActivity(Intent(requireContext(), ImportFileInstructionsActivity::class.java))
+                startActivity(Intent(requireContext(), ComonExpenseImportFileInstructionsActivity::class.java))
             }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
                 performFileSearch(READ_COMON_EXPENSE_REQUEST_CODE)
             }.show()
@@ -813,7 +814,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Parcelados")
             .setMessage("Os dados devem estar no formato correto.")
             .setNeutralButton("Ver Formato Correto") { dialog, which ->
-
+                startActivity(Intent(requireContext(), InstallmentExpenseImportFileInstructionsActivity::class.java))
             }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
                 performFileSearch(READ_INSTALLMENT_EXPENSE_REQUEST_CODE)
             }.show()

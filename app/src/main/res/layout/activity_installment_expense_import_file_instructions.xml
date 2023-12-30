@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.expense.ImportFileInstructionsActivity">
-
+    tools:context=".ui.activities.expense.InstallmentExpenseImportFileInstructionsActivity">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_instructions"
@@ -69,16 +68,7 @@
             android:layout_margin="4dp"
             android:src="@drawable/ic_dot_unselected_black" />
 
-        <ImageView
-            android:id="@+id/dot7"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_margin="4dp"
-            android:src="@drawable/ic_dot_unselected_black" />
-
-        <!-- Adicione quantas bolinhas forem necessárias -->
-        <!-- ... -->
-
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
