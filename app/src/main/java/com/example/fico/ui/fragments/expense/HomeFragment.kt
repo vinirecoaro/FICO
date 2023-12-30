@@ -107,165 +107,205 @@ class HomeFragment : Fragment(){
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initMonthExpenseChart() = lifecycleScope.launch{
+    private fun initMonthExpenseChart() {
+
         val pieChart = binding.pcMonthExpense
         var holeColor = 1
 
-        val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate(), formatted = false).await()
-        var monthExpenseValueFormatted = 0f
-        if(monthExpenseValue != "---"){
-            monthExpenseValueFormatted = monthExpenseValue.toFloat()
-        }
-        var monthExpenseColor = ""
+        val emptyEntries: ArrayList<PieEntry> = ArrayList()
+        emptyEntries.add(PieEntry(0f, ""))
 
-        val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate(), formatted = false).await()
-        var availableNowValueFormatted = 1f
-        if(availableNowValue != "---"){
-            availableNowValueFormatted = availableNowValue.toFloat()
-        }
-
-        val budget = monthExpenseValueFormatted + availableNowValueFormatted
-
-        // Defining color of availableNow part
-        if(monthExpenseValueFormatted <= (budget/2)){
-            monthExpenseColor = "#19d14e" // Green
-        }else if(monthExpenseValueFormatted <= (budget*0.85)){
-            monthExpenseColor = "#ebe23b" // Yellow
-        }else if(monthExpenseValueFormatted > (budget*0.85)){
-            monthExpenseColor = "#ed2b15" // Red
-        }
-
-        // Defining chart insede hole color
-        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                holeColor = Color.rgb(104, 110, 106)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                holeColor = Color.WHITE
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
-
-        // Create a entries list for Pie Chart
-        val entries = mutableListOf<PieEntry>()
-        entries.add(PieEntry(monthExpenseValueFormatted))
-        entries.add(PieEntry(availableNowValueFormatted))
-
-        // Colors for parts of chart
-        val colors = listOf(
-            Color.parseColor(monthExpenseColor), // FirstColor
+        val emptyChartColors = listOf(
+            Color.parseColor("#19d14e"), // FirstColor
             Color.parseColor("#9aa19c")  // SecondColor
         )
 
-        // Create a data set from entries
-        val dataSet = PieDataSet(entries, "Uso de Recursos")
-        dataSet.colors = colors
+        val emptyDataSet = PieDataSet(emptyEntries, "Label")
+        emptyDataSet.colors = emptyChartColors
 
-        // Data set customizing
-        dataSet.sliceSpace = 2f
+        val emptyData = PieData(emptyDataSet)
+        pieChart.data = emptyData
 
-        // Create an PieData object from data set
-        val pieData = PieData(dataSet)
-        pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
-
-        // Configure the PieChart
-        pieChart.data = pieData
-        pieChart.setUsePercentValues(false)
-        pieChart.description.isEnabled = false
-        pieChart.setHoleRadius(80f) // middle chart hole size
-        pieChart.setTransparentCircleRadius(85f) // Transparent area size
-        pieChart.setHoleColor(holeColor)
-        pieChart.legend.isEnabled = false
-
-        // Ocult label values
-        pieData.setDrawValues(false)
-
-        // Circular animation on create chart
-        pieChart.animateY(1400, Easing.EaseInOutQuad)
-
-        // Update the chart
         pieChart.invalidate()
+
+        lifecycleScope.launch{
+
+            val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate(), formatted = false).await()
+            var monthExpenseValueFormatted = 0f
+            if(monthExpenseValue != "---"){
+                monthExpenseValueFormatted = monthExpenseValue.toFloat()
+            }
+            var monthExpenseColor = ""
+
+            val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate(), formatted = false).await()
+            var availableNowValueFormatted = 1f
+            if(availableNowValue != "---"){
+                availableNowValueFormatted = availableNowValue.toFloat()
+            }
+
+            val budget = monthExpenseValueFormatted + availableNowValueFormatted
+
+            // Defining color of availableNow part
+            if(monthExpenseValueFormatted <= (budget/2)){
+                monthExpenseColor = "#19d14e" // Green
+            }else if(monthExpenseValueFormatted <= (budget*0.85)){
+                monthExpenseColor = "#ebe23b" // Yellow
+            }else if(monthExpenseValueFormatted > (budget*0.85)){
+                monthExpenseColor = "#ed2b15" // Red
+            }
+
+            // Defining chart insede hole color
+            when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    holeColor = Color.rgb(104, 110, 106)
+                }
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    holeColor = Color.WHITE
+                }
+                Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+            }
+
+            // Create a entries list for Pie Chart
+            val entries = mutableListOf<PieEntry>()
+            entries.add(PieEntry(monthExpenseValueFormatted))
+            entries.add(PieEntry(availableNowValueFormatted))
+
+            // Colors for parts of chart
+            val colors = listOf(
+                Color.parseColor(monthExpenseColor), // FirstColor
+                Color.parseColor("#9aa19c")  // SecondColor
+            )
+
+            // Create a data set from entries
+            val dataSet = PieDataSet(entries, "Uso de Recursos")
+            dataSet.colors = colors
+
+            // Data set customizing
+            dataSet.sliceSpace = 2f
+
+            // Create an PieData object from data set
+            val pieData = PieData(dataSet)
+            pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
+
+            // Configure the PieChart
+            pieChart.data = pieData
+            pieChart.setUsePercentValues(false)
+            pieChart.description.isEnabled = false
+            pieChart.setHoleRadius(80f) // middle chart hole size
+            pieChart.setTransparentCircleRadius(85f) // Transparent area size
+            pieChart.setHoleColor(holeColor)
+            pieChart.legend.isEnabled = false
+
+            // Ocult label values
+            pieData.setDrawValues(false)
+
+            // Circular animation on create chart
+            pieChart.animateY(1400, Easing.EaseInOutQuad)
+
+            // Update the chart
+            pieChart.invalidate()
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initAvailableNowChart() = lifecycleScope.launch{
+    private fun initAvailableNowChart() {
+
         val pieChart = binding.pcAvailableNow
         var holeColor = 1
 
+        val emptyEntries: ArrayList<PieEntry> = ArrayList()
+        emptyEntries.add(PieEntry(0f, ""))
 
-        val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate(), formatted = false).await()
-        var monthExpenseValueFormatted = 0f
-        if(monthExpenseValue != "---"){
-            monthExpenseValueFormatted = monthExpenseValue.toFloat()
-        }
-
-        val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate(), formatted = false).await()
-        var availableNowValueFormatted = 1f
-        if(availableNowValue != "---"){
-            availableNowValueFormatted = availableNowValue.toFloat()
-        }
-        var availableNowColor = ""
-        val budget = monthExpenseValueFormatted + availableNowValueFormatted
-
-        // Defining color of availableNow part
-        if(availableNowValueFormatted >= (budget/2)){
-            availableNowColor = "#19d14e" // Green
-        }else if(availableNowValueFormatted >= (budget*0.15)){
-            availableNowColor = "#ebe23b" // Yellow
-        }else if(availableNowValueFormatted < (budget*0.15)){
-            availableNowColor = "#ed2b15" // Red
-        }
-
-        // Defining chart insede hole color
-        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                holeColor = Color.rgb(104, 110, 106)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                holeColor = Color.WHITE
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
-
-        // Create a entries list for Pie Chart
-        val entries = mutableListOf<PieEntry>()
-        entries.add(PieEntry(availableNowValueFormatted))
-        entries.add(PieEntry(monthExpenseValueFormatted))
-
-        // Colors for parts of chart
-        val colors = listOf(
-            Color.parseColor(availableNowColor), // FirstColor
+        val emptyChartColors = listOf(
+            Color.parseColor("#19d14e"), // FirstColor
             Color.parseColor("#9aa19c")  // SecondColor
         )
 
-        // Create a data set from entries
-        val dataSet = PieDataSet(entries, "Uso de Recursos")
-        dataSet.colors = colors
+        val emptyDataSet = PieDataSet(emptyEntries, "Label")
+        emptyDataSet.colors = emptyChartColors
 
-        // Data set customizing
-        dataSet.sliceSpace = 2f
+        val emptyData = PieData(emptyDataSet)
+        pieChart.data = emptyData
 
-        // Create an PieData object from data set
-        val pieData = PieData(dataSet)
-        pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
-
-        // Configure the PieChart
-        pieChart.data = pieData
-        pieChart.setUsePercentValues(false)
-        pieChart.description.isEnabled = false
-        pieChart.setHoleRadius(75f) // middle chart hole size
-        pieChart.setTransparentCircleRadius(80f) // Transparent area size
-        pieChart.setHoleColor(holeColor)
-        pieChart.legend.isEnabled = false
-
-        // Ocult label values
-        pieData.setDrawValues(false)
-
-        // Circular animation on create chart
-        pieChart.animateY(1400, Easing.EaseInOutQuad)
-
-        // Update the chart
         pieChart.invalidate()
+
+        lifecycleScope.launch{
+
+            val monthExpenseValue = viewModel.getMonthExpense(viewModel.getCurrentlyDate(), formatted = false).await()
+            var monthExpenseValueFormatted = 0f
+            if(monthExpenseValue != "---"){
+                monthExpenseValueFormatted = monthExpenseValue.toFloat()
+            }
+
+            val availableNowValue = viewModel.getAvailableNow(viewModel.getCurrentlyDate(), formatted = false).await()
+            var availableNowValueFormatted = 1f
+            if(availableNowValue != "---"){
+                availableNowValueFormatted = availableNowValue.toFloat()
+            }
+            var availableNowColor = ""
+            val budget = monthExpenseValueFormatted + availableNowValueFormatted
+
+            // Defining color of availableNow part
+            if(availableNowValueFormatted >= (budget/2)){
+                availableNowColor = "#19d14e" // Green
+            }else if(availableNowValueFormatted >= (budget*0.15)){
+                availableNowColor = "#ebe23b" // Yellow
+            }else if(availableNowValueFormatted < (budget*0.15)){
+                availableNowColor = "#ed2b15" // Red
+            }
+
+            // Defining chart insede hole color
+            when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    holeColor = Color.rgb(104, 110, 106)
+                }
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    holeColor = Color.WHITE
+                }
+                Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+            }
+
+            // Create a entries list for Pie Chart
+            val entries = mutableListOf<PieEntry>()
+            entries.add(PieEntry(availableNowValueFormatted))
+            entries.add(PieEntry(monthExpenseValueFormatted))
+
+            // Colors for parts of chart
+            val colors = listOf(
+                Color.parseColor(availableNowColor), // FirstColor
+                Color.parseColor("#9aa19c")  // SecondColor
+            )
+
+            // Create a data set from entries
+            val dataSet = PieDataSet(entries, "Uso de Recursos")
+            dataSet.colors = colors
+
+            // Data set customizing
+            dataSet.sliceSpace = 2f
+
+            // Create an PieData object from data set
+            val pieData = PieData(dataSet)
+            pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
+
+            // Configure the PieChart
+            pieChart.data = pieData
+            pieChart.setUsePercentValues(false)
+            pieChart.description.isEnabled = false
+            pieChart.setHoleRadius(75f) // middle chart hole size
+            pieChart.setTransparentCircleRadius(80f) // Transparent area size
+            pieChart.setHoleColor(holeColor)
+            pieChart.legend.isEnabled = false
+
+            // Ocult label values
+            pieData.setDrawValues(false)
+
+            // Circular animation on create chart
+            pieChart.animateY(1400, Easing.EaseInOutQuad)
+
+            // Update the chart
+            pieChart.invalidate()
+        }
     }
 
 }
