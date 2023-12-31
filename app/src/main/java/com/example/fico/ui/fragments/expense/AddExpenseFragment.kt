@@ -99,6 +99,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
         setMaxLength(binding.etInstallments, 3)
 
+        viewModel.initAddExpenseResult()
+
         return rootView
     }
 
@@ -345,6 +347,12 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 }
             }
         })
+
+        viewModel.getAddExpenseResult().observe(this) { addExpenseResult ->
+            if (addExpenseResult) {
+                Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+            }
+        }
 
     }
 

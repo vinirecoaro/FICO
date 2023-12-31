@@ -2,6 +2,8 @@ package com.example.fico.ui.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
@@ -18,14 +20,39 @@ import java.util.concurrent.CompletableFuture
 class AddExpenseViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
+    private val _resultAddExpense = MutableLiveData<Boolean>()
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpense(price: String, description: String, category: String, date: String)=
+    suspend fun addExpense(price: String, description: String, category: String, date: String) {
+        _resultAddExpense.value = false
         viewModelScope.async(Dispatchers.IO){
-        val expense = Expense("", price, description, category, date)
-        val timeNow = LocalTime.now()
-        val inputTime = "${timeNow.hour}-${timeNow.minute}-${timeNow.second}"
-        firebaseAPI.addExpense(expense, inputTime)
+            val expense = Expense("", price, description, category, date)
+            val timeNow = LocalTime.now()
+            var hour = timeNow.hour.toString()
+            var minute = timeNow.minute.toString()
+            var second = timeNow.second.toString()
+            if(timeNow.hour < 10){
+                hour = "0${timeNow.hour}"
+            }
+            if(timeNow.minute < 10){
+                minute = "0${timeNow.minute}"
+            }
+            if(timeNow.second < 10){
+                second = "0${timeNow.second}"
+            }
+            val inputTime = "${hour}-${minute}-${second}"
+            firebaseAPI.addExpense(expense, inputTime)
+        }
+        _resultAddExpense.value = true
+    }
+
+
+    fun initAddExpenseResult(){
+        _resultAddExpense.value = false
+    }
+
+    fun getAddExpenseResult() : LiveData<Boolean> {
+        return _resultAddExpense
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -43,7 +70,8 @@ class AddExpenseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addInstallmentsExpense(price: String, description: String, category: String, date: String, nOfInstallments: Int)=
+    suspend fun addInstallmentsExpense(price: String, description: String, category: String, date: String, nOfInstallments: Int){
+        _resultAddExpense.value = false
         viewModelScope.async(Dispatchers.IO){
             val expense = Expense("",price, description, category, date)
             val timeNow = LocalTime.now()
@@ -61,7 +89,10 @@ class AddExpenseViewModel : ViewModel() {
             }
             val inputTime = "${hour}-${minute}-${second}"
             firebaseAPI.addInstallmentExpense(expense,inputTime,nOfInstallments)
+        }
+        _resultAddExpense.value = true
     }
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistDefaultBudget() : Deferred<Boolean> {

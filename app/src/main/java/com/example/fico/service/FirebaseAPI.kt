@@ -190,7 +190,8 @@ class FirebaseAPI private constructor() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val deleteItemList = mutableListOf<Expense>()
                     for (childSnapshot in snapshot.children) {
-                        if(childSnapshot.key.toString().substring(11,25) == commonID){
+                        val key = childSnapshot.key.toString()
+                        if(key.substring(11,25) == commonID){
                             val id = childSnapshot.key.toString()
                             val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                             val date = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
@@ -237,7 +238,7 @@ class FirebaseAPI private constructor() {
                 currentInstallment = "0$currentInstallment"
             }
 
-            val installmentIdItem = "-$installmentId-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+            val installmentIdItem = "$installmentId-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
             val month = expense.date.substring(5,7).toInt()
             var newMonth = month + i
             var year = expense.date.substring(0,4).toInt()
@@ -484,7 +485,7 @@ class FirebaseAPI private constructor() {
             if(expense.id == ""){
                 if(!installment){
                     val expenseId = generateRandomAddress(5)
-                    val reference = expense_list.child("${expense.date}-${inputTime}${expenseId}")
+                    val reference = expense_list.child("${expense.date}-${inputTime}-${expenseId}")
                     val exists = checkIfExistsOnDatabse(reference)
                     if(!exists){
                         val bigNum = BigDecimal(expense.price)
@@ -496,7 +497,7 @@ class FirebaseAPI private constructor() {
                         control = true
                     }
                 } else{
-                    val reference = expense_list.child("${expense.date}-${inputTime}${installmentID}")
+                    val reference = expense_list.child("${expense.date}-${inputTime}-${installmentID}")
                     val exists = checkIfExistsOnDatabse(reference)
                     if(!exists){
                         val bigNum = BigDecimal(expense.price)
