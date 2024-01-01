@@ -129,10 +129,16 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addExpense(expense: Expense, inputTime : String){
-        updateExpenseList(expense, inputTime)
-        updateTotalExpense(expense.price)
-        updateInformationPerMonth(expense)
+    suspend fun addExpense(expense: Expense, inputTime : String) : Boolean = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Boolean>()
+        try{
+            updateExpenseList(expense, inputTime)
+            updateTotalExpense(expense.price)
+            updateInformationPerMonth(expense)
+            result.complete(true)
+        }catch (e : Exception){
+            result.complete(false)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -218,75 +224,81 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) = withContext(Dispatchers.IO){
+    suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) : Boolean
+    = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Boolean>()
 
-        val installmentId  = generateRandomAddress(5)
-
-        var nOfInstallmentsFormatted = nOfInstallments.toString()
-        if(nOfInstallments < 10){
-            nOfInstallmentsFormatted = "00$nOfInstallmentsFormatted"
-        }else if(nOfInstallments < 100){
-            nOfInstallmentsFormatted = "0$nOfInstallmentsFormatted"
-        }
-
-        for (i in 0 until nOfInstallments){
-
-            var currentInstallment = "${i+1}"
-            if(i+1 < 10){
-                currentInstallment = "00$currentInstallment"
-            }else if(i+1 < 100){
-                currentInstallment = "0$currentInstallment"
+        try{
+            val installmentId  = generateRandomAddress(5)
+            var nOfInstallmentsFormatted = nOfInstallments.toString()
+            if(nOfInstallments < 10){
+                nOfInstallmentsFormatted = "00$nOfInstallmentsFormatted"
+            }else if(nOfInstallments < 100){
+                nOfInstallmentsFormatted = "0$nOfInstallmentsFormatted"
             }
 
-            val installmentIdItem = "$installmentId-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
-            val month = expense.date.substring(5,7).toInt()
-            var newMonth = month + i
-            var year = expense.date.substring(0,4).toInt()
-            var sumYear : Int = 0
-            var day = expense.date.substring(8,10).toInt()
-            var newDescription = expense.description + " Parcela ${i+1}"
-            if(newMonth > 12 ){
-                if(newMonth % 12 == 0){
-                    sumYear = newMonth/12 - 1
-                    newMonth -= 12*sumYear
-                }else{
-                    sumYear = newMonth/12
-                    newMonth -= 12*sumYear
+            for (i in 0 until nOfInstallments){
+
+                var currentInstallment = "${i+1}"
+                if(i+1 < 10){
+                    currentInstallment = "00$currentInstallment"
+                }else if(i+1 < 100){
+                    currentInstallment = "0$currentInstallment"
                 }
-                if(newMonth == 2){
-                    if (day > 28){
-                        day = 28
+
+                val installmentIdItem = "$installmentId-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+                val month = expense.date.substring(5,7).toInt()
+                var newMonth = month + i
+                var year = expense.date.substring(0,4).toInt()
+                var sumYear : Int = 0
+                var day = expense.date.substring(8,10).toInt()
+                var newDescription = expense.description + " Parcela ${i+1}"
+                if(newMonth > 12 ){
+                    if(newMonth % 12 == 0){
+                        sumYear = newMonth/12 - 1
+                        newMonth -= 12*sumYear
+                    }else{
+                        sumYear = newMonth/12
+                        newMonth -= 12*sumYear
                     }
+                    if(newMonth == 2){
+                        if (day > 28){
+                            day = 28
+                        }
+                    }
+                    year += sumYear
                 }
-                year += sumYear
-            }
-            var newMonthFormatted = newMonth.toString()
-            if(newMonth < 10){
-                newMonthFormatted = "0$newMonth"
-            }
-            var dayFormatted = day.toString()
-            if(day < 10){
-                dayFormatted = "0$day"
-            }
+                var newMonthFormatted = newMonth.toString()
+                if(newMonth < 10){
+                    newMonthFormatted = "0$newMonth"
+                }
+                var dayFormatted = day.toString()
+                if(day < 10){
+                    dayFormatted = "0$day"
+                }
 
-            val date = "$year-$newMonthFormatted-$dayFormatted"
-            val newExpense = Expense("",expense.price, newDescription, expense.category, date)
+                val date = "$year-$newMonthFormatted-$dayFormatted"
+                val newExpense = Expense("",expense.price, newDescription, expense.category, date)
 
-            val dateInformationPerMonth = "$year-$newMonthFormatted"
-            val existDate = checkIfExistsDateOnDatabse(dateInformationPerMonth)
+                val dateInformationPerMonth = "$year-$newMonthFormatted"
+                val existDate = checkIfExistsDateOnDatabse(dateInformationPerMonth)
 
-            if(existDate){
-                updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
-                updateTotalExpense(newExpense.price)
-                updateInformationPerMonth(newExpense)
-            }else{
-                val defaultBudget = getDefaultBudget(false)
-                setUpBudget(defaultBudget,dateInformationPerMonth)
-                updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
-                updateTotalExpense(newExpense.price)
-                updateInformationPerMonth(newExpense)
+                if(existDate){
+                    updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
+                    updateTotalExpense(newExpense.price)
+                    updateInformationPerMonth(newExpense)
+
+                }else{
+                    val defaultBudget = getDefaultBudget(false)
+                    setUpBudget(defaultBudget,dateInformationPerMonth)
+                    updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
+                    updateTotalExpense(newExpense.price)
+                    updateInformationPerMonth(newExpense)
+                }
             }
-
+            result.complete(true)
+        }catch (e : java.lang.Exception){
+            result.complete(false)
         }
     }
 

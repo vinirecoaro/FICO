@@ -11,8 +11,10 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
@@ -147,6 +149,7 @@ class EditExpenseActivity : AppCompatActivity() {
                 }
             }
             binding.btSave.isEnabled = true
+
         }
 
         binding.etPrice.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->

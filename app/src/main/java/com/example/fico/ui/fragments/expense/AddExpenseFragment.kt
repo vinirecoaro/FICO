@@ -99,8 +99,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
         setMaxLength(binding.etInstallments, 3)
 
-        viewModel.initAddExpenseResult()
-
         return rootView
     }
 
@@ -195,15 +193,18 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         val formattedNumString = formatedNum.toString().replace(",",".")
                         val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
                         if (existsDate) {
-                            viewModel.addExpense(
+                            if(viewModel.addExpense(
                                 formattedNumString,
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
                                 modifiedDate
-                            )
-                            binding.etPrice.setText("")
-                            binding.etDescription.setText("")
-                            binding.actvCategory.setText("")
+                            ).await()){
+                                Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                binding.etPrice.setText("")
+                                binding.etDescription.setText("")
+                                binding.actvCategory.setText("")
+                            }
+
                         } else {
                             binding.btSave.visibility = View.GONE
                             binding.dpDateExpense.visibility = View.GONE
@@ -247,17 +248,20 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
                         val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                         if (existsDefaultBudget) {
-                            viewModel.addInstallmentsExpense(
+                            if(viewModel.addInstallmentsExpense(
                                 formattedNumString,
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
                                 modifiedDate,
                                 binding.etInstallments.text.toString().toInt()
-                            )
-                            binding.etPrice.setText("")
-                            binding.etDescription.setText("")
-                            binding.actvCategory.setText("")
-                            binding.etInstallments.setText("")
+                            ).await()){
+                                Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                binding.etPrice.setText("")
+                                binding.etDescription.setText("")
+                                binding.actvCategory.setText("")
+                                binding.etInstallments.setText("")
+                            }
+
                         } else {
                             if (setUpDefaultBudgetAlertDialog().await()) {
                                 viewModel.addInstallmentsExpense(
@@ -347,13 +351,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 }
             }
         })
-
-        viewModel.getAddExpenseResult().observe(this) { addExpenseResult ->
-            if (addExpenseResult) {
-                Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-            }
-        }
-
     }
 
     private fun actvConfig() {

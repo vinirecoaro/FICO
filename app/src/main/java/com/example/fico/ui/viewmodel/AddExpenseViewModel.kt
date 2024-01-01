@@ -20,12 +20,10 @@ import java.util.concurrent.CompletableFuture
 class AddExpenseViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
-    private val _resultAddExpense = MutableLiveData<Boolean>()
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpense(price: String, description: String, category: String, date: String) {
-        _resultAddExpense.value = false
-        viewModelScope.async(Dispatchers.IO){
+    suspend fun addExpense(price: String, description: String, category: String, date: String) : Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO){
             val expense = Expense("", price, description, category, date)
             val timeNow = LocalTime.now()
             var hour = timeNow.hour.toString()
@@ -43,16 +41,6 @@ class AddExpenseViewModel : ViewModel() {
             val inputTime = "${hour}-${minute}-${second}"
             firebaseAPI.addExpense(expense, inputTime)
         }
-        _resultAddExpense.value = true
-    }
-
-
-    fun initAddExpenseResult(){
-        _resultAddExpense.value = false
-    }
-
-    fun getAddExpenseResult() : LiveData<Boolean> {
-        return _resultAddExpense
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -70,9 +58,8 @@ class AddExpenseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addInstallmentsExpense(price: String, description: String, category: String, date: String, nOfInstallments: Int){
-        _resultAddExpense.value = false
-        viewModelScope.async(Dispatchers.IO){
+    suspend fun addInstallmentsExpense(price: String, description: String, category: String, date: String, nOfInstallments: Int) : Deferred<Boolean>{
+        return viewModelScope.async(Dispatchers.IO){
             val expense = Expense("",price, description, category, date)
             val timeNow = LocalTime.now()
             var hour = timeNow.hour.toString()
@@ -90,7 +77,6 @@ class AddExpenseViewModel : ViewModel() {
             val inputTime = "${hour}-${minute}-${second}"
             firebaseAPI.addInstallmentExpense(expense,inputTime,nOfInstallments)
         }
-        _resultAddExpense.value = true
     }
 
 
