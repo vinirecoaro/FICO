@@ -112,6 +112,16 @@ class HomeFragment : Fragment(){
         val pieChart = binding.pcMonthExpense
         var holeColor = 1
 
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                holeColor = Color.rgb(104, 110, 106)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                holeColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
         val emptyEntries: ArrayList<PieEntry> = ArrayList()
         emptyEntries.add(PieEntry(0f, ""))
 
@@ -125,6 +135,15 @@ class HomeFragment : Fragment(){
 
         val emptyData = PieData(emptyDataSet)
         pieChart.data = emptyData
+
+        pieChart.setUsePercentValues(false)
+        pieChart.description.isEnabled = false
+        pieChart.setHoleRadius(80f) // middle chart hole size
+        pieChart.setTransparentCircleRadius(85f) // Transparent area size
+        pieChart.setHoleColor(holeColor)
+        pieChart.legend.isEnabled = false
+        pieChart.data.setDrawValues(false)// Ocult label values
+        pieChart.animateY(1400, Easing.EaseInOutQuad)// Circular animation on create chart
 
         pieChart.invalidate()
 
@@ -154,7 +173,7 @@ class HomeFragment : Fragment(){
                 monthExpenseColor = "#ed2b15" // Red
             }
 
-            // Defining chart insede hole color
+            // Defining chart inside hole color
             when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
                 Configuration.UI_MODE_NIGHT_YES -> {
                     holeColor = Color.rgb(104, 110, 106)
@@ -214,6 +233,16 @@ class HomeFragment : Fragment(){
         val pieChart = binding.pcAvailableNow
         var holeColor = 1
 
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                holeColor = Color.rgb(104, 110, 106)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                holeColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
         val emptyEntries: ArrayList<PieEntry> = ArrayList()
         emptyEntries.add(PieEntry(0f, ""))
 
@@ -227,6 +256,15 @@ class HomeFragment : Fragment(){
 
         val emptyData = PieData(emptyDataSet)
         pieChart.data = emptyData
+
+        pieChart.setUsePercentValues(false)
+        pieChart.description.isEnabled = false
+        pieChart.setHoleRadius(80f) // middle chart hole size
+        pieChart.setTransparentCircleRadius(85f) // Transparent area size
+        pieChart.setHoleColor(holeColor)
+        pieChart.legend.isEnabled = false
+        pieChart.data.setDrawValues(false)// Ocult label values
+        pieChart.animateY(1400, Easing.EaseInOutQuad)// Circular animation on create chart
 
         pieChart.invalidate()
 
