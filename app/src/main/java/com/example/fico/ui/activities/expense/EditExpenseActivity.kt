@@ -121,38 +121,42 @@ class EditExpenseActivity : AppCompatActivity() {
                     }
                 }else if(binding.etInstallments.visibility == View.VISIBLE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etDate)){
-                        val day = binding.etDate.text.toString().substring(0, 2)
-                        val month = binding.etDate.text.toString().substring(3, 5)
-                        val year = binding.etDate.text.toString().substring(6, 10)
-                        val modifiedDate = "$year-$month-$day"
+                        if(binding.etInstallments.text.toString() != "0"){
+                            val day = binding.etDate.text.toString().substring(0, 2)
+                            val month = binding.etDate.text.toString().substring(3, 5)
+                            val year = binding.etDate.text.toString().substring(6, 10)
+                            val modifiedDate = "$year-$month-$day"
 
-                        val regex = Regex("[\\d,.]+")
-                        val justNumber = regex.find(binding.etPrice.text.toString())
-                        val divisor = BigDecimal(binding.etInstallments.text.toString())
-                        val denominator = BigDecimal(justNumber!!.value
-                            .replace(",","")
-                            .replace(".",""))
-                        val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
-                        val correction = BigDecimal("100")
-                        val installmentPriceFormatted = installmentPrice.divide(correction)
-                        val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
-                        val formattedNumString = formatedNum.toString().replace(",",".")
+                            val regex = Regex("[\\d,.]+")
+                            val justNumber = regex.find(binding.etPrice.text.toString())
+                            val divisor = BigDecimal(binding.etInstallments.text.toString())
+                            val denominator = BigDecimal(justNumber!!.value
+                                .replace(",","")
+                                .replace(".",""))
+                            val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
+                            val correction = BigDecimal("100")
+                            val installmentPriceFormatted = installmentPrice.divide(correction)
+                            val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
+                            val formattedNumString = formatedNum.toString().replace(",",".")
 
-                        val expense = intent.getParcelableExtra<Expense>("expense")
-                        viewModel.saveEditInstallmentExpense(
-                            formattedNumString,
-                            binding.etDescription.text.toString(),
-                            binding.actvCategory.text.toString(),
-                            modifiedDate,
-                            binding.etInstallments.text.toString().toInt()).await()
-                        viewModel.deleteOldInstallmentExpense(expense!!).await()
-                        if(viewModel.updateTotalExpenseAfterEditInstallmentExpense(expense).await()){
-                            hideKeyboard(this@EditExpenseActivity,binding.btSave)
-                            Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
+                            val expense = intent.getParcelableExtra<Expense>("expense")
+                            viewModel.saveEditInstallmentExpense(
+                                formattedNumString,
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                modifiedDate,
+                                binding.etInstallments.text.toString().toInt()).await()
+                            viewModel.deleteOldInstallmentExpense(expense!!).await()
+                            if(viewModel.updateTotalExpenseAfterEditInstallmentExpense(expense).await()){
+                                hideKeyboard(this@EditExpenseActivity,binding.btSave)
+                                Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
+                            }
+                            //delay necessary to return to Expense list with value updated
+                            delay(250)
+                            finish()
+                        }else{
+                            Toast.makeText(this@EditExpenseActivity, "O número de parcelas não pode ser 0", Toast.LENGTH_LONG).show()
                         }
-                        //delay necessary to return to Expense list with value updated
-                        delay(250)
-                        finish()
                     }
                 }
             }

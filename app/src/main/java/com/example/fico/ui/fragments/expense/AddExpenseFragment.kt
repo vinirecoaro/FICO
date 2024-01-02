@@ -231,55 +231,59 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             binding.actvCategory,
                             binding.etDate
                         )
-                    ) {
-                        val day = binding.etDate.text.toString().substring(0, 2)
-                        val month = binding.etDate.text.toString().substring(3, 5)
-                        val year = binding.etDate.text.toString().substring(6, 10)
-                        val modifiedDate = "$year-$month-$day"
+                    ){
+                        if(binding.etInstallments.text.toString() != "0"){
+                            val day = binding.etDate.text.toString().substring(0, 2)
+                            val month = binding.etDate.text.toString().substring(3, 5)
+                            val year = binding.etDate.text.toString().substring(6, 10)
+                            val modifiedDate = "$year-$month-$day"
 
-                        val regex = Regex("[\\d,.]+")
-                        val justNumber = regex.find(binding.etPrice.text.toString())
-                        val divisor = BigDecimal(binding.etInstallments.text.toString())
-                        val denominator = BigDecimal(justNumber!!.value
-                            .replace(",","")
-                            .replace(".",""))
-                        val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
-                        val correction = BigDecimal("100")
-                        val installmentPriceFormatted = installmentPrice.divide(correction)
-                        val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
-                        val formattedNumString = formatedNum.toString().replace(",",".")
+                            val regex = Regex("[\\d,.]+")
+                            val justNumber = regex.find(binding.etPrice.text.toString())
+                            val divisor = BigDecimal(binding.etInstallments.text.toString())
+                            val denominator = BigDecimal(justNumber!!.value
+                                .replace(",","")
+                                .replace(".",""))
+                            val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
+                            val correction = BigDecimal("100")
+                            val installmentPriceFormatted = installmentPrice.divide(correction)
+                            val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
+                            val formattedNumString = formatedNum.toString().replace(",",".")
 
-                        val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                        if (existsDefaultBudget) {
-                            if(viewModel.addInstallmentsExpense(
-                                formattedNumString,
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                modifiedDate,
-                                binding.etInstallments.text.toString().toInt()
-                            ).await()){
-                                hideKeyboard(requireContext(),binding.btSave)
-                                Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                binding.etPrice.setText("")
-                                binding.etDescription.setText("")
-                                binding.actvCategory.setText("")
-                                binding.etInstallments.setText("")
+                            val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                            if (existsDefaultBudget) {
+                                if(viewModel.addInstallmentsExpense(
+                                        formattedNumString,
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        modifiedDate,
+                                        binding.etInstallments.text.toString().toInt()
+                                    ).await()){
+                                    hideKeyboard(requireContext(),binding.btSave)
+                                    Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                    binding.etPrice.setText("")
+                                    binding.etDescription.setText("")
+                                    binding.actvCategory.setText("")
+                                    binding.etInstallments.setText("")
+                                }
+
+                            } else {
+                                if (setUpDefaultBudgetAlertDialog().await()) {
+                                    viewModel.addInstallmentsExpense(
+                                        formattedNumString,
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        modifiedDate,
+                                        binding.etInstallments.text.toString().toInt()
+                                    )
+                                    binding.etPrice.setText("")
+                                    binding.etDescription.setText("")
+                                    binding.actvCategory.setText("")
+                                    binding.etInstallments.setText("")
+                                }
                             }
-
-                        } else {
-                            if (setUpDefaultBudgetAlertDialog().await()) {
-                                viewModel.addInstallmentsExpense(
-                                    formattedNumString,
-                                    binding.etDescription.text.toString(),
-                                    binding.actvCategory.text.toString(),
-                                    modifiedDate,
-                                    binding.etInstallments.text.toString().toInt()
-                                )
-                                binding.etPrice.setText("")
-                                binding.etDescription.setText("")
-                                binding.actvCategory.setText("")
-                                binding.etInstallments.setText("")
-                            }
+                        }else{
+                            Toast.makeText(requireContext(), "O número de parcelas não pode ser 0", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
