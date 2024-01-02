@@ -56,6 +56,8 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 
 class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
@@ -199,6 +201,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                 binding.actvCategory.text.toString(),
                                 modifiedDate
                             ).await()){
+                                hideKeyboard(requireContext(),binding.btSave)
                                 Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
                                 binding.etPrice.setText("")
                                 binding.etDescription.setText("")
@@ -255,6 +258,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                 modifiedDate,
                                 binding.etInstallments.text.toString().toInt()
                             ).await()){
+                                hideKeyboard(requireContext(),binding.btSave)
                                 Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
                                 binding.etPrice.setText("")
                                 binding.etDescription.setText("")
@@ -835,6 +839,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 ).show()
             }
         }
+    }
+
+    private fun hideKeyboard(context: Context, view: View){
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken,0)
     }
 
 }
