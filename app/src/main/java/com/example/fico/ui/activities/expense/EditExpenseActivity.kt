@@ -1,5 +1,6 @@
 package com.example.fico.ui.activities.expense
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import android.text.InputFilter
 import android.text.Spanned
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
@@ -104,12 +106,15 @@ class EditExpenseActivity : AppCompatActivity() {
                         val formattedNumString = formatedNum.toString().replace(",",".")
 
                         val expense = intent.getParcelableExtra<Expense>("expense")
-                        viewModel.saveEditExpense(
+                        if(viewModel.saveEditExpense(
                             expense!!,
                             formattedNumString,
                             binding.etDescription.text.toString(),
                             binding.actvCategory.text.toString(),
-                            modifiedDate).await()
+                            modifiedDate).await()){
+                            hideKeyboard(this@EditExpenseActivity,binding.btSave)
+                            Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
+                        }
                         //delay necessary to return to Expense list with value updated
                         delay(250)
                         finish()
@@ -141,7 +146,10 @@ class EditExpenseActivity : AppCompatActivity() {
                             modifiedDate,
                             binding.etInstallments.text.toString().toInt()).await()
                         viewModel.deleteOldInstallmentExpense(expense!!).await()
-                        viewModel.updateTotalExpenseAfterEditInstallmentExpense(expense).await()
+                        if(viewModel.updateTotalExpenseAfterEditInstallmentExpense(expense).await()){
+                            hideKeyboard(this@EditExpenseActivity,binding.btSave)
+                            Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
+                        }
                         //delay necessary to return to Expense list with value updated
                         delay(250)
                         finish()
@@ -279,6 +287,11 @@ class EditExpenseActivity : AppCompatActivity() {
             arrayOf(inputFilter)
         }
         editText.filters = newFilters
+    }
+
+    private fun hideKeyboard(context: Context, view: View){
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken,0)
     }
 
 }

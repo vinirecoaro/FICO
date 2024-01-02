@@ -142,14 +142,20 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun editExpense(oldExpense: Expense, newExpense : Expense, inputTime : String, installmentExpense : Boolean = false, nOfInstallments: Int = 1) = withContext(Dispatchers.IO){
-        if(!installmentExpense){
-            deleteExpense(oldExpense)
-            updateExpenseList(newExpense, inputTime)
-            updateTotalExpense(newExpense.price)
-            updateInformationPerMonth(newExpense)
-        }else{
-            addInstallmentExpense(newExpense,inputTime,nOfInstallments)
+    suspend fun editExpense(oldExpense: Expense, newExpense : Expense, inputTime : String, installmentExpense : Boolean = false, nOfInstallments: Int = 1) : Boolean = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Boolean>()
+        try{
+            if(!installmentExpense){
+                deleteExpense(oldExpense)
+                updateExpenseList(newExpense, inputTime)
+                updateTotalExpense(newExpense.price)
+                updateInformationPerMonth(newExpense)
+            }else{
+                addInstallmentExpense(newExpense,inputTime,nOfInstallments)
+            }
+            result.complete(true)
+        }catch (e : Exception){
+            result.complete(false)
         }
     }
 

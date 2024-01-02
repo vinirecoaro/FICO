@@ -22,8 +22,8 @@ class EditExpenseViewModel : ViewModel() {
         description: String,
         category: String,
         date: String
-    ) =
-        viewModelScope.async(Dispatchers.IO) {
+    ) : Deferred<Boolean > {
+        return viewModelScope.async(Dispatchers.IO) {
             val day = expense.date.substring(0, 2)
             val month = expense.date.substring(3, 5)
             val year = expense.date.substring(6, 10)
@@ -54,6 +54,8 @@ class EditExpenseViewModel : ViewModel() {
 
             firebaseAPI.editExpense(oldExpense, newExpense, inputTime)
         }
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditInstallmentExpense(
