@@ -22,18 +22,18 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+
 
         resetPasswordSucess()
         setColorBasedOnTheme()
-    }
-
-    override fun onStart() {
-        super.onStart()
         setUpListeners()
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.isLogged()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            if(!viewModel.isLogged().await()){
+                setContentView(binding.root)
+            }
         }
+
     }
 
     private fun setUpListeners(){
