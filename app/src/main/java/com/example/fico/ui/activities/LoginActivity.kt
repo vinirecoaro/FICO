@@ -4,8 +4,11 @@ import android.content.Intent
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityLoginBinding
@@ -13,6 +16,7 @@ import com.example.fico.ui.activities.expense.MainActivity
 import com.example.fico.ui.viewmodel.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -20,9 +24,11 @@ class LoginActivity : AppCompatActivity() {
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<LoginViewModel>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        installSplashScreen()
 
         resetPasswordSucess()
         setColorBasedOnTheme()
@@ -31,6 +37,8 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             if(!viewModel.isLogged().await()){
                 setContentView(binding.root)
+            }else{
+                finish()
             }
         }
 
@@ -81,5 +89,6 @@ class LoginActivity : AppCompatActivity() {
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
+
 
 }
