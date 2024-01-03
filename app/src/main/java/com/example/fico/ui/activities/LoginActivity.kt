@@ -27,20 +27,11 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        installSplashScreen()
+        setContentView(binding.root)
 
         resetPasswordSucess()
         setColorBasedOnTheme()
         setUpListeners()
-
-        lifecycleScope.launch(Dispatchers.Main) {
-            if(!viewModel.isLogged().await()){
-                setContentView(binding.root)
-            }else{
-                finish()
-            }
-        }
 
     }
 
