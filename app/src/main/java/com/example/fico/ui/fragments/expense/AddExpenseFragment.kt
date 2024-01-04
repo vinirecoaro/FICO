@@ -57,7 +57,6 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 
 class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
@@ -207,7 +206,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                 binding.etDescription.setText("")
                                 binding.actvCategory.setText("")
                             }
-
+                            /*viewModel.addExpense2(formattedNumString,
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                modifiedDate)*/
                         } else {
                             binding.btSave.visibility = View.GONE
                             binding.dpDateExpense.visibility = View.GONE
@@ -252,7 +254,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {
-                                if(viewModel.addInstallmentsExpense(
+                                /*if(viewModel.addInstallmentsExpense(
                                         formattedNumString,
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
@@ -265,8 +267,12 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                     binding.etDescription.setText("")
                                     binding.actvCategory.setText("")
                                     binding.etInstallments.setText("")
-                                }
-
+                                }*/
+                                viewModel.addInstallmentsExpense2(formattedNumString,
+                                    binding.etDescription.text.toString(),
+                                    binding.actvCategory.text.toString(),
+                                    modifiedDate,
+                                    binding.etInstallments.text.toString().toInt())
                             } else {
                                 if (setUpDefaultBudgetAlertDialog().await()) {
                                     viewModel.addInstallmentsExpense(

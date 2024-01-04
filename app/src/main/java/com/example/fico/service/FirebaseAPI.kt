@@ -15,7 +15,6 @@ import com.google.firebase.database.*
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -494,6 +493,11 @@ class FirebaseAPI private constructor() {
             }
 
         })
+    }
+
+
+    fun updateExpenseList2(expenseList : MutableMap<String, Any>){
+        expense_list.updateChildren(expenseList)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
