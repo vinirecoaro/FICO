@@ -210,7 +210,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                 formattedNumString,
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
-                                modifiedDate)
+                                modifiedDate,
+                            false)
                         } else {
                             binding.btSave.visibility = View.GONE
                             binding.dpDateExpense.visibility = View.GONE
@@ -262,10 +263,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                     binding.actvCategory.setText("")
                                     binding.etInstallments.setText("")
                                 }*/
-                                viewModel.addInstallmentsExpense2(formattedNumString,
+                                viewModel.addExpense2(formattedNumString,
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
                                     modifiedDate,
+                                    true,
                                     binding.etInstallments.text.toString().toInt())
                             } else {
                                 if (setUpDefaultBudgetAlertDialog().await()) {

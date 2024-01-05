@@ -93,93 +93,14 @@ class AddExpenseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addExpense2(price: String, description: String, category: String, date: String){
+    suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 0) {
+        viewModelScope.async(Dispatchers.IO){
+            val expenseList = generateExpenseList(price, description, category, date, installment, nOfInstallments)
 
-        val expense = Expense("", price, description, category, date)
-        val timeNow = LocalTime.now()
-        var hour = timeNow.hour.toString()
-        var minute = timeNow.minute.toString()
-        var second = timeNow.second.toString()
-        if(timeNow.hour < 10){
-            hour = "0${timeNow.hour}"
+            val updatedTotalExpense = calculateUpdatedTotalExpense(price).await()
+
+            firebaseAPI.addExpense2(expenseList, installment, nOfInstallments = nOfInstallments, updatedTotalExpense)
         }
-        if(timeNow.minute < 10){
-            minute = "0${timeNow.minute}"
-        }
-        if(timeNow.second < 10){
-            second = "0${timeNow.second}"
-        }
-        val inputTime = "${hour}-${minute}-${second}"
-
-
-        var expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
-        val randonNum = generateRandomAddress(5)
-        val bigNum = BigDecimal(expense.price)
-        val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
-        val expenseId = "${expense.date}-${inputTime}-${randonNum}"
-        val formattedExpense = Expense("", priceFormatted.toString(), expense.description, expense.category, expense.date)
-
-        val newPair = Pair(formattedExpense, expenseId)
-        expenseList.add(newPair)
-
-        firebaseAPI.addExpense2(expenseList, false)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun addInstallmentsExpense2(price: String, description: String, category: String, date: String, nOfInstallments: Int) {
-        val expense = Expense("",price, description, category, date)
-        val timeNow = LocalTime.now()
-        var hour = timeNow.hour.toString()
-        var minute = timeNow.minute.toString()
-        var second = timeNow.second.toString()
-        if(timeNow.hour < 10){
-            hour = "0${timeNow.hour}"
-        }
-        if(timeNow.minute < 10){
-            minute = "0${timeNow.minute}"
-        }
-        if(timeNow.second < 10){
-            second = "0${timeNow.second}"
-        }
-        val inputTime = "${hour}-${minute}-${second}"
-
-        val divisor = BigDecimal(nOfInstallments)
-        val denominator = BigDecimal(price)
-        val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
-        val correction = BigDecimal("100")
-        val installmentPriceFormatted = installmentPrice.divide(correction)
-        val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
-        val formattedNumString = formatedNum.toString().replace(",",".")
-
-        var expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
-        val randonNum = generateRandomAddress(5)
-
-        var nOfInstallmentsFormatted = nOfInstallments.toString()
-        if(nOfInstallments < 10){
-            nOfInstallmentsFormatted = "00$nOfInstallmentsFormatted"
-        }else if(nOfInstallments < 100){
-            nOfInstallmentsFormatted = "0$nOfInstallmentsFormatted"
-        }
-
-        for(i in 0 until nOfInstallments){
-
-            var currentInstallment = "${i+1}"
-            if(i+1 < 10){
-                currentInstallment = "00$currentInstallment"
-            }else if(i+1 < 100){
-                currentInstallment = "0$currentInstallment"
-            }
-
-            val formattedExpense = formatExpenseToInstallmentExpense(Expense("", formattedNumString, expense.description, expense.category, expense.date), i)
-            val expenseId = "${formattedExpense.date}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
-
-            val newPair = Pair(formattedExpense,expenseId)
-
-            expenseList.add(newPair)
-
-        }
-
-        firebaseAPI.addExpense2(expenseList, true, nOfInstallments = nOfInstallments)
     }
 
     private fun generateRandomAddress(size: Int): String {
@@ -232,15 +153,88 @@ class AddExpenseViewModel : ViewModel() {
         return newExpense
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun generateExpenseList(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int) : MutableList<Pair<Expense, String>>{
+
+        val expense = Expense("",price, description, category, date)
+        val expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
+        val randonNum = generateRandomAddress(5)
+
+        val timeNow = LocalTime.now()
+        var hour = timeNow.hour.toString()
+        var minute = timeNow.minute.toString()
+        var second = timeNow.second.toString()
+        if(timeNow.hour < 10){
+            hour = "0${timeNow.hour}"
+        }
+        if(timeNow.minute < 10){
+            minute = "0${timeNow.minute}"
+        }
+        if(timeNow.second < 10){
+            second = "0${timeNow.second}"
+        }
+        val inputTime = "${hour}-${minute}-${second}"
+
+
+        if(installment){
+            //Generate installment price
+            val divisor = BigDecimal(nOfInstallments)
+            val denominator = BigDecimal(price)
+            val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
+            val correction = BigDecimal("100")
+            val installmentPriceFormatted = installmentPrice.divide(correction)
+            val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
+            val formattedNumString = formatedNum.toString().replace(",",".")
+
+            // Format Number of installments to expenseId
+            var nOfInstallmentsFormatted = nOfInstallments.toString()
+            if(nOfInstallments < 10){
+                nOfInstallmentsFormatted = "00$nOfInstallmentsFormatted"
+            }else if(nOfInstallments < 100){
+                nOfInstallmentsFormatted = "0$nOfInstallmentsFormatted"
+            }
+
+            for(i in 0 until nOfInstallments){
+
+                var currentInstallment = "${i+1}"
+                if(i+1 < 10){
+                    currentInstallment = "00$currentInstallment"
+                }else if(i+1 < 100){
+                    currentInstallment = "0$currentInstallment"
+                }
+
+                val formattedExpense = formatExpenseToInstallmentExpense(Expense("", formattedNumString, expense.description, expense.category, expense.date), i)
+                val expenseId = "${formattedExpense.date}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+
+                val newPair = Pair(formattedExpense,expenseId)
+
+                expenseList.add(newPair)
+
+            }
+        }else{
+            val bigNum = BigDecimal(expense.price)
+            val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
+            val expenseId = "${expense.date}-${inputTime}-${randonNum}"
+            val formattedExpense = Expense("", priceFormatted.toString(), expense.description, expense.category, expense.date)
+
+            val newPair = Pair(formattedExpense, expenseId)
+            expenseList.add(newPair)
+        }
+
+        return expenseList
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun updatedTotalExpense(expense : String): Deferred<String> {
+    private fun calculateUpdatedTotalExpense(expensePrice : String): Deferred<String> {
         var updatedTotalExpense : BigDecimal
         val updatedTotalExpenseString = CompletableDeferred<String>()
          viewModelScope.async(Dispatchers.IO){
              val currentTotalExpense = firebaseAPI.getTotalExpense().await()
              val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
-             val bigNumExpense = BigDecimal(expense)
-             updatedTotalExpense = bigNumCurrentTotalExpense.add(bigNumExpense).setScale(8, RoundingMode.HALF_UP)
+             val denominator = BigDecimal(expensePrice)
+             val correction = BigDecimal("100")
+             val priceFormatted = denominator.divide(correction)
+             updatedTotalExpense = bigNumCurrentTotalExpense.add(priceFormatted).setScale(8, RoundingMode.HALF_UP)
              updatedTotalExpenseString.complete(updatedTotalExpense.toString())
          }
         return updatedTotalExpenseString

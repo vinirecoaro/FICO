@@ -498,10 +498,17 @@ class FirebaseAPI private constructor() {
     }
 
 
-    fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments: Int = 0){
+    fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments: Int = 0, updatedTotalExpense : String){
         val updates = mutableMapOf<String, Any>()
 
+        // Add Expense List
         updates.putAll(generateMapToUpdateUserExpenses(expenseList, installment, nOfInstallments))
+
+        // Add Updated Total Expense
+        updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
+
+        // Add Information per Month
+        //updates.putAll()
 
         user_root.updateChildren(updates)
     }
@@ -525,6 +532,13 @@ class FirebaseAPI private constructor() {
             updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.CATEGORY}"] = expenseList[0].first.category
         }
         return updatesOfExpenseList
+    }
+
+    private fun generateMapToUpdateUserTotalExpense(updatedTotalExpense : String) : MutableMap<String, Any>{
+        val updatedTotalExpenseMap = mutableMapOf<String, Any>()
+        updatedTotalExpenseMap[AppConstants.DATABASE.TOTAL_EXPENSE] = updatedTotalExpense
+
+        return updatedTotalExpenseMap
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
