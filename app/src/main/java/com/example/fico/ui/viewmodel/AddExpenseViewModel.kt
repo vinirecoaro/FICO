@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
-import com.example.fico.service.constants.AppConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -112,17 +111,18 @@ class AddExpenseViewModel : ViewModel() {
         }
         val inputTime = "${hour}-${minute}-${second}"
 
-        val updates = mutableMapOf<String, Any>()
-        val expenseId = generateRandomAddress(5)
+
+        var expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
+        val randonNum = generateRandomAddress(5)
         val bigNum = BigDecimal(expense.price)
         val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
+        val expenseId = "${expense.date}-${inputTime}-${randonNum}"
+        val formattedExpense = Expense("", priceFormatted.toString(), expense.description, expense.category, expense.date)
 
-        updates["${expense.date}-${inputTime}-${expenseId}/${AppConstants.DATABASE.PRICE}"] = priceFormatted.toString()
-        updates["${expense.date}-${inputTime}-${expenseId}/${AppConstants.DATABASE.DESCRIPTION}"] = expense.description
-        updates["${expense.date}-${inputTime}-${expenseId}/${AppConstants.DATABASE.DATE}"] = expense.date
-        updates["${expense.date}-${inputTime}-${expenseId}/${AppConstants.DATABASE.CATEGORY}"] = expense.category
+        val newPair = Pair(formattedExpense, expenseId)
+        expenseList.add(newPair)
 
-        firebaseAPI.updateExpenseList2(updates)
+        firebaseAPI.addExpense2(expenseList, false)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -143,10 +143,16 @@ class AddExpenseViewModel : ViewModel() {
         }
         val inputTime = "${hour}-${minute}-${second}"
 
-        val updates = mutableMapOf<String, Any>()
-        val expenseId = generateRandomAddress(5)
-        val bigNum = BigDecimal(expense.price)
-        val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
+        val divisor = BigDecimal(nOfInstallments)
+        val denominator = BigDecimal(price)
+        val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
+        val correction = BigDecimal("100")
+        val installmentPriceFormatted = installmentPrice.divide(correction)
+        val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
+        val formattedNumString = formatedNum.toString().replace(",",".")
+
+        var expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
+        val randonNum = generateRandomAddress(5)
 
         var nOfInstallmentsFormatted = nOfInstallments.toString()
         if(nOfInstallments < 10){
@@ -164,28 +170,29 @@ class AddExpenseViewModel : ViewModel() {
                 currentInstallment = "0$currentInstallment"
             }
 
-            val formattedExpense = formatExpenseToInstallmentExpense(expense, i)
+            val formattedExpense = formatExpenseToInstallmentExpense(Expense("", formattedNumString, expense.description, expense.category, expense.date), i)
+            val expenseId = "${formattedExpense.date}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
 
-            updates["${formattedExpense.date}-${inputTime}-${expenseId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}/${AppConstants.DATABASE.PRICE}"] = priceFormatted.toString()
-            updates["${formattedExpense.date}-${inputTime}-${expenseId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}/${AppConstants.DATABASE.DESCRIPTION}"] = formattedExpense.description
-            updates["${formattedExpense.date}-${inputTime}-${expenseId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}/${AppConstants.DATABASE.DATE}"] = formattedExpense.date
-            updates["${formattedExpense.date}-${inputTime}-${expenseId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}/${AppConstants.DATABASE.CATEGORY}"] = formattedExpense.category
+            val newPair = Pair(formattedExpense,expenseId)
+
+            expenseList.add(newPair)
+
         }
 
-        firebaseAPI.updateExpenseList2(updates)
+        firebaseAPI.addExpense2(expenseList, true, nOfInstallments = nOfInstallments)
     }
 
     private fun generateRandomAddress(size: Int): String {
-        val caracteresPermitidos = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        val allowedCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
         val random = Random(System.currentTimeMillis())
-        val sequenciaAleatoria = StringBuilder(size)
+        val randomSequence = StringBuilder(size)
 
         for (i in 0 until size) {
-            val index = random.nextInt(caracteresPermitidos.length)
-            sequenciaAleatoria.append(caracteresPermitidos[index])
+            val index = random.nextInt(allowedCharacters.length)
+            randomSequence.append(allowedCharacters[index])
         }
 
-        return sequenciaAleatoria.toString()
+        return randomSequence.toString()
     }
 
     private fun formatExpenseToInstallmentExpense(expense : Expense, installmentNumber : Int) : Expense{
@@ -223,6 +230,20 @@ class AddExpenseViewModel : ViewModel() {
         val newExpense = Expense("",expense.price, newDescription, expense.category, date)
 
         return newExpense
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun updatedTotalExpense(expense : String): Deferred<String> {
+        var updatedTotalExpense : BigDecimal
+        val updatedTotalExpenseString = CompletableDeferred<String>()
+         viewModelScope.async(Dispatchers.IO){
+             val currentTotalExpense = firebaseAPI.getTotalExpense().await()
+             val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
+             val bigNumExpense = BigDecimal(expense)
+             updatedTotalExpense = bigNumCurrentTotalExpense.add(bigNumExpense).setScale(8, RoundingMode.HALF_UP)
+             updatedTotalExpenseString.complete(updatedTotalExpense.toString())
+         }
+        return updatedTotalExpenseString
     }
 
 }

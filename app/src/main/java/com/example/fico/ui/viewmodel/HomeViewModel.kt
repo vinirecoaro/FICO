@@ -71,7 +71,7 @@ class HomeViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun getTotalExpense(): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO){
-            val totalExpense = firebaseAPI.getTotalExpense().toFloat()
+            val totalExpense = firebaseAPI.getTotalExpense().await().toFloat()
             val priceFormatted = (NumberFormat.getCurrencyInstance().format(totalExpense))
             priceFormatted.toString()}
     }

@@ -194,7 +194,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         val formattedNumString = formatedNum.toString().replace(",",".")
                         val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
                         if (existsDate) {
-                            if(viewModel.addExpense(
+                            /*if(viewModel.addExpense(
                                 formattedNumString,
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
@@ -205,11 +205,12 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                 binding.etPrice.setText("")
                                 binding.etDescription.setText("")
                                 binding.actvCategory.setText("")
-                            }
-                            /*viewModel.addExpense2(formattedNumString,
+                            }*/
+                            viewModel.addExpense2(
+                                formattedNumString,
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
-                                modifiedDate)*/
+                                modifiedDate)
                         } else {
                             binding.btSave.visibility = View.GONE
                             binding.dpDateExpense.visibility = View.GONE
@@ -241,16 +242,9 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             val modifiedDate = "$year-$month-$day"
 
                             val regex = Regex("[\\d,.]+")
-                            val justNumber = regex.find(binding.etPrice.text.toString())
-                            val divisor = BigDecimal(binding.etInstallments.text.toString())
-                            val denominator = BigDecimal(justNumber!!.value
-                                .replace(",","")
-                                .replace(".",""))
-                            val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
-                            val correction = BigDecimal("100")
-                            val installmentPriceFormatted = installmentPrice.divide(correction)
-                            val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
-                            val formattedNumString = formatedNum.toString().replace(",",".")
+                            val justNumber = regex.find(binding.etPrice.text.toString())!!.value.replace(",","").replace(".","")
+                            val bigNum = BigDecimal(justNumber)
+                            val formattedNumString = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
 
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {

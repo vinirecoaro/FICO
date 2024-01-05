@@ -38,6 +38,7 @@ class FirebaseAPI private constructor() {
         private var expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
         private var default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
         private var user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
+        private var user_root = rootRef.child(auth.currentUser?.uid.toString())
 
     }
 
@@ -47,6 +48,7 @@ class FirebaseAPI private constructor() {
         expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
         default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
         user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
+        user_root = rootRef.child(auth.currentUser?.uid.toString())
     }
 
     suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO){
@@ -496,8 +498,33 @@ class FirebaseAPI private constructor() {
     }
 
 
-    fun updateExpenseList2(expenseList : MutableMap<String, Any>){
-        expense_list.updateChildren(expenseList)
+    fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments: Int = 0){
+        val updates = mutableMapOf<String, Any>()
+
+        updates.putAll(generateMapToUpdateUserExpenses(expenseList, installment, nOfInstallments))
+
+        user_root.updateChildren(updates)
+    }
+
+    private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments : Int) : MutableMap<String, Any>{
+        val updatesOfExpenseList = mutableMapOf<String, Any>()
+
+        if (installment){
+            // Add expenseList on updateList for installment expense
+            for(i in 0 until nOfInstallments){
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.PRICE}"] = expenseList[i].first.price
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.DESCRIPTION}"] = expenseList[i].first.description
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.DATE}"] = expenseList[i].first.date
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.CATEGORY}"] = expenseList[i].first.category
+            }
+        }else{
+            // Add expenseList on updateList for common expense
+            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.PRICE}"] = expenseList[0].first.price
+            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.DESCRIPTION}"] = expenseList[0].first.description
+            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.DATE}"] = expenseList[0].first.date
+            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.CATEGORY}"] = expenseList[0].first.category
+        }
+        return updatesOfExpenseList
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -611,7 +638,7 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getTotalExpense() : String = withContext(Dispatchers.IO){
+    suspend fun getTotalExpense() : Deferred<String> = withContext(Dispatchers.IO){
         val totalExpense = CompletableDeferred<String>()
         total_expense.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -623,7 +650,7 @@ class FirebaseAPI private constructor() {
             }
         }
         )
-        return@withContext totalExpense.await()
+        return@withContext totalExpense
     }
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
@@ -801,7 +828,6 @@ class FirebaseAPI private constructor() {
         }
         return formattedDate
     }
-
 
 }
 
