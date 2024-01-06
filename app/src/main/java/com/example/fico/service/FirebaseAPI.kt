@@ -498,19 +498,26 @@ class FirebaseAPI private constructor() {
     }
 
 
-    fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments: Int = 0, updatedTotalExpense : String){
+    suspend fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments: Int = 0, updatedTotalExpense : String) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any>()
+        val result = CompletableDeferred<Boolean>()
 
-        // Add Expense List
-        updates.putAll(generateMapToUpdateUserExpenses(expenseList, installment, nOfInstallments))
+        try{
+            // Add Expense List
+            updates.putAll(generateMapToUpdateUserExpenses(expenseList, installment, nOfInstallments))
 
-        // Add Updated Total Expense
-        updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
+            // Add Updated Total Expense
+            updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
 
-        // Add Information per Month
-        //updates.putAll()
+            // Add Information per Month
+            //updates.putAll()
 
-        user_root.updateChildren(updates)
+            user_root.updateChildren(updates)
+
+            result.complete(true)
+        }catch (e : Exception){
+            result.complete(false)
+        }
     }
 
     private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments : Int) : MutableMap<String, Any>{

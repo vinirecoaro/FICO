@@ -93,11 +93,11 @@ class AddExpenseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 0) {
-        viewModelScope.async(Dispatchers.IO){
+    suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 0) : Deferred<Boolean>{
+        return viewModelScope.async(Dispatchers.IO){
             val expenseList = generateExpenseList(price, description, category, date, installment, nOfInstallments)
 
-            val updatedTotalExpense = calculateUpdatedTotalExpense(price).await()
+            val updatedTotalExpense = calculateUpdatedTotalExpense(price, installment).await()
 
             firebaseAPI.addExpense2(expenseList, installment, nOfInstallments = nOfInstallments, updatedTotalExpense)
         }
@@ -225,17 +225,25 @@ class AddExpenseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun calculateUpdatedTotalExpense(expensePrice : String): Deferred<String> {
+    private fun calculateUpdatedTotalExpense(expensePrice : String, installment : Boolean): Deferred<String> {
         var updatedTotalExpense : BigDecimal
         val updatedTotalExpenseString = CompletableDeferred<String>()
          viewModelScope.async(Dispatchers.IO){
-             val currentTotalExpense = firebaseAPI.getTotalExpense().await()
-             val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
-             val denominator = BigDecimal(expensePrice)
-             val correction = BigDecimal("100")
-             val priceFormatted = denominator.divide(correction)
-             updatedTotalExpense = bigNumCurrentTotalExpense.add(priceFormatted).setScale(8, RoundingMode.HALF_UP)
-             updatedTotalExpenseString.complete(updatedTotalExpense.toString())
+             if (installment){
+                 val currentTotalExpense = firebaseAPI.getTotalExpense().await()
+                 val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
+                 val denominator = BigDecimal(expensePrice)
+                 val correction = BigDecimal("100")
+                 val priceFormatted = denominator.divide(correction)
+                 updatedTotalExpense = bigNumCurrentTotalExpense.add(priceFormatted).setScale(8, RoundingMode.HALF_UP)
+                 updatedTotalExpenseString.complete(updatedTotalExpense.toString())
+             }else{
+                 val currentTotalExpense = firebaseAPI.getTotalExpense().await()
+                 val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
+                 val bigNumExpensePrice = BigDecimal(expensePrice)
+                 updatedTotalExpense = bigNumCurrentTotalExpense.add(bigNumExpensePrice).setScale(8, RoundingMode.HALF_UP)
+                 updatedTotalExpenseString.complete(updatedTotalExpense.toString())
+             }
          }
         return updatedTotalExpenseString
     }

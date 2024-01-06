@@ -206,12 +206,19 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                 binding.etDescription.setText("")
                                 binding.actvCategory.setText("")
                             }*/
-                            viewModel.addExpense2(
+                            if(viewModel.addExpense2(
                                 formattedNumString,
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
                                 modifiedDate,
-                            false)
+                            false).await()){
+                                hideKeyboard(requireContext(),binding.btSave)
+                                Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                binding.etPrice.setText("")
+                                binding.etDescription.setText("")
+                                binding.actvCategory.setText("")
+                                binding.etInstallments.setText("")
+                            }
                         } else {
                             binding.btSave.visibility = View.GONE
                             binding.dpDateExpense.visibility = View.GONE
@@ -263,12 +270,19 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                     binding.actvCategory.setText("")
                                     binding.etInstallments.setText("")
                                 }*/
-                                viewModel.addExpense2(formattedNumString,
+                                if(viewModel.addExpense2(formattedNumString,
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
                                     modifiedDate,
                                     true,
-                                    binding.etInstallments.text.toString().toInt())
+                                    binding.etInstallments.text.toString().toInt()).await()){
+                                    hideKeyboard(requireContext(),binding.btSave)
+                                    Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                    binding.etPrice.setText("")
+                                    binding.etDescription.setText("")
+                                    binding.actvCategory.setText("")
+                                    binding.etInstallments.setText("")
+                                }
                             } else {
                                 if (setUpDefaultBudgetAlertDialog().await()) {
                                     viewModel.addInstallmentsExpense(
