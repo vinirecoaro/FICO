@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.fico.model.Budget
 import com.example.fico.model.Expense
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.User
 import com.example.fico.service.constants.AppConstants
 import com.google.android.gms.tasks.Task
@@ -752,7 +753,7 @@ class FirebaseAPI private constructor() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(month in snapshot.children){
                     val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
-                    if(month.child(AppConstants.DATABASE.BUDGET).value!= month.child(AppConstants.DATABASE.AVAILABLE_NOW).value){
+                    if(month.child(AppConstants.DATABASE.BUDGET).value != month.child(AppConstants.DATABASE.AVAILABLE_NOW).value){
                         expenseMonths.add(formattedDate)
                     }
                 }
@@ -770,6 +771,29 @@ class FirebaseAPI private constructor() {
             }
 
         })
+    }
+
+    suspend fun getInformationPerMonth() : Deferred<MutableList<InformationPerMonthExpense>> = withContext(Dispatchers.IO){
+        val informationPerMonthInfo = CompletableDeferred<MutableList<InformationPerMonthExpense>>()
+        information_per_month.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val infoList = mutableListOf<InformationPerMonthExpense>()
+                for(month in snapshot.children){
+                    val monthInfo = InformationPerMonthExpense(
+                        month.key.toString(),
+                        month.child(AppConstants.DATABASE.AVAILABLE_NOW).toString(),
+                        month.child(AppConstants.DATABASE.BUDGET).toString(),
+                        month.child(AppConstants.DATABASE.EXPENSE).toString(),
+                    )
+                    infoList.add(monthInfo)
+                }
+                informationPerMonthInfo.complete(infoList)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                informationPerMonthInfo.complete(emptyList<InformationPerMonthExpense>() as MutableList<InformationPerMonthExpense>)
+            }
+        })
+        return@withContext informationPerMonthInfo
     }
 
     private fun generateRandomAddress(size: Int): String {

@@ -248,4 +248,10 @@ class AddExpenseViewModel : ViewModel() {
         return updatedTotalExpenseString
     }
 
+    private suspend fun getInformationPerMonth() =
+        viewModelScope.async(Dispatchers.IO){
+            val infoPerMonth = firebaseAPI.getInformationPerMonth()
+
+    }
+
 }
