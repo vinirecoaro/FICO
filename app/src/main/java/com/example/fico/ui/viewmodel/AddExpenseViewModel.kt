@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.service.FirebaseAPI
 import kotlinx.coroutines.*
 import java.math.BigDecimal
@@ -43,7 +44,7 @@ class AddExpenseViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun checkIfExistsDateOnDatabse(date: String): Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.checkIfExistsDateOnDatabse(date)
+            firebaseAPI.checkIfExistsDateOnDatabse(date).await()
         }
     }
 
@@ -248,10 +249,61 @@ class AddExpenseViewModel : ViewModel() {
         return updatedTotalExpenseString
     }
 
-    private suspend fun getInformationPerMonth() =
+    @RequiresApi(Build.VERSION_CODES.N)
+    private suspend fun updateInformationPerMonth(expense : Expense, nOfInstallments: Int) : Deferred<MutableList<InformationPerMonthExpense>> =
         viewModelScope.async(Dispatchers.IO){
-            val infoPerMonth = firebaseAPI.getInformationPerMonth()
+            val currentInformationPerMonth = firebaseAPI.getInformationPerMonth().await()
+            val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
+            val defaultBudget = firebaseAPI.getDefaultBudget().await()
 
+            for(i in 0 until nOfInstallments){
+                val date = updateInstallmenteExpenseDate(expense, i)
+                val existDate = firebaseAPI.checkIfExistsDateOnDatabse(date).await()
+                if(!existDate){
+
+                    val defaultBudgetNum = BigDecimal(defaultBudget)
+                    val expensePriceNum = BigDecimal(expense.price).setScale(8, RoundingMode.HALF_UP)
+                    val availableNow = defaultBudgetNum.subtract(expensePriceNum).setScale(8, RoundingMode.HALF_UP).toString()
+
+                    val monthInfo = InformationPerMonthExpense(
+                        date,
+                        availableNow,
+                        defaultBudget,
+                        expensePriceNum.toString()
+                    )
+
+                    newInformationPerMonth.add(monthInfo)
+
+                }else{
+
+
+                }
+            }
+
+            return@async newInformationPerMonth
+    }
+
+    private fun updateInstallmenteExpenseDate(expense: Expense, iteraction: Int): String {
+        val month = expense.date.substring(5, 7).toInt()
+        var newMonth = month + iteraction
+        var year = expense.date.substring(0, 4).toInt()
+        var sumYear: Int = 0
+        if (newMonth > 12) {
+            if (newMonth % 12 == 0) {
+                sumYear = newMonth / 12 - 1
+                newMonth -= 12 * sumYear
+            } else {
+                sumYear = newMonth / 12
+                newMonth -= 12 * sumYear
+            }
+            year += sumYear
+        }
+        var newMonthFormatted = newMonth.toString()
+        if (newMonth < 10) {
+            newMonthFormatted = "0$newMonth"
+        }
+
+        return "$year-$newMonthFormatted"
     }
 
 }

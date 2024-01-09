@@ -32,7 +32,7 @@ class SetDefaultBudgetViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getDefaultBudget():Deferred<String>{
         return viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.getDefaultBudget()
+            firebaseAPI.getDefaultBudget().await()
         }
     }
 }

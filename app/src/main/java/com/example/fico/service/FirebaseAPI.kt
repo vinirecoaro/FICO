@@ -291,13 +291,13 @@ class FirebaseAPI private constructor() {
                 val dateInformationPerMonth = "$year-$newMonthFormatted"
                 val existDate = checkIfExistsDateOnDatabse(dateInformationPerMonth)
 
-                if(existDate){
+                if(existDate.await()){
                     updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
                     updateTotalExpense(newExpense.price)
                     updateInformationPerMonth(newExpense)
 
                 }else{
-                    val defaultBudget = getDefaultBudget(false)
+                    val defaultBudget = getDefaultBudget(false).await()
                     setUpBudget(defaultBudget,dateInformationPerMonth)
                     updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
                     updateTotalExpense(newExpense.price)
@@ -419,7 +419,7 @@ class FirebaseAPI private constructor() {
 
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getDefaultBudget(formatted : Boolean = true) : String = withContext(Dispatchers.IO){
+    suspend fun getDefaultBudget(formatted : Boolean = true) : Deferred<String> = withContext(Dispatchers.IO){
         val defaultBudget = CompletableDeferred<String>()
         default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -437,11 +437,11 @@ class FirebaseAPI private constructor() {
             }
         }
         )
-        return@withContext defaultBudget.await()
+        return@withContext defaultBudget
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun checkIfExistsDateOnDatabse(date: String): Boolean = withContext(Dispatchers.IO) {
+    suspend fun checkIfExistsDateOnDatabse(date: String): Deferred<Boolean> = withContext(Dispatchers.IO) {
         val futureResult = CompletableDeferred<Boolean>()
 
         information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -454,7 +454,7 @@ class FirebaseAPI private constructor() {
             }
         })
 
-        return@withContext futureResult.await()
+        return@withContext futureResult
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

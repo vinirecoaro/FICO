@@ -120,7 +120,7 @@ class UploadFile : Service() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun checkIfExistsDateOnDatabse(date: String): Deferred<Boolean> {
         return serviceScope.async(Dispatchers.IO){
-            firebaseAPI.checkIfExistsDateOnDatabse(date)
+            firebaseAPI.checkIfExistsDateOnDatabse(date).await()
         }
     }
 
@@ -133,7 +133,7 @@ class UploadFile : Service() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getDefaultBudget(formatted : Boolean = true):Deferred<String>{
         return serviceScope.async(Dispatchers.IO){
-            firebaseAPI.getDefaultBudget(formatted)
+            firebaseAPI.getDefaultBudget(formatted).await()
         }
     }
 }
