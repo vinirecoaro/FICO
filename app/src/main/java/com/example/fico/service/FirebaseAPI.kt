@@ -499,7 +499,7 @@ class FirebaseAPI private constructor() {
     }
 
 
-    suspend fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments: Int = 0, updatedTotalExpense : String) : Boolean = withContext(Dispatchers.IO){
+    suspend fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments : Int, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any>()
         val result = CompletableDeferred<Boolean>()
 
@@ -511,7 +511,7 @@ class FirebaseAPI private constructor() {
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
 
             // Add Information per Month
-            //updates.putAll()
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth, nOfInstallments = nOfInstallments))
 
             user_root.updateChildren(updates)
 
@@ -524,7 +524,7 @@ class FirebaseAPI private constructor() {
     private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments : Int) : MutableMap<String, Any>{
         val updatesOfExpenseList = mutableMapOf<String, Any>()
 
-        if (installment){
+        //if (installment){
             // Add expenseList on updateList for installment expense
             for(i in 0 until nOfInstallments){
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.PRICE}"] = expenseList[i].first.price
@@ -532,14 +532,27 @@ class FirebaseAPI private constructor() {
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.DATE}"] = expenseList[i].first.date
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.CATEGORY}"] = expenseList[i].first.category
             }
-        }else{
+        /*}else{
             // Add expenseList on updateList for common expense
             updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.PRICE}"] = expenseList[0].first.price
             updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.DESCRIPTION}"] = expenseList[0].first.description
             updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.DATE}"] = expenseList[0].first.date
             updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.CATEGORY}"] = expenseList[0].first.category
-        }
+        }*/
         return updatesOfExpenseList
+    }
+
+    private fun generateMapToUpdateInformationPerMonth(informationPerMonthList : MutableList<InformationPerMonthExpense>, nOfInstallments : Int) : MutableMap<String, Any>{
+        val updatesOfInformationPerMonth = mutableMapOf<String, Any>()
+
+        // Add expenseList on updateList for installment expense
+        for(i in 0 until nOfInstallments){
+            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${informationPerMonthList[i].date}/${AppConstants.DATABASE.AVAILABLE_NOW}"] = informationPerMonthList[i].availableNow
+            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${informationPerMonthList[i].date}/${AppConstants.DATABASE.BUDGET}"] = informationPerMonthList[i].budget
+            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${informationPerMonthList[i].date}/${AppConstants.DATABASE.EXPENSE}"] = informationPerMonthList[i].monthExpense
+        }
+
+        return updatesOfInformationPerMonth
     }
 
     private fun generateMapToUpdateUserTotalExpense(updatedTotalExpense : String) : MutableMap<String, Any>{
@@ -781,9 +794,9 @@ class FirebaseAPI private constructor() {
                 for(month in snapshot.children){
                     val monthInfo = InformationPerMonthExpense(
                         month.key.toString(),
-                        month.child(AppConstants.DATABASE.AVAILABLE_NOW).toString(),
-                        month.child(AppConstants.DATABASE.BUDGET).toString(),
-                        month.child(AppConstants.DATABASE.EXPENSE).toString(),
+                        month.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString(),
+                        month.child(AppConstants.DATABASE.BUDGET).value.toString(),
+                        month.child(AppConstants.DATABASE.EXPENSE).value.toString(),
                     )
                     infoList.add(monthInfo)
                 }

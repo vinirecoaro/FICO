@@ -94,13 +94,18 @@ class AddExpenseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 0) : Deferred<Boolean>{
+    suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
         return viewModelScope.async(Dispatchers.IO){
-            val expenseList = generateExpenseList(price, description, category, date, installment, nOfInstallments)
+
+            val expense = Expense("",price,description,category,date)
+
+            val expenseList = generateExpenseList(expense, installment, nOfInstallments)
 
             val updatedTotalExpense = calculateUpdatedTotalExpense(price, installment).await()
 
-            firebaseAPI.addExpense2(expenseList, installment, nOfInstallments = nOfInstallments, updatedTotalExpense)
+            val updatedInformationPerMonth = updateInformationPerMonth(expense,nOfInstallments).await()
+
+            firebaseAPI.addExpense2(expenseList, installment, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
         }
     }
 
@@ -155,9 +160,8 @@ class AddExpenseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun generateExpenseList(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int) : MutableList<Pair<Expense, String>>{
+    private fun generateExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int) : MutableList<Pair<Expense, String>>{
 
-        val expense = Expense("",price, description, category, date)
         val expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
         val randonNum = generateRandomAddress(5)
 
@@ -180,7 +184,7 @@ class AddExpenseViewModel : ViewModel() {
         if(installment){
             //Generate installment price
             val divisor = BigDecimal(nOfInstallments)
-            val denominator = BigDecimal(price)
+            val denominator = BigDecimal(expense.price)
             val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
             val correction = BigDecimal("100")
             val installmentPriceFormatted = installmentPrice.divide(correction)
@@ -214,7 +218,8 @@ class AddExpenseViewModel : ViewModel() {
             }
         }else{
             val bigNum = BigDecimal(expense.price)
-            val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
+            val correction = BigDecimal("100")
+            val priceFormatted = bigNum.divide(correction,8, RoundingMode.HALF_UP)
             val expenseId = "${expense.date}-${inputTime}-${randonNum}"
             val formattedExpense = Expense("", priceFormatted.toString(), expense.description, expense.category, expense.date)
 
@@ -242,7 +247,9 @@ class AddExpenseViewModel : ViewModel() {
                  val currentTotalExpense = firebaseAPI.getTotalExpense().await()
                  val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
                  val bigNumExpensePrice = BigDecimal(expensePrice)
-                 updatedTotalExpense = bigNumCurrentTotalExpense.add(bigNumExpensePrice).setScale(8, RoundingMode.HALF_UP)
+                 val correction = BigDecimal("100")
+                 val bigNumExpensePriceFormatted = bigNumExpensePrice.divide(correction, 8, RoundingMode.HALF_UP)
+                 updatedTotalExpense = bigNumCurrentTotalExpense.add(bigNumExpensePriceFormatted).setScale(8, RoundingMode.HALF_UP)
                  updatedTotalExpenseString.complete(updatedTotalExpense.toString())
              }
          }
@@ -255,27 +262,52 @@ class AddExpenseViewModel : ViewModel() {
             val currentInformationPerMonth = firebaseAPI.getInformationPerMonth().await()
             val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
             val defaultBudget = firebaseAPI.getDefaultBudget().await()
+            val regex = Regex("[\\d,.]+")
+            val defaultBudgetJustNumber = regex.find(defaultBudget)!!.value.replace(",",".")
+            val defaultBudgetFormatted = BigDecimal(defaultBudgetJustNumber).setScale(8, RoundingMode.HALF_UP).toString()
 
             for(i in 0 until nOfInstallments){
                 val date = updateInstallmenteExpenseDate(expense, i)
-                val existDate = firebaseAPI.checkIfExistsDateOnDatabse(date).await()
+                val existDate = currentInformationPerMonth.any{it.date == date}
                 if(!existDate){
 
-                    val defaultBudgetNum = BigDecimal(defaultBudget)
-                    val expensePriceNum = BigDecimal(expense.price).setScale(8, RoundingMode.HALF_UP)
-                    val availableNow = defaultBudgetNum.subtract(expensePriceNum).setScale(8, RoundingMode.HALF_UP).toString()
+                    val defaultBudgetNum = BigDecimal(defaultBudgetJustNumber)
+                    val expensePriceNum = BigDecimal(expense.price)
+                    val nOfInstallmentsBigNum = BigDecimal(nOfInstallments)
+                    val installmentExpensePrice = expensePriceNum.divide(nOfInstallmentsBigNum,8, RoundingMode.HALF_UP)
+                    val correction = BigDecimal("100")
+                    val installmentExpensePriceFormatted = installmentExpensePrice.divide(correction,8, RoundingMode.HALF_UP)
+                    val updatedAvailableNow = defaultBudgetNum.subtract(installmentExpensePriceFormatted).setScale(8, RoundingMode.HALF_UP).toString()
 
                     val monthInfo = InformationPerMonthExpense(
                         date,
-                        availableNow,
-                        defaultBudget,
-                        expensePriceNum.toString()
+                        updatedAvailableNow,
+                        defaultBudgetFormatted,
+                        installmentExpensePriceFormatted.toString()
                     )
 
                     newInformationPerMonth.add(monthInfo)
 
                 }else{
+                    val currentMonthInfo = currentInformationPerMonth.find {it.date == date}
+                    val currentAvailableNow = BigDecimal(currentMonthInfo!!.availableNow)
+                    val currentMonthExpense = BigDecimal(currentMonthInfo.monthExpense)
+                    val expensePriceNum = BigDecimal(expense.price)
+                    val nOfInstallmentsBigNum = BigDecimal(nOfInstallments)
+                    val installmentExpensePrice = expensePriceNum.divide(nOfInstallmentsBigNum, 8, RoundingMode.HALF_UP)
+                    val correction = BigDecimal("100")
+                    val installmentExpensePriceFormatted = installmentExpensePrice.divide(correction, 8, RoundingMode.HALF_UP)
+                    val updatedAvailableNow = currentAvailableNow.subtract(installmentExpensePriceFormatted).setScale(8, RoundingMode.HALF_UP).toString()
+                    val updatedMonthExpense = currentMonthExpense.add(installmentExpensePriceFormatted).setScale(8, RoundingMode.HALF_UP).toString()
 
+                    val monthInfo = InformationPerMonthExpense(
+                        date,
+                        updatedAvailableNow,
+                        defaultBudgetFormatted,
+                        updatedMonthExpense
+                    )
+
+                    newInformationPerMonth.add(monthInfo)
 
                 }
             }

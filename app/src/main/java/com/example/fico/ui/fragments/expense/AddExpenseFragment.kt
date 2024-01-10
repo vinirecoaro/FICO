@@ -188,24 +188,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
                         val regex = Regex("[\\d,.]+")
                         val justNumber = regex.find(binding.etPrice.text.toString())
-                        val correction = BigDecimal("100")
-                        val numClean = BigDecimal(justNumber!!.value.replace(",","").replace(".",""))
-                        val formatedNum = numClean.divide(correction)
-                        val formattedNumString = formatedNum.toString().replace(",",".")
+                        val justNumberBigNum = BigDecimal(justNumber!!.value.replace(",","").replace(".",""))
+                        val formattedNumString = justNumberBigNum.toString().replace(",",".")
                         val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
-                        if (existsDate) {
-                            /*if(viewModel.addExpense(
-                                formattedNumString,
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                modifiedDate
-                            ).await()){
-                                hideKeyboard(requireContext(),binding.btSave)
-                                Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                binding.etPrice.setText("")
-                                binding.etDescription.setText("")
-                                binding.actvCategory.setText("")
-                            }*/
+                        if (existsDate){
                             if(viewModel.addExpense2(
                                 formattedNumString,
                                 binding.etDescription.text.toString(),
@@ -256,46 +242,38 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {
-                                /*if(viewModel.addInstallmentsExpense(
+                                if(viewModel.addExpense2(
                                         formattedNumString,
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
                                         modifiedDate,
+                                        true,
                                         binding.etInstallments.text.toString().toInt()
                                     ).await()){
-                                    hideKeyboard(requireContext(),binding.btSave)
-                                    Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                    binding.etPrice.setText("")
-                                    binding.etDescription.setText("")
-                                    binding.actvCategory.setText("")
-                                    binding.etInstallments.setText("")
-                                }*/
-                                if(viewModel.addExpense2(formattedNumString,
-                                    binding.etDescription.text.toString(),
-                                    binding.actvCategory.text.toString(),
-                                    modifiedDate,
-                                    true,
-                                    binding.etInstallments.text.toString().toInt()).await()){
-                                    hideKeyboard(requireContext(),binding.btSave)
-                                    Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                    binding.etPrice.setText("")
-                                    binding.etDescription.setText("")
-                                    binding.actvCategory.setText("")
-                                    binding.etInstallments.setText("")
+                                        hideKeyboard(requireContext(),binding.btSave)
+                                        Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                        binding.etPrice.setText("")
+                                        binding.etDescription.setText("")
+                                        binding.actvCategory.setText("")
+                                        binding.etInstallments.setText("")
                                 }
                             } else {
                                 if (setUpDefaultBudgetAlertDialog().await()) {
-                                    viewModel.addInstallmentsExpense(
+                                    if(viewModel.addExpense2(
                                         formattedNumString,
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
                                         modifiedDate,
+                                        true,
                                         binding.etInstallments.text.toString().toInt()
-                                    )
-                                    binding.etPrice.setText("")
-                                    binding.etDescription.setText("")
-                                    binding.actvCategory.setText("")
-                                    binding.etInstallments.setText("")
+                                    ).await()){
+                                        hideKeyboard(requireContext(),binding.btSave)
+                                        Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                        binding.etPrice.setText("")
+                                        binding.etDescription.setText("")
+                                        binding.actvCategory.setText("")
+                                        binding.etInstallments.setText("")
+                                    }
                                 }
                             }
                         }else{
