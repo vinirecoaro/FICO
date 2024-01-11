@@ -190,8 +190,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         val justNumber = regex.find(binding.etPrice.text.toString())
                         val justNumberBigNum = BigDecimal(justNumber!!.value.replace(",","").replace(".",""))
                         val formattedNumString = justNumberBigNum.toString().replace(",",".")
-                        val existsDate = viewModel.checkIfExistsDateOnDatabse(checkDate).await()
-                        if (existsDate){
+                        val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                        if (existsDefaultBudget){
                             if(viewModel.addExpense2(
                                 formattedNumString,
                                 binding.etDescription.text.toString(),
@@ -206,19 +206,21 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                 binding.etInstallments.setText("")
                             }
                         } else {
-                            binding.btSave.visibility = View.GONE
-                            binding.dpDateExpense.visibility = View.GONE
-                            binding.fragSetBudget.visibility = View.VISIBLE
-                            val setMonthBudget = SetMonthBudget.newInstance(
-                                formattedNumString,
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                modifiedDate
-                            )
-
-                            childFragmentManager.beginTransaction()
-                                .replace(binding.fragSetBudget.id, setMonthBudget).commit()
-
+                            if (setUpDefaultBudgetAlertDialog().await()) {
+                                if(viewModel.addExpense2(
+                                        formattedNumString,
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        modifiedDate,
+                                        false).await()){
+                                    hideKeyboard(requireContext(),binding.btSave)
+                                    Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                    binding.etPrice.setText("")
+                                    binding.etDescription.setText("")
+                                    binding.actvCategory.setText("")
+                                    binding.etInstallments.setText("")
+                                }
+                            }
                         }
                     }
                 } else if (binding.etInstallments.visibility == View.VISIBLE) {
@@ -304,7 +306,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         }
 
         binding.ivDate.setOnClickListener {
-            binding.fragSetBudget.visibility = View.GONE
             binding.btSave.visibility = View.VISIBLE
             binding.dpDateExpense.visibility = View.VISIBLE
             binding.dpDateExpense.setOnDateChangedListener {
@@ -382,10 +383,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         val result = CompletableDeferred<Boolean>()
         val builder = AlertDialog.Builder(requireContext())
 
-        builder.setTitle("Definir o budget padrão")
+        builder.setTitle("Definir o orçamento padrão")
 
         val defaultBudget = EditText(requireContext())
-        defaultBudget.hint = "Budget Padrão"
+        defaultBudget.hint = "Orçamento Padrão"
         defaultBudget.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
         builder.setView(defaultBudget)
 
@@ -429,7 +430,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         val rootView: View? = activity?.findViewById(android.R.id.content)
                         if (rootView != null) {
                             val snackbar = Snackbar.make(
-                                rootView, "Budget editado com sucesso", Snackbar.LENGTH_LONG
+                                rootView, "Orçamento padrão salvo com sucesso", Snackbar.LENGTH_LONG
                             )
                             snackbar.show()
                             result.complete(true)
@@ -438,7 +439,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         val rootView: View? = activity?.findViewById(android.R.id.content)
                         if (rootView != null) {
                             val snackbar = Snackbar.make(
-                                rootView, "Falha ao editar o Default", Snackbar.LENGTH_LONG
+                                rootView, "Falha ao editar o Orçamento Padrão", Snackbar.LENGTH_LONG
                             )
                             snackbar.show()
                             result.complete(false)
