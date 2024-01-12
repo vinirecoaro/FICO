@@ -180,23 +180,13 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             binding.etDate
                         )
                     ) {
-                        val day = binding.etDate.text.toString().substring(0, 2)
-                        val month = binding.etDate.text.toString().substring(3, 5)
-                        val year = binding.etDate.text.toString().substring(6, 10)
-                        val modifiedDate = "$year-$month-$day"
-                        val checkDate = "$year-$month"
-
-                        val regex = Regex("[\\d,.]+")
-                        val justNumber = regex.find(binding.etPrice.text.toString())
-                        val justNumberBigNum = BigDecimal(justNumber!!.value.replace(",","").replace(".",""))
-                        val formattedNumString = justNumberBigNum.toString().replace(",",".")
                         val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                         if (existsDefaultBudget){
                             if(viewModel.addExpense2(
-                                formattedNumString,
+                                binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
-                                modifiedDate,
+                                binding.etDate.text.toString(),
                             false).await()){
                                 hideKeyboard(requireContext(),binding.btSave)
                                 Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
@@ -208,10 +198,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         } else {
                             if (setUpDefaultBudgetAlertDialog().await()) {
                                 if(viewModel.addExpense2(
-                                        formattedNumString,
+                                        binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
-                                        modifiedDate,
+                                        binding.etDate.text.toString(),
                                         false).await()){
                                     hideKeyboard(requireContext(),binding.btSave)
                                     Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
@@ -232,23 +222,13 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         )
                     ){
                         if(binding.etInstallments.text.toString() != "0"){
-                            val day = binding.etDate.text.toString().substring(0, 2)
-                            val month = binding.etDate.text.toString().substring(3, 5)
-                            val year = binding.etDate.text.toString().substring(6, 10)
-                            val modifiedDate = "$year-$month-$day"
-
-                            val regex = Regex("[\\d,.]+")
-                            val justNumber = regex.find(binding.etPrice.text.toString())!!.value.replace(",","").replace(".","")
-                            val bigNum = BigDecimal(justNumber)
-                            val formattedNumString = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
-
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {
                                 if(viewModel.addExpense2(
-                                        formattedNumString,
+                                        binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
-                                        modifiedDate,
+                                        binding.etDate.text.toString(),
                                         true,
                                         binding.etInstallments.text.toString().toInt()
                                     ).await()){
@@ -262,10 +242,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             } else {
                                 if (setUpDefaultBudgetAlertDialog().await()) {
                                     if(viewModel.addExpense2(
-                                        formattedNumString,
+                                        binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
-                                        modifiedDate,
+                                        binding.etDate.text.toString(),
                                         true,
                                         binding.etInstallments.text.toString().toInt()
                                     ).await()){

@@ -7,9 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.service.FirebaseAPI
+import com.example.fico.util.FormatValuesToDatabase
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.Format
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -20,31 +22,22 @@ class AddExpenseViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpense(price: String, description: String, category: String, date: String) : Deferred<Boolean> {
+    suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
         return viewModelScope.async(Dispatchers.IO){
-            val expense = Expense("", price, description, category, date)
-            val timeNow = LocalTime.now()
-            var hour = timeNow.hour.toString()
-            var minute = timeNow.minute.toString()
-            var second = timeNow.second.toString()
-            if(timeNow.hour < 10){
-                hour = "0${timeNow.hour}"
-            }
-            if(timeNow.minute < 10){
-                minute = "0${timeNow.minute}"
-            }
-            if(timeNow.second < 10){
-                second = "0${timeNow.second}"
-            }
-            val inputTime = "${hour}-${minute}-${second}"
-            firebaseAPI.addExpense(expense, inputTime)
-        }
-    }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun checkIfExistsDateOnDatabse(date: String): Deferred<Boolean> {
-        return viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.checkIfExistsDateOnDatabse(date).await()
+            val formattedPrice = FormatValuesToDatabase().expensePrice(price).toString()
+
+            val formattedDate = FormatValuesToDatabase().expenseDate(date)
+
+            val expense = Expense("",formattedPrice, description, category, formattedDate)
+
+            val expenseList = generateExpenseList(expense, installment, nOfInstallments)
+
+            val updatedTotalExpense = calculateUpdatedTotalExpense(formattedPrice, installment).await()
+
+            val updatedInformationPerMonth = updateInformationPerMonth(expense, nOfInstallments).await()
+
+            firebaseAPI.addExpense2(expenseList, installment, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
         }
     }
 
@@ -54,29 +47,6 @@ class AddExpenseViewModel : ViewModel() {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         return currentDate.format(formatter)
     }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addInstallmentsExpense(price: String, description: String, category: String, date: String, nOfInstallments: Int) : Deferred<Boolean>{
-        return viewModelScope.async(Dispatchers.IO){
-            val expense = Expense("",price, description, category, date)
-            val timeNow = LocalTime.now()
-            var hour = timeNow.hour.toString()
-            var minute = timeNow.minute.toString()
-            var second = timeNow.second.toString()
-            if(timeNow.hour < 10){
-                hour = "0${timeNow.hour}"
-            }
-            if(timeNow.minute < 10){
-                minute = "0${timeNow.minute}"
-            }
-            if(timeNow.second < 10){
-                second = "0${timeNow.second}"
-            }
-            val inputTime = "${hour}-${minute}-${second}"
-            firebaseAPI.addInstallmentExpense(expense,inputTime,nOfInstallments)
-        }
-    }
-
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistDefaultBudget() : Deferred<Boolean> {
@@ -90,22 +60,6 @@ class AddExpenseViewModel : ViewModel() {
             val bigNum = BigDecimal(budget)
             val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
             firebaseAPI.setDefaultBudget(formattedBudget)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
-        return viewModelScope.async(Dispatchers.IO){
-
-            val expense = Expense("",price,description,category,date)
-
-            val expenseList = generateExpenseList(expense, installment, nOfInstallments)
-
-            val updatedTotalExpense = calculateUpdatedTotalExpense(price, installment).await()
-
-            val updatedInformationPerMonth = updateInformationPerMonth(expense,nOfInstallments).await()
-
-            firebaseAPI.addExpense2(expenseList, installment, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
         }
     }
 
@@ -165,21 +119,7 @@ class AddExpenseViewModel : ViewModel() {
         val expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
         val randonNum = generateRandomAddress(5)
 
-        val timeNow = LocalTime.now()
-        var hour = timeNow.hour.toString()
-        var minute = timeNow.minute.toString()
-        var second = timeNow.second.toString()
-        if(timeNow.hour < 10){
-            hour = "0${timeNow.hour}"
-        }
-        if(timeNow.minute < 10){
-            minute = "0${timeNow.minute}"
-        }
-        if(timeNow.second < 10){
-            second = "0${timeNow.second}"
-        }
-        val inputTime = "${hour}-${minute}-${second}"
-
+        val inputTime = FormatValuesToDatabase().timeNow()
 
         if(installment){
             //Generate installment price
