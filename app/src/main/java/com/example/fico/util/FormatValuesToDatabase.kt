@@ -33,10 +33,17 @@ class FormatValuesToDatabase {
         return "${hour}-${minute}-${second}"
     }
 
-    fun expensePrice(number : String) : BigDecimal {
+    fun expensePrice(number : String, nOfInstallments : Int) : String {
         val regex = Regex("[\\d,.]+")
         val justNumber = regex.find(number)
-        return BigDecimal(justNumber!!.value.replace(",","").replace(".","")).setScale(8, RoundingMode.HALF_UP)
+        val denominator = BigDecimal(justNumber!!.value.replace(",","").replace(".",""))
+        val divisor = BigDecimal(nOfInstallments)
+        val correction = BigDecimal("100")
+        val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
+        val installmentPriceFormatted = installmentPrice.divide(correction)
+        val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
+        return formatedNum.toString().replace(",",".")
+
     }
 
 }

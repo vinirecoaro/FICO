@@ -297,7 +297,7 @@ class FirebaseAPI private constructor() {
                     updateInformationPerMonth(newExpense)
 
                 }else{
-                    val defaultBudget = getDefaultBudget(false).await()
+                    val defaultBudget = getDefaultBudget().await()
                     setUpBudget(defaultBudget,dateInformationPerMonth)
                     updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
                     updateTotalExpense(newExpense.price)
@@ -419,24 +419,17 @@ class FirebaseAPI private constructor() {
 
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getDefaultBudget(formatted : Boolean = true) : Deferred<String> = withContext(Dispatchers.IO){
+    suspend fun getDefaultBudget() : Deferred<String> = withContext(Dispatchers.IO){
         val defaultBudget = CompletableDeferred<String>()
         default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.value.toString().toFloat()
-                if(formatted){
-                    defaultBudget.complete("R$%.2f".format(value).replace(".", ","))
-                }else{
-                    defaultBudget.complete("%.2f".format(value).replace(",","."))
-                }
-
-
+                val value = snapshot.value.toString()
+                defaultBudget.complete(value)
             }
             override fun onCancelled(error: DatabaseError) {
-
+                defaultBudget.complete("")
             }
-        }
-        )
+        })
         return@withContext defaultBudget
     }
 

@@ -16,7 +16,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
@@ -28,7 +27,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.text.NumberFormat
 
 class EditExpenseActivity : AppCompatActivity() {
@@ -66,7 +64,7 @@ class EditExpenseActivity : AppCompatActivity() {
                     binding.etDate.setText(initialDate)
                 }else{
 
-                    val priceFormatted = FormatValuesFromDatabase().commonExpensePrice(expense.price)
+                    val priceFormatted = FormatValuesFromDatabase().price(expense.price)
 
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description)

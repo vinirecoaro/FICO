@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivitySetDefaultBudgetBinding
 import com.example.fico.ui.viewmodel.SetDefaultBudgetViewModel
+import com.example.fico.util.FormatValuesFromDatabase
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -108,7 +109,7 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
     private fun getDefaultBudget() = lifecycleScope.launch(Dispatchers.Main){
         val existBudget = viewModel.checkIfExistDefaultBudget().await()
         if(existBudget){
-            val defaultBudget = viewModel.getDefaultBudget().await()
+            val defaultBudget = FormatValuesFromDatabase().price(viewModel.getDefaultBudget().await())
             binding.etAvailablePerMonth.setText(defaultBudget)
         }
     }

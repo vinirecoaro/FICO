@@ -13,7 +13,7 @@ class FormatValuesFromDatabase {
         return (NumberFormat.getCurrencyInstance().format(price))
     }
 
-    fun commonExpensePrice(expensePrice : String) : String{
+    fun price(expensePrice : String) : String{
         val regex = Regex("[\\d,.]+")
         val justNumber = BigDecimal(regex.find(expensePrice)!!.value.replace(",","."))
         return (NumberFormat.getCurrencyInstance().format(justNumber))

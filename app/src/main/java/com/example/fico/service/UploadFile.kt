@@ -50,7 +50,7 @@ class UploadFile : Service() {
                             delay(100)
                         }else{
                             setUpBudget(
-                                getDefaultBudget(formatted = false).await(),
+                                getDefaultBudget().await(),
                                 dateToCheck)
                             val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
                             val timeNow = LocalTime.now()
@@ -131,9 +131,9 @@ class UploadFile : Service() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getDefaultBudget(formatted : Boolean = true):Deferred<String>{
+    suspend fun getDefaultBudget():Deferred<String>{
         return serviceScope.async(Dispatchers.IO){
-            firebaseAPI.getDefaultBudget(formatted).await()
+            firebaseAPI.getDefaultBudget().await()
         }
     }
 }

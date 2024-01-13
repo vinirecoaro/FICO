@@ -11,9 +11,8 @@ import com.example.fico.util.FormatValuesToDatabase
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.Format
+import java.text.Bidi
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -25,15 +24,15 @@ class AddExpenseViewModel : ViewModel() {
     suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
         return viewModelScope.async(Dispatchers.IO){
 
-            val formattedPrice = FormatValuesToDatabase().expensePrice(price).toString()
-
             val formattedDate = FormatValuesToDatabase().expenseDate(date)
+
+            val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
 
             val expense = Expense("",formattedPrice, description, category, formattedDate)
 
             val expenseList = generateExpenseList(expense, installment, nOfInstallments)
 
-            val updatedTotalExpense = calculateUpdatedTotalExpense(formattedPrice, installment).await()
+            val updatedTotalExpense = calculateUpdatedTotalExpense(formattedPrice, installment, nOfInstallments).await()
 
             val updatedInformationPerMonth = updateInformationPerMonth(expense, nOfInstallments).await()
 
@@ -122,14 +121,6 @@ class AddExpenseViewModel : ViewModel() {
         val inputTime = FormatValuesToDatabase().timeNow()
 
         if(installment){
-            //Generate installment price
-            val divisor = BigDecimal(nOfInstallments)
-            val denominator = BigDecimal(expense.price)
-            val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
-            val correction = BigDecimal("100")
-            val installmentPriceFormatted = installmentPrice.divide(correction)
-            val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
-            val formattedNumString = formatedNum.toString().replace(",",".")
 
             // Format Number of installments to expenseId
             var nOfInstallmentsFormatted = nOfInstallments.toString()
@@ -148,7 +139,7 @@ class AddExpenseViewModel : ViewModel() {
                     currentInstallment = "0$currentInstallment"
                 }
 
-                val formattedExpense = formatExpenseToInstallmentExpense(Expense("", formattedNumString, expense.description, expense.category, expense.date), i)
+                val formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.date), i)
                 val expenseId = "${formattedExpense.date}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
 
                 val newPair = Pair(formattedExpense,expenseId)
@@ -157,11 +148,8 @@ class AddExpenseViewModel : ViewModel() {
 
             }
         }else{
-            val bigNum = BigDecimal(expense.price)
-            val correction = BigDecimal("100")
-            val priceFormatted = bigNum.divide(correction,8, RoundingMode.HALF_UP)
             val expenseId = "${expense.date}-${inputTime}-${randonNum}"
-            val formattedExpense = Expense("", priceFormatted.toString(), expense.description, expense.category, expense.date)
+            val formattedExpense = Expense("", expense.price, expense.description, expense.category, expense.date)
 
             val newPair = Pair(formattedExpense, expenseId)
             expenseList.add(newPair)
@@ -171,27 +159,17 @@ class AddExpenseViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun calculateUpdatedTotalExpense(expensePrice : String, installment : Boolean): Deferred<String> {
+    private fun calculateUpdatedTotalExpense(expensePrice : String, installment : Boolean, nOfInstallments: Int): Deferred<String> {
         var updatedTotalExpense : BigDecimal
         val updatedTotalExpenseString = CompletableDeferred<String>()
          viewModelScope.async(Dispatchers.IO){
-             if (installment){
-                 val currentTotalExpense = firebaseAPI.getTotalExpense().await()
-                 val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
-                 val denominator = BigDecimal(expensePrice)
-                 val correction = BigDecimal("100")
-                 val priceFormatted = denominator.divide(correction)
-                 updatedTotalExpense = bigNumCurrentTotalExpense.add(priceFormatted).setScale(8, RoundingMode.HALF_UP)
-                 updatedTotalExpenseString.complete(updatedTotalExpense.toString())
-             }else{
-                 val currentTotalExpense = firebaseAPI.getTotalExpense().await()
-                 val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
-                 val bigNumExpensePrice = BigDecimal(expensePrice)
-                 val correction = BigDecimal("100")
-                 val bigNumExpensePriceFormatted = bigNumExpensePrice.divide(correction, 8, RoundingMode.HALF_UP)
-                 updatedTotalExpense = bigNumCurrentTotalExpense.add(bigNumExpensePriceFormatted).setScale(8, RoundingMode.HALF_UP)
-                 updatedTotalExpenseString.complete(updatedTotalExpense.toString())
-             }
+
+             val currentTotalExpense = firebaseAPI.getTotalExpense().await()
+             val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
+             val expensePriceBigNum = BigDecimal(expensePrice).multiply(BigDecimal(nOfInstallments))
+             updatedTotalExpense = bigNumCurrentTotalExpense.add(expensePriceBigNum).setScale(8, RoundingMode.HALF_UP)
+             updatedTotalExpenseString.complete(updatedTotalExpense.toString())
+
          }
         return updatedTotalExpenseString
     }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.service.FirebaseAPI
+import com.example.fico.util.FormatValuesToDatabase
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -24,35 +25,26 @@ class EditExpenseViewModel : ViewModel() {
         date: String
     ) : Deferred<Boolean > {
         return viewModelScope.async(Dispatchers.IO) {
-            val day = expense.date.substring(0, 2)
-            val month = expense.date.substring(3, 5)
-            val year = expense.date.substring(6, 10)
-            val modifiedDate = "$year-$month-$day"
+
+            //Old Expense
+            val oldExpenseFormattedDate = FormatValuesToDatabase().expenseDate(expense.date)
+
             val expencePrice = "-${expense.price.replace("R$ ", "").replace(",", ".")}"
+
             val oldExpense = Expense(
                 expense.id,
                 expencePrice,
                 expense.description,
                 expense.category,
-                modifiedDate
+                oldExpenseFormattedDate
             )
-            val newExpense = Expense(id = "", price, description, category, date)
-            val timeNow = LocalTime.now()
-            var hour = timeNow.hour.toString()
-            var minute = timeNow.minute.toString()
-            var second = timeNow.second.toString()
-            if (timeNow.hour < 10) {
-                hour = "0${timeNow.hour}"
-            }
-            if (timeNow.minute < 10) {
-                minute = "0${timeNow.minute}"
-            }
-            if (timeNow.second < 10) {
-                second = "0${timeNow.second}"
-            }
-            val inputTime = "${hour}-${minute}-${second}"
 
-            firebaseAPI.editExpense(oldExpense, newExpense, inputTime)
+            //New Expense
+            val newExpense = Expense(id = "", price, description, category, date)
+
+            val newExpenseInputTime = FormatValuesToDatabase().timeNow()
+
+            firebaseAPI.editExpense(oldExpense, newExpense, newExpenseInputTime)
         }
     }
 
