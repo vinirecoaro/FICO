@@ -25,7 +25,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
@@ -36,7 +35,6 @@ import com.example.fico.service.constants.AppConstants
 import com.example.fico.ui.activities.expense.ComonExpenseImportFileInstructionsActivity
 import com.example.fico.ui.activities.expense.InstallmentExpenseImportFileInstructionsActivity
 import com.example.fico.ui.interfaces.OnButtonClickListener
-import com.example.fico.ui.viewmodel.AddExpenseSetBudgetSharedViewModel
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -51,8 +49,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -68,7 +64,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         "Remédio", "Entretenimento"
     )
     private val viewModel by viewModels<AddExpenseViewModel>()
-    private val sharedViewModel: AddExpenseSetBudgetSharedViewModel by activityViewModels()
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
     private val permissionRequestCode = 123
@@ -265,19 +260,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 }
             }
             binding.btSave.isEnabled = true
-        }
-
-        sharedViewModel.price.observe(viewLifecycleOwner) { price ->
-            binding.btSave.visibility = View.VISIBLE
-            binding.etPrice.setText(price)
-        }
-
-        sharedViewModel.description.observe(viewLifecycleOwner) { desc ->
-            binding.etDescription.setText(desc)
-        }
-
-        sharedViewModel.category.observe(viewLifecycleOwner) { cat ->
-            binding.actvCategory.setText(cat)
         }
 
         binding.actvCategory.setOnClickListener {
