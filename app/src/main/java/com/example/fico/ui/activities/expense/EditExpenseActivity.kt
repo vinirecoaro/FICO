@@ -21,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
+import com.example.fico.util.FormatValuesFromDatabase
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -53,20 +54,20 @@ class EditExpenseActivity : AppCompatActivity() {
                 if(lenght == 41){
                     binding.etInstallments.visibility = View.VISIBLE
 
-                    val regex = Regex("[\\d,.]+")
-                    val expenseInstallment = BigDecimal(regex.find(expense.price)!!.value.replace(",","."))
-                    val nOfInstallment = BigDecimal(expense.id.substring(38,41))
-                    val price = expenseInstallment.multiply(nOfInstallment)
-                    val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
+                    val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(expense.price, expense.id)
+                    val description = FormatValuesFromDatabase().installmentExpenseDescription(expense.id)
+                    val nOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id)
+                    val initialDate = FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id, expense.date)
+
                     binding.etPrice.setText(priceFormatted)
-                    binding.etDescription.setText(expense.description.split(" Parcela")[0])
+                    binding.etDescription.setText(description)
                     binding.actvCategory.setText(expense.category)
-                    binding.etInstallments.setText(expense.id.substring(38,41).toInt().toString())
-                    binding.etDate.setText(returnInitialDate(expense.id, expense.date))
+                    binding.etInstallments.setText(nOfInstallment)
+                    binding.etDate.setText(initialDate)
                 }else{
-                    val regex = Regex("[\\d,.]+")
-                    val justNumber = BigDecimal(regex.find(expense.price)!!.value.replace(",","."))
-                    val priceFormatted = NumberFormat.getCurrencyInstance().format(justNumber)
+
+                    val priceFormatted = FormatValuesFromDatabase().commonExpensePrice(expense.price)
+
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description)
                     binding.actvCategory.setText(expense.category)
@@ -234,35 +235,6 @@ class EditExpenseActivity : AppCompatActivity() {
             }
         }
         return true
-    }
-
-    private fun returnInitialDate(id: String, date: String) : String{
-        val currentInstallment = id.substring(35,37).toInt().toString()
-        var day = date.substring(0, 2)
-        val month = date.substring(3, 5)
-        val year = date.substring(6, 10)
-        var initialYear = year.toInt() - (currentInstallment.toInt()/12)
-        var initialMonth = 1
-        var initialMonthString = ""
-
-        val restAfterDivideTwelve = currentInstallment.toInt()%12
-
-        if(month.toInt() < restAfterDivideTwelve){
-            initialMonth = 12 + (month.toInt() - restAfterDivideTwelve) + 1
-            initialMonthString = initialMonth.toString()
-            initialYear -= 1
-        }else if(month.toInt() > restAfterDivideTwelve){
-            initialMonth = month.toInt() - restAfterDivideTwelve + 1
-            initialMonthString = initialMonth.toString()
-        }
-        if(day.toInt() < 10){
-            day = "0${day.toInt()}"
-        }
-        if(initialMonth < 10){
-            initialMonthString = "0${initialMonth}"
-        }
-
-        return "${day}/${initialMonthString}/${initialYear}"
     }
 
     fun setMaxLength(editText: EditText, maxLength: Int) {

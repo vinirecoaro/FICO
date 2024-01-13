@@ -1,5 +1,7 @@
 package com.example.fico.util
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalTime
@@ -13,6 +15,7 @@ class FormatValuesToDatabase {
         return "$year-$month-$day"
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun timeNow() : String {
         val timeNow = LocalTime.now()
         var hour = timeNow.hour.toString()
