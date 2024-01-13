@@ -179,29 +179,21 @@ class AddExpenseViewModel : ViewModel() {
         viewModelScope.async(Dispatchers.IO){
             val currentInformationPerMonth = firebaseAPI.getInformationPerMonth().await()
             val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
-            val defaultBudget = firebaseAPI.getDefaultBudget().await()
-            val regex = Regex("[\\d,.]+")
-            val defaultBudgetJustNumber = regex.find(defaultBudget)!!.value.replace(",",".")
-            val defaultBudgetFormatted = BigDecimal(defaultBudgetJustNumber).setScale(8, RoundingMode.HALF_UP).toString()
+            val defaultBudget = BigDecimal(firebaseAPI.getDefaultBudget().await())
+            val defaultBudgetString = defaultBudget.setScale(8, RoundingMode.HALF_UP).toString()
 
             for(i in 0 until nOfInstallments){
                 val date = updateInstallmenteExpenseDate(expense, i)
                 val existDate = currentInformationPerMonth.any{it.date == date}
                 if(!existDate){
 
-                    val defaultBudgetNum = BigDecimal(defaultBudgetJustNumber)
-                    val expensePriceNum = BigDecimal(expense.price)
-                    val nOfInstallmentsBigNum = BigDecimal(nOfInstallments)
-                    val installmentExpensePrice = expensePriceNum.divide(nOfInstallmentsBigNum,8, RoundingMode.HALF_UP)
-                    val correction = BigDecimal("100")
-                    val installmentExpensePriceFormatted = installmentExpensePrice.divide(correction,8, RoundingMode.HALF_UP)
-                    val updatedAvailableNow = defaultBudgetNum.subtract(installmentExpensePriceFormatted).setScale(8, RoundingMode.HALF_UP).toString()
+                    val updatedAvailableNow = defaultBudget.subtract(BigDecimal(expense.price)).setScale(8, RoundingMode.HALF_UP).toString()
 
                     val monthInfo = InformationPerMonthExpense(
                         date,
                         updatedAvailableNow,
-                        defaultBudgetFormatted,
-                        installmentExpensePriceFormatted.toString()
+                        defaultBudgetString,
+                        expense.price
                     )
 
                     newInformationPerMonth.add(monthInfo)
@@ -210,18 +202,14 @@ class AddExpenseViewModel : ViewModel() {
                     val currentMonthInfo = currentInformationPerMonth.find {it.date == date}
                     val currentAvailableNow = BigDecimal(currentMonthInfo!!.availableNow)
                     val currentMonthExpense = BigDecimal(currentMonthInfo.monthExpense)
-                    val expensePriceNum = BigDecimal(expense.price)
-                    val nOfInstallmentsBigNum = BigDecimal(nOfInstallments)
-                    val installmentExpensePrice = expensePriceNum.divide(nOfInstallmentsBigNum, 8, RoundingMode.HALF_UP)
-                    val correction = BigDecimal("100")
-                    val installmentExpensePriceFormatted = installmentExpensePrice.divide(correction, 8, RoundingMode.HALF_UP)
-                    val updatedAvailableNow = currentAvailableNow.subtract(installmentExpensePriceFormatted).setScale(8, RoundingMode.HALF_UP).toString()
-                    val updatedMonthExpense = currentMonthExpense.add(installmentExpensePriceFormatted).setScale(8, RoundingMode.HALF_UP).toString()
+
+                    val updatedAvailableNow = currentAvailableNow.subtract(BigDecimal(expense.price)).setScale(8, RoundingMode.HALF_UP).toString()
+                    val updatedMonthExpense = currentMonthExpense.add(BigDecimal(expense.price)).setScale(8, RoundingMode.HALF_UP).toString()
 
                     val monthInfo = InformationPerMonthExpense(
                         date,
                         updatedAvailableNow,
-                        defaultBudgetFormatted,
+                        defaultBudgetString,
                         updatedMonthExpense
                     )
 
