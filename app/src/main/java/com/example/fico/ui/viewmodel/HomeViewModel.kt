@@ -8,14 +8,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.R
-import com.example.fico.service.FirebaseAPI
-import com.google.firebase.inject.Deferred
+import com.example.fico.api.FirebaseAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.CompletableFuture
 
 class HomeViewModel : ViewModel() {
 

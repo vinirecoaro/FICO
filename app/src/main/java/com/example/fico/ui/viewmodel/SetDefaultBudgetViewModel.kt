@@ -4,11 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fico.service.FirebaseAPI
+import com.example.fico.api.FirebaseAPI
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import java.text.DecimalFormat
 
 class SetDefaultBudgetViewModel : ViewModel() {
 

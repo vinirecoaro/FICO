@@ -1,4 +1,4 @@
-package com.example.fico.service.constants
+package com.example.fico.util.constants
 
 class AppConstants private constructor() {
 
@@ -48,6 +48,11 @@ class AppConstants private constructor() {
 
     object UPLOAD_FILE_SERVICE {
         const val SUCCESS_UPLOAD = "SUCCESS_UPLOAD"
+    }
+
+    object OPERATIONS {
+        const val SUM = "SUM"
+        const val SUB = "SUB"
     }
 
 }

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.databinding.FragmentConfigurationBinding
-import com.example.fico.service.constants.AppConstants
+import com.example.fico.util.constants.AppConstants
 import com.example.fico.ui.activities.expense.BudgetConfigurationListActivity
 import com.example.fico.ui.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick

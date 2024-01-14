@@ -2,7 +2,7 @@ package com.example.fico.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fico.service.FirebaseAPI
+import com.example.fico.api.FirebaseAPI
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package com.example.fico.util
+package com.example.fico.api
 
 import java.math.BigDecimal
 import java.text.NumberFormat

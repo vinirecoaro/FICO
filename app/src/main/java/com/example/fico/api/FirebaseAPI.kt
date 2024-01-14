@@ -1,4 +1,4 @@
-package com.example.fico.service
+package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -6,7 +6,7 @@ import com.example.fico.model.Budget
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.User
-import com.example.fico.service.constants.AppConstants
+import com.example.fico.util.constants.AppConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -34,10 +34,14 @@ class FirebaseAPI private constructor() {
         private val auth: FirebaseAuth by lazy { HOLDER.mAuth }
         private val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
         private val rootRef = database.getReference(AppConstants.DATABASE.USERS)
-        private var total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
-        private var information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
-        private var expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
-        private var default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
+        private var total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(
+            AppConstants.DATABASE.TOTAL_EXPENSE)
+        private var information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(
+            AppConstants.DATABASE.INFORMATION_PER_MONTH)
+        private var expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(
+            AppConstants.DATABASE.EXPENSES_LIST)
+        private var default_values = rootRef.child(auth.currentUser?.uid.toString()).child(
+            AppConstants.DATABASE.DEFAULT_VALUES)
         private var user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         private var user_root = rootRef.child(auth.currentUser?.uid.toString())
 

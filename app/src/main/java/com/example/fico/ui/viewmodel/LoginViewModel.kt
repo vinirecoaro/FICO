@@ -3,12 +3,9 @@ package com.example.fico.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.User
-import com.example.fico.service.FirebaseAPI
+import com.example.fico.api.FirebaseAPI
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import kotlinx.coroutines.*
-import kotlinx.coroutines.tasks.await
 
 class LoginViewModel : ViewModel() {
 

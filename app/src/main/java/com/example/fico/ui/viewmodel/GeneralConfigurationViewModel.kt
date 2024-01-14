@@ -2,8 +2,8 @@ package com.example.fico.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fico.service.FirebaseAPI
-import com.example.fico.service.constants.AppConstants
+import com.example.fico.api.FirebaseAPI
+import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.async
 
 class GeneralConfigurationViewModel : ViewModel() {

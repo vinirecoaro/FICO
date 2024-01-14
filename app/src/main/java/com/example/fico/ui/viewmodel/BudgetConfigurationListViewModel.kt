@@ -1,7 +1,7 @@
 package com.example.fico.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.fico.service.constants.AppConstants
+import com.example.fico.util.constants.AppConstants
 
 class BudgetConfigurationListViewModel : ViewModel(){
     val budgetConfigurationList : MutableList<String> = mutableListOf(

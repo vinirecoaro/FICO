@@ -1,4 +1,4 @@
-package com.example.fico.util
+package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi

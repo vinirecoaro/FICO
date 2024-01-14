@@ -4,20 +4,13 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.CalendarContract.Colors
-import android.widget.LinearLayout
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.fico.R
 import com.example.fico.databinding.ActivityGeneralConfigurationBinding
-import com.example.fico.service.constants.AppConstants
-import com.example.fico.ui.activities.expense.BudgetConfigurationListActivity
+import com.example.fico.util.constants.AppConstants
 import com.example.fico.ui.adapters.GeneralConfigurationListAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.GeneralConfigurationViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class GeneralConfigurationActivity : AppCompatActivity(),OnListItemClick {
 

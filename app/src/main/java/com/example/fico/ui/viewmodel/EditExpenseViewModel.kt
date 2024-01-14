@@ -5,8 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
-import com.example.fico.service.FirebaseAPI
-import com.example.fico.util.FormatValuesToDatabase
+import com.example.fico.api.FirebaseAPI
+import com.example.fico.api.FormatValuesToDatabase
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -25,29 +25,58 @@ class EditExpenseViewModel : ViewModel() {
         date: String
     ) : Deferred<Boolean > {
         return viewModelScope.async(Dispatchers.IO) {
-
-            //Old Expense
-            val oldExpenseFormattedDate = FormatValuesToDatabase().expenseDate(expense.date)
-
+            val oldExpenseDate = FormatValuesToDatabase().expenseDate(expense.date)
             val expencePrice = "-${expense.price.replace("R$ ", "").replace(",", ".")}"
-
             val oldExpense = Expense(
                 expense.id,
                 expencePrice,
                 expense.description,
                 expense.category,
-                oldExpenseFormattedDate
+                oldExpenseDate
             )
-
-            //New Expense
             val newExpense = Expense(id = "", price, description, category, date)
 
-            val newExpenseInputTime = FormatValuesToDatabase().timeNow()
+            val inputTime = FormatValuesToDatabase().timeNow()
 
-            firebaseAPI.editExpense(oldExpense, newExpense, newExpenseInputTime)
+            firebaseAPI.editExpense(oldExpense, newExpense, inputTime)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun saveEditExpense2(
+        expense: Expense,
+        price: String,
+        description: String,
+        category: String,
+        date: String,
+        nOfInstallments: Int
+    ) : Deferred<Boolean > {
+        return viewModelScope.async(Dispatchers.IO) {
+
+            val oldExpenseDate = FormatValuesToDatabase().expenseDate(expense.date)
+            val expencePrice = "-${expense.price.replace("R$ ", "").replace(",", ".")}"
+            val oldExpense = Expense(
+                expense.id,
+                expencePrice,
+                expense.description,
+                expense.category,
+                oldExpenseDate
+            )
+
+          /*  val removeFromExpenseList
+
+            val removeFromInformationPerMonth
+
+            val removeValueFromTotalExpense*/
+
+
+            val newExpense = Expense(id = "", price, description, category, date)
+
+            val inputTime = FormatValuesToDatabase().timeNow()
+
+            firebaseAPI.editExpense(oldExpense, newExpense, inputTime)
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditInstallmentExpense(

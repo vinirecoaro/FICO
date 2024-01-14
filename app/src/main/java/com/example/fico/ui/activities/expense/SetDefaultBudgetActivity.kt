@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivitySetDefaultBudgetBinding
 import com.example.fico.ui.viewmodel.SetDefaultBudgetViewModel
-import com.example.fico.util.FormatValuesFromDatabase
+import com.example.fico.api.FormatValuesFromDatabase
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

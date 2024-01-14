@@ -7,12 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Budget
-import com.example.fico.service.FirebaseAPI
+import com.example.fico.api.FirebaseAPI
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
-import java.text.DecimalFormat
 
 class BudgetPerMonthViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance

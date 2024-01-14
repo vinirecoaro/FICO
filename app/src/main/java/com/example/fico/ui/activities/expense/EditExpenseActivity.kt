@@ -20,13 +20,11 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
-import com.example.fico.util.FormatValuesFromDatabase
+import com.example.fico.api.FormatValuesFromDatabase
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.text.NumberFormat
 
 class EditExpenseActivity : AppCompatActivity() {
@@ -89,29 +87,19 @@ class EditExpenseActivity : AppCompatActivity() {
     private fun setUpListeners(){
         binding.btSave.setOnClickListener{
             binding.btSave.isEnabled = false
+            val expense = intent.getParcelableExtra<Expense>("expense")
             lifecycleScope.launch(Dispatchers.Main){
                 if(binding.etInstallments.visibility == View.GONE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
-                        val day = binding.etDate.text.toString().substring(0, 2)
-                        val month = binding.etDate.text.toString().substring(3, 5)
-                        val year = binding.etDate.text.toString().substring(6, 10)
-                        val modifiedDate = "$year-$month-$day"
-
-                        val regex = Regex("[\\d,.]+")
-                        val justNumber = regex.find(binding.etPrice.text.toString())
-                        val correction = BigDecimal("100")
-                        val numClean = BigDecimal(justNumber!!.value.replace(",","").replace(".",""))
-                        val formatedNum = numClean.divide(correction)
-                        val formattedNumString = formatedNum.toString().replace(",",".")
-
-                        val expense = intent.getParcelableExtra<Expense>("expense")
                         if(viewModel.saveEditExpense(
                             expense!!,
-                            formattedNumString,
+                            binding.etPrice.text.toString(),
                             binding.etDescription.text.toString(),
                             binding.actvCategory.text.toString(),
-                            modifiedDate).await()){
-                            hideKeyboard(this@EditExpenseActivity,binding.btSave)
+                            binding.etDate.text.toString()
+                            ).await()
+                        ){
+                            hideKeyboard(this@EditExpenseActivity, binding.btSave)
                             Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
                         }
                         //delay necessary to return to Expense list with value updated
@@ -121,29 +109,12 @@ class EditExpenseActivity : AppCompatActivity() {
                 }else if(binding.etInstallments.visibility == View.VISIBLE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etDate)){
                         if(binding.etInstallments.text.toString() != "0"){
-                            val day = binding.etDate.text.toString().substring(0, 2)
-                            val month = binding.etDate.text.toString().substring(3, 5)
-                            val year = binding.etDate.text.toString().substring(6, 10)
-                            val modifiedDate = "$year-$month-$day"
 
-                            val regex = Regex("[\\d,.]+")
-                            val justNumber = regex.find(binding.etPrice.text.toString())
-                            val divisor = BigDecimal(binding.etInstallments.text.toString())
-                            val denominator = BigDecimal(justNumber!!.value
-                                .replace(",","")
-                                .replace(".",""))
-                            val installmentPrice = denominator.divide(divisor, 8, RoundingMode.HALF_UP)
-                            val correction = BigDecimal("100")
-                            val installmentPriceFormatted = installmentPrice.divide(correction)
-                            val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
-                            val formattedNumString = formatedNum.toString().replace(",",".")
-
-                            val expense = intent.getParcelableExtra<Expense>("expense")
                             viewModel.saveEditInstallmentExpense(
-                                formattedNumString,
+                                binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
-                                modifiedDate,
+                                binding.etDate.text.toString(),
                                 binding.etInstallments.text.toString().toInt()).await()
                             viewModel.deleteOldInstallmentExpense(expense!!).await()
                             if(viewModel.updateTotalExpenseAfterEditInstallmentExpense(expense).await()){
