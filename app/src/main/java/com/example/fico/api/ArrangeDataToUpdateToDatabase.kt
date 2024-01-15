@@ -2,7 +2,6 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.util.constants.AppConstants
@@ -43,7 +42,7 @@ class ArrangeDataToUpdateToDatabase {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun expenseList(expense : Expense, installment : Boolean, nOfInstallments: Int) : MutableList<Pair<Expense, String>>{
+    fun addToExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int) : MutableList<Pair<Expense, String>>{
 
         val expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
         val randonNum = generateRandomAddress(5)
@@ -86,6 +85,22 @@ class ArrangeDataToUpdateToDatabase {
         }
 
         return expenseList
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun removeFromExpenseList(expense : Expense, viewModelScope: CoroutineScope) : Deferred<MutableList<String>> =
+        viewModelScope.async(Dispatchers.IO){
+
+        val expenseIdList : MutableList<String> = mutableListOf()
+
+        val expenseList = firebaseAPI.getExpenseList("").await()
+        val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(expense.id)
+
+        for(expenseItem in expenseList.filter { it.id == commonId }){
+            expenseIdList.add(expenseItem.id)
+        }
+
+        return@async expenseIdList
     }
 
     private fun formatExpenseToInstallmentExpense(expense : Expense, installmentNumber : Int) : Expense{
@@ -139,7 +154,7 @@ class ArrangeDataToUpdateToDatabase {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun informationPerMonth(expense : Expense, nOfInstallments: Int, viewModelScope: CoroutineScope) : Deferred<MutableList<InformationPerMonthExpense>> =
+    suspend fun addToInformationPerMonth(expense : Expense, nOfInstallments: Int, viewModelScope: CoroutineScope) : Deferred<MutableList<InformationPerMonthExpense>> =
         viewModelScope.async(Dispatchers.IO){
             val currentInformationPerMonth = firebaseAPI.getInformationPerMonth().await()
             val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()

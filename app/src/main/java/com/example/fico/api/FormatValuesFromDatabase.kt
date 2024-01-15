@@ -56,4 +56,8 @@ class FormatValuesFromDatabase {
         return "${day}/${initialMonthString}/${initialYear}"
     }
 
+    fun commonIdOnInstallmentExpense(installmentExpenseId : String) : String{
+        return installmentExpenseId.substring(11,25)
+    }
+
 }

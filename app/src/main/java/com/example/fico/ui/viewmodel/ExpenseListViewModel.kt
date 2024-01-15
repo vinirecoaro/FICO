@@ -28,7 +28,7 @@ class ExpenseListViewModel: ViewModel() {
 
     fun getExpenseList(filter : String) {
         viewModelScope.async{
-            val expenses = firebaseAPI.getExpenseList(filter)
+            val expenses = firebaseAPI.getExpenseList(filter).await()
             val sortedExpenses = expenses.sortedByDescending { it.id }
             _expensesLiveData.value = sortedExpenses
         }

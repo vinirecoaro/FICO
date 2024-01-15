@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
-import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
@@ -31,11 +30,11 @@ class AddExpenseViewModel : ViewModel() {
 
             val expense = Expense("",formattedPrice, description, category, formattedDate)
 
-            val expenseList = ArrangeDataToUpdateToDatabase().expenseList(expense, installment, nOfInstallments)
+            val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(expense, installment, nOfInstallments)
 
             val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(formattedPrice, nOfInstallments, AppConstants.OPERATIONS.SUM, viewModelScope).await()
 
-            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().informationPerMonth(expense, nOfInstallments, viewModelScope).await()
+            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(expense, nOfInstallments, viewModelScope).await()
 
             firebaseAPI.addExpense2(expenseList, installment, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
         }

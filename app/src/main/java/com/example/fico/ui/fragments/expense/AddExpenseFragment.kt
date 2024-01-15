@@ -90,7 +90,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         actvConfig()
         setColorBasedOnTheme()
 
-        binding.etDate.setText(viewModel.getCurrentlyDate())
         binding.etDate.inputType = InputType.TYPE_NULL
 
         setMaxLength(binding.etInstallments, 3)
@@ -98,9 +97,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         return rootView
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+        binding.etDate.setText(viewModel.getCurrentlyDate())
         val filter = IntentFilter().apply {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
         }
@@ -270,6 +270,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         binding.ivDate.setOnClickListener {
             binding.btSave.visibility = View.VISIBLE
             binding.dpDateExpense.visibility = View.VISIBLE
+            hideKeyboard(requireContext(), it)
             binding.dpDateExpense.setOnDateChangedListener {
                     _, selectedYear, selectedMonth, selectedDay ->
                 val selectedDate = String.format(
