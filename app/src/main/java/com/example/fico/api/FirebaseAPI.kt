@@ -135,7 +135,7 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addExpense(expense: Expense, inputTime : String) : Boolean = withContext(Dispatchers.IO){
+    suspend fun addExpense2(expense: Expense, inputTime : String) : Boolean = withContext(Dispatchers.IO){
         val result = CompletableDeferred<Boolean>()
         try{
             updateExpenseList(expense, inputTime)
@@ -473,13 +473,13 @@ class FirebaseAPI private constructor() {
     }
 
 
-    suspend fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments : Int, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
+    suspend fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, nOfInstallments : Int, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any>()
         val result = CompletableDeferred<Boolean>()
 
         try{
             // Add Expense List
-            updates.putAll(generateMapToUpdateUserExpenses(expenseList, installment, nOfInstallments))
+            updates.putAll(generateMapToUpdateUserExpenses(expenseList, nOfInstallments))
 
             // Add Updated Total Expense
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
@@ -495,25 +495,61 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Pair<Expense, String>>, installment : Boolean, nOfInstallments : Int) : MutableMap<String, Any>{
+    suspend fun editExpense2(
+        expenseList : MutableList<Pair<Expense, String>>,
+        nOfInstallments : Int,
+        updatedTotalExpense : String,
+        updatedInformationPerMonth: MutableList<InformationPerMonthExpense>,
+        removeFromExpenseList : MutableList<String>
+    ) : Boolean = withContext(Dispatchers.IO){
+        val updates = mutableMapOf<String, Any>()
+        val result = CompletableDeferred<Boolean>()
+
+        try{
+            // Remove from Expense List
+            updates.putAll(generateMapToRemoveUserExpenses(removeFromExpenseList, nOfInstallments))
+
+            // Add Expense List
+            updates.putAll(generateMapToUpdateUserExpenses(expenseList, nOfInstallments))
+
+            // Add Updated Total Expense
+            updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
+
+            // Add Information per Month
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth, nOfInstallments = nOfInstallments))
+
+            user_root.updateChildren(updates)
+
+            result.complete(true)
+        }catch (e : Exception){
+            result.complete(false)
+        }
+    }
+
+    private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Pair<Expense, String>>, nOfInstallments : Int) : MutableMap<String, Any>{
         val updatesOfExpenseList = mutableMapOf<String, Any>()
 
-        //if (installment){
-            // Add expenseList on updateList for installment expense
             for(i in 0 until nOfInstallments){
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.PRICE}"] = expenseList[i].first.price
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.DESCRIPTION}"] = expenseList[i].first.description
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.DATE}"] = expenseList[i].first.date
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.CATEGORY}"] = expenseList[i].first.category
             }
-        /*}else{
-            // Add expenseList on updateList for common expense
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.PRICE}"] = expenseList[0].first.price
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.DESCRIPTION}"] = expenseList[0].first.description
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.DATE}"] = expenseList[0].first.date
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[0].second}/${AppConstants.DATABASE.CATEGORY}"] = expenseList[0].first.category
-        }*/
+
         return updatesOfExpenseList
+    }
+
+    private fun generateMapToRemoveUserExpenses(expenseIdList : MutableList<String>, nOfInstallments : Int) : MutableMap<String, Any>{
+        val removeFromExpenseList = mutableMapOf<String, Any>()
+
+        for(i in 0 until nOfInstallments){
+            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}/${AppConstants.DATABASE.PRICE}"] to null
+            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}/${AppConstants.DATABASE.DESCRIPTION}"] to null
+            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}/${AppConstants.DATABASE.DATE}"] to null
+            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}/${AppConstants.DATABASE.CATEGORY}"] to null
+        }
+
+        return removeFromExpenseList
     }
 
     private fun generateMapToUpdateInformationPerMonth(informationPerMonthList : MutableList<InformationPerMonthExpense>, nOfInstallments : Int) : MutableMap<String, Any>{

@@ -46,7 +46,7 @@ class UploadFile : Service() {
                                 second = "0${timeNow.second}"
                             }
                             val inputTime = "${hour}-${minute}-${second}"
-                            firebaseAPI.addExpense(_expense, inputTime)
+                            firebaseAPI.addExpense2(_expense, inputTime)
                             delay(100)
                         }else{
                             setUpBudget(
@@ -67,7 +67,7 @@ class UploadFile : Service() {
                                 second = "0${timeNow.second}"
                             }
                             val inputTime = "${hour}-${minute}-${second}"
-                            firebaseAPI.addExpense(_expense, inputTime)
+                            firebaseAPI.addExpense2(_expense, inputTime)
                             delay(100)
                         }
                     }

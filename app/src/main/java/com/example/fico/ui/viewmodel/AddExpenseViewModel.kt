@@ -8,7 +8,6 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
-import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -21,7 +20,7 @@ class AddExpenseViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpense2(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
+    suspend fun addExpense(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
         return viewModelScope.async(Dispatchers.IO){
 
             val formattedDate = FormatValuesToDatabase().expenseDate(date)
@@ -32,11 +31,11 @@ class AddExpenseViewModel : ViewModel() {
 
             val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(expense, installment, nOfInstallments)
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(formattedPrice, nOfInstallments, AppConstants.OPERATIONS.SUM, viewModelScope).await()
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(formattedPrice, nOfInstallments, viewModelScope).await()
 
-            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(expense, nOfInstallments, viewModelScope).await()
+            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(expense, nOfInstallments, viewModelScope, false).await()
 
-            firebaseAPI.addExpense2(expenseList, installment, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
+            firebaseAPI.addExpense2(expenseList, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
         }
     }
 

@@ -52,7 +52,7 @@ class ExpenseListViewModel: ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun undoDeleteExpense(expense: Expense)=
         viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.addExpense(expense, inputTime = "")
+            firebaseAPI.addExpense2(expense, inputTime = "")
             getExpenseList(filterLiveData.value.toString())
         }
 

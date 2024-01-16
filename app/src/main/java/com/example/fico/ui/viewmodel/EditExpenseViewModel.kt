@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
@@ -49,12 +50,13 @@ class EditExpenseViewModel : ViewModel() {
         description: String,
         category: String,
         date: String,
-        nOfInstallments: Int
+        installment : Boolean,
+        nOfInstallments: Int = 1
     ) : Deferred<Boolean > {
         return viewModelScope.async(Dispatchers.IO) {
 
             val oldExpenseDate = FormatValuesToDatabase().expenseDate(expense.date)
-            val expencePrice = "-${expense.price.replace("R$ ", "").replace(",", ".")}"
+            val expencePrice = FormatValuesToDatabase().expensePrice(expense.price, nOfInstallments)
             val oldExpense = Expense(
                 expense.id,
                 expencePrice,
@@ -63,18 +65,17 @@ class EditExpenseViewModel : ViewModel() {
                 oldExpenseDate
             )
 
-          /*  val removeFromExpenseList
-
-            val removeFromInformationPerMonth
-
-            val removeValueFromTotalExpense*/
-
+            val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseList(oldExpense, viewModelScope).await()
 
             val newExpense = Expense(id = "", price, description, category, date)
 
-            val inputTime = FormatValuesToDatabase().timeNow()
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpense.price).await()
 
-            firebaseAPI.editExpense(oldExpense, newExpense, inputTime)
+            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(newExpense, nOfInstallments, viewModelScope, true, oldExpense).await()
+
+            val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(newExpense, installment, nOfInstallments)
+
+            firebaseAPI.editExpense2(expenseList,nOfInstallments, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList)
         }
     }
 

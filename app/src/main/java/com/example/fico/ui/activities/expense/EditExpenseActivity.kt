@@ -91,7 +91,7 @@ class EditExpenseActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.Main){
                 if(binding.etInstallments.visibility == View.GONE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
-                        if(viewModel.saveEditExpense(
+                        /*if(viewModel.saveEditExpense(
                             expense!!,
                             binding.etPrice.text.toString(),
                             binding.etDescription.text.toString(),
@@ -99,6 +99,17 @@ class EditExpenseActivity : AppCompatActivity() {
                             binding.etDate.text.toString()
                             ).await()
                         ){
+                            hideKeyboard(this@EditExpenseActivity, binding.btSave)
+                            Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
+                        }*/
+                        if(viewModel.saveEditExpense2(
+                            expense!!,
+                            binding.etPrice.text.toString(),
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            binding.etDate.text.toString(),
+                            false
+                        ).await()){
                             hideKeyboard(this@EditExpenseActivity, binding.btSave)
                             Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
                         }
@@ -109,8 +120,7 @@ class EditExpenseActivity : AppCompatActivity() {
                 }else if(binding.etInstallments.visibility == View.VISIBLE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etDate)){
                         if(binding.etInstallments.text.toString() != "0"){
-
-                            viewModel.saveEditInstallmentExpense(
+                            /*viewModel.saveEditInstallmentExpense(
                                 binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
@@ -118,6 +128,18 @@ class EditExpenseActivity : AppCompatActivity() {
                                 binding.etInstallments.text.toString().toInt()).await()
                             viewModel.deleteOldInstallmentExpense(expense!!).await()
                             if(viewModel.updateTotalExpenseAfterEditInstallmentExpense(expense).await()){
+                                hideKeyboard(this@EditExpenseActivity,binding.btSave)
+                                Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
+                            }*/
+                            if(viewModel.saveEditExpense2(
+                                    expense!!,
+                                    binding.etPrice.text.toString(),
+                                    binding.etDescription.text.toString(),
+                                    binding.actvCategory.text.toString(),
+                                    binding.etDate.text.toString(),
+                                    true,
+                                    binding.etInstallments.text.toString().toInt()
+                            ).await()){
                                 hideKeyboard(this@EditExpenseActivity,binding.btSave)
                                 Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
                             }

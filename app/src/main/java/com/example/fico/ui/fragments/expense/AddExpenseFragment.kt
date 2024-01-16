@@ -177,7 +177,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                     ) {
                         val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                         if (existsDefaultBudget){
-                            if(viewModel.addExpense2(
+                            if(viewModel.addExpense(
                                 binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
@@ -192,7 +192,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             }
                         } else {
                             if (setUpDefaultBudgetAlertDialog().await()) {
-                                if(viewModel.addExpense2(
+                                if(viewModel.addExpense(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
@@ -219,7 +219,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                         if(binding.etInstallments.text.toString() != "0"){
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {
-                                if(viewModel.addExpense2(
+                                if(viewModel.addExpense(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
@@ -236,7 +236,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                                 }
                             } else {
                                 if (setUpDefaultBudgetAlertDialog().await()) {
-                                    if(viewModel.addExpense2(
+                                    if(viewModel.addExpense(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),

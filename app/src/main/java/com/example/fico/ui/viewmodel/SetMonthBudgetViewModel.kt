@@ -38,7 +38,7 @@ class SetMonthBudgetViewModel : ViewModel() {
             second = "0${timeNow.second}"
         }
         val inputTime = "${hour}-${minute}-${second}"
-        firebaseAPI.addExpense(expense, inputTime)
+        firebaseAPI.addExpense2(expense, inputTime)
     }
 
 }
