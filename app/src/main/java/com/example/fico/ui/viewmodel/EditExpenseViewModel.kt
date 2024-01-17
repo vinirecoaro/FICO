@@ -56,10 +56,10 @@ class EditExpenseViewModel : ViewModel() {
         return viewModelScope.async(Dispatchers.IO) {
 
             val oldExpenseDate = FormatValuesToDatabase().expenseDate(expense.date)
-            val expencePrice = FormatValuesToDatabase().expensePrice(expense.price, nOfInstallments)
+
             val oldExpense = Expense(
                 expense.id,
-                expencePrice,
+                expense.price,
                 expense.description,
                 expense.category,
                 oldExpenseDate
@@ -67,11 +67,14 @@ class EditExpenseViewModel : ViewModel() {
 
             val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseList(oldExpense, viewModelScope).await()
 
-            val newExpense = Expense(id = "", price, description, category, date)
+            val newExpensePrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
+            val newExpenseDate = FormatValuesToDatabase().expenseDate(date)
+
+            val newExpense = Expense(id = "", newExpensePrice, description, category, newExpenseDate)
 
             val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpense.price).await()
 
-            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(newExpense, nOfInstallments, viewModelScope, true, oldExpense).await()
+            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(newExpense, installment, nOfInstallments, viewModelScope, true, oldExpense).await()
 
             val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(newExpense, installment, nOfInstallments)
 
