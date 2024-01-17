@@ -19,8 +19,8 @@ class FormatValuesFromDatabase {
         return (NumberFormat.getCurrencyInstance().format(justNumber))
     }
 
-    fun installmentExpenseDescription(expenseId : String) : String{
-        return expenseId.split(" Parcela")[0]
+    fun installmentExpenseDescription(expenseDescription : String) : String{
+        return expenseDescription.split(" Parcela")[0]
     }
 
     fun installmentExpenseNofInstallment(expenseId : String) : String{

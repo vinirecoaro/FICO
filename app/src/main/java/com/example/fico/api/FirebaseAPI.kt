@@ -502,7 +502,7 @@ class FirebaseAPI private constructor() {
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>,
         removeFromExpenseList : MutableList<String>
     ) : Boolean = withContext(Dispatchers.IO){
-        val updates = mutableMapOf<String, Any>()
+        val updates = mutableMapOf<String, Any?>()
         val result = CompletableDeferred<Boolean>()
 
         try{
@@ -539,14 +539,11 @@ class FirebaseAPI private constructor() {
         return updatesOfExpenseList
     }
 
-    private fun generateMapToRemoveUserExpenses(expenseIdList : MutableList<String>, nOfInstallments : Int) : MutableMap<String, Any>{
-        val removeFromExpenseList = mutableMapOf<String, Any>()
+    private fun generateMapToRemoveUserExpenses(expenseIdList : MutableList<String>, nOfInstallments : Int) : MutableMap<String, Any?> {
+        val removeFromExpenseList = mutableMapOf<String, Any?>()
 
         for(i in 0 until nOfInstallments){
-            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}/${AppConstants.DATABASE.PRICE}"] to null
-            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}/${AppConstants.DATABASE.DESCRIPTION}"] to null
-            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}/${AppConstants.DATABASE.DATE}"] to null
-            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}/${AppConstants.DATABASE.CATEGORY}"] to null
+            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}"] = null
         }
 
         return removeFromExpenseList
