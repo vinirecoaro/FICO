@@ -554,10 +554,10 @@ class FirebaseAPI private constructor() {
         val updatesOfInformationPerMonth = mutableMapOf<String, Any>()
 
         // Add expenseList on updateList for installment expense
-        for(i in 0 until nOfInstallments){
-            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${informationPerMonthList[i].date}/${AppConstants.DATABASE.AVAILABLE_NOW}"] = informationPerMonthList[i].availableNow
-            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${informationPerMonthList[i].date}/${AppConstants.DATABASE.BUDGET}"] = informationPerMonthList[i].budget
-            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${informationPerMonthList[i].date}/${AppConstants.DATABASE.EXPENSE}"] = informationPerMonthList[i].monthExpense
+        for(monthInfo in informationPerMonthList){
+            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${AppConstants.DATABASE.AVAILABLE_NOW}"] = monthInfo.availableNow
+            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${AppConstants.DATABASE.BUDGET}"] = monthInfo.budget
+            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${AppConstants.DATABASE.EXPENSE}"] = monthInfo.monthExpense
         }
 
         return updatesOfInformationPerMonth

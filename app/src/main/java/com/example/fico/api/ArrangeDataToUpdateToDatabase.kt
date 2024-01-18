@@ -218,9 +218,17 @@ class ArrangeDataToUpdateToDatabase {
 
                 for (month in months){
 
-                    val currentMonthInfo = currentInformationPerMonth.find { it.date == month }
-                    val currentAvailableNow = BigDecimal(currentMonthInfo!!.availableNow)
-                    val currentMonthExpense = BigDecimal(currentMonthInfo.monthExpense)
+                    var currentAvailableNow = defaultBudget
+                    var currentMonthExpense = BigDecimal("0").setScale(8, RoundingMode.HALF_UP)
+
+                    if (currentInformationPerMonth.any { it.date == month }) {
+                        val currentMonthInfo = currentInformationPerMonth.find { it.date == month }
+
+                        if (currentMonthInfo != null) {
+                            currentAvailableNow = BigDecimal(currentMonthInfo.availableNow)
+                            currentMonthExpense = BigDecimal(currentMonthInfo.monthExpense)
+                        }
+                    }
 
                     if(oldExpenseMonths.any { it == month } && newExpenseMonths.any { it == month }){
                         val updatedAvailableNow =
