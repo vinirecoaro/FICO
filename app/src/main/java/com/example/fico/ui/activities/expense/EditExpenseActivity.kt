@@ -91,7 +91,7 @@ class EditExpenseActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.Main){
                 if(binding.etInstallments.visibility == View.GONE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
-                        if(viewModel.saveEditExpense2(
+                        if(viewModel.saveEditExpense(
                             expense!!,
                             binding.etPrice.text.toString(),
                             binding.etDescription.text.toString(),
@@ -109,7 +109,7 @@ class EditExpenseActivity : AppCompatActivity() {
                 }else if(binding.etInstallments.visibility == View.VISIBLE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etDate)){
                         if(binding.etInstallments.text.toString() != "0"){
-                            if(viewModel.saveEditExpense2(
+                            if(viewModel.saveEditExpense(
                                     expense!!,
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
