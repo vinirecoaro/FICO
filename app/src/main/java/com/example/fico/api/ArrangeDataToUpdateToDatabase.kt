@@ -16,16 +16,17 @@ class ArrangeDataToUpdateToDatabase {
     private val firebaseAPI = FirebaseAPI.instance
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun calculateUpdatedTotalExpense(expensePrice : String, nOfInstallments: Int, viewModelScope : CoroutineScope, oldExpensePrice : String = "0"): Deferred<String> {
+    fun calculateUpdatedTotalExpense(expensePrice : String, expenseNOfInstallments: Int, viewModelScope : CoroutineScope, oldExpensePrice : String = "0", oldExpenseNOfInstallments : Int = 1): Deferred<String> {
         var updatedTotalExpense : BigDecimal
         val updatedTotalExpenseString = CompletableDeferred<String>()
         viewModelScope.async(Dispatchers.IO){
 
-            val nOfInstallmentsBigNum = BigDecimal(nOfInstallments)
+            val expenseNOfInstallmentsBigNum = BigDecimal(expenseNOfInstallments)
+            val oldExpenseNOfInstallmentsBigNum = BigDecimal(oldExpenseNOfInstallments)
             val currentTotalExpense = firebaseAPI.getTotalExpense().await()
             val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
-            val expensePriceBigNum = BigDecimal(expensePrice).multiply(nOfInstallmentsBigNum)
-            val oldExpensePriceBigNum = BigDecimal(oldExpensePrice)
+            val expensePriceBigNum = BigDecimal(expensePrice).multiply(expenseNOfInstallmentsBigNum)
+            val oldExpensePriceBigNum = BigDecimal(oldExpensePrice).multiply(oldExpenseNOfInstallmentsBigNum)
 
             updatedTotalExpense = bigNumCurrentTotalExpense.add(expensePriceBigNum).subtract(oldExpensePriceBigNum).setScale(8, RoundingMode.HALF_UP)
             updatedTotalExpenseString.complete(updatedTotalExpense.toString())

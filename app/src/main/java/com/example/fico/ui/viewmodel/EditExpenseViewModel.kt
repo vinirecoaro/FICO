@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +58,8 @@ class EditExpenseViewModel : ViewModel() {
 
             val oldExpenseDate = FormatValuesToDatabase().expenseDate(expense.date)
 
+            val oldExpenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).toInt()
+
             val oldExpense = Expense(
                 expense.id,
                 expense.price,
@@ -72,7 +75,7 @@ class EditExpenseViewModel : ViewModel() {
 
             val newExpense = Expense(id = "", newExpensePrice, description, category, newExpenseDate)
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpense.price).await()
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpense.price, oldExpenseNOfInstallment).await()
 
             val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(newExpense, installment, nOfInstallments, viewModelScope, true, oldExpense).await()
 
