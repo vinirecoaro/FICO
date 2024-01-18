@@ -500,14 +500,15 @@ class FirebaseAPI private constructor() {
         nOfInstallments : Int,
         updatedTotalExpense : String,
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>,
-        removeFromExpenseList : MutableList<String>
+        removeFromExpenseList : MutableList<String>,
+        oldExpenseNOfInstallment : Int
     ) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any?>()
         val result = CompletableDeferred<Boolean>()
 
         try{
             // Remove from Expense List
-            updates.putAll(generateMapToRemoveUserExpenses(removeFromExpenseList, nOfInstallments))
+            updates.putAll(generateMapToRemoveUserExpenses(removeFromExpenseList, oldExpenseNOfInstallment))
 
             // Add Expense List
             updates.putAll(generateMapToUpdateUserExpenses(expenseList, nOfInstallments))

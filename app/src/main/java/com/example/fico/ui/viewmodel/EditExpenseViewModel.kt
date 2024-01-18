@@ -46,7 +46,7 @@ class EditExpenseViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense2(
-        expense: Expense,
+        oldExpense: Expense,
         price: String,
         description: String,
         category: String,
@@ -56,32 +56,32 @@ class EditExpenseViewModel : ViewModel() {
     ) : Deferred<Boolean > {
         return viewModelScope.async(Dispatchers.IO) {
 
-            val oldExpenseDate = FormatValuesToDatabase().expenseDate(expense.date)
+            val oldExpenseDate = FormatValuesToDatabase().expenseDate(oldExpense.date)
 
-            val oldExpenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).toInt()
+            val oldExpenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(oldExpense.id).toInt()
 
-            val oldExpense = Expense(
-                expense.id,
-                expense.price,
-                expense.description,
-                expense.category,
+            val oldExpenseFormatted = Expense(
+                oldExpense.id,
+                oldExpense.price,
+                oldExpense.description,
+                oldExpense.category,
                 oldExpenseDate
             )
 
-            val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseList(oldExpense, viewModelScope).await()
+            val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseList(oldExpenseFormatted, viewModelScope).await()
 
             val newExpensePrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
             val newExpenseDate = FormatValuesToDatabase().expenseDate(date)
 
             val newExpense = Expense(id = "", newExpensePrice, description, category, newExpenseDate)
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpense.price, oldExpenseNOfInstallment).await()
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpenseFormatted.price, oldExpenseNOfInstallment).await()
 
-            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(newExpense, installment, nOfInstallments, viewModelScope, true, oldExpense).await()
+            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(newExpense, installment, nOfInstallments, viewModelScope, true, oldExpenseFormatted).await()
 
             val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(newExpense, installment, nOfInstallments)
 
-            firebaseAPI.editExpense2(expenseList,nOfInstallments, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList)
+            firebaseAPI.editExpense2(expenseList,nOfInstallments, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment)
         }
     }
 
