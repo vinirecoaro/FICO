@@ -5,8 +5,12 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.viewModelScope
+import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Expense
+import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
@@ -25,10 +29,29 @@ class UploadFile : Service() {
         val installmentExpense : Boolean = intent?.getBooleanExtra("installmentExpense", false) == true
 
         serviceScope.launch {
+
+            val masterExpenseList : MutableList<UpdateFromFileExpenseList> = mutableListOf()
+
             if(!installmentExpense){
                 if (_expenses != null) {
                     for (expense in _expenses){
-                        val dateToCheck = expense.date.substring(0,7)
+
+                        val expensePriceFormatted = BigDecimal(expense.price).toString()
+
+                        val _expense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.date)
+
+                        val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(_expense, installmentExpense, 1)
+
+                        val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
+
+                        val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(_expense, installmentExpense, 1, serviceScope, false).await()
+
+                        val expenseInfos = UpdateFromFileExpenseList(expenseList, 1, updatedTotalExpense, updatedInformationPerMonth)
+
+                        masterExpenseList.add(expenseInfos)
+                        //firebaseAPI.addExpense2(expenseList, 1, updatedTotalExpense, updatedInformationPerMonth)
+
+                        /*val dateToCheck = expense.date.substring(0,7)
                         val existDate = checkIfExistsDateOnDatabse(dateToCheck)
                         if(existDate.await()){
                             val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
@@ -69,15 +92,34 @@ class UploadFile : Service() {
                             val inputTime = "${hour}-${minute}-${second}"
                             firebaseAPI.addExpense2(_expense, inputTime)
                             delay(100)
-                        }
+                        }*/
                     }
-                    val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
-                    sendBroadcast(intentConcludedWarning)
+                    if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
+                        val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+                        sendBroadcast(intentConcludedWarning)
+                    }
                 }
             } else{
                 if (_expenses != null) {
                     for (expense in _expenses){
-                        val denominator = BigDecimal(expense.price)
+
+                        val expensePriceFormatted = BigDecimal(expense.price).toString()
+
+                        val _expense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.date)
+
+                        val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt())
+
+                        val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
+
+                        val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt(), serviceScope, false).await()
+
+                        val expenseInfos = UpdateFromFileExpenseList(expenseList, expense.nOfInstallment.toFloat().toInt(), updatedTotalExpense, updatedInformationPerMonth)
+
+                        masterExpenseList.add(expenseInfos)
+
+                        //firebaseAPI.addExpense2(expenseList, expense.nOfInstallment.toInt(), updatedTotalExpense, updatedInformationPerMonth)
+
+                        /*val denominator = BigDecimal(expense.price)
                         val divisor = BigDecimal(expense.nOfInstallment)
                         val expenseInstallment = denominator.divide(divisor, 8, RoundingMode.HALF_UP).toString()
                         val _expense = Expense("", expenseInstallment, expense.description, expense.category, expense.date, expense.nOfInstallment)
@@ -96,10 +138,14 @@ class UploadFile : Service() {
                         }
                         val inputTime = "${hour}-${minute}-${second}"
                         firebaseAPI.addInstallmentExpense(_expense, inputTime, _expense.nOfInstallment.toFloat().toInt())
-                        delay(100)
+                        delay(100)*/
                     }
-                    val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
-                    sendBroadcast(intentConcludedWarning)
+
+                    if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
+                        val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+                        sendBroadcast(intentConcludedWarning)
+                    }
+
                 }
             }
         }
@@ -112,7 +158,7 @@ class UploadFile : Service() {
     }
 
     override fun onDestroy() {
-        // Certifique-se de cancelar todas as coroutines quando o serviço for destruído
+        //Certify to cancel all coroutines when service be destroyed.
         serviceScope.cancel()
         super.onDestroy()
     }
@@ -135,5 +181,15 @@ class UploadFile : Service() {
         return serviceScope.async(Dispatchers.IO){
             firebaseAPI.getDefaultBudget().await()
         }
+    }
+
+    private fun sumAllExpenses(expenseList : MutableList<Expense>) : String{
+        var allExpensePrice = BigDecimal(0)
+        for (expense in expenseList){
+            val expensePrice = BigDecimal(expense.price)
+            allExpensePrice = allExpensePrice.add(expensePrice)
+        }
+        allExpensePrice.setScale(8, RoundingMode.HALF_UP)
+        return allExpensePrice.toString()
     }
 }

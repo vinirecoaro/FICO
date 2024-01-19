@@ -1,6 +1,7 @@
 package com.example.fico.ui.activities.expense
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
+import com.example.fico.R
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
@@ -37,6 +39,8 @@ class EditExpenseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        setColorBasedOnTheme()
 
         binding.editExpenseToolbar.setTitle("Editar Gasto")
         binding.editExpenseToolbar.setTitleTextColor(Color.WHITE)
@@ -237,6 +241,18 @@ class EditExpenseActivity : AppCompatActivity() {
     private fun hideKeyboard(context: Context, view: View){
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken,0)
+    }
+
+    private fun setColorBasedOnTheme() {
+        when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_light)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_dark)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
     }
 
 }

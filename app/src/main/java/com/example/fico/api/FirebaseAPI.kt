@@ -2,10 +2,7 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.fico.model.Budget
-import com.example.fico.model.Expense
-import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.model.User
+import com.example.fico.model.*
 import com.example.fico.util.constants.AppConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -472,6 +469,29 @@ class FirebaseAPI private constructor() {
         })
     }
 
+    suspend fun addExpenseFromFile(masterExpenseList : MutableList<UpdateFromFileExpenseList>) : Boolean = withContext(Dispatchers.IO){
+        val updates = mutableMapOf<String, Any>()
+        val result = CompletableDeferred<Boolean>()
+
+        try{
+            for(expense in masterExpenseList){
+                // Add Expense List
+                updates.putAll(generateMapToUpdateUserExpenses(expense.expenseList, expense.nOfInstallments))
+
+                // Add Updated Total Expense
+                updates.putAll(generateMapToUpdateUserTotalExpense(expense.updatedTotalExpense))
+
+                // Add Information per Month
+                updates.putAll(generateMapToUpdateInformationPerMonth(expense.updatedInformationPerMonth, nOfInstallments = expense.nOfInstallments))
+            }
+
+            user_root.updateChildren(updates)
+
+            result.complete(true)
+        }catch (e : Exception){
+            result.complete(false)
+        }
+    }
 
     suspend fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, nOfInstallments : Int, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any>()

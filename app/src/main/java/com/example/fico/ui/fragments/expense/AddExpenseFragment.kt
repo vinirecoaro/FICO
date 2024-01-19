@@ -488,7 +488,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             input.copyTo(output)
                         }
                     }
-                    // Agora você pode trabalhar com o novo arquivo (cópia) no código.
+                    // Work with a copy of file
                     val newPath = getNewFileUri().path.toString()
                     var readFileResult = readFromExcelFile(newPath)
                     if (readFileResult.second) {
@@ -530,7 +530,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                             input.copyTo(output)
                         }
                     }
-                    // Agora você pode trabalhar com o novo arquivo (cópia) no código.
+                    // Work with a copy of file
                     val newPath = getNewFileUri().path.toString()
                     var readFileResult = readFromExcelFile(newPath)
                     if (readFileResult.second) {
