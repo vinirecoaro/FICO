@@ -34,6 +34,9 @@ class UploadFile : Service() {
 
             if(!installmentExpense){
                 if (_expenses != null) {
+
+                    val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
+
                     for (expense in _expenses){
 
                         val expensePriceFormatted = BigDecimal(expense.price).toString()
@@ -42,57 +45,11 @@ class UploadFile : Service() {
 
                         val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(_expense, installmentExpense, 1)
 
-                        val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
-
                         val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(_expense, installmentExpense, 1, serviceScope, false).await()
 
                         val expenseInfos = UpdateFromFileExpenseList(expenseList, 1, updatedTotalExpense, updatedInformationPerMonth)
 
                         masterExpenseList.add(expenseInfos)
-                        //firebaseAPI.addExpense2(expenseList, 1, updatedTotalExpense, updatedInformationPerMonth)
-
-                        /*val dateToCheck = expense.date.substring(0,7)
-                        val existDate = checkIfExistsDateOnDatabse(dateToCheck)
-                        if(existDate.await()){
-                            val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
-                            val timeNow = LocalTime.now()
-                            var hour = timeNow.hour.toString()
-                            var minute = timeNow.minute.toString()
-                            var second = timeNow.second.toString()
-                            if(timeNow.hour < 10){
-                                hour = "0${timeNow.hour}"
-                            }
-                            if(timeNow.minute < 10){
-                                minute = "0${timeNow.minute}"
-                            }
-                            if(timeNow.second < 10){
-                                second = "0${timeNow.second}"
-                            }
-                            val inputTime = "${hour}-${minute}-${second}"
-                            firebaseAPI.addExpense2(_expense, inputTime)
-                            delay(100)
-                        }else{
-                            setUpBudget(
-                                getDefaultBudget().await(),
-                                dateToCheck)
-                            val _expense = Expense("", expense.price, expense.description, expense.category, expense.date)
-                            val timeNow = LocalTime.now()
-                            var hour = timeNow.hour.toString()
-                            var minute = timeNow.minute.toString()
-                            var second = timeNow.second.toString()
-                            if(timeNow.hour < 10){
-                                hour = "0${timeNow.hour}"
-                            }
-                            if(timeNow.minute < 10){
-                                minute = "0${timeNow.minute}"
-                            }
-                            if(timeNow.second < 10){
-                                second = "0${timeNow.second}"
-                            }
-                            val inputTime = "${hour}-${minute}-${second}"
-                            firebaseAPI.addExpense2(_expense, inputTime)
-                            delay(100)
-                        }*/
                     }
                     if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
                         val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
@@ -101,15 +58,16 @@ class UploadFile : Service() {
                 }
             } else{
                 if (_expenses != null) {
+
+                    val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
+
                     for (expense in _expenses){
 
-                        val expensePriceFormatted = BigDecimal(expense.price).toString()
+                        val expensePriceFormatted = BigDecimal(expense.price).divide(BigDecimal(expense.nOfInstallment)).setScale(8, RoundingMode.HALF_UP).toString()
 
                         val _expense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.date)
 
                         val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt())
-
-                        val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
 
                         val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt(), serviceScope, false).await()
 
@@ -117,28 +75,6 @@ class UploadFile : Service() {
 
                         masterExpenseList.add(expenseInfos)
 
-                        //firebaseAPI.addExpense2(expenseList, expense.nOfInstallment.toInt(), updatedTotalExpense, updatedInformationPerMonth)
-
-                        /*val denominator = BigDecimal(expense.price)
-                        val divisor = BigDecimal(expense.nOfInstallment)
-                        val expenseInstallment = denominator.divide(divisor, 8, RoundingMode.HALF_UP).toString()
-                        val _expense = Expense("", expenseInstallment, expense.description, expense.category, expense.date, expense.nOfInstallment)
-                        val timeNow = LocalTime.now()
-                        var hour = timeNow.hour.toString()
-                        var minute = timeNow.minute.toString()
-                        var second = timeNow.second.toString()
-                        if(timeNow.hour < 10){
-                            hour = "0${timeNow.hour}"
-                        }
-                        if(timeNow.minute < 10){
-                            minute = "0${timeNow.minute}"
-                        }
-                        if(timeNow.second < 10){
-                            second = "0${timeNow.second}"
-                        }
-                        val inputTime = "${hour}-${minute}-${second}"
-                        firebaseAPI.addInstallmentExpense(_expense, inputTime, _expense.nOfInstallment.toFloat().toInt())
-                        delay(100)*/
                     }
 
                     if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
