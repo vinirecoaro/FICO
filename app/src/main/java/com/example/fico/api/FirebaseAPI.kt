@@ -482,7 +482,7 @@ class FirebaseAPI private constructor() {
                 updates.putAll(generateMapToUpdateUserTotalExpense(expense.updatedTotalExpense))
 
                 // Add Information per Month
-                updates.putAll(generateMapToUpdateInformationPerMonth(expense.updatedInformationPerMonth, nOfInstallments = expense.nOfInstallments))
+                updates.putAll(generateMapToUpdateInformationPerMonth(expense.updatedInformationPerMonth))
             }
 
             user_root.updateChildren(updates)
@@ -505,7 +505,7 @@ class FirebaseAPI private constructor() {
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
 
             // Add Information per Month
-            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth, nOfInstallments = nOfInstallments))
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
 
             user_root.updateChildren(updates)
 
@@ -537,7 +537,7 @@ class FirebaseAPI private constructor() {
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
 
             // Add Information per Month
-            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth, nOfInstallments = nOfInstallments))
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
 
             user_root.updateChildren(updates)
 
@@ -570,7 +570,7 @@ class FirebaseAPI private constructor() {
         return removeFromExpenseList
     }
 
-    private fun generateMapToUpdateInformationPerMonth(informationPerMonthList : MutableList<InformationPerMonthExpense>, nOfInstallments : Int) : MutableMap<String, Any>{
+    private fun generateMapToUpdateInformationPerMonth(informationPerMonthList : MutableList<InformationPerMonthExpense>) : MutableMap<String, Any>{
         val updatesOfInformationPerMonth = mutableMapOf<String, Any>()
 
         // Add expenseList on updateList for installment expense

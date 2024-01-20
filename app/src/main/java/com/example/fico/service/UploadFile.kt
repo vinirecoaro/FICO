@@ -37,6 +37,9 @@ class UploadFile : Service() {
 
                     val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
 
+                    val expensePerMonthList = ArrangeDataToUpdateToDatabase().joinExpensesOfMonth(_expenses, installmentExpense)
+
+
                     for (expense in _expenses){
 
                         val expensePriceFormatted = BigDecimal(expense.price).toString()

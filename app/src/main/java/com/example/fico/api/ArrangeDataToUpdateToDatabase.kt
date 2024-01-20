@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -315,6 +314,64 @@ class ArrangeDataToUpdateToDatabase {
         }
 
         return expenseMonths
+    }
+
+    fun joinExpensesOfMonth(
+        expensesList : MutableList<Expense>,
+        installment : Boolean,
+    ) : MutableList<Expense> {
+
+        val calculatedList : MutableList<Expense> = mutableListOf()
+        val months : MutableSet<String> = mutableSetOf()
+
+        if(!installment){
+            for(expense in expensesList){
+                months.add(expense.date.substring(3))
+            }
+            for(month in months){
+                val expensesOfMonth = expensesList.filter { it.date.substring(3) == month.substring(3) }
+                val sumPrices = BigDecimal(0)
+
+                for(expense in expensesOfMonth){
+                    sumPrices.add(BigDecimal(expense.price))
+                }
+
+                val abstractExpense = Expense("",sumPrices.toString(),"","","01-${month}")
+
+                calculatedList.add(abstractExpense)
+            }
+        }else{
+            val installmentExpenseList : MutableList<Expense> = mutableListOf()
+            for(expense in expensesList){
+                for (i in 0 until expense.nOfInstallment.toFloat().toInt()){
+                    val price = BigDecimal(expense.price).divide(BigDecimal(expense.nOfInstallment), 8, RoundingMode.HALF_UP).toString()
+                    val date = updateInstallmenteExpenseDate(expense.date, i)
+
+                    val newExpense = Expense("", price, expense.description, expense.category, date)
+
+                    installmentExpenseList.add(newExpense)
+                }
+            }
+            for(expense in installmentExpenseList){
+                months.add(expense.date.substring(3))
+            }
+            for(month in months){
+                val expensesOfMonth = installmentExpenseList.filter { it.date.substring(3) == month.substring(3) }
+                val sumPrices = BigDecimal(0)
+
+                for(expense in expensesOfMonth){
+                    sumPrices.add(BigDecimal(expense.price))
+                }
+
+                val abstractExpense = Expense("",sumPrices.toString(),"","","01-${month}")
+
+                calculatedList.add(abstractExpense)
+            }
+        }
+
+
+
+        return calculatedList
     }
 
 }
