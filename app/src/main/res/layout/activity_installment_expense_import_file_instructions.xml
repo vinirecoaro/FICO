@@ -61,12 +61,6 @@
             android:layout_margin="4dp"
             android:src="@drawable/ic_dot_unselected_black" />
 
-        <ImageView
-            android:id="@+id/dot6"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_margin="4dp"
-            android:src="@drawable/ic_dot_unselected_black" />
 
     </LinearLayout>
 

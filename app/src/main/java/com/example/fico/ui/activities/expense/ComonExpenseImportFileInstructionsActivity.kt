@@ -71,19 +71,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
                     R.drawable.import_file_instructions_warning_black
                 ),
                 "Não inserir gastos parcelados através\ndesta opção.",
-                false
-            ),
-            ImportFileInstructionsComponents(
-                "Conexão com a Internet",
-                setImageBasedOnTheme(
-                    R.drawable.baseline_wifi_24_light,
-                    R.drawable.baseline_wifi_24_black
-                ),
-                "Ao utilizar esse método certifique-se de\n" +
-                        "ter uma boa conexão com a internet.\n\n" +
-                        "Adicionar 100 gastos - 10 seg.\n" +
-                        "Adicionar 1000 gastos - 1 min. e 40 seg.\n" +
-                        "Adicionar 5000 gastos - 8 min. e 20 seg.",
                 true
             ),
         )
@@ -99,7 +86,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
                 binding.dot4.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot5.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot6.setImageResource(R.drawable.ic_dot_unselected_light)
-                binding.dot7.setImageResource(R.drawable.ic_dot_unselected_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -108,7 +94,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
                 binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
-                binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
@@ -144,7 +129,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 1){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -153,7 +137,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 2){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -162,7 +145,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 3){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -171,7 +153,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot4.setImageResource(R.drawable.ic_dot_selected)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 4){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -180,7 +161,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_selected)
             binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 5){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -189,16 +169,6 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot6.setImageResource(R.drawable.ic_dot_selected)
-            binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
-        }
-        else if(currentPosition == 6){
-            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot7.setImageResource(R.drawable.ic_dot_selected)
         }
     }
 
