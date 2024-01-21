@@ -81,6 +81,43 @@ class ArrangeDataToUpdateToDatabase {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    fun addToExpenseListFromFileCommonExpense(expenses : MutableList<Expense>) : MutableList<Pair<Expense, String>>{
+
+        val expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
+        val randonNums : MutableList<String> = mutableListOf()
+
+        val inputTime = FormatValuesToDatabase().timeNow()
+
+        var i = 0
+
+        //Generate randon nums to Id and make sure that values aren't equal
+        while(i < expenses.size){
+            val randonNum = generateRandomAddress(5)
+            if(!randonNums.any { it == randonNum }){
+                randonNums.add(randonNum)
+                i++
+            }
+        }
+
+        for(expense in expenses){
+
+            val selectedIndex = kotlin.random.Random.nextInt(randonNums.size)
+
+            val randonNumId = randonNums[selectedIndex]
+
+            val expenseId = "${expense.date}-${inputTime}-${randonNumId}"
+            val formattedExpense = Expense("", expense.price, expense.description, expense.category, expense.date)
+
+            val newPair = Pair(formattedExpense, expenseId)
+            expenseList.add(newPair)
+
+            randonNums.removeAt(selectedIndex)
+        }
+
+        return expenseList
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun removeFromExpenseList(expense : Expense, viewModelScope: CoroutineScope) : Deferred<MutableList<String>> =
         viewModelScope.async(Dispatchers.IO){
 
@@ -281,6 +318,60 @@ class ArrangeDataToUpdateToDatabase {
             return@async newInformationPerMonth
         }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun addToInformationPerMonthFromUpdatedFile(
+        expenseList : MutableList<Expense>,
+        viewModelScope: CoroutineScope,
+    ) : Deferred<MutableList<InformationPerMonthExpense>> =
+        viewModelScope.async(Dispatchers.IO){
+            val currentInformationPerMonth = firebaseAPI.getInformationPerMonth().await()
+            val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
+            val defaultBudget = BigDecimal(firebaseAPI.getDefaultBudget().await())
+            val defaultBudgetString = defaultBudget.setScale(8, RoundingMode.HALF_UP).toString()
+
+
+            for (expense in expenseList) {
+                val date = expense.date.substring(0,7)
+                val existDate = currentInformationPerMonth.any { it.date == date }
+                if (!existDate) {
+
+                    val updatedAvailableNow = defaultBudget.subtract(BigDecimal(expense.price))
+                        .setScale(8, RoundingMode.HALF_UP).toString()
+
+                    val monthInfo = InformationPerMonthExpense(
+                        date,
+                        updatedAvailableNow,
+                        defaultBudgetString,
+                        expense.price
+                    )
+
+                    newInformationPerMonth.add(monthInfo)
+
+                } else {
+                    val currentMonthInfo = currentInformationPerMonth.find { it.date == date }
+                    val currentAvailableNow = BigDecimal(currentMonthInfo!!.availableNow)
+                    val currentMonthExpense = BigDecimal(currentMonthInfo.monthExpense)
+
+                    val updatedAvailableNow =
+                        currentAvailableNow.subtract(BigDecimal(expense.price))
+                            .setScale(8, RoundingMode.HALF_UP).toString()
+                    val updatedMonthExpense = currentMonthExpense.add(BigDecimal(expense.price))
+                        .setScale(8, RoundingMode.HALF_UP).toString()
+
+                    val monthInfo = InformationPerMonthExpense(
+                        date,
+                        updatedAvailableNow,
+                        defaultBudgetString,
+                        updatedMonthExpense
+                    )
+
+                    newInformationPerMonth.add(monthInfo)
+
+                }
+            }
+            return@async newInformationPerMonth
+        }
+
     private fun updateInstallmenteExpenseDate(expenseDate: String, iteraction: Int): String {
         val month = expenseDate.substring(5, 7).toInt()
         var newMonth = month + iteraction
@@ -326,17 +417,18 @@ class ArrangeDataToUpdateToDatabase {
 
         if(!installment){
             for(expense in expensesList){
-                months.add(expense.date.substring(3))
+                months.add(expense.date.substring(0,7))
             }
             for(month in months){
-                val expensesOfMonth = expensesList.filter { it.date.substring(3) == month.substring(3) }
-                val sumPrices = BigDecimal(0)
+                val expensesOfMonth = expensesList.filter { it.date.substring(0,7) == month.substring(0,7) }
+                var sumPrices = BigDecimal(0)
 
                 for(expense in expensesOfMonth){
-                    sumPrices.add(BigDecimal(expense.price))
+                    val expensePrice = BigDecimal(expense.price)
+                    sumPrices = sumPrices.add(expensePrice)
                 }
 
-                val abstractExpense = Expense("",sumPrices.toString(),"","","01-${month}")
+                val abstractExpense = Expense("",sumPrices.toString(),"","","${month}-01")
 
                 calculatedList.add(abstractExpense)
             }
@@ -353,17 +445,17 @@ class ArrangeDataToUpdateToDatabase {
                 }
             }
             for(expense in installmentExpenseList){
-                months.add(expense.date.substring(3))
+                months.add(expense.date.substring(0,7))
             }
             for(month in months){
-                val expensesOfMonth = installmentExpenseList.filter { it.date.substring(3) == month.substring(3) }
-                val sumPrices = BigDecimal(0)
+                val expensesOfMonth = installmentExpenseList.filter { it.date.substring(0,7) == month.substring(0,7) }
+                var sumPrices = BigDecimal(0)
 
                 for(expense in expensesOfMonth){
-                    sumPrices.add(BigDecimal(expense.price))
+                   sumPrices = sumPrices.add(BigDecimal(expense.price))
                 }
 
-                val abstractExpense = Expense("",sumPrices.toString(),"","","01-${month}")
+                val abstractExpense = Expense("",sumPrices.toString(),"","","${month}-01")
 
                 calculatedList.add(abstractExpense)
             }
@@ -373,5 +465,7 @@ class ArrangeDataToUpdateToDatabase {
 
         return calculatedList
     }
+
+
 
 }

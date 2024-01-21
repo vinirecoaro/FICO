@@ -469,21 +469,19 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    suspend fun addExpenseFromFile(masterExpenseList : MutableList<UpdateFromFileExpenseList>) : Boolean = withContext(Dispatchers.IO){
+    suspend fun addExpenseFromFile(masterExpenseList : UpdateFromFileExpenseList) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any>()
         val result = CompletableDeferred<Boolean>()
 
         try{
-            for(expense in masterExpenseList){
-                // Add Expense List
-                updates.putAll(generateMapToUpdateUserExpenses(expense.expenseList, expense.nOfInstallments))
+            // Add Expense List
+            updates.putAll(generateMapToUpdateUserExpenses(masterExpenseList.expenseList))
 
-                // Add Updated Total Expense
-                updates.putAll(generateMapToUpdateUserTotalExpense(expense.updatedTotalExpense))
+            // Add Updated Total Expense
+            updates.putAll(generateMapToUpdateUserTotalExpense(masterExpenseList.updatedTotalExpense))
 
-                // Add Information per Month
-                updates.putAll(generateMapToUpdateInformationPerMonth(expense.updatedInformationPerMonth))
-            }
+            // Add Information per Month
+            updates.putAll(generateMapToUpdateInformationPerMonth(masterExpenseList.updatedInformationPerMonth))
 
             user_root.updateChildren(updates)
 
@@ -499,7 +497,7 @@ class FirebaseAPI private constructor() {
 
         try{
             // Add Expense List
-            updates.putAll(generateMapToUpdateUserExpenses(expenseList, nOfInstallments))
+            updates.putAll(generateMapToUpdateUserExpenses(expenseList))
 
             // Add Updated Total Expense
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
@@ -531,7 +529,7 @@ class FirebaseAPI private constructor() {
             updates.putAll(generateMapToRemoveUserExpenses(removeFromExpenseList, oldExpenseNOfInstallment))
 
             // Add Expense List
-            updates.putAll(generateMapToUpdateUserExpenses(expenseList, nOfInstallments))
+            updates.putAll(generateMapToUpdateUserExpenses(expenseList))
 
             // Add Updated Total Expense
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
@@ -547,14 +545,14 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Pair<Expense, String>>, nOfInstallments : Int) : MutableMap<String, Any>{
+    private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Pair<Expense, String>>) : MutableMap<String, Any>{
         val updatesOfExpenseList = mutableMapOf<String, Any>()
 
-            for(i in 0 until nOfInstallments){
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.PRICE}"] = expenseList[i].first.price
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.DESCRIPTION}"] = expenseList[i].first.description
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.DATE}"] = expenseList[i].first.date
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseList[i].second}/${AppConstants.DATABASE.CATEGORY}"] = expenseList[i].first.category
+            for(expense in expenseList){
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.second}/${AppConstants.DATABASE.PRICE}"] = expense.first.price
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.second}/${AppConstants.DATABASE.DESCRIPTION}"] = expense.first.description
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.second}/${AppConstants.DATABASE.DATE}"] = expense.first.date
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.second}/${AppConstants.DATABASE.CATEGORY}"] = expense.first.category
             }
 
         return updatesOfExpenseList
