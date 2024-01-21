@@ -29,9 +29,14 @@ class EditExpenseViewModel : ViewModel() {
     ) : Deferred<Boolean > {
         return viewModelScope.async(Dispatchers.IO) {
 
-            val oldExpenseDate = FormatValuesToDatabase().expenseDate(oldExpense.date)
+            var oldExpenseDate = FormatValuesToDatabase().expenseDate(oldExpense.date)
 
-            val oldExpenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(oldExpense.id).toInt()
+            var oldExpenseNOfInstallment = 1
+
+            if(installment){
+                oldExpenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(oldExpense.id).toInt()
+                oldExpenseDate = FormatValuesToDatabase().expenseDate(FormatValuesFromDatabase().installmentExpenseInitialDate(oldExpense.id,oldExpense.date))
+            }
 
             val oldExpenseFormatted = Expense(
                 oldExpense.id,
