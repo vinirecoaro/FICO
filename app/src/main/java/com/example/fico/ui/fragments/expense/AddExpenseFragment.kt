@@ -58,11 +58,12 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
-    private val categoryOptions = arrayOf(
+    /*private val categoryOptions = arrayOf(
         "Comida", "Transporte",
         "Investimento", "Necessidade",
         "Remédio", "Entretenimento"
-    )
+    )*/
+    private var categoryOptions = arrayOf<String>()
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
@@ -87,7 +88,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         var rootView = binding.root
 
         setUpListeners()
-        actvConfig()
         setColorBasedOnTheme()
 
         binding.etDate.inputType = InputType.TYPE_NULL
@@ -101,10 +101,13 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
     override fun onResume() {
         super.onResume()
         binding.etDate.setText(viewModel.getCurrentlyDate())
+
         val filter = IntentFilter().apply {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
         }
         requireContext().registerReceiver(receiver, filter)
+
+        viewModel.getCategories()
     }
 
     override fun onPause() {
@@ -317,11 +320,19 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
                 }
             }
         })
+
+        viewModel.categoriesLiveData.observe(viewLifecycleOwner) { categories ->
+            categoryOptions = categories.toTypedArray()
+            actvConfig()
+        }
+
     }
 
     private fun actvConfig() {
         val adapter = ArrayAdapter(
-            requireContext(), android.R.layout.simple_dropdown_item_1line, categoryOptions
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            categoryOptions
         )
         binding.actvCategory.setAdapter(adapter)
     }

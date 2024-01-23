@@ -65,9 +65,9 @@ class AddExpenseViewModel : ViewModel() {
         }
     }
 
-    suspend fun getCategories() =
-        viewModelScope.async(Dispatchers.IO){
-            val categories = firebaseAPI.getExpenseCategories().await()
+    fun getCategories() =
+        viewModelScope.async{
+            val categories = firebaseAPI.getExpenseCategories()
             _categoriesLiveData.value = categories
     }
 

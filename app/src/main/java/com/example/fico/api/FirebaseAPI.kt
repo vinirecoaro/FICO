@@ -933,8 +933,8 @@ class FirebaseAPI private constructor() {
         return@withContext result
     }
 
-    suspend fun getExpenseCategories() : Deferred<List<String>> = withContext(Dispatchers.IO){
-        val _categories = CompletableDeferred<List<String>>()
+    suspend fun getExpenseCategories() : List<String> = suspendCoroutine { continuation ->
+        var isCompleted = false
         user_root.child("categories").addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val categories = mutableListOf<String>()
@@ -942,17 +942,22 @@ class FirebaseAPI private constructor() {
                     for(child in snapshot.children){
                         categories.add(child.value.toString())
                     }
-                    _categories.complete(categories)
+                    if(!isCompleted){
+                        isCompleted = true
+                        continuation.resume(categories)
+                    }
+
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                _categories.complete(emptyList<String>() as MutableList<String>)
+                if(!isCompleted){
+                    isCompleted = true
+                    continuation.resume(emptyList())
+                }
             }
         })
 
-
-        return@withContext _categories
     }
 
 }
