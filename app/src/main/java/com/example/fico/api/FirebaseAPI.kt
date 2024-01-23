@@ -906,6 +906,55 @@ class FirebaseAPI private constructor() {
         return formattedDate
     }
 
+    suspend fun addExpenseCategory(category : String) : Boolean = withContext(Dispatchers.IO){
+        var result = false
+        user_root.child("categories").addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    var maxIndex = 0
+                    for(child in snapshot.children){
+                        if(child.key?.toInt()!! > maxIndex){
+                            maxIndex = child.key?.toInt()!!
+                        }
+                    }
+                    user_root.child("categories").child((maxIndex + 1).toString()).setValue(category)
+                    result = true
+                }else{
+                    user_root.child("categories").child("1").setValue(category)
+                    result = true
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+        return@withContext result
+    }
+
+    suspend fun getExpenseCategories() : Deferred<List<String>> = withContext(Dispatchers.IO){
+        val _categories = CompletableDeferred<List<String>>()
+        user_root.child("categories").addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val categories = mutableListOf<String>()
+                if(snapshot.exists()){
+                    for(child in snapshot.children){
+                        categories.add(child.value.toString())
+                    }
+                    _categories.complete(categories)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                _categories.complete(emptyList<String>() as MutableList<String>)
+            }
+        })
+
+
+        return@withContext _categories
+    }
+
 }
 
 

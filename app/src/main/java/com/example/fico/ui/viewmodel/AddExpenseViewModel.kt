@@ -2,6 +2,8 @@ package com.example.fico.ui.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.Expense
@@ -18,6 +20,8 @@ import java.util.*
 class AddExpenseViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
+    private val _categoriesLiveData = MutableLiveData<List<String>>()
+    val categoriesLiveData: LiveData<List<String>> = _categoriesLiveData
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
@@ -59,6 +63,12 @@ class AddExpenseViewModel : ViewModel() {
             val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
             firebaseAPI.setDefaultBudget(formattedBudget)
         }
+    }
+
+    suspend fun getCategories() =
+        viewModelScope.async(Dispatchers.IO){
+            val categories = firebaseAPI.getExpenseCategories().await()
+            _categoriesLiveData.value = categories
     }
 
 }
