@@ -10,6 +10,7 @@ class AppConstants private constructor() {
         const val DATE = "date"
         const val DESCRIPTION = "description"
         const val CATEGORY = "category"
+        const val CATEGORIES = "categories"
         const val INFORMATION_PER_MONTH = "informationPerMonth"
         const val AVAILABLE_NOW = "availableNow"
         const val EXPENSE = "expense"
@@ -48,11 +49,6 @@ class AppConstants private constructor() {
 
     object UPLOAD_FILE_SERVICE {
         const val SUCCESS_UPLOAD = "SUCCESS_UPLOAD"
-    }
-
-    object OPERATIONS {
-        const val SUM = "SUM"
-        const val SUB = "SUB"
     }
 
 }

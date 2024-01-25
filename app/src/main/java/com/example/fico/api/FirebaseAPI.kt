@@ -41,6 +41,7 @@ class FirebaseAPI private constructor() {
             AppConstants.DATABASE.DEFAULT_VALUES)
         private var user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         private var user_root = rootRef.child(auth.currentUser?.uid.toString())
+        private var expense_categories = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.CATEGORIES)
 
     }
 
@@ -51,6 +52,7 @@ class FirebaseAPI private constructor() {
         default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
         user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         user_root = rootRef.child(auth.currentUser?.uid.toString())
+        expense_categories = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.CATEGORIES)
     }
 
     suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO){
@@ -908,7 +910,7 @@ class FirebaseAPI private constructor() {
 
     suspend fun addExpenseCategory(category : String) : Boolean = withContext(Dispatchers.IO){
         var result = false
-        user_root.child("categories").addValueEventListener(object : ValueEventListener{
+        expense_categories.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
                     var maxIndex = 0
@@ -917,10 +919,10 @@ class FirebaseAPI private constructor() {
                             maxIndex = child.key?.toInt()!!
                         }
                     }
-                    user_root.child("categories").child((maxIndex + 1).toString()).setValue(category)
+                    expense_categories.child((maxIndex + 1).toString()).setValue(category)
                     result = true
                 }else{
-                    user_root.child("categories").child("1").setValue(category)
+                    expense_categories.child("1").setValue(category)
                     result = true
                 }
             }
@@ -935,7 +937,7 @@ class FirebaseAPI private constructor() {
 
     suspend fun getExpenseCategories() : List<String> = suspendCoroutine { continuation ->
         var isCompleted = false
-        user_root.child("categories").addValueEventListener(object : ValueEventListener{
+        expense_categories.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val categories = mutableListOf<String>()
                 if(snapshot.exists()){
