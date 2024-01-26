@@ -54,13 +54,6 @@ class ExpenseListViewModel: ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun undoDeleteExpense(expense: Expense)=
-        viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.addExpense(expense, inputTime = "")
-            getExpenseList(filterLiveData.value.toString())
-        }
-
-    @RequiresApi(Build.VERSION_CODES.O)
      fun undoDeleteExpense(deletedExpense : Expense, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO){
 
@@ -76,7 +69,7 @@ class ExpenseListViewModel: ViewModel() {
 
             val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(expense, installment, nOfInstallments, viewModelScope, false).await()
 
-            firebaseAPI.addExpense(expenseList, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
+            firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
         }
     }
 

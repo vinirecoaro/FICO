@@ -133,19 +133,6 @@ class FirebaseAPI private constructor() {
         return@withContext userName.await()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addExpense(expense: Expense, inputTime : String) : Boolean = withContext(Dispatchers.IO){
-        val result = CompletableDeferred<Boolean>()
-        try{
-            updateExpenseList(expense, inputTime)
-            updateTotalExpense(expense.price)
-            updateInformationPerMonth(expense)
-            result.complete(true)
-        }catch (e : Exception){
-            result.complete(false)
-        }
-    }
-
     suspend fun deleteExpense(oldExpense : Expense) = withContext(Dispatchers.IO){
         updateTotalExpense(oldExpense.price)
         updateInformationPerMonth(oldExpense)
@@ -294,7 +281,7 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    suspend fun addExpense(expenseList : MutableList<Pair<Expense, String>>, nOfInstallments : Int, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
+    suspend fun addExpense(expenseList : MutableList<Pair<Expense, String>>, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any>()
         val result = CompletableDeferred<Boolean>()
 
@@ -318,7 +305,6 @@ class FirebaseAPI private constructor() {
 
     suspend fun editExpense(
         expenseList : MutableList<Pair<Expense, String>>,
-        nOfInstallments : Int,
         updatedTotalExpense : String,
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>,
         removeFromExpenseList : MutableList<String>,
@@ -389,57 +375,6 @@ class FirebaseAPI private constructor() {
         updatedTotalExpenseMap[AppConstants.DATABASE.TOTAL_EXPENSE] = updatedTotalExpense
 
         return updatedTotalExpenseMap
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private suspend fun updateExpenseList(expense: Expense, inputTime : String, installment : Boolean = false, installmentID : String = "") = withContext(Dispatchers.IO){
-        var control = false;
-        while (!control){
-            if(expense.id == ""){
-                if(!installment){
-                    val expenseId = generateRandomAddress(5)
-                    val reference = expense_list.child("${expense.date}-${inputTime}-${expenseId}")
-                    val exists = checkIfExistsOnDatabse(reference)
-                    if(!exists){
-                        val bigNum = BigDecimal(expense.price)
-                        val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
-                        reference.child(AppConstants.DATABASE.PRICE).setValue(priceFormatted.toString())
-                        reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
-                        reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
-                        reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
-                        control = true
-                    }
-                } else{
-                    val reference = expense_list.child("${expense.date}-${inputTime}-${installmentID}")
-                    val exists = checkIfExistsOnDatabse(reference)
-                    if(!exists){
-                        val bigNum = BigDecimal(expense.price)
-                        val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
-                        reference.child(AppConstants.DATABASE.PRICE).setValue(priceFormatted.toString())
-                        reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
-                        reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
-                        reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
-                        control = true
-                    }
-                }
-
-            }else{
-                val reference = expense_list.child(expense.id)
-                val exists = checkIfExistsOnDatabse(reference)
-                if(!exists){
-                    val bigNum = BigDecimal(expense.price)
-                    val priceFormatted = bigNum.setScale(8, RoundingMode.HALF_UP)
-                    reference.child(AppConstants.DATABASE.PRICE).setValue(priceFormatted.toString())
-                    reference.child(AppConstants.DATABASE.DESCRIPTION).setValue(expense.description)
-                    reference.child(AppConstants.DATABASE.DATE).setValue(expense.date)
-                    reference.child(AppConstants.DATABASE.CATEGORY).setValue(expense.category)
-                    control = true
-                }
-            }
-
-
-        }
-
     }
 
     private suspend fun updateInformationPerMonth(expense: Expense)= withContext(Dispatchers.IO){
@@ -629,19 +564,6 @@ class FirebaseAPI private constructor() {
             }
         })
         return@withContext informationPerMonthInfo
-    }
-
-    private fun generateRandomAddress(size: Int): String {
-        val caracteresPermitidos = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-        val random = Random(System.currentTimeMillis())
-        val sequenciaAleatoria = StringBuilder(size)
-
-        for (i in 0 until size) {
-            val index = random.nextInt(caracteresPermitidos.length)
-            sequenciaAleatoria.append(caracteresPermitidos[index])
-        }
-
-        return sequenciaAleatoria.toString()
     }
 
     fun formatDateForFilterOnExpenseList(date: String) : String{
