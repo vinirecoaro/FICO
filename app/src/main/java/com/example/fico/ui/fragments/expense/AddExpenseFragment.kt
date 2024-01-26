@@ -71,10 +71,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
-    private val datePicker = MaterialDatePicker.Builder.datePicker()
-        .setTitleText("Escolha a Data")
-        .build()
-
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
         private const val TAG = "PERMISSION_TAG"
@@ -95,12 +91,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         binding.etDate.inputType = InputType.TYPE_NULL
 
         setMaxLength(binding.etInstallments, 3)
-
-        datePicker.addOnPositiveButtonClickListener {
-            val selectedDateInMillis = it
-            val formattedDate = formatDate(selectedDateInMillis)
-            binding.etDate.setText(formattedDate)
-        }
 
         return rootView
     }
@@ -279,6 +269,23 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
         binding.ivDate.setOnClickListener {
             binding.btSave.visibility = View.VISIBLE
+            binding.ivDate.isEnabled = false
+
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Escolha a Data")
+                .build()
+
+            datePicker.addOnPositiveButtonClickListener {
+                val selectedDateInMillis = it
+                val formattedDate = formatDate(selectedDateInMillis)
+                binding.etDate.setText(formattedDate)
+                binding.ivDate.isEnabled = true
+            }
+
+            datePicker.addOnNegativeButtonClickListener {
+                binding.ivDate.isEnabled = true
+            }
+
             datePicker.show(parentFragmentManager,"Tag")
         }
 
