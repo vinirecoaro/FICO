@@ -44,15 +44,15 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
             //Show snackbar to undo the action
             val snackbar = Snackbar.make(recyclerView, "Item excluido", Snackbar.LENGTH_LONG)
             snackbar.setAction("Desfazer") {
-                val reformattedExpensePrice = deleteItem.price.replace("R$ ", "").replace(",", ".")
+                /*val reformattedExpensePrice = deleteItem.price.replace("R$ ", "").replace(",", ".")
                 val expense = Expense(
                     deleteItem.id,
                     reformattedExpensePrice,
                     deleteItem.description,
                     deleteItem.category,
                     modifiedDate
-                )
-                viewModel.undoDeleteExpense(expense)
+                )*/
+                viewModel.undoDeleteExpense(deleteItem, false, 1)
             }.show()
     }
 }

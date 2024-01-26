@@ -6,8 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.api.FormatValuesToDatabase
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
@@ -52,8 +56,28 @@ class ExpenseListViewModel: ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun undoDeleteExpense(expense: Expense)=
         viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.addExpense2(expense, inputTime = "")
+            firebaseAPI.addExpense(expense, inputTime = "")
             getExpenseList(filterLiveData.value.toString())
         }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+     fun undoDeleteExpense(deletedExpense : Expense, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO){
+
+            val formattedDate = FormatValuesToDatabase().expenseDate(deletedExpense.date)
+
+            val formattedPrice = FormatValuesToDatabase().expensePrice(FormatValuesFromDatabase().price(deletedExpense.price), nOfInstallments)
+
+            val expense = Expense("",formattedPrice, deletedExpense.description, deletedExpense.category, formattedDate)
+
+            val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(expense, installment, nOfInstallments)
+
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(formattedPrice, nOfInstallments, viewModelScope).await()
+
+            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(expense, installment, nOfInstallments, viewModelScope, false).await()
+
+            firebaseAPI.addExpense(expenseList, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
+        }
+    }
 
 }

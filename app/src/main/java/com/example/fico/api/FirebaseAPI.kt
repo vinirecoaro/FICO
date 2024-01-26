@@ -134,7 +134,7 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addExpense2(expense: Expense, inputTime : String) : Boolean = withContext(Dispatchers.IO){
+    suspend fun addExpense(expense: Expense, inputTime : String) : Boolean = withContext(Dispatchers.IO){
         val result = CompletableDeferred<Boolean>()
         try{
             updateExpenseList(expense, inputTime)
@@ -152,129 +152,6 @@ class FirebaseAPI private constructor() {
         val oldExpenseReference = expense_list.child(oldExpense.id)
         oldExpenseReference.removeValue()
     }
-
-    suspend fun getDeleteExpenseList(oldExpense : Expense): List<Expense> = withContext(Dispatchers.IO) {
-        return@withContext suspendCoroutine { continuation ->
-            var isCompleted = false
-            val commonID = oldExpense.id.substring(11,25)
-            expense_list.orderByKey().addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val deleteItemList = mutableListOf<Expense>()
-                    for (childSnapshot in snapshot.children) {
-                        val key = childSnapshot.key.toString()
-                        if(key.substring(11,25) == commonID){
-                            val id = childSnapshot.key.toString()
-                            val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
-                            val date = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
-                            val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
-                            val price = "-${childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString()}"
-                            val expense = Expense(id,price,description,category,date)
-                            deleteItemList.add(expense)
-                        }
-                    }
-                    if (!isCompleted) { // Verifica se já foi retomado
-                        isCompleted = true
-                        continuation.resume(deleteItemList)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    if (!isCompleted) { // Verifica se já foi retomado
-                        isCompleted = true
-                        continuation.resume(emptyList())
-                    }
-                }
-            })
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) : Boolean
-    = withContext(Dispatchers.IO){
-        val result = CompletableDeferred<Boolean>()
-
-        try{
-            val installmentId  = generateRandomAddress(5)
-            var nOfInstallmentsFormatted = nOfInstallments.toString()
-            if(nOfInstallments < 10){
-                nOfInstallmentsFormatted = "00$nOfInstallmentsFormatted"
-            }else if(nOfInstallments < 100){
-                nOfInstallmentsFormatted = "0$nOfInstallmentsFormatted"
-            }
-
-            for (i in 0 until nOfInstallments){
-
-                var currentInstallment = "${i+1}"
-                if(i+1 < 10){
-                    currentInstallment = "00$currentInstallment"
-                }else if(i+1 < 100){
-                    currentInstallment = "0$currentInstallment"
-                }
-
-                val installmentIdItem = "$installmentId-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
-                val month = expense.date.substring(5,7).toInt()
-                var newMonth = month + i
-                var year = expense.date.substring(0,4).toInt()
-                var sumYear : Int = 0
-                var day = expense.date.substring(8,10).toInt()
-                var newDescription = expense.description + " Parcela ${i+1}"
-                if(newMonth > 12 ){
-                    if(newMonth % 12 == 0){
-                        sumYear = newMonth/12 - 1
-                        newMonth -= 12*sumYear
-                    }else{
-                        sumYear = newMonth/12
-                        newMonth -= 12*sumYear
-                    }
-                    if(newMonth == 2){
-                        if (day > 28){
-                            day = 28
-                        }
-                    }
-                    year += sumYear
-                }
-                var newMonthFormatted = newMonth.toString()
-                if(newMonth < 10){
-                    newMonthFormatted = "0$newMonth"
-                }
-                var dayFormatted = day.toString()
-                if(day < 10){
-                    dayFormatted = "0$day"
-                }
-
-                val date = "$year-$newMonthFormatted-$dayFormatted"
-                val newExpense = Expense("",expense.price, newDescription, expense.category, date)
-
-                val dateInformationPerMonth = "$year-$newMonthFormatted"
-                val existDate = checkIfExistsDateOnDatabse(dateInformationPerMonth)
-
-                if(existDate.await()){
-                    updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
-                    updateTotalExpense(newExpense.price)
-                    updateInformationPerMonth(newExpense)
-
-                }else{
-                    val defaultBudget = getDefaultBudget().await()
-                    setUpBudget(defaultBudget,dateInformationPerMonth)
-                    updateExpenseList(newExpense, inputTime, installment = true, installmentID = installmentIdItem)
-                    updateTotalExpense(newExpense.price)
-                    updateInformationPerMonth(newExpense)
-                }
-            }
-            result.complete(true)
-        }catch (e : java.lang.Exception){
-            result.complete(false)
-        }
-    }
-
-    suspend fun setUpBudget(budget: String, date: String) = withContext(Dispatchers.IO){
-        val bigNum = BigDecimal(budget)
-        val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
-        information_per_month.child(date).child(AppConstants.DATABASE.BUDGET).setValue(formattedBudget)
-        information_per_month.child(date).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(formattedBudget)
-        information_per_month.child(date).child(AppConstants.DATABASE.EXPENSE).setValue("0.00")
-    }
-
 
     suspend fun setDefaultBudget(budget: String) : Boolean = withContext(Dispatchers.IO){
         val result = CompletableDeferred<Boolean>()
@@ -355,23 +232,6 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun checkIfExistsDateOnDatabse(date: String): Deferred<Boolean> = withContext(Dispatchers.IO) {
-        val futureResult = CompletableDeferred<Boolean>()
-
-        information_per_month.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                futureResult.complete(snapshot.exists())
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                futureResult.complete(false)
-            }
-        })
-
-        return@withContext futureResult
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistsOnDatabse(reference: DatabaseReference): Boolean = withContext(Dispatchers.IO) {
         val futureResult = CompletableDeferred<Boolean>()
 
@@ -434,7 +294,7 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    suspend fun addExpense2(expenseList : MutableList<Pair<Expense, String>>, nOfInstallments : Int, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
+    suspend fun addExpense(expenseList : MutableList<Pair<Expense, String>>, nOfInstallments : Int, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any>()
         val result = CompletableDeferred<Boolean>()
 
@@ -456,7 +316,7 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    suspend fun editExpense2(
+    suspend fun editExpense(
         expenseList : MutableList<Pair<Expense, String>>,
         nOfInstallments : Int,
         updatedTotalExpense : String,

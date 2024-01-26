@@ -39,7 +39,7 @@ class AddExpenseViewModel : ViewModel() {
 
             val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(expense, installment, nOfInstallments, viewModelScope, false).await()
 
-            firebaseAPI.addExpense2(expenseList, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
+            firebaseAPI.addExpense(expenseList, nOfInstallments, updatedTotalExpense, updatedInformationPerMonth)
         }
     }
 

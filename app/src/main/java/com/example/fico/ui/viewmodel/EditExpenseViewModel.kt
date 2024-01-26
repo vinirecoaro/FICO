@@ -59,7 +59,7 @@ class EditExpenseViewModel : ViewModel() {
 
             val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(newExpense, installment, nOfInstallments)
 
-            firebaseAPI.editExpense2(expenseList,nOfInstallments, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment)
+            firebaseAPI.editExpense(expenseList,nOfInstallments, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment)
         }
     }
 
