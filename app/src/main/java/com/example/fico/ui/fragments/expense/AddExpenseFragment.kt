@@ -53,16 +53,14 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
-    /*private val categoryOptions = arrayOf(
-        "Comida", "Transporte",
-        "Investimento", "Necessidade",
-        "Remédio", "Entretenimento"
-    )*/
     private var categoryOptions = arrayOf<String>()
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
@@ -72,6 +70,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
+
+    private val datePicker = MaterialDatePicker.Builder.datePicker()
+        .setTitleText("Escolha a Data")
+        .build()
 
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
@@ -93,6 +95,12 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         binding.etDate.inputType = InputType.TYPE_NULL
 
         setMaxLength(binding.etInstallments, 3)
+
+        datePicker.addOnPositiveButtonClickListener {
+            val selectedDateInMillis = it
+            val formattedDate = formatDate(selectedDateInMillis)
+            binding.etDate.setText(formattedDate)
+        }
 
         return rootView
     }
@@ -267,38 +275,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
 
         binding.actvCategory.setOnClickListener {
             binding.actvCategory.showDropDown()
-            binding.dpDateExpense.visibility = View.GONE
         }
 
         binding.ivDate.setOnClickListener {
             binding.btSave.visibility = View.VISIBLE
-            binding.dpDateExpense.visibility = View.VISIBLE
-            hideKeyboard(requireContext(), it)
-            binding.dpDateExpense.setOnDateChangedListener {
-                    _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate = String.format(
-                    "%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear
-                )
-                binding.etDate.setText(selectedDate)
-            }
-        }
-
-        binding.etPrice.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.dpDateExpense.visibility = View.GONE
-            }
-        }
-
-        binding.etDescription.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.dpDateExpense.visibility = View.GONE
-            }
-        }
-
-        binding.actvCategory.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.dpDateExpense.visibility = View.GONE
-            }
+            datePicker.show(parentFragmentManager,"Tag")
         }
 
         binding.etPrice.addTextChangedListener(object : TextWatcher {
@@ -817,6 +798,12 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
     private fun hideKeyboard(context: Context, view: View){
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken,0)
+    }
+
+    private fun formatDate(timestamp: Long): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = Date(timestamp)
+        return sdf.format(date)
     }
 
 }

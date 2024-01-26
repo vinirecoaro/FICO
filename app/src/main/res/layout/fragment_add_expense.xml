@@ -73,19 +73,6 @@
         android:clickable="true"
         android:focusable="true" />
 
-    <DatePicker
-        android:id="@+id/dp_date_expense"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bt_save"
-        tools:visibility="visible" />
-
     <Button
         android:id="@+id/bt_save"
         android:layout_width="match_parent"
