@@ -146,57 +146,11 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun editExpense(oldExpense: Expense, newExpense : Expense, inputTime : String, installmentExpense : Boolean = false, nOfInstallments: Int = 1) : Boolean = withContext(Dispatchers.IO){
-        val result = CompletableDeferred<Boolean>()
-        try{
-            if(!installmentExpense){
-                deleteExpense(oldExpense)
-                updateExpenseList(newExpense, inputTime)
-                updateTotalExpense(newExpense.price)
-                updateInformationPerMonth(newExpense)
-            }else{
-                addInstallmentExpense(newExpense,inputTime,nOfInstallments)
-            }
-            result.complete(true)
-        }catch (e : Exception){
-            result.complete(false)
-        }
-    }
-
     suspend fun deleteExpense(oldExpense : Expense) = withContext(Dispatchers.IO){
         updateTotalExpense(oldExpense.price)
         updateInformationPerMonth(oldExpense)
         val oldExpenseReference = expense_list.child(oldExpense.id)
         oldExpenseReference.removeValue()
-    }
-
-    suspend fun deleteInstallmentExpense(oldExpense : Expense) : Boolean = withContext(Dispatchers.IO){
-        val result = CompletableDeferred<Boolean>()
-        try{
-            val deleteItemList = getDeleteExpenseList(oldExpense)
-            for(expense in deleteItemList){
-                updateInformationPerMonth(expense)
-                val oldExpenseReference = expense_list.child(expense.id)
-                oldExpenseReference.removeValue()
-            }
-            result.complete(true)
-        }catch (e : Exception){
-            result.complete(false)
-        }
-    }
-
-    suspend fun updateTotalExpenseAfterEditInstallmentExpense(oldExpense : Expense) : Boolean = withContext(Dispatchers.IO){
-        val result = CompletableDeferred<Boolean>()
-        try{
-            val nOfInstallments = BigDecimal(oldExpense.id.substring(38,41).replace("00","").replace("0",""))
-            val bigNumOldExpense = BigDecimal(oldExpense.price)
-            val installmentPrice = bigNumOldExpense.multiply(nOfInstallments)
-            updateTotalExpense(installmentPrice.toString())
-            result.complete(true)
-        }catch (e : Exception){
-            result.complete(false)
-        }
     }
 
     suspend fun getDeleteExpenseList(oldExpense : Expense): List<Expense> = withContext(Dispatchers.IO) {
@@ -311,19 +265,6 @@ class FirebaseAPI private constructor() {
         }catch (e : java.lang.Exception){
             result.complete(false)
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addEditedInstallmentExpense(expense: Expense, inputTime : String, nOfInstallments : Int) : Boolean =
-    withContext(Dispatchers.IO){
-        val result = CompletableDeferred<Boolean>()
-        try {
-            addInstallmentExpense(expense,inputTime,nOfInstallments)
-            result.complete(true)
-        }catch (e : java.lang.Exception){
-            result.complete(false)
-        }
-        return@withContext result.await()
     }
 
     suspend fun setUpBudget(budget: String, date: String) = withContext(Dispatchers.IO){
