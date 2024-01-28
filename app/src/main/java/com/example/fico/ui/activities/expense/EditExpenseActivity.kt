@@ -23,17 +23,22 @@ import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.ui.adapters.CategoryListAdapter
+import com.example.fico.ui.interfaces.OnCategorySelectedListener
+import com.example.fico.util.constants.AppConstants
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
-class EditExpenseActivity : AppCompatActivity() {
+class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
     val binding by lazy { ActivityEditExpenseBinding.inflate(layoutInflater) }
     val viewModel by viewModels<EditExpenseViewModel>()
-    private val categoryOptions = arrayOf("Comida", "Transporte", "Investimento", "Necessidade", "Remédio", "Entretenimento")
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +49,10 @@ class EditExpenseActivity : AppCompatActivity() {
 
         binding.editExpenseToolbar.setTitle("Editar Gasto")
         binding.editExpenseToolbar.setTitleTextColor(Color.WHITE)
+
+        //Create category chooser
+        val adapter = CategoryListAdapter(AppConstants.categoryList, this)
+        binding.rvCategory.adapter = adapter
 
         val intent = intent
         if(intent != null){
@@ -81,7 +90,6 @@ class EditExpenseActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setUpListeners()
-        actvConfig()
 
         setMaxLength(binding.etInstallments,3)
 
@@ -138,38 +146,26 @@ class EditExpenseActivity : AppCompatActivity() {
 
         }
 
-        binding.etPrice.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.dpDateExpense.visibility = View.GONE
-                binding.etPrice.setText("")
-            }
-        }
-
-        binding.etDescription.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.dpDateExpense.visibility = View.GONE
-                binding.etDescription.setText("")
-            }
-        }
-
-        binding.actvCategory.setOnClickListener{
-            binding.dpDateExpense.visibility = View.GONE
-            binding.actvCategory.showDropDown()
-        }
-
-        binding.etInstallments.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                binding.dpDateExpense.visibility = View.GONE
-                binding.etInstallments.setText("")
-            }
-        }
-
         binding.ivDate.setOnClickListener{
-            binding.dpDateExpense.visibility = View.VISIBLE
-            binding.dpDateExpense.setOnDateChangedListener { _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
-                binding.etDate.setText(selectedDate)
+            binding.btSave.visibility = View.VISIBLE
+            binding.ivDate.isEnabled = false
+
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Escolha a Data")
+                .build()
+
+            datePicker.addOnPositiveButtonClickListener {
+                val selectedDateInMillis = it
+                val formattedDate = formatDate(selectedDateInMillis)
+                binding.etDate.setText(formattedDate)
+                binding.ivDate.isEnabled = true
             }
+
+            datePicker.addOnNegativeButtonClickListener {
+                binding.ivDate.isEnabled = true
+            }
+
+            datePicker.show(supportFragmentManager,"Tag")
         }
 
         binding.etPrice.addTextChangedListener(object : TextWatcher {
@@ -193,11 +189,6 @@ class EditExpenseActivity : AppCompatActivity() {
         binding.editExpenseToolbar.setNavigationOnClickListener {
             finish()
         }
-    }
-
-    private fun actvConfig() {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categoryOptions)
-        binding.actvCategory.setAdapter(adapter)
     }
 
     private fun verifyFields(vararg text: EditText) : Boolean{
@@ -253,6 +244,16 @@ class EditExpenseActivity : AppCompatActivity() {
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
+    }
+
+    private fun formatDate(timestamp: Long): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = Date(timestamp)
+        return sdf.format(date)
+    }
+
+    override fun onCategorySelected(description: String) {
+        binding.actvCategory.setText(description)
     }
 
 }

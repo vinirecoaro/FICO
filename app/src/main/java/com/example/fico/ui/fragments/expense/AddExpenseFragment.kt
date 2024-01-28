@@ -63,7 +63,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
 
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
-    private var categoryOptions = arrayOf<String>()
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
@@ -315,20 +314,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
             }
         })
 
-        viewModel.categoriesLiveData.observe(viewLifecycleOwner) { categories ->
-            categoryOptions = categories.toTypedArray()
-            actvConfig()
-        }
-
-    }
-
-    private fun actvConfig() {
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            categoryOptions
-        )
-        binding.actvCategory.setAdapter(adapter)
     }
 
     private fun verifyFields(vararg text: EditText): Boolean {
