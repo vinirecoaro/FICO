@@ -53,11 +53,13 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
+import com.example.fico.ui.adapters.CategoryListAdapter
+import com.example.fico.ui.interfaces.OnCategorySelectedListener
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AddExpenseFragment : Fragment(), OnButtonClickListener {
+class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelectedListener {
 
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
@@ -91,6 +93,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         binding.etDate.inputType = InputType.TYPE_NULL
 
         setMaxLength(binding.etInstallments, 3)
+
+        //Create category chooser
+        val adapter = CategoryListAdapter(AppConstants.categoryList, this)
+        binding.rvCategory.adapter = adapter
 
         return rootView
     }
@@ -811,6 +817,10 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val date = Date(timestamp)
         return sdf.format(date)
+    }
+
+    override fun onCategorySelected(description: String) {
+        binding.actvCategory.setText(description)
     }
 
 }

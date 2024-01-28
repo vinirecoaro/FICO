@@ -1,5 +1,7 @@
 package com.example.fico.util.constants
 
+import com.example.fico.model.ExpenseCategory
+
 class AppConstants private constructor() {
 
     object DATABASE {
@@ -49,6 +51,73 @@ class AppConstants private constructor() {
 
     object UPLOAD_FILE_SERVICE {
         const val SUCCESS_UPLOAD = "SUCCESS_UPLOAD"
+    }
+
+    object CATEGORY_LIST {
+        object DESCRIPTION {
+            const val FOOD = "Comida"
+            const val TRANSPORT = "Transporte"
+            const val ENTERTAINMENT = "Entretenimento"
+            const val MARKET = "Mercado"
+            const val EDUCATION = "Educação"
+            const val GIFT = "Presente"
+            const val HEALTHY = "Saúde"
+            const val GAMES = "Jogos"
+            const val INVESTMENT = "Investimento"
+        }
+        object ICON_NAME {
+            const val FOOD = "category_icon_food"
+            const val TRANSPORT = "category_icon_transport"
+            const val ENTERTAINMENT = "category_icon_entertainment"
+            const val MARKET = "category_icon_market"
+            const val EDUCATION = "category_icon_education"
+            const val GIFT = "category_icon_gift"
+            const val HEALTHY = "category_icon_healthy"
+            const val GAMES = "category_icon_games"
+            const val INVESTMENT = "category_icon_investment"
+        }
+    }
+
+    companion object {
+        val categoryList = listOf(
+            ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.FOOD,
+                CATEGORY_LIST.ICON_NAME.FOOD,
+                false
+            ),ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.TRANSPORT,
+                CATEGORY_LIST.ICON_NAME.TRANSPORT,
+                false
+            ),ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.ENTERTAINMENT,
+                CATEGORY_LIST.ICON_NAME.ENTERTAINMENT,
+                false
+            ),ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.MARKET,
+                CATEGORY_LIST.ICON_NAME.MARKET,
+                false
+            ),ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.EDUCATION,
+                CATEGORY_LIST.ICON_NAME.EDUCATION,
+                false
+            ),ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.GIFT,
+                CATEGORY_LIST.ICON_NAME.GIFT,
+                false
+            ),ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.HEALTHY,
+                CATEGORY_LIST.ICON_NAME.HEALTHY,
+                false
+            ),ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.GAMES,
+                CATEGORY_LIST.ICON_NAME.GAMES,
+                false
+            ),ExpenseCategory(
+                CATEGORY_LIST.DESCRIPTION.INVESTMENT,
+                CATEGORY_LIST.ICON_NAME.INVESTMENT,
+                false
+            ),
+        )
     }
 
 }
