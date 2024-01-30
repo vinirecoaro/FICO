@@ -20,8 +20,6 @@ import java.util.*
 class AddExpenseViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
-    private val _categoriesLiveData = MutableLiveData<List<String>>()
-    val categoriesLiveData: LiveData<List<String>> = _categoriesLiveData
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
@@ -65,10 +63,5 @@ class AddExpenseViewModel : ViewModel() {
         }
     }
 
-    fun getCategories() =
-        viewModelScope.async{
-            val categories = firebaseAPI.getExpenseCategories()
-            _categoriesLiveData.value = categories
-    }
 
 }

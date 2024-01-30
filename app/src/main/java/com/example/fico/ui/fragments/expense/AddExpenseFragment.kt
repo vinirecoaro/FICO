@@ -110,7 +110,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         }
         requireContext().registerReceiver(receiver, filter)
 
-        viewModel.getCategories()
     }
 
     override fun onPause() {
