@@ -72,6 +72,18 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            // Action when receive Broadcast
+            if (intent?.action == AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD) {
+                // Show message to user
+                Toast.makeText(
+                    context, "Dados salvos com sucesso !!", Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
         private const val TAG = "PERMISSION_TAG"
@@ -108,7 +120,13 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         val filter = IntentFilter().apply {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
         }
-        requireContext().registerReceiver(receiver, filter)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireContext().registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        }else{
+            requireContext().registerReceiver(receiver, filter)
+        }
 
     }
 
@@ -778,18 +796,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
             }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
                 performFileSearch(READ_INSTALLMENT_EXPENSE_REQUEST_CODE)
             }.show()
-    }
-
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            // Action when receive Broadcast
-            if (intent?.action == AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD) {
-                // Show message to user
-                Toast.makeText(
-                    context, "Dados salvos com sucesso !!", Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
     }
 
     private fun hideKeyboard(context: Context, view: View){

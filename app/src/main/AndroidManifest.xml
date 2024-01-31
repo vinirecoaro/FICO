@@ -81,10 +81,15 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <service
+        <receiver
             android:name=".service.UploadFile"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.fico.SUCCESS_UPLOAD" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
