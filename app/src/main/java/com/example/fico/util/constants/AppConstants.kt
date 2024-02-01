@@ -78,46 +78,6 @@ class AppConstants private constructor() {
         }
     }
 
-    companion object {
-        val categoryList = listOf(
-            ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.FOOD,
-                CATEGORY_LIST.ICON_NAME.FOOD,
-                false
-            ),ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.TRANSPORT,
-                CATEGORY_LIST.ICON_NAME.TRANSPORT,
-                false
-            ),ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.ENTERTAINMENT,
-                CATEGORY_LIST.ICON_NAME.ENTERTAINMENT,
-                false
-            ),ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.MARKET,
-                CATEGORY_LIST.ICON_NAME.MARKET,
-                false
-            ),ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.EDUCATION,
-                CATEGORY_LIST.ICON_NAME.EDUCATION,
-                false
-            ),ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.GIFT,
-                CATEGORY_LIST.ICON_NAME.GIFT,
-                false
-            ),ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.HEALTHY,
-                CATEGORY_LIST.ICON_NAME.HEALTHY,
-                false
-            ),ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.GAMES,
-                CATEGORY_LIST.ICON_NAME.GAMES,
-                false
-            ),ExpenseCategory(
-                CATEGORY_LIST.DESCRIPTION.INVESTMENT,
-                CATEGORY_LIST.ICON_NAME.INVESTMENT,
-                false
-            ),
-        )
-    }
+
 
 }

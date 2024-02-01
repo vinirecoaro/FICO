@@ -17,7 +17,6 @@ import android.provider.Settings
 import android.text.*
 import android.util.Log
 import android.view.*
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,16 +53,18 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
 import com.example.fico.ui.adapters.CategoryListAdapter
-import com.example.fico.ui.interfaces.OnCategorySelectedListener
+import com.example.fico.ui.interfaces.CategoryListListener
+import com.example.fico.ui.viewmodel.shared.AddExpenseEditExpenseViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelectedListener {
+class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListener {
 
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<AddExpenseViewModel>()
+    private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
     private val permissionRequestCode = 123
@@ -106,7 +107,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         setMaxLength(binding.etInstallments, 3)
 
         //Create category chooser
-        val adapter = CategoryListAdapter(AppConstants.categoryList, this)
+        val adapter = CategoryListAdapter(sharedViewModel.categoryList, this)
         binding.rvCategory.adapter = adapter
 
         return rootView

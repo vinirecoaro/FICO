@@ -60,10 +60,5 @@ class CategoryListAdapter(
         }
     }
 
-    fun unselectCategory(){
-        for (category in categories){
-
-        }
-    }
 
 }

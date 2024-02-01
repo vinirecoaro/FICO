@@ -12,7 +12,6 @@ import android.text.Spanned
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -24,8 +23,8 @@ import com.example.fico.model.Expense
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.ui.adapters.CategoryListAdapter
-import com.example.fico.ui.interfaces.OnCategorySelectedListener
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.ui.interfaces.CategoryListListener
+import com.example.fico.ui.viewmodel.shared.AddExpenseEditExpenseViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -35,10 +34,11 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
+class EditExpenseActivity : AppCompatActivity(), CategoryListListener {
 
     val binding by lazy { ActivityEditExpenseBinding.inflate(layoutInflater) }
     val viewModel by viewModels<EditExpenseViewModel>()
+    private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +51,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         binding.editExpenseToolbar.setTitleTextColor(Color.WHITE)
 
         //Create category chooser
-        val adapter = CategoryListAdapter(AppConstants.categoryList, this)
+        val adapter = CategoryListAdapter(sharedViewModel.categoryList, this)
         binding.rvCategory.adapter = adapter
 
         val intent = intent

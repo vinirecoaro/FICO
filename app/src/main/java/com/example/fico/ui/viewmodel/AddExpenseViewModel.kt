@@ -10,6 +10,8 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
+import com.example.fico.model.ExpenseCategory
+import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
