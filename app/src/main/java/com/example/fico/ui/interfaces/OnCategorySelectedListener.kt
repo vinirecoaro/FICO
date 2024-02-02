@@ -1,6 +1,6 @@
 package com.example.fico.ui.interfaces
 
-interface CategoryListListener {
+interface OnCategorySelectedListener {
     fun onCategorySelected(description : String)
 
 }

@@ -53,13 +53,13 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
 import com.example.fico.ui.adapters.CategoryListAdapter
-import com.example.fico.ui.interfaces.CategoryListListener
+import com.example.fico.ui.interfaces.OnCategorySelectedListener
 import com.example.fico.ui.viewmodel.shared.AddExpenseEditExpenseViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListener {
+class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelectedListener {
 
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!

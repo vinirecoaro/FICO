@@ -55,7 +55,6 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
-
     private companion object{
         private const val STORAGE_PERMISSION_CODE = 100
         const val TAG = "PERMISSION_TAG"

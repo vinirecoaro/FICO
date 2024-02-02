@@ -44,4 +44,23 @@
     <string name="understood">Entendido</string>
     <string name="expenses">Gastos</string>
     <string name="earnings">Ganhos</string>
+    <string name="category_food">Comida</string>
+    <string name="category_transport">Transporte</string>
+    <string name="category_entertainment">Entretenimento</string>
+    <string name="category_market">Mercado</string>
+    <string name="category_education">Educação</string>
+    <string name="category_gift">Presente</string>
+    <string name="category_healthy">Saúde</string>
+    <string name="category_games">Jogos</string>
+    <string name="category_investment">Investimento</string>
+    <string name="category_food_icon_file_name">category_icon_food</string>
+    <string name="category_transport_icon_file_name">category_icon_transport</string>
+    <string name="category_entertainment_icon_file_name">category_icon_entertainment</string>
+    <string name="category_market_icon_file_name">category_icon_market</string>
+    <string name="category_education_icon_file_name">category_icon_education</string>
+    <string name="category_gift_icon_file_name">category_icon_gift</string>
+    <string name="category_healthy_icon_file_name">category_icon_healthy</string>
+    <string name="category_games_icon_file_name">category_icon_games</string>
+    <string name="category_investment_icon_file_name">category_icon_investment</string>
+tr
 </resources>
