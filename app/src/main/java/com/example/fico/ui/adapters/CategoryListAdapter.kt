@@ -10,12 +10,12 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.model.ExpenseCategory
-import com.example.fico.ui.interfaces.OnCategorySelectedListener
+import com.example.fico.ui.interfaces.CategoryListListener
 
 
 class CategoryListAdapter(
     private val categories : List<ExpenseCategory>,
-    private val listener: OnCategorySelectedListener,
+    private val listener: CategoryListListener,
     ) : RecyclerView.Adapter<CategoryListAdapter.ViewHolder>() {
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
@@ -58,6 +58,11 @@ class CategoryListAdapter(
             notifyDataSetChanged()
             listener.onCategorySelected(category.description)
         }
+    }
+
+    fun clearCategorySelection(){
+        selectedItemIndex = -1
+        notifyDataSetChanged()
     }
 
 

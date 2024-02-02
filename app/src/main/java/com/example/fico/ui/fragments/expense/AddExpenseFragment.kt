@@ -72,6 +72,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListen
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
+    private lateinit var adapter : CategoryListAdapter
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -107,7 +108,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListen
         setMaxLength(binding.etInstallments, 3)
 
         //Create category chooser
-        val adapter = CategoryListAdapter(sharedViewModel.categoryList, this)
+        adapter = CategoryListAdapter(sharedViewModel.categoryList, this)
         binding.rvCategory.adapter = adapter
 
         return rootView
@@ -209,10 +210,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListen
                             false).await()){
                                 hideKeyboard(requireContext(),binding.btSave)
                                 Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                binding.etPrice.setText("")
-                                binding.etDescription.setText("")
-                                binding.actvCategory.setText("")
-                                binding.etInstallments.setText("")
+                                clearUserInputs()
                             }
                         } else {
                             if (setUpDefaultBudgetAlertDialog().await()) {
@@ -224,10 +222,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListen
                                         false).await()){
                                     hideKeyboard(requireContext(),binding.btSave)
                                     Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                    binding.etPrice.setText("")
-                                    binding.etDescription.setText("")
-                                    binding.actvCategory.setText("")
-                                    binding.etInstallments.setText("")
+                                    clearUserInputs()
                                 }
                             }
                         }
@@ -253,10 +248,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListen
                                     ).await()){
                                         hideKeyboard(requireContext(),binding.btSave)
                                         Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                        binding.etPrice.setText("")
-                                        binding.etDescription.setText("")
-                                        binding.actvCategory.setText("")
-                                        binding.etInstallments.setText("")
+                                        clearUserInputs()
                                 }
                             } else {
                                 if (setUpDefaultBudgetAlertDialog().await()) {
@@ -270,10 +262,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListen
                                     ).await()){
                                         hideKeyboard(requireContext(),binding.btSave)
                                         Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                        binding.etPrice.setText("")
-                                        binding.etDescription.setText("")
-                                        binding.actvCategory.setText("")
-                                        binding.etInstallments.setText("")
+                                        clearUserInputs()
                                     }
                                 }
                             }
@@ -812,6 +801,14 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, CategoryListListen
 
     override fun onCategorySelected(description: String) {
         binding.actvCategory.setText(description)
+    }
+
+    private fun clearUserInputs(){
+        binding.etPrice.setText("")
+        binding.etDescription.setText("")
+        binding.actvCategory.setText("")
+        binding.etInstallments.setText("")
+        adapter.clearCategorySelection()
     }
 
 }
