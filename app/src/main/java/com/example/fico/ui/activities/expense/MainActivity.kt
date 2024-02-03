@@ -19,6 +19,7 @@ import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.ui.activities.GeneralConfigurationActivity
 import com.example.fico.ui.activities.UserDataActivity
+import com.example.fico.ui.activities.earning.ConstructionActivity
 import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -107,7 +108,8 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
                 }
 
                 R.id.nav_menu_item_earnings -> {
-
+                    startActivity(Intent(this, ConstructionActivity::class.java))
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
                 R.id.nav_menu_item_config -> {
