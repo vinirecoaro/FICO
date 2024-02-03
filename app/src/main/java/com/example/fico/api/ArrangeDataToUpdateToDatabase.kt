@@ -230,7 +230,7 @@ class ArrangeDataToUpdateToDatabase {
                         val monthInfo = InformationPerMonthExpense(
                             date,
                             updatedAvailableNow,
-                            defaultBudgetString,
+                            currentMonthInfo.budget,
                             updatedMonthExpense
                         )
 

@@ -165,7 +165,9 @@ class HomeFragment : Fragment(){
             val budget = monthExpenseValueFormatted + availableNowValueFormatted
 
             // Defining color of availableNow part
-            if(monthExpenseValueFormatted <= (budget/2)){
+            if(availableNowValueFormatted < 0){
+                monthExpenseColor = "#ed2b15" // Red
+            }else if(monthExpenseValueFormatted <= (budget/2)){
                 monthExpenseColor = "#19d14e" // Green
             }else if(monthExpenseValueFormatted <= (budget*0.85)){
                 monthExpenseColor = "#ebe23b" // Yellow
@@ -186,8 +188,13 @@ class HomeFragment : Fragment(){
 
             // Create a entries list for Pie Chart
             val entries = mutableListOf<PieEntry>()
-            entries.add(PieEntry(monthExpenseValueFormatted))
-            entries.add(PieEntry(availableNowValueFormatted))
+            if(availableNowValueFormatted < 0){
+                entries.add(PieEntry(monthExpenseValueFormatted))
+                entries.add(PieEntry(0f))
+            }else{
+                entries.add(PieEntry(monthExpenseValueFormatted))
+                entries.add(PieEntry(availableNowValueFormatted))
+            }
 
             // Colors for parts of chart
             val colors = listOf(
@@ -306,8 +313,13 @@ class HomeFragment : Fragment(){
 
             // Create a entries list for Pie Chart
             val entries = mutableListOf<PieEntry>()
-            entries.add(PieEntry(availableNowValueFormatted))
-            entries.add(PieEntry(monthExpenseValueFormatted))
+            if(availableNowValueFormatted < 0){
+                entries.add(PieEntry(0f))
+                entries.add(PieEntry(monthExpenseValueFormatted))
+            }else{
+                entries.add(PieEntry(availableNowValueFormatted))
+                entries.add(PieEntry(monthExpenseValueFormatted))
+            }
 
             // Colors for parts of chart
             val colors = listOf(
