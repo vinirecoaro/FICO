@@ -187,14 +187,15 @@ class FirebaseAPI private constructor() {
         try {
             val formattedDate = formatDateForDatabase(budget.date)
             val bigNumNewBudget = BigDecimal(newBudget)
-            val bigNumOldBudget = BigDecimal(formattedDate)
+            val oldBudget = FormatValuesToDatabase().expensePrice(budget.budget,1)
+            val bigNumOldBudget = BigDecimal(oldBudget)
             val correction = bigNumNewBudget.subtract(bigNumOldBudget)
-            val newBudgetA = newBudget
-            information_per_month.child(formattedDate).child(AppConstants.DATABASE.BUDGET).setValue(newBudgetA)
+            val newBudgetBigNum = BigDecimal(newBudget).setScale(8, RoundingMode.HALF_UP).toString()
+            information_per_month.child(formattedDate).child(AppConstants.DATABASE.BUDGET).setValue(newBudgetBigNum)
             val currentAvailable = getAvailableNow(formattedDate)
             val currentAvalableFormatted = BigDecimal(currentAvailable.replace("R$","").replace(",","."))
             val newAvailable = currentAvalableFormatted.add(correction)
-            val newAvailableFormatted = newAvailable.setScale(8, RoundingMode.HALF_UP)
+            val newAvailableFormatted = newAvailable.setScale(8, RoundingMode.HALF_UP).toString()
             information_per_month.child(formattedDate).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(newAvailableFormatted)
             result.complete(true)
         }catch (e:Exception){
