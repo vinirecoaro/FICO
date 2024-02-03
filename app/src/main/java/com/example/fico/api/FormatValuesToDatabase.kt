@@ -15,6 +15,12 @@ class FormatValuesToDatabase {
         return "$year-$month-$day"
     }
 
+    fun expenseDateForInfoPerMonth(editTextDate: String): String {
+        val month = editTextDate.substring(3, 5)
+        val year = editTextDate.substring(6, 10)
+        return "$year-$month"
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun timeNow() : String {
         val timeNow = LocalTime.now()

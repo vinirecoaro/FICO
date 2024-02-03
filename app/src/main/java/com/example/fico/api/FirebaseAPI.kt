@@ -13,7 +13,6 @@ import com.google.firebase.database.*
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -182,26 +181,25 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun editBudget(newBudget: String, budget: Budget) : Boolean = withContext(Dispatchers.IO){
+    suspend fun editBudget(date : String, newBudget : String, newAvailableNow : String) : Boolean = withContext(Dispatchers.IO){
         val result = CompletableDeferred<Boolean>()
         try {
-            val formattedDate = formatDateForDatabase(budget.date)
-            val bigNumNewBudget = BigDecimal(newBudget)
-            val oldBudget = FormatValuesToDatabase().expensePrice(budget.budget,1)
-            val bigNumOldBudget = BigDecimal(oldBudget)
-            val correction = bigNumNewBudget.subtract(bigNumOldBudget)
-            val newBudgetBigNum = BigDecimal(newBudget).setScale(8, RoundingMode.HALF_UP).toString()
-            information_per_month.child(formattedDate).child(AppConstants.DATABASE.BUDGET).setValue(newBudgetBigNum)
-            val currentAvailable = getAvailableNow(formattedDate)
-            val currentAvalableFormatted = BigDecimal(currentAvailable.replace("R$","").replace(",","."))
-            val newAvailable = currentAvalableFormatted.add(correction)
-            val newAvailableFormatted = newAvailable.setScale(8, RoundingMode.HALF_UP).toString()
-            information_per_month.child(formattedDate).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(newAvailableFormatted)
+            val updatedInfoPerMonth = generateMapToUpdateMonthBudget(date, newBudget, newAvailableNow)
+            user_root.updateChildren(updatedInfoPerMonth)
             result.complete(true)
         }catch (e:Exception){
             result.complete(false)
         }
         return@withContext result.await()
+    }
+
+    private fun generateMapToUpdateMonthBudget(date : String, newBudget : String, newAvailableNow : String) : MutableMap<String, Any>{
+        val updetedInfoPerMonth = mutableMapOf<String, Any>()
+
+        updetedInfoPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/$date/${AppConstants.DATABASE.BUDGET}"] = newBudget
+        updetedInfoPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/$date/${AppConstants.DATABASE.AVAILABLE_NOW}"] = newAvailableNow
+
+        return updetedInfoPerMonth
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -493,7 +491,7 @@ class FirebaseAPI private constructor() {
                         for (childSnapshot in snapshot.children) {
                             val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
                             val dateFromDatabase = "${dateDatabase.substring(0, 4)}-${dateDatabase.substring(5, 7)}"
-                            val dateFromFilter = formatDateForDatabase(filter)
+                            val dateFromFilter = formatDateFromFilterToDatabaseForInfoPerMonth(filter)
                             if (dateFromDatabase == dateFromFilter) {
                                 val id = childSnapshot.key.toString()
                                 val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
@@ -598,7 +596,7 @@ class FirebaseAPI private constructor() {
         return formattedDate
     }
 
-    private fun formatDateForDatabase(date: String) : String{
+     fun formatDateFromFilterToDatabaseForInfoPerMonth(date: String) : String{
         var formattedDate = ""
         val stringParts = date.split(" ")
         val month = stringParts[0]
