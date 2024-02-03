@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_add_expense"
-        android:name="com.example.fico.ui.fragments.expense.AddExpenseFragment"
+        android:name="com.example.fico.ui.fragments.expense.add_expense.AddExpenseFragment"
         android:label="@string/add"
         tools:layout="@layout/fragment_add_expense" />
 

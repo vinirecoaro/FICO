@@ -1,4 +1,4 @@
-package com.example.fico.ui.fragments.expense
+package com.example.fico.ui.fragments.expense.add_expense
 
 import android.Manifest
 import android.app.Activity
@@ -28,7 +28,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
-import com.example.fico.model.Expense
 import com.example.fico.service.UploadFile
 import com.example.fico.util.constants.AppConstants
 import com.example.fico.ui.activities.expense.ComonExpenseImportFileInstructionsActivity
@@ -41,12 +40,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.apache.poi.ss.usermodel.Cell
-import org.apache.poi.ss.usermodel.CellType
-import org.apache.poi.ss.usermodel.DateUtil
-import org.apache.poi.ss.usermodel.WorkbookFactory
-import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -62,11 +55,11 @@ import kotlin.collections.ArrayList
 class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelectedListener {
 
     private var _binding: FragmentAddExpenseBinding? = null
+    private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
+    private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
     private val binding get() = _binding!!
     private val viewModel by viewModels<AddExpenseViewModel>()
     private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
-    private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
-    private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -114,6 +107,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         return rootView
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
@@ -137,9 +135,9 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         requireContext().unregisterReceiver(receiver)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -185,7 +183,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
             else -> return super.onOptionsItemSelected(item)
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners() {
@@ -419,45 +416,34 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         return result
     }
 
-    fun setMaxLength(editText: EditText, maxLength: Int) {
-        val inputFilter = object : InputFilter {
-            override fun filter(
-                source: CharSequence?, start: Int,
-                end: Int, dest: Spanned?, dstart: Int, dend: Int
-            ): CharSequence? {
-                val inputText = editText.text.toString() + source.toString()
-                if (inputText.length <= maxLength) {
-                    return null // Aceita a entrada
-                }
-                return "" // Rejeita a entrada se exceder o limite
-            }
-        }
-        val filters = editText.filters
-        val newFilters = if (filters != null) {
-            val newFilters = filters.copyOf(filters.size + 1)
-            newFilters[filters.size] = inputFilter
-            newFilters
-        } else {
-            arrayOf(inputFilter)
-        }
-        editText.filters = newFilters
+    fun importDataAlertDialog() {
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos")
+            .setMessage("Selecione o tipo de gasto que deseja importar.")
+            .setNeutralButton("Gastos Parcelados") { dialog, which ->
+                importInstallmentExpenseTypeAlertDialog()
+            }.setPositiveButton("Gastos Comuns") { dialog, which ->
+                importComonExpenseTypeAlertDialog()
+            }.show()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    fun importComonExpenseTypeAlertDialog() {
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Comuns")
+            .setMessage("Os dados devem estar no formato correto.")
+            .setNeutralButton("Ver Formato Correto") { dialog, which ->
+                startActivity(Intent(requireContext(), ComonExpenseImportFileInstructionsActivity::class.java))
+            }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
+                performFileSearch(READ_COMON_EXPENSE_REQUEST_CODE)
+            }.show()
     }
 
-    private fun setColorBasedOnTheme() {
-        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_light)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_dark)
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
+    fun importInstallmentExpenseTypeAlertDialog() {
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Parcelados")
+            .setMessage("Os dados devem estar no formato correto.")
+            .setNeutralButton("Ver Formato Correto") { dialog, which ->
+                startActivity(Intent(requireContext(), InstallmentExpenseImportFileInstructionsActivity::class.java))
+            }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
+                performFileSearch(READ_INSTALLMENT_EXPENSE_REQUEST_CODE)
+            }.show()
     }
 
     private fun performFileSearch(requestCode : Int) {
@@ -478,7 +464,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
-                    val outputStream = FileOutputStream(getNewFileUri().path)
+                    val outputStream = FileOutputStream(AddExpenseImportaDataFromFile().getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -486,8 +472,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
                         }
                     }
                     // Work with a copy of file
-                    val newPath = getNewFileUri().path.toString()
-                    var readFileResult = readFromExcelFile(newPath)
+                    val newPath = AddExpenseImportaDataFromFile().getNewFileUri().path.toString()
+                    var readFileResult = AddExpenseImportaDataFromFile().readFromExcelFile(newPath)
                     if (readFileResult.second) {
                         lifecycleScope.launch(Dispatchers.Main) {
 
@@ -520,7 +506,7 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
-                    val outputStream = FileOutputStream(getNewFileUri().path)
+                    val outputStream = FileOutputStream(AddExpenseImportaDataFromFile().getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -528,8 +514,8 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
                         }
                     }
                     // Work with a copy of file
-                    val newPath = getNewFileUri().path.toString()
-                    var readFileResult = readFromExcelFile(newPath)
+                    val newPath = AddExpenseImportaDataFromFile().getNewFileUri().path.toString()
+                    var readFileResult = AddExpenseImportaDataFromFile().readFromExcelFile(newPath)
                     if (readFileResult.second) {
                         lifecycleScope.launch(Dispatchers.Main) {
 
@@ -561,111 +547,40 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         }
     }
 
-    fun readFromExcelFile(filepath: String): Pair<MutableList<Expense>, Boolean> {
-        val inputStream = FileInputStream(filepath)
-        //Instantiate Excel workbook using existing file:
-        var xlWb = WorkbookFactory.create(inputStream)
-        //Get reference to first sheet:
-        val xlWs = xlWb.getSheetAt(0)
-
-        var price = ""
-        var description = ""
-        var category = ""
-        var date = ""
-        var installment = ""
-
-        var result = true
-
-        val expenseList = mutableListOf<Expense>()
-
-        val numberOfRows = xlWs.lastRowNum
-
-        for (rowIndex in xlWs.firstRowNum + 1..numberOfRows) {
-            val row = xlWs.getRow(rowIndex) ?: continue
-
-            val numberOfColumns = row.lastCellNum
-
-            // Iterando pelas colunas dentro da linha atual
-            for (columnIndex in row.firstCellNum until numberOfColumns) {
-                val cell = row.getCell(columnIndex)
-                val cellValue = getCellValueAsString(cell)
-                when (columnIndex) {
-                    0 -> {
-                        price = cellValue.replace("R$", "")
-                        price = cellValue.replace("R$ ", "")
-                        price = cellValue.replace("$", "")
-                        price = cellValue.replace("$ ", "")
-                        price = cellValue.replace(",", ".")
-                        if (price == "xxx" || price == "XXX") {
-                            return Pair(expenseList, result)
-                        } else if (price.toDoubleOrNull() == null) {
-                            result = false
-                            expenseList.clear()
-                            return Pair(expenseList, result)
-                        }
-                    }
-                    1 -> {
-                        description = cellValue.replace("  ", " ")
-                        description = cellValue.replace("  ", " ")
-                    }
-                    2 -> {
-                        category = cellValue
-                    }
-                    3 -> {
-                        if (cell.cellType == CellType.STRING) {
-                            date = cellValue
-                        } else if (cell.cellType == CellType.NUMERIC) {
-                            val dateDouble = cell.numericCellValue
-                            val dateformat = SimpleDateFormat("dd/MM/yyyy")
-                            date = dateformat.format(DateUtil.getJavaDate(dateDouble))
-                        }
-
-                        if (verifyDateFormat(date)) {
-                            val day = date.substring(0, 2)
-                            val month = date.substring(3, 5)
-                            val year = date.substring(6, 10)
-                            date = "$year-$month-$day"
-                        } else {
-                            result = false
-                            expenseList.clear()
-                            return Pair(expenseList, result)
-                        }
-                    }
-                    4 -> {
-                        installment = cellValue
-                    }
+    fun setMaxLength(editText: EditText, maxLength: Int) {
+        val inputFilter = object : InputFilter {
+            override fun filter(
+                source: CharSequence?, start: Int,
+                end: Int, dest: Spanned?, dstart: Int, dend: Int
+            ): CharSequence? {
+                val inputText = editText.text.toString() + source.toString()
+                if (inputText.length <= maxLength) {
+                    return null // Aceita a entrada
                 }
-
+                return "" // Rejeita a entrada se exceder o limite
             }
-            val expense = Expense("", price, description, category, date, installment)
-            expenseList.add(expense)
         }
-        xlWb.close()
-        inputStream.close()
-
-        return Pair(expenseList, result)
-    }
-
-    private fun verifyDateFormat(date: String): Boolean {
-        val formatoData = "\\d{2}/\\d{2}/\\d{4}" // Expressão regular para o formato "dd/mm/aaaa"
-        return date.matches(Regex(formatoData))
-    }
-
-    fun getCellValueAsString(cell: Cell?): String {
-        return when (cell?.cellType) {
-            CellType.STRING -> cell.stringCellValue
-            CellType.NUMERIC -> cell.numericCellValue.toString()
-            CellType.BOOLEAN -> cell.booleanCellValue.toString()
-            else -> ""
+        val filters = editText.filters
+        val newFilters = if (filters != null) {
+            val newFilters = filters.copyOf(filters.size + 1)
+            newFilters[filters.size] = inputFilter
+            newFilters
+        } else {
+            arrayOf(inputFilter)
         }
+        editText.filters = newFilters
     }
 
-    // Método para gerar uma URI para o novo arquivo (exemplo).
-    private fun getNewFileUri(): Uri {
-        val downloadsDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val newFile = File(downloadsDir, "expenses.xlsx")
-        return Uri.fromFile(newFile)
+    private fun setColorBasedOnTheme() {
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_light)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_dark)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
     }
 
     private fun requestPermission() {
@@ -756,36 +671,6 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
                 }
             }
         }
-    }
-
-    private fun importDataAlertDialog() {
-        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos")
-            .setMessage("Selecione o tipo de gasto que deseja importar.")
-            .setNeutralButton("Gastos Parcelados") { dialog, which ->
-                importInstallmentExpenseTypeAlertDialog()
-            }.setPositiveButton("Gastos Comuns") { dialog, which ->
-                importComonExpenseTypeAlertDialog()
-            }.show()
-    }
-
-    private fun importComonExpenseTypeAlertDialog() {
-        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Comuns")
-            .setMessage("Os dados devem estar no formato correto.")
-            .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                startActivity(Intent(requireContext(), ComonExpenseImportFileInstructionsActivity::class.java))
-            }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
-                performFileSearch(READ_COMON_EXPENSE_REQUEST_CODE)
-            }.show()
-    }
-
-    private fun importInstallmentExpenseTypeAlertDialog() {
-        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Parcelados")
-            .setMessage("Os dados devem estar no formato correto.")
-            .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                startActivity(Intent(requireContext(), InstallmentExpenseImportFileInstructionsActivity::class.java))
-            }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
-                performFileSearch(READ_INSTALLMENT_EXPENSE_REQUEST_CODE)
-            }.show()
     }
 
     private fun hideKeyboard(context: Context, view: View){
