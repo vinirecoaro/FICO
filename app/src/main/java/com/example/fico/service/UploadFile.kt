@@ -5,17 +5,14 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.viewModelScope
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Expense
-import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalTime
 
 class UploadFile : Service() {
 

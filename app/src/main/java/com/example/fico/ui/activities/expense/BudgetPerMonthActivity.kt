@@ -6,9 +6,11 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
@@ -79,6 +81,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
 
         val newBudget = EditText(this)
         newBudget.hint = "Digite o novo Budget"
+        newBudget.inputType = InputType.TYPE_CLASS_NUMBER
         builder.setView(newBudget)
 
         newBudget.addTextChangedListener(object : TextWatcher {
