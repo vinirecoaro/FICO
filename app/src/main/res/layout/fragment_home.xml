@@ -1,99 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activities.expense.MainActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_total_expenses"
-        style="@style/TextAppearance.MaterialComponents.Headline6"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/total_expenses"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="60dp"/>
+        tools:context=".ui.activities.expense.MainActivity">
 
-    <TextView
-        android:id="@+id/tv_total_expenses_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:drawablePadding="8dp"
-        android:inputType="textPassword"
-        android:textSize="16sp"
-        app:drawableEndCompat="@drawable/ic_visibility_off_24"
-        app:layout_constraintEnd_toEndOf="@id/tv_total_expenses"
-        app:layout_constraintStart_toStartOf="@id/tv_total_expenses"
-        app:layout_constraintTop_toBottomOf="@id/tv_total_expenses"
-        tools:text="R$45975,00" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_month_info"
+            android:name="com.example.fico.ui.fragments.expense.expense_home.ExpenseMonthInfoHomeFragment"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pc_month_expense"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        app:layout_constraintStart_toStartOf="@id/tv_total_expenses_this_month"
-        app:layout_constraintEnd_toEndOf="@id/tv_total_expenses_this_month"
-        app:layout_constraintTop_toTopOf="@id/tv_total_expenses_this_month"
-        app:layout_constraintBottom_toBottomOf="@id/tv_total_expenses_this_month_value"/>
 
-    <TextView
-        android:id="@+id/tv_total_expenses_this_month"
-        style="@style/TextAppearance.MaterialComponents.Headline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="@string/this_month_expense"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv_total_expenses"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="@string/total_expenses"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_month_info" />
 
-    <TextView
-        android:id="@+id/tv_total_expenses_this_month_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text=""
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@id/tv_total_expenses_this_month"
-        app:layout_constraintStart_toStartOf="@id/tv_total_expenses_this_month"
-        app:layout_constraintTop_toBottomOf="@id/tv_total_expenses_this_month"
-        tools:text="R$792,43" />
+        <TextView
+            android:id="@+id/tv_total_expenses_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawablePadding="8dp"
+            android:inputType="textPassword"
+            android:textSize="16sp"
+            app:drawableEndCompat="@drawable/ic_visibility_off_24"
+            app:layout_constraintEnd_toEndOf="@id/tv_total_expenses"
+            app:layout_constraintStart_toStartOf="@id/tv_total_expenses"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_expenses"
+            tools:text="R$45975,00" />
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pc_available_now"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
-        app:layout_constraintStart_toStartOf="@id/tv_available_this_month"
-        app:layout_constraintEnd_toEndOf="@id/tv_available_this_month"
-        app:layout_constraintTop_toTopOf="@id/tv_available_this_month"
-        app:layout_constraintBottom_toBottomOf="@id/tv_available_this_month_value"/>
+        <View
+            android:id="@+id/view_space"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_expenses_value" />
 
-    <TextView
-        android:id="@+id/tv_available_this_month"
-        style="@style/TextAppearance.MaterialComponents.Headline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="190dp"
-        android:text="@string/available"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_total_expenses_this_month" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/tv_available_this_month_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text=""
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@id/tv_available_this_month"
-        app:layout_constraintStart_toStartOf="@id/tv_available_this_month"
-        app:layout_constraintTop_toBottomOf="@id/tv_available_this_month"
-        tools:text="R$500,00" />
+</ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
