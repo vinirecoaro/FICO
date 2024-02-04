@@ -29,6 +29,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
+import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
 import com.example.fico.util.constants.AppConstants
@@ -119,7 +120,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             for(expense in expenses){
                 var modifiedExpense = Expense(
                     "",
-                    expense.price.replace("R$ ", ""),
+                    FormatValuesFromDatabase().priceToFile(expense.price),//.replace("R$ ", "").replace(".",","),
                     expense.description,
                     expense.category,
                     expense.date

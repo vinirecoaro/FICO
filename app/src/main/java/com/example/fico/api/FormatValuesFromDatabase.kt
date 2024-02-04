@@ -19,6 +19,13 @@ class FormatValuesFromDatabase {
         return (NumberFormat.getCurrencyInstance().format(justNumber))
     }
 
+    fun priceToFile(expensePrice : String) : String{
+        val regex = Regex("[\\d,.]+")
+        val justNumber = BigDecimal(regex.find(expensePrice)!!.value.replace(",","."))
+        val numberWithLocationFormat = NumberFormat.getCurrencyInstance().format(justNumber)
+        return (regex.find(numberWithLocationFormat)!!.value)
+    }
+
     fun installmentExpenseDescription(expenseDescription : String) : String{
         return expenseDescription.split(" Parcela")[0]
     }
