@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.text.NumberFormat
@@ -83,6 +85,15 @@ class HomeViewModel : ViewModel() {
         val year = formattedDate.substring(6, 10)
         val date = "$year-$month"
         return date
+    }
+
+    fun getExpenseMonths() : Deferred<List<String>>{
+        val _expenseMonths = CompletableDeferred<List<String>>()
+        viewModelScope.async {
+            val expenseMonths = firebaseAPI.getExpenseMonths()
+            _expenseMonths.complete(expenseMonths)
+        }
+        return _expenseMonths
     }
 
 }

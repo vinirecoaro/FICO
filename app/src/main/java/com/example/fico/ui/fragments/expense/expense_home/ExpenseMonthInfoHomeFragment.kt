@@ -14,6 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
+import com.example.fico.ui.adapters.CategoryListAdapter
+import com.example.fico.ui.adapters.ExpenseMonthsListAdapter
 import com.example.fico.ui.viewmodel.HomeViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
@@ -29,6 +31,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     private var _binding : FragmentExpenseMonthInfoHomeBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<HomeViewModel>()
+    private lateinit var adapter : ExpenseMonthsListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +39,12 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     ): View? {
         _binding = FragmentExpenseMonthInfoHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
+
+        lifecycleScope.launch {
+            //Create category chooser
+            adapter = ExpenseMonthsListAdapter(viewModel.getExpenseMonths().await())
+            binding.rvExpenseMonths.adapter = adapter
+        }
 
         return rootView
     }
