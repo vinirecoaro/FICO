@@ -41,8 +41,8 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         val rootView = binding.root
 
         lifecycleScope.launch {
-            //Create category chooser
-            adapter = ExpenseMonthsListAdapter(viewModel.getExpenseMonths().await())
+            //Create month chooser and focus in the current month
+            adapter = ExpenseMonthsListAdapter(emptyList())
             binding.rvExpenseMonths.adapter = adapter
         }
 

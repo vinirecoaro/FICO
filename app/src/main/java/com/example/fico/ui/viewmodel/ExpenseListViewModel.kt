@@ -40,7 +40,7 @@ class ExpenseListViewModel: ViewModel() {
 
     fun getExpenseMonths(){
         viewModelScope.async {
-            var expenseMonths = firebaseAPI.getExpenseMonths()
+            var expenseMonths = firebaseAPI.getExpenseMonths(true)
             _expenseMonthsLiveData.value = expenseMonths
         }
     }

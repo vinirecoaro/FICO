@@ -515,15 +515,20 @@ class FirebaseAPI private constructor() {
         return@withContext expensesList
     }
 
-    suspend fun getExpenseMonths() : List<String> = suspendCoroutine{ continuation ->
+    suspend fun getExpenseMonths(formatted : Boolean) : List<String> = suspendCoroutine{ continuation ->
         var isCompleted = false
         information_per_month.addValueEventListener(object : ValueEventListener{
             val expenseMonths = mutableListOf<String>()
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(month in snapshot.children){
-                    val formattedDate = formatDateForFilterOnExpenseList(month.key.toString())
+                    var date : String
+                    if(formatted){
+                        date = formatDateForFilterOnExpenseList(month.key.toString())
+                    }else{
+                        date = month.key.toString()
+                    }
                     if(month.child(AppConstants.DATABASE.BUDGET).value != month.child(AppConstants.DATABASE.AVAILABLE_NOW).value){
-                        expenseMonths.add(formattedDate)
+                        expenseMonths.add(date)
                     }
                 }
                 if (!isCompleted) { // Verifica se já foi retomado

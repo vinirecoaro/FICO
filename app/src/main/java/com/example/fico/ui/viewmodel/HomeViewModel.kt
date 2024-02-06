@@ -5,10 +5,13 @@ import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.api.FormatValuesFromDatabase
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +23,8 @@ import java.time.format.DateTimeFormatter
 class HomeViewModel : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
+    private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
+    val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
 
     fun ShowHideValue(text: TextView){
         if (text.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
@@ -87,13 +92,19 @@ class HomeViewModel : ViewModel() {
         return date
     }
 
-    fun getExpenseMonths() : Deferred<List<String>>{
+    fun getExpenseMonths() {
         val _expenseMonths = CompletableDeferred<List<String>>()
         viewModelScope.async {
-            val expenseMonths = firebaseAPI.getExpenseMonths()
-            _expenseMonths.complete(expenseMonths)
+            val expenseMonths = firebaseAPI.getExpenseMonths(false)
+            val sortedExpenseMonths = expenseMonths.sortedByDescending{ it }
+            val expenseMonthsFormatted : MutableList<String> = mutableListOf()
+            for(expenseMonth in sortedExpenseMonths){
+                expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(expenseMonth))
+            }
+            _expenseMonths.complete(expenseMonthsFormatted.toList())
+            _expenseMonthsLiveData.value = _expenseMonths.await()
         }
-        return _expenseMonths
+
     }
 
 }
