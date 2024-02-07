@@ -16,12 +16,15 @@ import com.example.fico.R
 import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
 import com.example.fico.ui.adapters.CategoryListAdapter
 import com.example.fico.ui.adapters.ExpenseMonthsListAdapter
+import com.example.fico.ui.interfaces.OnExpenseMonthSelectedListener
+import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.HomeViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -46,6 +49,8 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             binding.rvExpenseMonths.adapter = adapter
         }
 
+        setUpListeners()
+
         return rootView
     }
 
@@ -57,6 +62,18 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         getMonthExpense()
         initMonthExpenseChart()
         initAvailableNowChart()
+        viewModel.getExpenseMonths()
+    }
+
+    private fun setUpListeners(){
+        viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner) { expenseMonths ->
+            adapter.updateExpenseMonths(expenseMonths)
+            adapter.setOnItemClickListener(object : OnExpenseMonthSelectedListener {
+                override fun onExpenseMonthSelected(date: String) {
+
+                }
+            })
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

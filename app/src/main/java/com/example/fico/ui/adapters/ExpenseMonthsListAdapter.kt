@@ -8,8 +8,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.ui.interfaces.OnExpenseMonthSelectedListener
+import com.example.fico.ui.interfaces.OnListItemClick
 
-class ExpenseMonthsListAdapter(private val expenseMonthList : List<String>) : RecyclerView.Adapter<ExpenseMonthsListAdapter.ViewHolder>() {
+class ExpenseMonthsListAdapter(private var expenseMonthList : List<String>) : RecyclerView.Adapter<ExpenseMonthsListAdapter.ViewHolder>() {
 
     private var listener: OnExpenseMonthSelectedListener? = null
 
@@ -34,6 +35,15 @@ class ExpenseMonthsListAdapter(private val expenseMonthList : List<String>) : Re
             notifyDataSetChanged()
             listener?.onExpenseMonthSelected(item)
         }
+    }
+
+    fun updateExpenseMonths(newExpenseMonths: List<String>){
+        expenseMonthList = newExpenseMonths
+        notifyDataSetChanged()
+    }
+
+    fun setOnItemClickListener(listener: OnExpenseMonthSelectedListener) {
+        this.listener = listener
     }
 
 }
