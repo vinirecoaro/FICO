@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
+import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
 import com.example.fico.ui.adapters.CategoryListAdapter
 import com.example.fico.ui.adapters.ExpenseMonthsListAdapter
@@ -69,19 +70,24 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner) { expenseMonths ->
             adapter.updateExpenseMonths(expenseMonths)
             adapter.setOnItemClickListener(object : OnExpenseMonthSelectedListener {
+                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onExpenseMonthSelected(date: String) {
-
+                    val formattedDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(date)
+                    getAvailableNow(formattedDate)
+                    getMonthExpense(formattedDate)
+                    initMonthExpenseChart(formattedDate)
+                    initAvailableNowChart(formattedDate)
                 }
             })
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getAvailableNow(){
+    private fun getAvailableNow(date : String = viewModel.getCurrentlyDate()){
         lifecycleScope.launch(Dispatchers.Main) {
             try {
-                val availableNow = viewModel.getAvailableNow(viewModel.getCurrentlyDate()).await()
-                val availableNowJustNumber = viewModel.getAvailableNow(viewModel.getCurrentlyDate(), formatted = false).await()
+                val availableNow = viewModel.getAvailableNow(date).await()
+                val availableNowJustNumber = viewModel.getAvailableNow(date, formatted = false).await()
                 if(availableNow == "---"){
                     binding.tvAvailableThisMonthValue.text = availableNow
                 } else if(availableNowJustNumber.toFloat() < 0){
@@ -97,10 +103,10 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getMonthExpense() {
+    private fun getMonthExpense(date : String = viewModel.getCurrentlyDate()) {
         lifecycleScope.launch(Dispatchers.Main) {
             try {
-                val monthExpense = viewModel.getMonthExpense(viewModel.getCurrentlyDate()).await()
+                val monthExpense = viewModel.getMonthExpense(date).await()
                 binding.tvTotalExpensesThisMonthValue.text = monthExpense
             } catch (exception: Exception) {
             }

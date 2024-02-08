@@ -49,7 +49,40 @@ class FormatValuesToDatabase {
         val installmentPriceFormatted = installmentPrice.divide(correction)
         val formatedNum = installmentPriceFormatted.setScale(8, RoundingMode.HALF_UP)
         return formatedNum.toString().replace(",",".")
+    }
 
+    fun formatDateFromFilterToDatabaseForInfoPerMonth(date: String) : String{
+        var formattedDate = ""
+        val stringParts = date.split(" ")
+        val month = stringParts[0]
+        val year = stringParts[2]
+
+        if(month == "Janeiro"){
+            formattedDate = "$year-01"
+        } else if(month == "Fevereiro"){
+            formattedDate = "$year-02"
+        }  else if(month == "Março"){
+            formattedDate = "$year-03"
+        } else if(month == "Abril"){
+            formattedDate = "$year-04"
+        } else if(month == "Maio"){
+            formattedDate = "$year-05"
+        } else if(month == "Junho"){
+            formattedDate = "$year-06"
+        } else if(month == "Julho"){
+            formattedDate = "$year-07"
+        } else if(month == "Agosto"){
+            formattedDate = "$year-08"
+        } else if(month == "Setembro"){
+            formattedDate = "$year-09"
+        } else if(month == "Outubro"){
+            formattedDate = "$year-10"
+        } else if(month == "Novembro"){
+            formattedDate = "$year-11"
+        } else if(month == "Dezembro"){
+            formattedDate = "$year-12"
+        }
+        return formattedDate
     }
 
 }
