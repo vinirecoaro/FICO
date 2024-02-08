@@ -12,7 +12,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
 import com.example.fico.ui.adapters.CategoryListAdapter
@@ -28,6 +30,8 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 class ExpenseMonthInfoHomeFragment : Fragment() {
@@ -37,6 +41,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     private val viewModel by viewModels<HomeViewModel>()
     private lateinit var adapter : ExpenseMonthsListAdapter
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,9 +71,11 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         viewModel.getExpenseMonths()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner) { expenseMonths ->
             adapter.updateExpenseMonths(expenseMonths)
+            focusOnCurrentMonth()
             adapter.setOnItemClickListener(object : OnExpenseMonthSelectedListener {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onExpenseMonthSelected(date: String) {
@@ -365,4 +372,24 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentlyDate() : String{
+        val currentDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        var formattedDate = currentDate.format(formatter)
+        val month = formattedDate.substring(3, 5)
+        val year = formattedDate.substring(6, 10)
+        val date = "$year-$month"
+        return date
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun focusOnCurrentMonth(){
+        val currentDate = getCurrentlyDate()
+        val currentDateFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(currentDate)
+        val monthFocusPosition = viewModel.getCurrentMonthPositionOnList(currentDateFormatted)
+        if(monthFocusPosition != RecyclerView.NO_POSITION){
+            binding.rvExpenseMonths.scrollToPosition(monthFocusPosition)
+        }
+    }
 }

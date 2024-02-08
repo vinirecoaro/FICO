@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
@@ -105,6 +106,19 @@ class HomeViewModel : ViewModel() {
             _expenseMonthsLiveData.value = _expenseMonths.await()
         }
 
+    }
+
+    fun getCurrentMonthPositionOnList(date : String) : Int{
+        val expenseMonthsList = _expenseMonthsLiveData.value
+        expenseMonthsList?.let{
+            val position = it.indexOf(date)
+            return if (position != -1){
+                position
+            }else{
+                RecyclerView.NO_POSITION
+            }
+        }
+        return RecyclerView.NO_POSITION
     }
 
 }
