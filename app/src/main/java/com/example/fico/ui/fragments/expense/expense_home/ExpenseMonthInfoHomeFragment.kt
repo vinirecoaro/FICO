@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,9 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
@@ -49,11 +53,8 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         _binding = FragmentExpenseMonthInfoHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        lifecycleScope.launch {
-            //Create month chooser and focus in the current month
-            adapter = ExpenseMonthsListAdapter(emptyList())
-            binding.rvExpenseMonths.adapter = adapter
-        }
+        adapter = ExpenseMonthsListAdapter(emptyList())
+        binding.rvExpenseMonths.adapter = adapter
 
         setUpListeners()
 
