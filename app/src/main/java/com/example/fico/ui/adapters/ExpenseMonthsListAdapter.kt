@@ -1,5 +1,7 @@
 package com.example.fico.ui.adapters
 
+import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +12,7 @@ import com.example.fico.R
 import com.example.fico.ui.interfaces.OnExpenseMonthSelectedListener
 import com.example.fico.ui.interfaces.OnListItemClick
 
-class ExpenseMonthsListAdapter(private var expenseMonthList : List<String>) : RecyclerView.Adapter<ExpenseMonthsListAdapter.ViewHolder>() {
+class ExpenseMonthsListAdapter(private val context : Context, private var expenseMonthList : List<String>) : RecyclerView.Adapter<ExpenseMonthsListAdapter.ViewHolder>() {
 
     private var listener: OnExpenseMonthSelectedListener? = null
     private var selectedItemIndex: Int = -1
@@ -32,7 +34,9 @@ class ExpenseMonthsListAdapter(private var expenseMonthList : List<String>) : Re
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = expenseMonthList[position]
         holder.date.text = item
-        //holder.cardView.background = if (position == selectedItemIndex) View.VISIBLE else View.GONE
+        holder.cardView.setCardBackgroundColor(
+            if (position == selectedItemIndex) context.resources.getColor(R.color.grey_200) else Color.WHITE
+        )
         holder.cardView.setOnClickListener {
             selectedItemIndex = holder.adapterPosition
             notifyDataSetChanged()
@@ -42,6 +46,11 @@ class ExpenseMonthsListAdapter(private var expenseMonthList : List<String>) : Re
 
     fun updateExpenseMonths(newExpenseMonths: List<String>){
         expenseMonthList = newExpenseMonths
+        notifyDataSetChanged()
+    }
+
+    fun selectItem(position : Int){
+        selectedItemIndex = position
         notifyDataSetChanged()
     }
 

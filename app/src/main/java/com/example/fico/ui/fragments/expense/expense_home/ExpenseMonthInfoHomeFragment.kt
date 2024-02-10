@@ -53,7 +53,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         _binding = FragmentExpenseMonthInfoHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        adapter = ExpenseMonthsListAdapter(emptyList())
+        adapter = ExpenseMonthsListAdapter(requireContext(),emptyList())
         binding.rvExpenseMonths.adapter = adapter
 
         setUpListeners()
@@ -392,5 +392,6 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         if(monthFocusPosition != RecyclerView.NO_POSITION){
             binding.rvExpenseMonths.scrollToPosition(monthFocusPosition)
         }
+        adapter.selectItem(monthFocusPosition)
     }
 }
