@@ -13,6 +13,7 @@ import com.example.fico.ui.interfaces.OnListItemClick
 class ExpenseMonthsListAdapter(private var expenseMonthList : List<String>) : RecyclerView.Adapter<ExpenseMonthsListAdapter.ViewHolder>() {
 
     private var listener: OnExpenseMonthSelectedListener? = null
+    private var selectedItemIndex: Int = -1
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val cardView : CardView = itemView.findViewById(R.id.cv_expense_month)
@@ -31,7 +32,9 @@ class ExpenseMonthsListAdapter(private var expenseMonthList : List<String>) : Re
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = expenseMonthList[position]
         holder.date.text = item
+        //holder.cardView.background = if (position == selectedItemIndex) View.VISIBLE else View.GONE
         holder.cardView.setOnClickListener {
+            selectedItemIndex = holder.adapterPosition
             notifyDataSetChanged()
             listener?.onExpenseMonthSelected(item)
         }
