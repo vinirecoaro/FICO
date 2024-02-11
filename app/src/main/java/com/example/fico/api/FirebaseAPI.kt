@@ -239,7 +239,6 @@ class FirebaseAPI private constructor() {
         return checkIfExistsOnDatabse(default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET))
     }
 
-
     private suspend fun updateTotalExpense(value: String) = withContext(Dispatchers.IO){
         total_expense.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {

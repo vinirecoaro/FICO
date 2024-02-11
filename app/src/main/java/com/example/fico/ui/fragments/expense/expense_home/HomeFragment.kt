@@ -18,6 +18,10 @@ import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.viewmodel.HomeViewModel
 import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -30,17 +34,22 @@ class HomeFragment : Fragment(){
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<HomeViewModel>()
+    lateinit var barChartEntries : ArrayList<BarEntry>
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-            binding.tvTotalExpensesValue.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
-            binding.tvTotalExpensesValue.transformationMethod = PasswordTransformationMethod()
-            binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                R.drawable.ic_visibility_off_24, 0)
-            setUpListeners()
+        binding.tvTotalExpensesValue.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+        binding.tvTotalExpensesValue.transformationMethod = PasswordTransformationMethod()
+        binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(
+            0,
+            0,
+            R.drawable.ic_visibility_off_24,
+            0)
+        setUpListeners()
+        initExpenseEachMonthChart()
 
         return rootView
     }
@@ -49,6 +58,13 @@ class HomeFragment : Fragment(){
         binding.tvTotalExpensesValue.setOnClickListener {
             viewModel.ShowHideValue(binding.tvTotalExpensesValue)
         }
+        viewModel.infoPerMonthLiveData.observe(viewLifecycleOwner){ infoPerMonthList ->
+            var i = 1f
+            for (infoPerMonth in infoPerMonthList){
+                barChartEntries.add(BarEntry(i, infoPerMonth.monthExpense.toFloat()))
+                i += 1f
+            }
+        }
 
     }
 
@@ -56,6 +72,7 @@ class HomeFragment : Fragment(){
     override fun onResume() {
         super.onResume()
         getTotalExpense()
+        viewModel.getInfoPerMonth()
     }
 
     override fun onDestroyView() {
@@ -73,4 +90,38 @@ class HomeFragment : Fragment(){
             } }
     }
 
+    private fun initExpenseEachMonthChart(){
+        val barChart = binding.bcExpenseEachMonth
+
+        val entries = ArrayList<BarEntry>()
+        entries.add(BarEntry(1f, 20f))
+        entries.add(BarEntry(2f, 15f))
+        entries.add(BarEntry(3f, 30f))
+        entries.add(BarEntry(4f, 25f))
+        entries.add(BarEntry(5f, 35f))
+
+        // Crie um conjunto de dados com a lista de entradas
+        val dataSet = BarDataSet(entries, "Label") // "Label" é o nome da legenda
+        //dataSet.valueTextColor = Color.WHITE
+        dataSet.valueTextSize = 12f
+
+        // Personalize as cores do conjunto de dados
+        dataSet.color = Color.BLUE
+
+        // Crie um objeto BarData e defina o conjunto de dados
+        val barData = BarData(dataSet)
+
+        // Configure o espaçamento entre as barras
+        barData.barWidth = 0.5f
+
+        // Defina os dados para o gráfico de barras
+        barChart.data = barData
+        barChart.legend.isEnabled = false
+        barChart.description.isEnabled = false
+        barChart.xAxis.isEnabled = false
+
+        // Atualize o gráfico
+        barChart.invalidate()
+
+    }
 }

@@ -19,6 +19,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bc_expense_each_month"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_month_info" />
 
         <TextView
             android:id="@+id/tv_total_expenses"
@@ -29,7 +37,7 @@
             android:text="@string/total_expenses"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_month_info" />
+            app:layout_constraintTop_toBottomOf="@id/bc_expense_each_month" />
 
         <TextView
             android:id="@+id/tv_total_expenses_value"

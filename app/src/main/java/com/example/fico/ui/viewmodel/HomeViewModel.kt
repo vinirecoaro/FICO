@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.model.InformationPerMonthExpense
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,8 @@ class HomeViewModel : ViewModel() {
     private val firebaseAPI = FirebaseAPI.instance
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
+    private val _infoPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
+    val infoPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonth
 
     fun ShowHideValue(text: TextView){
         if (text.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
@@ -119,6 +122,12 @@ class HomeViewModel : ViewModel() {
             }
         }
         return RecyclerView.NO_POSITION
+    }
+
+    fun getInfoPerMonth(){
+        viewModelScope.async {
+            _infoPerMonth.value = firebaseAPI.getInformationPerMonth().await().toList()
+        }
     }
 
 }
