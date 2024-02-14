@@ -15,9 +15,10 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.InformationPerMonthExpense
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -29,6 +30,8 @@ class HomeViewModel : ViewModel() {
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _infoPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
     val infoPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonth
+    private val _infoPerMonthLabel = MutableLiveData<List<InformationPerMonthExpense>>()
+    val infoPerMonthLabelLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonthLabel
 
     fun ShowHideValue(text: TextView){
         if (text.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
@@ -126,8 +129,30 @@ class HomeViewModel : ViewModel() {
 
     fun getInfoPerMonth(){
         viewModelScope.async {
-            _infoPerMonth.value = firebaseAPI.getInformationPerMonth().await().toList()
+            val infoPerMonthList = firebaseAPI.getInformationPerMonth().await().toList()
+            val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
+            for(infoPerMonth in infoPerMonthList){
+                if (BigDecimal(infoPerMonth.monthExpense).setScale(2,RoundingMode.HALF_UP) != BigDecimal("0").setScale(2,RoundingMode.HALF_UP)){
+                    monthWithExpenses.add(infoPerMonth)
+                }
+            }
+            _infoPerMonth.value = monthWithExpenses
         }
+    }
+
+    fun formatInfoPerMonthToLabel(){
+        val formattedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
+        for(infoPerMonth in _infoPerMonth.value!!){
+            formattedInfoPerMonth.add(
+                InformationPerMonthExpense(
+                    FormatValuesFromDatabase().formatDateAbbreviated(infoPerMonth.date),
+                    infoPerMonth.availableNow,
+                    infoPerMonth.budget,
+                    FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
+                )
+            )
+        }
+        _infoPerMonthLabel.value = formattedInfoPerMonth
     }
 
 }

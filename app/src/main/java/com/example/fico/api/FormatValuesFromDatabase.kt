@@ -102,29 +102,29 @@ class FormatValuesFromDatabase {
         var formattedDate = ""
         val month = date.substring(5,7)
         if(month == "01"){
-            formattedDate = "Jan - ${date.substring(2,4)}"
+            formattedDate = "Jan-${date.substring(2,4)}"
         } else if(month == "02"){
-            formattedDate = "Fev - ${date.substring(2,4)}"
+            formattedDate = "Fev-${date.substring(2,4)}"
         } else if(month == "03"){
-            formattedDate = "Mar - ${date.substring(2,4)}"
+            formattedDate = "Mar-${date.substring(2,4)}"
         } else if(month == "04"){
-            formattedDate = "Abr - ${date.substring(2,4)}"
+            formattedDate = "Abr-${date.substring(2,4)}"
         } else if(month == "05"){
-            formattedDate = "Mai - ${date.substring(2,4)}"
+            formattedDate = "Mai-${date.substring(2,4)}"
         } else if(month == "06"){
-            formattedDate = "Jun - ${date.substring(2,4)}"
+            formattedDate = "Jun-${date.substring(2,4)}"
         } else if(month == "07"){
-            formattedDate = "Jul - ${date.substring(2,4)}"
+            formattedDate = "Jul-${date.substring(2,4)}"
         } else if(month == "08"){
-            formattedDate = "Ago - ${date.substring(2,4)}"
+            formattedDate = "Ago-${date.substring(2,4)}"
         } else if(month == "09"){
-            formattedDate = "Set - ${date.substring(2,4)}"
+            formattedDate = "Set-${date.substring(2,4)}"
         } else if(month == "10"){
-            formattedDate = "Out - ${date.substring(2,4)}"
+            formattedDate = "Out-${date.substring(2,4)}"
         } else if(month == "11"){
-            formattedDate = "Nov - ${date.substring(2,4)}"
+            formattedDate = "Nov-${date.substring(2,4)}"
         } else if(month == "12"){
-            formattedDate = "Dez - ${date.substring(2,4)}"
+            formattedDate = "Dez-${date.substring(2,4)}"
         }
         return formattedDate
     }

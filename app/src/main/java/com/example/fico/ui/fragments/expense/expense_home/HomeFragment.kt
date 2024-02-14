@@ -1,6 +1,5 @@
 package com.example.fico.ui.fragments.expense.expense_home
 
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -10,23 +9,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.viewmodel.HomeViewModel
-import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -36,6 +29,8 @@ class HomeFragment : Fragment(){
     private val binding get() = _binding!!
     private val viewModel by viewModels<HomeViewModel>()
     private var barChartEntries : ArrayList<BarEntry> = arrayListOf()
+    private var barChartMonthLabels : ArrayList<String> = arrayListOf()
+    private var barChartExpenseLabels : ArrayList<String> = arrayListOf()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -44,11 +39,7 @@ class HomeFragment : Fragment(){
 
         binding.tvTotalExpensesValue.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
         binding.tvTotalExpensesValue.transformationMethod = PasswordTransformationMethod()
-        binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(
-            0,
-            0,
-            R.drawable.ic_visibility_off_24,
-            0)
+        binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
         setUpListeners()
         initExpenseEachMonthChartEmpty()
 
@@ -66,9 +57,15 @@ class HomeFragment : Fragment(){
                 barChartEntries.add(BarEntry(i, monthExpense))
                 i += 1f
             }
+            viewModel.formatInfoPerMonthToLabel()
+        }
+        viewModel.infoPerMonthLabelLiveData.observe(viewLifecycleOwner){ infoPerMonthLabelList ->
+            for(infoPerMonthLabel in infoPerMonthLabelList){
+                barChartMonthLabels.add(infoPerMonthLabel.date)
+                barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
+            }
             initExpenseEachMonthChart()
         }
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -96,15 +93,8 @@ class HomeFragment : Fragment(){
     private fun initExpenseEachMonthChart(){
         val barChart = binding.bcExpenseEachMonth
 
-        val entries = ArrayList<BarEntry>()
-        entries.add(BarEntry(1f, 20f))
-        entries.add(BarEntry(2f, 15f))
-        entries.add(BarEntry(3f, 30f))
-        entries.add(BarEntry(4f, 25f))
-        entries.add(BarEntry(5f, 35f))
-
         // Crie um conjunto de dados com a lista de entradas
-        val dataSet = BarDataSet(entries, "Label") // "Label" é o nome da legenda
+        val dataSet = BarDataSet(barChartEntries, "Label") // "Label" é o nome da legenda
         //dataSet.valueTextColor = Color.WHITE
         dataSet.valueTextSize = 12f
 
@@ -125,6 +115,9 @@ class HomeFragment : Fragment(){
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
         xAxis.setDrawLabels(true)
+        xAxis.valueFormatter = IndexAxisValueFormatter(
+            barChartMonthLabels
+        )
 
         // Atualize o gráfico
         barChart.invalidate()
