@@ -20,8 +20,11 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.text.NumberFormat
 
 class HomeFragment : Fragment(){
 
@@ -40,8 +43,10 @@ class HomeFragment : Fragment(){
         binding.tvTotalExpensesValue.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
         binding.tvTotalExpensesValue.transformationMethod = PasswordTransformationMethod()
         binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
-        setUpListeners()
+
         initExpenseEachMonthChartEmpty()
+        setUpListeners()
+        viewModel.getInfoPerMonth()
 
         return rootView
     }
@@ -51,7 +56,7 @@ class HomeFragment : Fragment(){
             viewModel.ShowHideValue(binding.tvTotalExpensesValue)
         }
         viewModel.infoPerMonthLiveData.observe(viewLifecycleOwner){ infoPerMonthList ->
-            var i = 1f
+            var i = 0f
             for (infoPerMonth in infoPerMonthList){
                 val monthExpense = infoPerMonth.monthExpense.toFloat()
                 barChartEntries.add(BarEntry(i, monthExpense))
@@ -72,7 +77,6 @@ class HomeFragment : Fragment(){
     override fun onResume() {
         super.onResume()
         getTotalExpense()
-        viewModel.getInfoPerMonth()
     }
 
     override fun onDestroyView() {
@@ -97,15 +101,17 @@ class HomeFragment : Fragment(){
         val dataSet = BarDataSet(barChartEntries, "Label") // "Label" é o nome da legenda
         //dataSet.valueTextColor = Color.WHITE
         dataSet.valueTextSize = 12f
-
-        // Personalize as cores do conjunto de dados
         dataSet.color = Color.BLUE
+        // Personalize os valores que aparecem acima das barras
+        val valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return NumberFormat.getCurrencyInstance().format(value) // Formate o valor como desejar
+            }
+        }
+        dataSet.valueFormatter = valueFormatter
 
         // Crie um objeto BarData e defina o conjunto de dados
         val barData = BarData(dataSet)
-
-        // Configure o espaçamento entre as barras
-        barData.barWidth = 0.5f
 
         // Defina os dados para o gráfico de barras
         barChart.data = barData
@@ -115,9 +121,16 @@ class HomeFragment : Fragment(){
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
         xAxis.setDrawLabels(true)
-        xAxis.valueFormatter = IndexAxisValueFormatter(
-            barChartMonthLabels
-        )
+        xAxis.axisMinimum = -1f // Defina o mínimo do eixo X
+        xAxis.axisMaximum = 5f
+        xAxis.granularity = 1f
+        xAxis.valueFormatter = IndexAxisValueFormatter(barChartMonthLabels)
+
+        // Configure o espaçamento entre as barras
+        val barSpace = 0.04f
+        val groupSpace = 0.3f
+        barData.barWidth = 0.5f
+        barChart.groupBars(0f, groupSpace, barSpace)
 
         // Atualize o gráfico
         barChart.invalidate()
@@ -128,19 +141,18 @@ class HomeFragment : Fragment(){
         val barChart = binding.bcExpenseEachMonth
 
         val entries = ArrayList<BarEntry>()
-        entries.add(BarEntry(1f, 20f))
-        entries.add(BarEntry(2f, 15f))
-        entries.add(BarEntry(3f, 30f))
-        entries.add(BarEntry(4f, 25f))
-        entries.add(BarEntry(5f, 35f))
+        entries.add(BarEntry(0f, 0f))
+        entries.add(BarEntry(0f, 0f))
+        entries.add(BarEntry(0f, 0f))
+        entries.add(BarEntry(0f, 0f))
+        entries.add(BarEntry(0f, 0f))
 
         // Crie um conjunto de dados com a lista de entradas
         val dataSet = BarDataSet(entries, "Label") // "Label" é o nome da legenda
         //dataSet.valueTextColor = Color.WHITE
         dataSet.valueTextSize = 12f
-
-        // Personalize as cores do conjunto de dados
         dataSet.color = Color.BLUE
+        dataSet.setDrawValues(false)
 
         // Crie um objeto BarData e defina o conjunto de dados
         val barData = BarData(dataSet)
@@ -155,7 +167,7 @@ class HomeFragment : Fragment(){
         val xAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
-        xAxis.setDrawLabels(true)
+        xAxis.setDrawLabels(false)
 
         // Atualize o gráfico
         barChart.invalidate()
