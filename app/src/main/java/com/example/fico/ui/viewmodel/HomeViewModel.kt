@@ -155,4 +155,19 @@ class HomeViewModel : ViewModel() {
         _infoPerMonthLabel.value = formattedInfoPerMonth
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentDatePositionBarChart() : Int{
+        val currentDate = FormatValuesFromDatabase().formatDateAbbreviated(getCurrentlyDate())
+        _infoPerMonthLabel.value?.forEachIndexed { index, informationPerMonthExpense ->
+            if(informationPerMonthExpense.date == currentDate){
+                if(index < 1){
+                    return -1
+                }else{
+                    return index-1
+                }
+            }
+        }
+        return _infoPerMonthLabel.value!!.size-1
+    }
+
 }

@@ -26,7 +26,18 @@
             android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_month_info" />
+            app:layout_constraintTop_toBottomOf="@id/fragment_month_info"
+            android:visibility="visible"/>
+
+        <com.github.mikephil.charting.charts.CombinedChart
+            android:id="@+id/cc_expense_each_month"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_month_info"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_total_expenses"

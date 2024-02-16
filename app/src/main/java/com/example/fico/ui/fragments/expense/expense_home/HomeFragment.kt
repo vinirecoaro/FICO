@@ -19,6 +19,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.Dispatchers
@@ -32,8 +33,8 @@ class HomeFragment : Fragment(){
     private val binding get() = _binding!!
     private val viewModel by viewModels<HomeViewModel>()
     private var barChartEntries : ArrayList<BarEntry> = arrayListOf()
-    private var barChartMonthLabels : ArrayList<String> = arrayListOf()
-    private var barChartExpenseLabels : ArrayList<String> = arrayListOf()
+    private var barChartMonthLabels : MutableSet<String> = mutableSetOf()
+    private var barChartExpenseLabels : MutableSet<String> = mutableSetOf()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -48,9 +49,14 @@ class HomeFragment : Fragment(){
         setUpListeners()
         viewModel.getInfoPerMonth()
 
+        if(barChartEntries.isNotEmpty()){
+            initExpenseEachMonthChart()
+        }
+
         return rootView
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
         binding.tvTotalExpensesValue.setOnClickListener {
             viewModel.ShowHideValue(binding.tvTotalExpensesValue)
@@ -91,9 +97,51 @@ class HomeFragment : Fragment(){
                 val totalExpense = viewModel.getTotalExpense().await()
                 binding.tvTotalExpensesValue.text = totalExpense
             }catch (exception:Exception){
-            } }
+            }
+        }
     }
 
+    private fun initCombinedChart() {
+        val combinedChart = binding.ccExpenseEachMonth
+
+        val barEntries = listOf(
+            BarEntry(0f, 10f),
+            BarEntry(1f, 20f),
+            BarEntry(2f, 30f),
+            BarEntry(3f, 10f),
+            BarEntry(4f, 20f),
+            BarEntry(5f, 30f)
+            // Adicione mais entradas de acordo com os seus dados
+        )
+
+        val barDataSet = BarDataSet(barEntries, "Data")
+        barDataSet.color = Color.BLUE
+
+        val barData = BarData(barDataSet)
+
+        val xAxis = combinedChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.granularity = 1f
+        xAxis.valueFormatter = IndexAxisValueFormatter(arrayOf("Data1", "Data2", "Data3", "Data4", "Data5", "Data6" ))
+
+        combinedChart.axisRight.isEnabled = false
+        combinedChart.description.isEnabled = false
+
+        combinedChart.setDrawGridBackground(false)
+        combinedChart.setDrawBarShadow(false)
+        combinedChart.isHighlightFullBarEnabled = false
+
+        val combinedData = CombinedData()
+        combinedData.setData(barData)
+
+        combinedChart.data = combinedData
+        combinedChart.setVisibleXRangeMaximum(3f) // Defina o número máximo de barras visíveis
+        combinedChart.moveViewToX(0f) // Move o gráfico para a posição inicial
+
+        combinedChart.invalidate()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initExpenseEachMonthChart(){
         val barChart = binding.bcExpenseEachMonth
 
@@ -121,16 +169,15 @@ class HomeFragment : Fragment(){
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
         xAxis.setDrawLabels(true)
-        xAxis.axisMinimum = -1f // Defina o mínimo do eixo X
-        xAxis.axisMaximum = 5f
         xAxis.granularity = 1f
         xAxis.valueFormatter = IndexAxisValueFormatter(barChartMonthLabels)
 
         // Configure o espaçamento entre as barras
-        val barSpace = 0.04f
-        val groupSpace = 0.3f
-        barData.barWidth = 0.5f
-        barChart.groupBars(0f, groupSpace, barSpace)
+        barData.barWidth = 0.35f
+
+        barChart.setVisibleXRangeMaximum(3f)
+        val currentDateIndex = viewModel.getCurrentDatePositionBarChart().toFloat()
+        barChart.moveViewToX(currentDateIndex)
 
         // Atualize o gráfico
         barChart.invalidate()
