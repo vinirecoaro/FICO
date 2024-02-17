@@ -45,7 +45,7 @@ class LogoActivity : AppCompatActivity() {
 
         val layoutParams = binding.ivLogo.layoutParams as ViewGroup.MarginLayoutParams
 
-        val marginPercentage = 0.32 // 10%
+        val marginPercentage = 0.32
         val horizontalMargin = (screenWidth * marginPercentage).toInt()
 
         layoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 0)

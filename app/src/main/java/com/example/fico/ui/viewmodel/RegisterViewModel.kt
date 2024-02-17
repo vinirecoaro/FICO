@@ -1,5 +1,7 @@
 package com.example.fico.ui.viewmodel
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.ViewModel
@@ -10,6 +12,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
@@ -80,7 +84,15 @@ class RegisterViewModel : ViewModel() {
                     onSendEmailFailure()
                 }
         }
+    }
 
+    private fun getUserUID() : Deferred<String>{
+        val uid = CompletableDeferred<String>()
+        viewModelScope.async {
+            val currentUser = firebaseAPI.currentUser()
+            uid.complete(currentUser!!.uid)
+        }
+        return uid
     }
 
     var onUserCreated: () -> Unit = {}

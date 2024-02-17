@@ -24,13 +24,11 @@ class LogoViewModel : ViewModel() {
                         onUserLogged()
                         result.complete(true)
                     } else {
-                        firebaseAPI.logoff()
-                        onError("Erro ao verificar o usuário 1")
+                        onError("Erro ao verificar o usuário")
                         result.complete(false)
                     }
                 } catch (e: Exception) {
-                    firebaseAPI.logoff()
-                    onError("Erro ao verificar o usuário 2")
+                    onError("Erro ao verificar o usuário")
                     result.complete(false)
                 }
             }
