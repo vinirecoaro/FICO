@@ -103,7 +103,7 @@ class HomeViewModel : ViewModel() {
         val _expenseMonths = CompletableDeferred<List<String>>()
         viewModelScope.async {
             val expenseMonths = firebaseAPI.getExpenseMonths(false)
-            val sortedExpenseMonths = expenseMonths.sortedByDescending{ it }
+            val sortedExpenseMonths = expenseMonths.sortedBy{ it }
             val expenseMonthsFormatted : MutableList<String> = mutableListOf()
             for(expenseMonth in sortedExpenseMonths){
                 expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(expenseMonth))
@@ -168,11 +168,6 @@ class HomeViewModel : ViewModel() {
             }
         }
         return _infoPerMonthLabel.value!!.size-1
-    }
-
-    fun clearChartEntriesAndLabels(){
-        _infoPerMonth.value = emptyList()
-        _infoPerMonthLabel.value = emptyList()
     }
 
 }

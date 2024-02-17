@@ -1,5 +1,6 @@
 package com.example.fico.ui.fragments.expense.expense_home
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -15,13 +16,16 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.ui.viewmodel.HomeViewModel
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.CombinedData
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -107,23 +111,23 @@ class HomeFragment : Fragment(){
     private fun initExpenseEachMonthChart(){
         val barChart = binding.bcExpenseEachMonth
 
-        // Crie um conjunto de dados com a lista de entradas
-        val dataSet = BarDataSet(barChartEntries, "Label") // "Label" é o nome da legenda
-        //dataSet.valueTextColor = Color.WHITE
+        // Create a data set with entry list
+        val dataSet = BarDataSet(barChartEntries, "Label")
         dataSet.valueTextSize = 12f
         dataSet.color = Color.BLUE
-        // Personalize os valores que aparecem acima das barras
+
+        //Customize values that appear on top of the bars
         val valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
-                return NumberFormat.getCurrencyInstance().format(value) // Formate o valor como desejar
+                return NumberFormat.getCurrencyInstance().format(value)
             }
         }
         dataSet.valueFormatter = valueFormatter
 
-        // Crie um objeto BarData e defina o conjunto de dados
+        // Create an object BarData and define data set
         val barData = BarData(dataSet)
 
-        // Defina os dados para o gráfico de barras
+        // Define data to bar chart
         barChart.data = barData
         barChart.legend.isEnabled = false
         barChart.description.isEnabled = false
@@ -134,14 +138,37 @@ class HomeFragment : Fragment(){
         xAxis.granularity = 1f
         xAxis.valueFormatter = IndexAxisValueFormatter(barChartMonthLabels)
 
-        // Configure o espaçamento entre as barras
+        // Format text color based on theme
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                xAxis.textColor = Color.WHITE
+                dataSet.valueTextColor = Color.WHITE
+                barChart.axisLeft.textColor = Color.WHITE
+                barChart.axisRight.textColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                xAxis.textColor = Color.BLACK
+                dataSet.valueTextColor = Color.BLACK
+                barChart.axisLeft.textColor = Color.BLACK
+                barChart.axisRight.textColor = Color.BLACK
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
+        // Configure bar width
         barData.barWidth = 0.35f
 
+        // Define number of visible bar
         barChart.setVisibleXRangeMaximum(3f)
+
+        // Get current month position on chart and move chart to it
         val currentDateIndex = viewModel.getCurrentDatePositionBarChart().toFloat()
         barChart.moveViewToX(currentDateIndex)
 
-        // Atualize o gráfico
+        // Add animation of increasing bars
+        barChart.animateY(1500, Easing.EaseInOutQuad)
+
+        // Update chart
         barChart.invalidate()
 
     }
