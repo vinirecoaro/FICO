@@ -32,7 +32,6 @@ import com.example.fico.service.UploadFile
 import com.example.fico.util.constants.AppConstants
 import com.example.fico.ui.activities.expense.ComonExpenseImportFileInstructionsActivity
 import com.example.fico.ui.activities.expense.InstallmentExpenseImportFileInstructionsActivity
-import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.AddExpenseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -52,7 +51,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelectedListener {
+class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
     private var _binding: FragmentAddExpenseBinding? = null
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
@@ -332,9 +331,11 @@ class AddExpenseFragment : Fragment(), OnButtonClickListener, OnCategorySelected
         return true
     }
 
+/*
     override fun onSaveButtonFragmentClick() {
         binding.btSave.performClick()
     }
+*/
 
     private fun setUpDefaultBudgetAlertDialog(): CompletableDeferred<Boolean> {
         val result = CompletableDeferred<Boolean>()

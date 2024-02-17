@@ -170,4 +170,9 @@ class HomeViewModel : ViewModel() {
         return _infoPerMonthLabel.value!!.size-1
     }
 
+    fun clearChartEntriesAndLabels(){
+        _infoPerMonth.value = emptyList()
+        _infoPerMonthLabel.value = emptyList()
+    }
+
 }

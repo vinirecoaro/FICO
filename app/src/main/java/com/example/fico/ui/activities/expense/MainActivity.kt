@@ -16,20 +16,17 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
-import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.ui.activities.GeneralConfigurationActivity
 import com.example.fico.ui.activities.UserDataActivity
 import com.example.fico.ui.activities.earning.ConstructionActivity
-import com.example.fico.ui.interfaces.OnButtonClickListener
 import com.example.fico.ui.viewmodel.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity(), OnButtonClickListener{
+class MainActivity : AppCompatActivity(){
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val bindingAdd by lazy { FragmentAddExpenseBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<MainViewModel>()
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -60,11 +57,6 @@ class MainActivity : AppCompatActivity(), OnButtonClickListener{
         setupListeners()
         removeTintOfMenuIcons()
 
-    }
-
-
-    override fun onSaveButtonFragmentClick() {
-        bindingAdd.btSave.performClick()
     }
 
     private fun getUserEmail(){

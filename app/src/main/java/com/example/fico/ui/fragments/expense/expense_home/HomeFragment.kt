@@ -24,7 +24,6 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import java.text.NumberFormat
 
 class HomeFragment : Fragment(){
@@ -62,6 +61,7 @@ class HomeFragment : Fragment(){
             viewModel.ShowHideValue(binding.tvTotalExpensesValue)
         }
         viewModel.infoPerMonthLiveData.observe(viewLifecycleOwner){ infoPerMonthList ->
+            barChartEntries.clear()
             var i = 0f
             for (infoPerMonth in infoPerMonthList){
                 val monthExpense = infoPerMonth.monthExpense.toFloat()
@@ -71,6 +71,8 @@ class HomeFragment : Fragment(){
             viewModel.formatInfoPerMonthToLabel()
         }
         viewModel.infoPerMonthLabelLiveData.observe(viewLifecycleOwner){ infoPerMonthLabelList ->
+            barChartMonthLabels.clear()
+            barChartExpenseLabels.clear()
             for(infoPerMonthLabel in infoPerMonthLabelList){
                 barChartMonthLabels.add(infoPerMonthLabel.date)
                 barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
@@ -99,46 +101,6 @@ class HomeFragment : Fragment(){
             }catch (exception:Exception){
             }
         }
-    }
-
-    private fun initCombinedChart() {
-        val combinedChart = binding.ccExpenseEachMonth
-
-        val barEntries = listOf(
-            BarEntry(0f, 10f),
-            BarEntry(1f, 20f),
-            BarEntry(2f, 30f),
-            BarEntry(3f, 10f),
-            BarEntry(4f, 20f),
-            BarEntry(5f, 30f)
-            // Adicione mais entradas de acordo com os seus dados
-        )
-
-        val barDataSet = BarDataSet(barEntries, "Data")
-        barDataSet.color = Color.BLUE
-
-        val barData = BarData(barDataSet)
-
-        val xAxis = combinedChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.granularity = 1f
-        xAxis.valueFormatter = IndexAxisValueFormatter(arrayOf("Data1", "Data2", "Data3", "Data4", "Data5", "Data6" ))
-
-        combinedChart.axisRight.isEnabled = false
-        combinedChart.description.isEnabled = false
-
-        combinedChart.setDrawGridBackground(false)
-        combinedChart.setDrawBarShadow(false)
-        combinedChart.isHighlightFullBarEnabled = false
-
-        val combinedData = CombinedData()
-        combinedData.setData(barData)
-
-        combinedChart.data = combinedData
-        combinedChart.setVisibleXRangeMaximum(3f) // Defina o número máximo de barras visíveis
-        combinedChart.moveViewToX(0f) // Move o gráfico para a posição inicial
-
-        combinedChart.invalidate()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -220,4 +182,5 @@ class HomeFragment : Fragment(){
         barChart.invalidate()
 
     }
+    
 }
