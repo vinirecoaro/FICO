@@ -3,17 +3,14 @@
 
     <item
         android:id="@+id/add_expense_menu_common"
-        android:icon="@drawable/config_image"
         android:title="@string/common_purchase"
         />
     <item
         android:id="@+id/add_expense_menu_installments"
-        android:icon="@drawable/config_image"
         android:title="@string/purchase_in_installments"
         />
     <item
         android:id="@+id/add_expense_menu_get_data_from_file"
-        android:icon="@drawable/config_image"
         android:title="@string/import_expenses"
         />
 

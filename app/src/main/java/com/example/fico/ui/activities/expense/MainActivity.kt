@@ -1,10 +1,12 @@
 package com.example.fico.ui.activities.expense
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity(){
         getUserName()
         setupListeners()
         removeTintOfMenuIcons()
-
+        setImageBasedOnTheme()
     }
 
     private fun getUserEmail(){
@@ -113,6 +115,22 @@ class MainActivity : AppCompatActivity(){
                 else -> false
             }
         }
+    }
+
+    private fun setImageBasedOnTheme(){
+        val navigationView = findViewById<NavigationView>(R.id.nv_main)
+        val menu = navigationView.menu
+        val configMenuItem = menu.findItem(R.id.nav_menu_item_config)
+        when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                configMenuItem.setIcon(R.drawable.config_image_light)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                configMenuItem.setIcon(R.drawable.config_image_dark)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
     }
 
 }

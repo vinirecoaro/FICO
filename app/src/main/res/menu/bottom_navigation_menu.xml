@@ -14,7 +14,7 @@
         android:title="@string/list" />
     <item
         android:id="@+id/navigation_config"
-        android:icon="@drawable/config_image"
+        android:icon="@drawable/config_image_dark"
         android:title="@string/configurations" />
 
 </menu>
