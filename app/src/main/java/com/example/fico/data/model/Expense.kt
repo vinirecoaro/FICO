@@ -1,12 +1,12 @@
-package com.example.fico.model
+package com.example.fico.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+
+typealias ExpenseEntity = Expense
 
 @Entity
-data class LocalExpense(
-    @PrimaryKey(autoGenerate = true) val primKey : Int,
+data class Expense(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "price") var price: String,
     @ColumnInfo(name = "description") var description: String,

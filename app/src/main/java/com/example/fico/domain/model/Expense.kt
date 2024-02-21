@@ -1,7 +1,11 @@
-package com.example.fico.model
+package com.example.fico.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+
+typealias ExpenseDomain = Expense
 
 data class Expense(
     val id: String,

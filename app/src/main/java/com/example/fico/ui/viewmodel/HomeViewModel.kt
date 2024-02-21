@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.domain.model.InformationPerMonthExpense
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

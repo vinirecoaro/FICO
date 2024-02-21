@@ -1,12 +1,10 @@
 package com.example.fico.ui.viewmodel
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fico.model.User
+import com.example.fico.domain.model.User
 import com.example.fico.api.FirebaseAPI
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException

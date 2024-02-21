@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.fico.databinding.FragmentImportFileInstructionsBinding
-import com.example.fico.model.ImportFileInstructionsComponents
+import com.example.fico.domain.model.ImportFileInstructionsComponents
 
 class ImportFileInstructionsFragment : Fragment() {
 

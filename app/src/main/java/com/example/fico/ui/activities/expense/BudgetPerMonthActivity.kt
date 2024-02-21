@@ -10,14 +10,13 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.databinding.ActivityBudgetPerMonthBinding
-import com.example.fico.model.Budget
+import com.example.fico.domain.model.Budget
 import com.example.fico.ui.adapters.BudgetPerMonthAdapter
 import com.example.fico.ui.interfaces.OnListItemClick
 import com.example.fico.ui.viewmodel.BudgetPerMonthViewModel

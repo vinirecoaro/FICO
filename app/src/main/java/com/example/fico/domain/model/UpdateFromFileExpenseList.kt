@@ -1,4 +1,4 @@
-package com.example.fico.model
+package com.example.fico.domain.model
 
 data class UpdateFromFileExpenseList(
     val expenseList: MutableList<Pair<Expense, String>>,

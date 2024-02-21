@@ -7,8 +7,8 @@ import android.os.IBinder
 import androidx.annotation.RequiresApi
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
-import com.example.fico.model.Expense
-import com.example.fico.model.UpdateFromFileExpenseList
+import com.example.fico.domain.model.Expense
+import com.example.fico.domain.model.UpdateFromFileExpenseList
 import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal

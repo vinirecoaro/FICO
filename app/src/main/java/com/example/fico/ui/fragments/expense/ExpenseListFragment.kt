@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.FragmentExpenseListBinding
-import com.example.fico.model.Expense
+import com.example.fico.domain.model.Expense
 import com.example.fico.util.constants.AppConstants
 import com.example.fico.ui.activities.expense.EditExpenseActivity
 import com.example.fico.ui.adapters.ExpenseListAdapter

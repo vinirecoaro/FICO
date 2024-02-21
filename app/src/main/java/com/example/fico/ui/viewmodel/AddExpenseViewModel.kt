@@ -2,22 +2,17 @@ package com.example.fico.ui.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fico.model.Expense
+import com.example.fico.domain.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
-import com.example.fico.model.ExpenseCategory
-import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 class AddExpenseViewModel : ViewModel() {
 

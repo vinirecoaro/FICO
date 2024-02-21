@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.model.ExpenseCategory
+import com.example.fico.domain.model.ExpenseCategory
 import com.example.fico.ui.interfaces.OnCategorySelectedListener
 
 

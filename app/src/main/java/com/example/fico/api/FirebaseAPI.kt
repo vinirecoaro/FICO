@@ -2,12 +2,15 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.fico.model.*
+import com.example.fico.domain.model.Budget
+import com.example.fico.domain.model.Expense
+import com.example.fico.domain.model.InformationPerMonthExpense
+import com.example.fico.domain.model.UpdateFromFileExpenseList
+import com.example.fico.domain.model.User
 import com.example.fico.util.constants.AppConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*

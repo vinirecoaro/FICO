@@ -1,7 +1,5 @@
 package com.example.fico.util.constants
 
-import com.example.fico.model.ExpenseCategory
-
 class AppConstants private constructor() {
 
     object DATABASE {

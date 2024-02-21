@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
 import com.example.fico.R
 import com.example.fico.databinding.ActivityComonExpenseImportFileInstructionsBinding
-import com.example.fico.model.ImportFileInstructionsComponents
+import com.example.fico.domain.model.ImportFileInstructionsComponents
 import com.example.fico.ui.adapters.ImportFileInstructionsAdapter
 
 class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {

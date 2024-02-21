@@ -19,7 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityEditExpenseBinding
-import com.example.fico.model.Expense
+import com.example.fico.domain.model.Expense
 import com.example.fico.ui.viewmodel.EditExpenseViewModel
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.ui.adapters.CategoryListAdapter

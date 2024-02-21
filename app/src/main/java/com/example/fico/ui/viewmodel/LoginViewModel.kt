@@ -2,7 +2,7 @@ package com.example.fico.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fico.model.User
+import com.example.fico.domain.model.User
 import com.example.fico.api.FirebaseAPI
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.*
