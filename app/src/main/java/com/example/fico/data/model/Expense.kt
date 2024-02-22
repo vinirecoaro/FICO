@@ -12,5 +12,5 @@ data class Expense(
     @ColumnInfo(name = "description") var description: String,
     @ColumnInfo(name = "category") var category: String,
     @ColumnInfo(name = "date") var date: String,
-    @ColumnInfo(name = "nOfInstallment") val nOfInstallment: String = "1"
+    @ColumnInfo(name = "nOfInstallment") var nOfInstallment: String = "1"
 )

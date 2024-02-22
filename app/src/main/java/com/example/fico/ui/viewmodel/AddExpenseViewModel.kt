@@ -1,22 +1,58 @@
 package com.example.fico.ui.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.fico.domain.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
+import com.example.fico.domain.model.ExpenseDomain
+import com.example.fico.domain.usecase.GetAllExpensesUseCase
+import com.example.fico.domain.usecase.InsertExpenseUseCase
+import com.example.fico.ui.fragments.expense.add_expense.AddExpenseState
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class AddExpenseViewModel : ViewModel() {
+class AddExpenseViewModel(
+    private val getAllExpensesUseCase: GetAllExpensesUseCase,
+    private val insertExpenseUseCase: InsertExpenseUseCase
+) : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
+    val state : LiveData<AddExpenseState> = liveData {
+        emit(AddExpenseState.Loading)
+        val state = try {
+            val expenses = getAllExpensesUseCase()
+            if(expenses.isEmpty()){
+                AddExpenseState.Empty
+            }else{
+                AddExpenseState.Success(expenses)
+            }
+        }catch (exception : Exception){
+            Log.e("Error", exception.message.toString())
+            AddExpenseState.Error(exception.message.toString())
+        }
+        emit(state)
+    }
+
+    fun addExpenseLocal(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) = viewModelScope.launch{
+        insertExpenseUseCase(ExpenseDomain(
+            "1",
+            price,
+            description,
+            category,
+            date,
+            nOfInstallments.toString()
+        ))
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
