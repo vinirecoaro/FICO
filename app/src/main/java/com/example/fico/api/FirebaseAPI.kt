@@ -283,7 +283,7 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    suspend fun addExpense(expenseList : MutableList<Pair<Expense, String>>, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
+    suspend fun addExpense(expenseList : MutableList<Expense>, updatedTotalExpense : String, updatedInformationPerMonth: MutableList<InformationPerMonthExpense>) : Boolean = withContext(Dispatchers.IO){
         val updates = mutableMapOf<String, Any>()
         val result = CompletableDeferred<Boolean>()
 
@@ -306,7 +306,7 @@ class FirebaseAPI private constructor() {
     }
 
     suspend fun editExpense(
-        expenseList : MutableList<Pair<Expense, String>>,
+        expenseList : MutableList<Expense>,
         updatedTotalExpense : String,
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>,
         removeFromExpenseList : MutableList<String>,
@@ -336,14 +336,14 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Pair<Expense, String>>) : MutableMap<String, Any>{
+    private fun generateMapToUpdateUserExpenses(expenseList : MutableList<Expense>) : MutableMap<String, Any>{
         val updatesOfExpenseList = mutableMapOf<String, Any>()
 
             for(expense in expenseList){
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.second}/${AppConstants.DATABASE.PRICE}"] = expense.first.price
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.second}/${AppConstants.DATABASE.DESCRIPTION}"] = expense.first.description
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.second}/${AppConstants.DATABASE.DATE}"] = expense.first.date
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.second}/${AppConstants.DATABASE.CATEGORY}"] = expense.first.category
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.PRICE}"] = expense.price
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.DESCRIPTION}"] = expense.description
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.DATE}"] = expense.date
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.CATEGORY}"] = expense.category
             }
 
         return updatesOfExpenseList

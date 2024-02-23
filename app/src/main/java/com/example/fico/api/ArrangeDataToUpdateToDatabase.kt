@@ -35,11 +35,10 @@ class ArrangeDataToUpdateToDatabase {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addToExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int) : MutableList<Pair<Expense, String>>{
+    fun addToExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int) : MutableList<Expense>{
 
-        val expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
+        val expenseList : MutableList<Expense> = mutableListOf()
         val randonNum = generateRandomAddress(5)
-
         val inputTime = FormatValuesToDatabase().timeNow()
 
         if(installment){
@@ -61,29 +60,27 @@ class ArrangeDataToUpdateToDatabase {
                     currentInstallment = "0$currentInstallment"
                 }
 
-                val formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.date), i)
+                var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.date), i)
                 val expenseId = "${formattedExpense.date}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+                formattedExpense.id = expenseId
 
-                val newPair = Pair(formattedExpense,expenseId)
-
-                expenseList.add(newPair)
+                expenseList.add(formattedExpense)
 
             }
         }else{
             val expenseId = "${expense.date}-${inputTime}-${randonNum}"
-            val formattedExpense = Expense("", expense.price, expense.description, expense.category, expense.date)
+            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.date)
 
-            val newPair = Pair(formattedExpense, expenseId)
-            expenseList.add(newPair)
+            expenseList.add(formattedExpense)
         }
 
         return expenseList
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addToExpenseListFromFileCommonExpense(expenses : MutableList<Expense>) : MutableList<Pair<Expense, String>>{
+    fun addToExpenseListFromFileCommonExpense(expenses : MutableList<Expense>) : MutableList<Expense>{
 
-        val expenseList : MutableList<Pair<Expense, String>> = mutableListOf()
+        val expenseList : MutableList<Expense> = mutableListOf()
         val randonNums : MutableList<String> = mutableListOf()
 
         val inputTime = FormatValuesToDatabase().timeNow()
@@ -106,10 +103,9 @@ class ArrangeDataToUpdateToDatabase {
             val randonNumId = randonNums[selectedIndex]
 
             val expenseId = "${expense.date}-${inputTime}-${randonNumId}"
-            val formattedExpense = Expense("", expense.price, expense.description, expense.category, expense.date)
+            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.date)
 
-            val newPair = Pair(formattedExpense, expenseId)
-            expenseList.add(newPair)
+            expenseList.add(formattedExpense)
 
             randonNums.removeAt(selectedIndex)
         }
@@ -165,7 +161,7 @@ class ArrangeDataToUpdateToDatabase {
         }
 
         val date = "$year-$newMonthFormatted-$dayFormatted"
-        val newExpense = Expense("",expense.price, newDescription, expense.category, date)
+        val newExpense = Expense(expense.id,expense.price, newDescription, expense.category, date)
 
         return newExpense
     }

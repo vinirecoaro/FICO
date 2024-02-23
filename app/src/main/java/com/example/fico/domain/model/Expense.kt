@@ -8,7 +8,7 @@ import androidx.room.Entity
 typealias ExpenseDomain = Expense
 
 data class Expense(
-    val id: String,
+    var id: String,
     var price: String,
     var description: String,
     var category: String,

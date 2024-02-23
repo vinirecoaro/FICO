@@ -22,12 +22,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class AddExpenseViewModel(
-    private val getAllExpensesUseCase: GetAllExpensesUseCase,
-    private val insertExpenseUseCase: InsertExpenseUseCase
+    /*private val getAllExpensesUseCase: GetAllExpensesUseCase,
+    private val insertExpenseUseCase: InsertExpenseUseCase*/
 ) : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
-    val state : LiveData<AddExpenseState> = liveData {
+    /*val state : LiveData<AddExpenseState> = liveData {
         emit(AddExpenseState.Loading)
         val state = try {
             val expenses = getAllExpensesUseCase()
@@ -52,7 +52,7 @@ class AddExpenseViewModel(
             date,
             nOfInstallments.toString()
         ))
-    }
+    }*/
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
