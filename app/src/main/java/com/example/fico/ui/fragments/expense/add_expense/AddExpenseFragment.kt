@@ -47,6 +47,7 @@ import android.view.inputmethod.InputMethodManager
 import com.example.fico.ui.adapters.CategoryListAdapter
 import com.example.fico.ui.interfaces.OnCategorySelectedListener
 import com.example.fico.ui.viewmodel.shared.AddExpenseEditExpenseViewModel
+import com.example.fico.util.constants.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
@@ -57,7 +58,9 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
     private val binding get() = _binding!!
-    private val viewModel by viewModels<AddExpenseViewModel>()
+    private val viewModel : AddExpenseViewModel by viewModels{
+        AddExpenseViewModel.Factory()
+    }
     private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
@@ -196,20 +199,10 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             binding.etDate
                         )
                     ) {
-                        val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                        if (existsDefaultBudget){
-                            if(viewModel.addExpense(
-                                binding.etPrice.text.toString(),
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                binding.etDate.text.toString(),
-                            false).await()){
-                                hideKeyboard(requireContext(),binding.btSave)
-                                Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                clearUserInputs()
-                            }
-                        } else {
-                            if (setUpDefaultBudgetAlertDialog().await()) {
+                        val internetConnection = ConnectionFunctions().internetConnectionVerification(requireContext())
+                        if(internetConnection){
+                            val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                            if (existsDefaultBudget){
                                 if(viewModel.addExpense(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
@@ -220,7 +213,28 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                     Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
                                     clearUserInputs()
                                 }
+                            } else {
+                                if (setUpDefaultBudgetAlertDialog().await()) {
+                                    if(viewModel.addExpense(
+                                            binding.etPrice.text.toString(),
+                                            binding.etDescription.text.toString(),
+                                            binding.actvCategory.text.toString(),
+                                            binding.etDate.text.toString(),
+                                            false).await()){
+                                        hideKeyboard(requireContext(),binding.btSave)
+                                        Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
+                                        clearUserInputs()
+                                    }
+                                }
                             }
+                        }else{
+                            viewModel.addExpenseLocal(
+                                binding.etPrice.text.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                binding.etDate.text.toString(),
+                                false
+                            )
                         }
                     }
                 } else if (binding.etInstallments.visibility == View.VISIBLE) {
@@ -330,12 +344,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         }
         return true
     }
-
-/*
-    override fun onSaveButtonFragmentClick() {
-        binding.btSave.performClick()
-    }
-*/
 
     private fun setUpDefaultBudgetAlertDialog(): CompletableDeferred<Boolean> {
         val result = CompletableDeferred<Boolean>()

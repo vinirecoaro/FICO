@@ -5,12 +5,16 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.fico.domain.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
+import com.example.fico.data.db
+import com.example.fico.data.repository.ExpenseRepositoryImpl
 import com.example.fico.domain.model.ExpenseDomain
 import com.example.fico.domain.usecase.GetAllExpensesUseCase
 import com.example.fico.domain.usecase.InsertExpenseUseCase
@@ -22,12 +26,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class AddExpenseViewModel(
-    /*private val getAllExpensesUseCase: GetAllExpensesUseCase,
-    private val insertExpenseUseCase: InsertExpenseUseCase*/
+    private val getAllExpensesUseCase: GetAllExpensesUseCase,
+    private val insertExpenseUseCase: InsertExpenseUseCase
 ) : ViewModel() {
 
     private val firebaseAPI = FirebaseAPI.instance
-    /*val state : LiveData<AddExpenseState> = liveData {
+    val state : LiveData<AddExpenseState> = liveData {
         emit(AddExpenseState.Loading)
         val state = try {
             val expenses = getAllExpensesUseCase()
@@ -43,16 +47,24 @@ class AddExpenseViewModel(
         emit(state)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addExpenseLocal(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) = viewModelScope.launch{
-        insertExpenseUseCase(ExpenseDomain(
-            "1",
-            price,
-            description,
-            category,
-            date,
-            nOfInstallments.toString()
-        ))
-    }*/
+
+        val formattedDate = FormatValuesToDatabase().expenseDate(date)
+        val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
+        val preFormattedExpense = Expense("",formattedPrice, description, category, formattedDate)
+        val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(preFormattedExpense, installment, nOfInstallments)
+        
+        for(expense in expenseList){
+            insertExpenseUseCase(ExpenseDomain(
+                expense.id,
+                expense.price,
+                expense.description,
+                expense.category,
+                expense.date
+            ))
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
@@ -93,6 +105,20 @@ class AddExpenseViewModel(
             val bigNum = BigDecimal(budget)
             val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
             firebaseAPI.setDefaultBudget(formattedBudget)
+        }
+    }
+
+    class Factory : ViewModelProvider.Factory{
+        override fun <T : ViewModel> create(
+            modelClass: Class<T>,
+            extras : CreationExtras
+        ): T {
+            val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+            val repository = ExpenseRepositoryImpl(application.db.expenseDao())
+            return AddExpenseViewModel(
+                getAllExpensesUseCase =  GetAllExpensesUseCase(repository),
+                insertExpenseUseCase = InsertExpenseUseCase(repository)
+                ) as T
         }
     }
 
