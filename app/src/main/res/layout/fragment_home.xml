@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.activities.expense.MainActivity">
+        tools:context=".presentation.activities.expense.MainActivity">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_info_per_month"
@@ -22,7 +22,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment_month_info"
-                android:name="com.example.fico.ui.fragments.expense.expense_home.ExpenseMonthInfoHomeFragment"
+                android:name="com.example.fico.presentation.fragments.expense.expense_home.ExpenseMonthInfoHomeFragment"
                 android:layout_width="match_parent"
                 android:layout_height="530dp"
                 app:layout_constraintEnd_toEndOf="parent"

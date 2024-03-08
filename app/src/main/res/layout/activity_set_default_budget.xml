@@ -21,7 +21,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activities.expense.SetDefaultBudgetActivity">
+        tools:context=".presentation.activities.expense.SetDefaultBudgetActivity">
 
         <EditText
             android:id="@+id/et_available_per_month"

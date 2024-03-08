@@ -18,10 +18,10 @@
         android:theme="@style/Theme.FICO"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.earning.ConstructionActivity"
+            android:name=".presentation.activities.earning.ConstructionActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.LogoActivity"
+            android:name=".presentation.activities.LogoActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,49 +30,49 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.expense.InstallmentExpenseImportFileInstructionsActivity"
+            android:name=".presentation.activities.expense.InstallmentExpenseImportFileInstructionsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.GeneralConfigurationActivity"
+            android:name=".presentation.activities.GeneralConfigurationActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.expense.ComonExpenseImportFileInstructionsActivity"
+            android:name=".presentation.activities.expense.ComonExpenseImportFileInstructionsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.UserDataActivity"
+            android:name=".presentation.activities.UserDataActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.ResetPasswordActivity"
+            android:name=".presentation.activities.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.expense.BudgetPerMonthActivity"
+            android:name=".presentation.activities.expense.BudgetPerMonthActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.expense.EditExpenseActivity"
+            android:name=".presentation.activities.expense.EditExpenseActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.expense.BudgetConfigurationListActivity"
+            android:name=".presentation.activities.expense.BudgetConfigurationListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.expense.SetDefaultBudgetActivity"
+            android:name=".presentation.activities.expense.SetDefaultBudgetActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.VerifyEmailActivity"
+            android:name=".presentation.activities.VerifyEmailActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.expense.MainActivity"
+            android:name=".presentation.activities.expense.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.LoginActivity"
+            android:name=".presentation.activities.LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.activities.RegisterActivity" />
+        <activity android:name=".presentation.activities.RegisterActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
