@@ -109,7 +109,7 @@ class HomeViewModel : ViewModel() {
                 expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(expenseMonth))
             }
             _expenseMonths.complete(expenseMonthsFormatted.toList())
-            _expenseMonthsLiveData.value = _expenseMonths.await()
+            _expenseMonthsLiveData.value = _expenseMonths.await() ?: emptyList()
         }
 
     }
