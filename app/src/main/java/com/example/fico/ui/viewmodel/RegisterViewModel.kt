@@ -31,10 +31,7 @@ class RegisterViewModel : ViewModel() {
                 counter++
             }
         }
-        if (counter == nFileds){
-            return true
-        }
-        return false
+        return counter == nFileds
     }
 
     fun emptyField(btn: Button ,text: EditText){

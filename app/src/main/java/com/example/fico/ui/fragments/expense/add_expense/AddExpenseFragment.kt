@@ -152,18 +152,13 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         when (item.itemId) {
             R.id.add_expense_menu_common -> {
                 binding.etInstallments.visibility = View.GONE
-                binding.etPrice.setText("")
-                binding.etDescription.setText("")
-                binding.actvCategory.setText("")
-                binding.etInstallments.setText("")
+                clearUserInputs()
                 return true
             }
 
             R.id.add_expense_menu_installments -> {
                 binding.etInstallments.visibility = View.VISIBLE
-                binding.etPrice.setText("")
-                binding.etDescription.setText("")
-                binding.actvCategory.setText("")
+                clearUserInputs()
                 return true
             }
 
@@ -227,7 +222,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                     }
                                 }
                             }
-                        }else{
+                        }/*else{
                             viewModel.addExpenseLocal(
                                 binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
@@ -235,7 +230,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                 binding.etDate.text.toString(),
                                 false
                             )
-                        }
+                        }*/
                     }
                 } else if (binding.etInstallments.visibility == View.VISIBLE) {
                     if (verifyFields(
@@ -305,6 +300,10 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
 
             datePicker.addOnNegativeButtonClickListener {
+                binding.ivDate.isEnabled = true
+            }
+
+            datePicker.addOnDismissListener{
                 binding.ivDate.isEnabled = true
             }
 
@@ -689,6 +688,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
     private fun formatDate(timestamp: Long): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("GMT")
         val date = Date(timestamp)
         return sdf.format(date)
     }
