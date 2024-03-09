@@ -52,6 +52,76 @@ class AddExpenseEditExpenseViewModel : ViewModel() {
             AppConstants.CATEGORY_LIST.ICON_NAME.INVESTMENT,
             false
         ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.ELETRONICS,
+            AppConstants.CATEGORY_LIST.ICON_NAME.ELETRONICS,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.REPAIR,
+            AppConstants.CATEGORY_LIST.ICON_NAME.REPAIR,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.ACESSORIES,
+            AppConstants.CATEGORY_LIST.ICON_NAME.ACESSORIES,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.CLOTHING,
+            AppConstants.CATEGORY_LIST.ICON_NAME.CLOTHING,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.CAR,
+            AppConstants.CATEGORY_LIST.ICON_NAME.CAR,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.MOTORCYCLE,
+            AppConstants.CATEGORY_LIST.ICON_NAME.MOTORCYCLE,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.TRIP,
+            AppConstants.CATEGORY_LIST.ICON_NAME.TRIP,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.HOUSE,
+            AppConstants.CATEGORY_LIST.ICON_NAME.HOUSE,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.DONATION,
+            AppConstants.CATEGORY_LIST.ICON_NAME.DONATION,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.BET,
+            AppConstants.CATEGORY_LIST.ICON_NAME.BET,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.FEES,
+            AppConstants.CATEGORY_LIST.ICON_NAME.FEES,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.GYM,
+            AppConstants.CATEGORY_LIST.ICON_NAME.GYM,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.CELLPHONE,
+            AppConstants.CATEGORY_LIST.ICON_NAME.CELLPHONE,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.PETS,
+            AppConstants.CATEGORY_LIST.ICON_NAME.PETS,
+            false
+        ),
 
     )
 

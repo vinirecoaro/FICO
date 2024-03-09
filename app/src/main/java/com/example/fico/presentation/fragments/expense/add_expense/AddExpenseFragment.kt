@@ -103,7 +103,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         setMaxLength(binding.etInstallments, 3)
 
         //Create category chooser
-        adapter = CategoryListAdapter(sharedViewModel.categoryList, this)
+        adapter = CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         return rootView
