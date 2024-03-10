@@ -76,6 +76,12 @@ class AppConstants private constructor() {
             const val FEES = "Juros"
             const val GYM = "Academia"
             const val CELLPHONE = "Celular"
+            const val PERSONAL_HYGIENE = "Higiene Pessoal"
+            const val PHARMACY = "Farmácia"
+            const val CASH_WITHDRAWAL = "Saque de Dinheiro"
+            const val RIDE = "Passeio"
+            const val PAYMENT = "Pagamento"
+            const val SERVICES = "Serviços"
         }
         object ICON_NAME {
             const val FOOD = "category_icon_food"
@@ -101,6 +107,12 @@ class AppConstants private constructor() {
             const val FEES = "category_icon_fees"
             const val GYM = "category_icon_gym"
             const val CELLPHONE = "category_icon_cellphone"
+            const val PERSONAL_HYGIENE = "category_icon_personal_hygiene"
+            const val PHARMACY = "category_icon_pharmacy"
+            const val CASH_WITHDRAWAL = "category_icon_cash_withdrawal"
+            const val RIDE = "category_icon_ride"
+            const val PAYMENT = "category_icon_payment"
+            const val SERVICES = "category_icon_services"
         }
     }
 

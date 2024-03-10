@@ -89,13 +89,23 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             try {
                 val availableNow = viewModel.getAvailableNow(date).await()
                 val availableNowJustNumber = viewModel.getAvailableNow(date, formatted = false).await()
+                var myColor = ContextCompat.getColor(requireContext(), R.color.red)
                 if(availableNow == "---"){
                     binding.tvAvailableThisMonthValue.text = availableNow
                 } else if(availableNowJustNumber.toFloat() < 0){
-                    val myColor = ContextCompat.getColor(requireContext(), R.color.red)
                     binding.tvAvailableThisMonthValue.setTextColor(myColor)
                     binding.tvAvailableThisMonthValue.text = availableNow
                 } else {
+                    when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                        Configuration.UI_MODE_NIGHT_YES -> {
+                            myColor = ContextCompat.getColor(requireContext(), R.color.white)
+                        }
+                        Configuration.UI_MODE_NIGHT_NO -> {
+                            myColor = ContextCompat.getColor(requireContext(), R.color.black)
+                        }
+                        Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+                    }
+                    binding.tvAvailableThisMonthValue.setTextColor(myColor)
                     binding.tvAvailableThisMonthValue.text = availableNow
                 }
             }catch (exception:Exception){}

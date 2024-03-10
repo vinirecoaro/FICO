@@ -44,7 +44,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_category"
-                tools:text="Entretenimento" />
+                android:gravity="center"
+                tools:text="Saque de Dinheiro" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

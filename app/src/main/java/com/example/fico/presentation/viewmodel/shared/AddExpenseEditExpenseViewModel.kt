@@ -103,6 +103,11 @@ class AddExpenseEditExpenseViewModel : ViewModel() {
             false
         ),
         ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.PETS,
+            AppConstants.CATEGORY_LIST.ICON_NAME.PETS,
+            false
+        ),
+        ExpenseCategory(
             AppConstants.CATEGORY_LIST.DESCRIPTION.FEES,
             AppConstants.CATEGORY_LIST.ICON_NAME.FEES,
             false
@@ -118,10 +123,35 @@ class AddExpenseEditExpenseViewModel : ViewModel() {
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.PETS,
-            AppConstants.CATEGORY_LIST.ICON_NAME.PETS,
+            AppConstants.CATEGORY_LIST.DESCRIPTION.PERSONAL_HYGIENE,
+            AppConstants.CATEGORY_LIST.ICON_NAME.PERSONAL_HYGIENE,
             false
         ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.PHARMACY,
+            AppConstants.CATEGORY_LIST.ICON_NAME.PHARMACY,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.CASH_WITHDRAWAL,
+            AppConstants.CATEGORY_LIST.ICON_NAME.CASH_WITHDRAWAL,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.RIDE,
+            AppConstants.CATEGORY_LIST.ICON_NAME.RIDE,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.PAYMENT,
+            AppConstants.CATEGORY_LIST.ICON_NAME.PAYMENT,
+            false
+        ),
+        ExpenseCategory(
+            AppConstants.CATEGORY_LIST.DESCRIPTION.SERVICES,
+            AppConstants.CATEGORY_LIST.ICON_NAME.SERVICES,
+            false
+        )
 
     )
 
