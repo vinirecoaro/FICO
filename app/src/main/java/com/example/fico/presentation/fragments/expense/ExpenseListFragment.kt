@@ -61,6 +61,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         const val TAG = "PERMISSION_TAG"
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentExpenseListBinding.inflate(inflater, container, false)
         val rootView = binding.root
@@ -73,7 +74,8 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 
-        viewModel.updateFilter("")
+        binding.actvDate.setText(viewModel.getCurrentlyDateForFilter())
+        viewModel.updateFilter(viewModel.getCurrentlyDateForFilter())
 
         setUpListeners()
         setColorBasedOnTheme()
@@ -120,7 +122,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             for(expense in expenses){
                 var modifiedExpense = Expense(
                     "",
-                    FormatValuesFromDatabase().priceToFile(expense.price),//.replace("R$ ", "").replace(".",","),
+                    FormatValuesFromDatabase().priceToFile(expense.price),
                     expense.description,
                     expense.category,
                     expense.date
@@ -191,6 +193,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         )
         binding.actvDate.setAdapter(adapter)
     }
+
     fun editExpense(expense : Expense){
         val intent = Intent(requireContext(), EditExpenseActivity::class.java)
         intent.putExtra("expense", expense)
@@ -214,7 +217,6 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
-
 
     private fun shareFile(filePath: File) {
         val fileUri = FileProvider.getUriForFile(

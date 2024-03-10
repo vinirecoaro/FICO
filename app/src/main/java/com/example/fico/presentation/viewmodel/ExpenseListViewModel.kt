@@ -14,6 +14,8 @@ import com.example.fico.api.FormatValuesToDatabase
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ExpenseListViewModel: ViewModel() {
 
@@ -40,8 +42,12 @@ class ExpenseListViewModel: ViewModel() {
 
     fun getExpenseMonths(){
         viewModelScope.async {
-            var expenseMonths = firebaseAPI.getExpenseMonths(true)
-            _expenseMonthsLiveData.value = expenseMonths
+            var expenseMonths = firebaseAPI.getExpenseMonths(false).sortedByDescending { it }
+            val expenseMonthsFormatted = mutableListOf<String>()
+            for (expenseMonth in expenseMonths){
+                expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(expenseMonth))
+            }
+            _expenseMonthsLiveData.value = expenseMonthsFormatted
         }
     }
 
@@ -71,6 +77,16 @@ class ExpenseListViewModel: ViewModel() {
 
             firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentlyDateForFilter() : String{
+        val currentDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val currentDateFormatted = currentDate.format(formatter)
+        val yearMonth = FormatValuesToDatabase().expenseDateForInfoPerMonth(currentDateFormatted)
+        val monthYearFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(yearMonth)
+        return monthYearFormatted
     }
 
 }
