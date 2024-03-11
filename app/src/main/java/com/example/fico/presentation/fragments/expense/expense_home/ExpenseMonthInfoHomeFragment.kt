@@ -57,7 +57,6 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-
         getAvailableNow()
         getMonthExpense()
         initMonthExpenseChart()
