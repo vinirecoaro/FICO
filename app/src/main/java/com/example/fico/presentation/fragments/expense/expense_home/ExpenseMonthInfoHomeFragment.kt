@@ -46,9 +46,6 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         _binding = FragmentExpenseMonthInfoHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        adapter = ExpenseMonthsListAdapter(requireContext(),emptyList())
-        binding.rvExpenseMonths.adapter = adapter
-
         setUpListeners()
 
         return rootView
@@ -57,6 +54,10 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+
+        adapter = ExpenseMonthsListAdapter(requireContext(),emptyList())
+        binding.rvExpenseMonths.adapter = adapter
+
         getAvailableNow()
         getMonthExpense()
         initMonthExpenseChart()

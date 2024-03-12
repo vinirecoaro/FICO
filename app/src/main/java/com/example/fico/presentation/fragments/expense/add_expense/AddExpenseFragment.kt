@@ -44,6 +44,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
+import com.example.fico.presentation.activities.expense.MainActivity
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.presentation.viewmodel.shared.AddExpenseEditExpenseViewModel
