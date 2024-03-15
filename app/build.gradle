@@ -69,4 +69,7 @@ dependencies {
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    //Dependency Injection
+    implementation("io.insert-koin:koin-core:3.6.0")
+
 }
