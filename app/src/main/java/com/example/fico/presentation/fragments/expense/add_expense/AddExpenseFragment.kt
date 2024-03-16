@@ -52,6 +52,7 @@ import com.example.fico.util.constants.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
+import org.koin.android.ext.android.inject
 
 class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
@@ -59,9 +60,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
     private val binding get() = _binding!!
-    private val viewModel : AddExpenseViewModel by viewModels{
-        AddExpenseViewModel.Factory()
-    }
+    private val viewModel : AddExpenseViewModel by inject()
     private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
     private val permissionRequestCode = 123
     private val permissions = arrayOf(

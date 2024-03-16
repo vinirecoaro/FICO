@@ -26,11 +26,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class AddExpenseViewModel(
+    private val firebaseAPI : FirebaseAPI,
     private val getAllExpensesUseCase: GetAllExpensesUseCase,
     private val insertExpenseUseCase: InsertExpenseUseCase
 ) : ViewModel() {
 
-    private val firebaseAPI = FirebaseAPI.instance
+
     val state : LiveData<AddExpenseState> = liveData {
         emit(AddExpenseState.Loading)
         val state = try {
@@ -105,20 +106,6 @@ class AddExpenseViewModel(
             val bigNum = BigDecimal(budget)
             val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
             firebaseAPI.setDefaultBudget(formattedBudget)
-        }
-    }
-
-    class Factory : ViewModelProvider.Factory{
-        override fun <T : ViewModel> create(
-            modelClass: Class<T>,
-            extras : CreationExtras
-        ): T {
-            val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-            val repository = ExpenseRepositoryImpl(application.db.expenseDao())
-            return AddExpenseViewModel(
-                getAllExpensesUseCase =  GetAllExpensesUseCase(repository),
-                insertExpenseUseCase = InsertExpenseUseCase(repository)
-                ) as T
         }
     }
 
