@@ -497,8 +497,8 @@ class FirebaseAPI private constructor() {
                             val dateFromFilter = formatDateFromFilterToDatabaseForInfoPerMonth(filter)
                             if (dateFromDatabase == dateFromFilter) {
                                 val id = childSnapshot.key.toString()
-                                val priceDatabase = childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString().toFloat()
-                                val priceFormatted = "R$ %.5f".format(priceDatabase).replace(".", ",")
+                                val priceDatabase = BigDecimal(childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString())
+                                val priceFormatted = priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
                                 val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                                 val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                                 val dateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}"

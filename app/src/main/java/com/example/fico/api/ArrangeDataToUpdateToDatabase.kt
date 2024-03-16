@@ -25,7 +25,9 @@ class ArrangeDataToUpdateToDatabase {
             val currentTotalExpense = firebaseAPI.getTotalExpense().await()
             val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
             val expensePriceBigNum = BigDecimal(expensePrice).multiply(expenseNOfInstallmentsBigNum)
-            val oldExpensePriceBigNum = BigDecimal(oldExpensePrice).multiply(oldExpenseNOfInstallmentsBigNum)
+            val oldExpensePriceAnalytic = oldExpensePrice
+            val oldExpenseBigNum = BigDecimal(oldExpensePriceAnalytic)
+            val oldExpensePriceBigNum = oldExpenseBigNum.multiply(oldExpenseNOfInstallmentsBigNum)
 
             updatedTotalExpense = bigNumCurrentTotalExpense.add(expensePriceBigNum).subtract(oldExpensePriceBigNum).setScale(8, RoundingMode.HALF_UP)
             updatedTotalExpenseString.complete(updatedTotalExpense.toString())

@@ -52,7 +52,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         binding.editExpenseToolbar.setTitleTextColor(Color.WHITE)
 
         //Create category chooser
-        adapter = CategoryListAdapter(sharedViewModel.categoryList, this)
+        adapter = CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         val intent = intent

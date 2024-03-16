@@ -83,14 +83,20 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         return rootView
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getExpenseList(binding.actvDate.text.toString())
+        viewModel.getExpenseMonths()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -198,12 +204,6 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         val intent = Intent(requireContext(), EditExpenseActivity::class.java)
         intent.putExtra("expense", expense)
         startActivity(intent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-            viewModel.getExpenseList(binding.actvDate.text.toString())
-            viewModel.getExpenseMonths()
     }
 
     private fun setColorBasedOnTheme(){
