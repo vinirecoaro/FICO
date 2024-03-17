@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
@@ -25,13 +24,14 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.text.NumberFormat
 
 class HomeFragment : Fragment(){
 
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<HomeViewModel>()
+    private val viewModel : HomeViewModel by inject()
     private var barChartEntries : ArrayList<BarEntry> = arrayListOf()
     private var barChartMonthLabels : MutableSet<String> = mutableSetOf()
     private var barChartExpenseLabels : MutableSet<String> = mutableSetOf()

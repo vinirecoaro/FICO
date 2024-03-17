@@ -27,15 +27,15 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 
 class ExpenseMonthInfoHomeFragment : Fragment() {
 
     private var _binding : FragmentExpenseMonthInfoHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<HomeViewModel>()
+    private val viewModel : HomeViewModel by inject()
     private lateinit var adapter : ExpenseMonthsListAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -23,9 +23,10 @@ import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
-    private val firebaseAPI = FirebaseAPI.instance
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _infoPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()

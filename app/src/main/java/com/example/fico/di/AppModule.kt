@@ -8,10 +8,18 @@ import com.example.fico.data.repository.ExpenseRepositoryImpl
 import com.example.fico.domain.usecase.GetAllExpensesUseCase
 import com.example.fico.domain.usecase.InsertExpenseUseCase
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
+import com.example.fico.presentation.viewmodel.HomeViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val appModule = module {
+
+    factory<HomeViewModel> {
+        HomeViewModel(
+            firebaseAPI = get()
+        )
+    }
+
     factory<AddExpenseViewModel> {
         AddExpenseViewModel(
             firebaseAPI = get(),
@@ -19,6 +27,7 @@ val appModule = module {
             insertExpenseUseCase = get()
         )
     }
+
     factory<FirebaseAPI>{
         FirebaseAPI.instance
     }

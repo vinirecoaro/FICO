@@ -49,7 +49,7 @@ class AddExpenseViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addExpenseLocal(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) = viewModelScope.launch{
+    suspend fun addExpenseLocal(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) = viewModelScope.launch{
 
         val formattedDate = FormatValuesToDatabase().expenseDate(date)
         val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
