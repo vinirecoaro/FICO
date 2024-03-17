@@ -165,6 +165,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 lifecycleScope.launch {
                     if (checkPermission()) {
                         if (viewModel.checkIfExistDefaultBudget().await()) {
+                            //if(viewModel.)
                             importDataAlertDialog()
                         } else {
                             setUpDefaultBudgetAlertDialog()

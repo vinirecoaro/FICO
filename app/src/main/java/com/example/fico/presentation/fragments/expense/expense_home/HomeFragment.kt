@@ -78,7 +78,9 @@ class HomeFragment : Fragment(){
                 barChartMonthLabels.add(infoPerMonthLabel.date)
                 barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
             }
-            initExpenseEachMonthChart()
+            if(barChartEntries.isNotEmpty() && barChartMonthLabels.isNotEmpty() && barChartExpenseLabels.isNotEmpty()){
+                initExpenseEachMonthChart()
+            }
         }
     }
 
@@ -160,6 +162,7 @@ class HomeFragment : Fragment(){
 
         // Get current month position on chart and move chart to it
         val currentDateIndex = viewModel.getCurrentDatePositionBarChart().toFloat()
+
         barChart.moveViewToX(currentDateIndex)
 
         // Add animation of increasing bars
