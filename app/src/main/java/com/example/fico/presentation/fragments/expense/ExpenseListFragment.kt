@@ -41,13 +41,14 @@ import com.example.fico.presentation.viewmodel.ExpenseListViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.io.File
 
 class ExpenseListFragment : Fragment(), XLSInterface {
 
     private var _binding : FragmentExpenseListBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<ExpenseListViewModel>()
+    private val viewModel : ExpenseListViewModel by inject()
     private val expenseListAdapter = ExpenseListAdapter(emptyList())
     private var expenseMonthsList = arrayOf<String>()
     private val permissionRequestCode = 123

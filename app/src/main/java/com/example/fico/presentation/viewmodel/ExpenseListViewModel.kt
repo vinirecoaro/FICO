@@ -17,9 +17,11 @@ import kotlinx.coroutines.async
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ExpenseListViewModel: ViewModel() {
+class ExpenseListViewModel(
+    private val firebaseAPI : FirebaseAPI
+): ViewModel() {
 
-    private val firebaseAPI = FirebaseAPI.instance
+
     private val _expensesLiveData = MutableLiveData<List<Expense>>()
     val expensesLiveData: LiveData<List<Expense>> = _expensesLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
