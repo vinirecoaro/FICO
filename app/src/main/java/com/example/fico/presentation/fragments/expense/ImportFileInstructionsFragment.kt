@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.fico.R
 import com.example.fico.databinding.FragmentImportFileInstructionsBinding
 import com.example.fico.domain.model.ImportFileInstructionsComponents
 
@@ -22,10 +23,10 @@ class ImportFileInstructionsFragment : Fragment() {
         var rootView = binding.root
 
         arguments?.let {
-            binding.tvTitle.text = it.getString(TITLE)
-            binding.ivIlustration.setImageResource(it.getInt(IMAGE))
-            binding.tvDescription.text = it.getString(DESCRIPTION)
-            if(it.getBoolean(BUTTON_STATE)){
+            binding.tvTitle.text = it.getString(getString(R.string.title))
+            binding.ivIlustration.setImageResource(it.getInt(getString(R.string.image)))
+            binding.tvDescription.text = it.getString(getString(R.string.description))
+            if(it.getBoolean(getString(R.string.button_state))){
                 binding.btFinish.visibility = View.VISIBLE
             }else{
                 binding.btFinish.visibility = View.GONE
