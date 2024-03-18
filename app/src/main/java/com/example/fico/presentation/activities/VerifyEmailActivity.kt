@@ -11,12 +11,13 @@ import com.example.fico.presentation.activities.expense.MainActivity
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 
 class VerifyEmailActivity : AppCompatActivity() {
 
     private val binding by lazy {ActivityVerifyEmailBinding.inflate(layoutInflater)}
-    private val viewModel by viewModels<VerifyEmailViewModel>()
+    private val viewModel : VerifyEmailViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -7,9 +7,9 @@ import com.example.fico.api.FirebaseAPI
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.*
 
-class LoginViewModel : ViewModel() {
-
-    private val firebaseAPI = FirebaseAPI.instance
+class LoginViewModel(
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
     suspend fun login(email: String, password: String)=
         viewModelScope.async(Dispatchers.IO){

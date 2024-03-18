@@ -6,9 +6,9 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.async
 
-class GeneralConfigurationViewModel : ViewModel() {
-
-    private val firebaseAPI = FirebaseAPI.instance
+class GeneralConfigurationViewModel(
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
     val configurationList : MutableList<String> = mutableListOf(
         AppConstants.GENERAL_CONFIGURATION_LIST.PERSONAL_DATA,

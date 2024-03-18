@@ -9,9 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 
-class LogoViewModel : ViewModel() {
-
-    private val firebaseAPI = FirebaseAPI.instance
+class LogoViewModel(
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
     suspend fun isLogged() : Deferred<Boolean> {
         val result = CompletableDeferred<Boolean>()

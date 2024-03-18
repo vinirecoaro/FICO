@@ -9,11 +9,12 @@ import androidx.activity.viewModels
 import com.example.fico.databinding.ActivityResetPasswordBinding
 import com.example.fico.presentation.viewmodel.ResetPasswordViewModel
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.inject
 
 class ResetPasswordActivity : AppCompatActivity() {
 
     private val binding by lazy {ActivityResetPasswordBinding.inflate(layoutInflater)}
-    private val viewModel by viewModels<ResetPasswordViewModel>()
+    private val viewModel : ResetPasswordViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

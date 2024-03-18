@@ -16,11 +16,12 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class UserDataActivity : AppCompatActivity() {
 
     private val binding by lazy {ActivityUserDataBinding.inflate(layoutInflater)}
-    private val viewModel by viewModels<UserDataViewModel>()
+    private val viewModel : UserDataViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

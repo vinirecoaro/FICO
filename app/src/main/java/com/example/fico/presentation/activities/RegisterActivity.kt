@@ -13,11 +13,12 @@ import com.example.fico.presentation.viewmodel.RegisterViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class RegisterActivity : AppCompatActivity() {
 
     private val binding by lazy {ActivityRegisterBinding.inflate(layoutInflater)}
-    private val viewModel by viewModels<RegisterViewModel>()
+    private val viewModel : RegisterViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

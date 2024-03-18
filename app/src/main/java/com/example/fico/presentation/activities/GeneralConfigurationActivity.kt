@@ -11,11 +11,12 @@ import com.example.fico.util.constants.AppConstants
 import com.example.fico.presentation.adapters.GeneralConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
+import org.koin.android.ext.android.inject
 
 class GeneralConfigurationActivity : AppCompatActivity(),OnListItemClick {
 
     private val binding by lazy { ActivityGeneralConfigurationBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<GeneralConfigurationViewModel>()
+    private val viewModel : GeneralConfigurationViewModel by inject()
     private lateinit var generalConfigurationListAdapter : GeneralConfigurationListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +50,7 @@ class GeneralConfigurationActivity : AppCompatActivity(),OnListItemClick {
             finish()
             val intent = Intent(this, LoginActivity::class.java)
 
-            // Create a new task to restart de app and clear the old activities stack
+            // Create a new task to restart thr app and clear the old activities stack
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TASK
 

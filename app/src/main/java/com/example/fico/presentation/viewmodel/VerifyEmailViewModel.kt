@@ -8,11 +8,12 @@ import com.example.fico.api.FirebaseAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-class VerifyEmailViewModel : ViewModel() {
+class VerifyEmailViewModel(
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
     private val _isVerified = MutableLiveData<Boolean>()
     val isVerified : LiveData<Boolean> = _isVerified
-    private val firebaseAPI = FirebaseAPI.instance
 
     init{
         viewModelScope.async(Dispatchers.IO) {

@@ -16,9 +16,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 
-class RegisterViewModel : ViewModel() {
-
-    private val firebaseAPI = FirebaseAPI.instance
+class RegisterViewModel(
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
     fun checkFields(btn: Button, vararg fields : EditText): Boolean {
         val nFileds = fields.size

@@ -14,12 +14,12 @@ import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class LoginActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<LoginViewModel>()
-
+    private val viewModel : LoginViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

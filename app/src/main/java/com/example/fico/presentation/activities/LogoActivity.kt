@@ -13,11 +13,12 @@ import com.example.fico.presentation.viewmodel.LogoViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class LogoActivity : AppCompatActivity() {
 
     private val binding by lazy {ActivityLogoBinding.inflate(layoutInflater)}
-    private val viewModel by viewModels<LogoViewModel>()
+    private val viewModel : LogoViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

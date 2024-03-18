@@ -7,9 +7,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-class ResetPasswordViewModel : ViewModel() {
-
-    private val firebaseAPI = FirebaseAPI.instance
+class ResetPasswordViewModel(
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
     fun resetPassword(email : String){
         val result = CompletableDeferred<Boolean>()

@@ -567,7 +567,9 @@ class FirebaseAPI private constructor() {
                 informationPerMonthInfo.complete(infoList)
             }
             override fun onCancelled(error: DatabaseError) {
-                informationPerMonthInfo.complete(emptyList<InformationPerMonthExpense>() as MutableList<InformationPerMonthExpense>)
+                try {
+                    informationPerMonthInfo.complete(emptyList<InformationPerMonthExpense>() as MutableList<InformationPerMonthExpense>)
+                }catch (e : Exception){}
             }
         })
         return@withContext informationPerMonthInfo
