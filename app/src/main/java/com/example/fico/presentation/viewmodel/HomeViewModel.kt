@@ -14,9 +14,12 @@ import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.domain.model.InformationPerMonthExpense
+import com.example.fico.presentation.fragments.expense.expense_home.HomeFragmentState
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
@@ -33,6 +36,9 @@ class HomeViewModel(
     val infoPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonth
     private val _infoPerMonthLabel = MutableLiveData<List<InformationPerMonthExpense>>()
     val infoPerMonthLabelLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonthLabel
+
+    private val _state = MutableSharedFlow<HomeFragmentState>()
+    val state : SharedFlow<HomeFragmentState> = _state
 
     fun ShowHideValue(text: TextView){
         if (text.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD) {

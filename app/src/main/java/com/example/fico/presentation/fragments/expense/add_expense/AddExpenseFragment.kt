@@ -55,9 +55,10 @@ import org.koin.android.ext.android.inject
 
 class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
-    private var _binding: FragmentAddExpenseBinding? = null
+
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
+    private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
     private val viewModel : AddExpenseViewModel by inject()
     private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()

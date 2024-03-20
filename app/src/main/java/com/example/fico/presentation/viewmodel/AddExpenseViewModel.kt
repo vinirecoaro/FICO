@@ -1,24 +1,16 @@
 package com.example.fico.presentation.viewmodel
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.fico.domain.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
-import com.example.fico.data.db
-import com.example.fico.data.repository.ExpenseRepositoryImpl
 import com.example.fico.domain.model.ExpenseDomain
 import com.example.fico.domain.usecase.GetAllExpensesUseCase
 import com.example.fico.domain.usecase.InsertExpenseUseCase
-import com.example.fico.presentation.fragments.expense.add_expense.AddExpenseState
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -30,23 +22,6 @@ class AddExpenseViewModel(
     private val getAllExpensesUseCase: GetAllExpensesUseCase,
     private val insertExpenseUseCase: InsertExpenseUseCase
 ) : ViewModel() {
-
-
-    val state : LiveData<AddExpenseState> = liveData {
-        emit(AddExpenseState.Loading)
-        val state = try {
-            val expenses = getAllExpensesUseCase()
-            if(expenses.isEmpty()){
-                AddExpenseState.Empty
-            }else{
-                AddExpenseState.Success(expenses)
-            }
-        }catch (exception : Exception){
-            Log.e("Error", exception.message.toString())
-            AddExpenseState.Error(exception.message.toString())
-        }
-        emit(state)
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpenseLocal(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) = viewModelScope.launch{
