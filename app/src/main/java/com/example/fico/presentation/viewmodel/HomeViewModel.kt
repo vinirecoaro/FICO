@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collect
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
@@ -36,6 +37,8 @@ class HomeViewModel(
     val infoPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonth
     private val _infoPerMonthLabel = MutableLiveData<List<InformationPerMonthExpense>>()
     val infoPerMonthLabelLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonthLabel
+    private val _totalExpense = MutableLiveData<String>()
+    val totalExpenseLiveData : LiveData<String> = _totalExpense
 
     private val _state = MutableSharedFlow<HomeFragmentState>()
     val state : SharedFlow<HomeFragmentState> = _state
@@ -87,12 +90,23 @@ class HomeViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+   /* @RequiresApi(Build.VERSION_CODES.N)
     fun getTotalExpense(): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO){
             val totalExpense = firebaseAPI.getTotalExpense().await().toFloat()
             val priceFormatted = (NumberFormat.getCurrencyInstance().format(totalExpense))
             priceFormatted.toString()}
+    }*/
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getTotalExpense(){
+        viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.getTotalExpense2().collect{
+                val price = it.toFloat()
+                val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
+                _totalExpense.value = priceFormatted.toString()
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

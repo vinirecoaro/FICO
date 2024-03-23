@@ -15,6 +15,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.coroutines.resume
@@ -452,6 +454,24 @@ class FirebaseAPI private constructor() {
         }
         )
         return@withContext totalExpense
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun getTotalExpense2() : Flow<String> {
+        val totalExpense = "123456"
+        /*total_expense.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val value = snapshot.value.toString()
+                totalExpense.complete(value)
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        }
+        )*/
+        return flow {
+            emit(totalExpense)
+        }
     }
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {

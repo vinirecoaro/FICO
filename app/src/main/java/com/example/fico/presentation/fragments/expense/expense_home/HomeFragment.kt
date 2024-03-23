@@ -82,12 +82,16 @@ class HomeFragment : Fragment(){
                 initExpenseEachMonthChart()
             }
         }
+        viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
+            binding.tvTotalExpensesValue.text = totalExpense
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        getTotalExpense()
+        //getTotalExpense()
+        viewModel.getTotalExpense()
     }
 
     override fun onDestroyView() {
@@ -95,7 +99,7 @@ class HomeFragment : Fragment(){
         _binding = null
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+/*    @RequiresApi(Build.VERSION_CODES.N)
     private fun getTotalExpense(){
         lifecycleScope.launch(Dispatchers.Main) {
             try {
@@ -104,7 +108,7 @@ class HomeFragment : Fragment(){
             }catch (exception:Exception){
             }
         }
-    }
+    }*/
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initExpenseEachMonthChart(){
