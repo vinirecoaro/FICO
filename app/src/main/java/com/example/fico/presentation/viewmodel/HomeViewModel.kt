@@ -104,7 +104,8 @@ class HomeViewModel(
             firebaseAPI.getTotalExpense2().collect{
                 val price = it.toFloat()
                 val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
-                _totalExpense.value = priceFormatted.toString()
+                _totalExpense.value = "10.00"//priceFormatted.toString()
+                println("${priceFormatted.toString()}")
             }
         }
     }

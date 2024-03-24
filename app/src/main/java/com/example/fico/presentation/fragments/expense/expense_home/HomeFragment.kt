@@ -49,11 +49,24 @@ class HomeFragment : Fragment(){
         setUpListeners()
         viewModel.getInfoPerMonth()
 
+
         if(barChartEntries.isNotEmpty()){
             initExpenseEachMonthChart()
         }
 
         return rootView
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        //getTotalExpense()
+        viewModel.getTotalExpense()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -85,18 +98,6 @@ class HomeFragment : Fragment(){
         viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
             binding.tvTotalExpensesValue.text = totalExpense
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onResume() {
-        super.onResume()
-        //getTotalExpense()
-        viewModel.getTotalExpense()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
 /*    @RequiresApi(Build.VERSION_CODES.N)
