@@ -15,7 +15,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -457,21 +459,24 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getTotalExpense2() : Flow<String> {
-        val totalExpense = "123456"
-        /*total_expense.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.value.toString()
-                totalExpense.complete(value)
+    suspend fun observeTotalExpense() : Flow<String?> = callbackFlow{
+        val valueEventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Quando os dados mudam, enviamos o valor para o fluxo
+                trySend(dataSnapshot.getValue(String::class.java))
             }
-            override fun onCancelled(error: DatabaseError) {
 
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Em caso de erro, fechamos o fluxo com erro
+                close(databaseError.toException())
             }
         }
-        )*/
-        return flow {
-            emit(totalExpense)
+        total_expense.addValueEventListener(valueEventListener)
+
+        awaitClose {
+            total_expense.removeEventListener(valueEventListener)
         }
+
     }
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {

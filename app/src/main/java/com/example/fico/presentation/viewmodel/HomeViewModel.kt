@@ -21,12 +21,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.N)
 class HomeViewModel(
     private val firebaseAPI : FirebaseAPI
 ) : ViewModel() {
@@ -42,6 +44,11 @@ class HomeViewModel(
 
     private val _state = MutableSharedFlow<HomeFragmentState>()
     val state : SharedFlow<HomeFragmentState> = _state
+
+    init{
+        getTotalExpense()
+        getInfoPerMonth()
+    }
 
     fun ShowHideValue(text: TextView){
         if (text.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
@@ -90,22 +97,16 @@ class HomeViewModel(
         }
     }
 
-   /* @RequiresApi(Build.VERSION_CODES.N)
-    fun getTotalExpense(): kotlinx.coroutines.Deferred<String> {
-        return viewModelScope.async(Dispatchers.IO){
-            val totalExpense = firebaseAPI.getTotalExpense().await().toFloat()
-            val priceFormatted = (NumberFormat.getCurrencyInstance().format(totalExpense))
-            priceFormatted.toString()}
-    }*/
-
     @RequiresApi(Build.VERSION_CODES.N)
     fun getTotalExpense(){
         viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.getTotalExpense2().collect{
-                val price = it.toFloat()
+            firebaseAPI.observeTotalExpense().collect{
+                val price = it?.toFloat()
                 val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
-                _totalExpense.value = "10.00"//priceFormatted.toString()
-                println("${priceFormatted.toString()}")
+                withContext(Dispatchers.Main){
+                    _totalExpense.value = priceFormatted
+                    println(priceFormatted)
+                }
             }
         }
     }
