@@ -18,9 +18,11 @@ import com.example.fico.presentation.fragments.expense.expense_home.HomeFragment
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -97,15 +99,33 @@ class HomeViewModel(
         }
     }
 
+/*    @RequiresApi(Build.VERSION_CODES.N)
+    fun getMonthExpense(date: String, formatted : Boolean = true): Flow<String> {
+        viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.getMonthExpense2(date).collect{monthExpense ->
+                if(monthExpense == "---"){
+                    monthExpense
+                }else{
+                    if (formatted){
+                        val monthExpenseFormatted = (NumberFormat.getCurrencyInstance().format(monthExpense?.toFloat()))
+                        monthExpenseFormatted
+                    }else{
+                        monthExpense
+                    }
+                }
+            }
+
+        }
+    }*/
+
     @RequiresApi(Build.VERSION_CODES.N)
     fun getTotalExpense(){
         viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.observeTotalExpense().collect{
-                val price = it?.toFloat()
+            firebaseAPI.observeTotalExpense().collect{ totalExpense ->
+                val price = totalExpense?.toFloat()
                 val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
                 withContext(Dispatchers.Main){
                     _totalExpense.value = priceFormatted
-                    println(priceFormatted)
                 }
             }
         }

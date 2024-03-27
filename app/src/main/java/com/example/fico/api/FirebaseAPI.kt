@@ -443,6 +443,31 @@ class FirebaseAPI private constructor() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun getMonthExpense2(date: String): Flow<String?> = callbackFlow{
+
+        val reference = information_per_month.child(date)
+
+        val valueEventListener = object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    trySend(snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java))
+                } else {
+                    trySend("---")
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
+        }
+
+        reference.addValueEventListener(valueEventListener)
+
+        awaitClose{
+            reference.removeEventListener(valueEventListener)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getTotalExpense() : Deferred<String> = withContext(Dispatchers.IO){
         val totalExpense = CompletableDeferred<String>()
         total_expense.addValueEventListener(object : ValueEventListener {
