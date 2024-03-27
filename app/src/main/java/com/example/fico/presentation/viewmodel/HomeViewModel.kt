@@ -44,12 +44,25 @@ class HomeViewModel(
     private val _totalExpense = MutableLiveData<String>()
     val totalExpenseLiveData : LiveData<String> = _totalExpense
 
-    private val _state = MutableSharedFlow<HomeFragmentState>()
-    val state : SharedFlow<HomeFragmentState> = _state
+    private val _monthExpense = MutableLiveData<String?>()
+    val monthExpenseLiveData : LiveData<String?> = _monthExpense
+
+    private val _monthExpenseFormatted = MutableLiveData<String?>()
+    val monthExpenseFormattedLiveData : LiveData<String?> = _monthExpenseFormatted
+
+    private val _availableNow = MutableLiveData<String?>()
+    val availableNowLiveData : LiveData<String?> = _availableNow
+
+    private val _availableNowFormatted = MutableLiveData<String?>()
+    val availableNowFormattedLiveData : LiveData<String?> = _availableNowFormatted
 
     init{
         getTotalExpense()
         getInfoPerMonth()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getMonthExpense2(getCurrentlyDate())
+            getAvailableNow2(getCurrentlyDate())
+        }
     }
 
     fun ShowHideValue(text: TextView){
@@ -83,6 +96,26 @@ class HomeViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
+    fun getAvailableNow2(date: String, formatted : Boolean = true){
+        viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.getAvailableNow2(date).collect{availableNow ->
+                withContext(Dispatchers.Main){
+                    if(availableNow == "---"){
+                        _availableNow.value = availableNow
+                    }else{
+                        if (formatted){
+                            val availableNowFormatted = (NumberFormat.getCurrencyInstance().format(availableNow?.toFloat()))
+                            _availableNow.value = availableNowFormatted
+                        }else{
+                            _availableNow.value = availableNow
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
     fun getMonthExpense(date: String, formatted : Boolean = true): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO) {
             val monthExpense = firebaseAPI.getMonthExpense(date)
@@ -99,24 +132,23 @@ class HomeViewModel(
         }
     }
 
-/*    @RequiresApi(Build.VERSION_CODES.N)
-    fun getMonthExpense(date: String, formatted : Boolean = true): Flow<String> {
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getMonthExpense2(date: String, formatted : Boolean = true) {
         viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.getMonthExpense2(date).collect{monthExpense ->
-                if(monthExpense == "---"){
-                    monthExpense
-                }else{
-                    if (formatted){
-                        val monthExpenseFormatted = (NumberFormat.getCurrencyInstance().format(monthExpense?.toFloat()))
-                        monthExpenseFormatted
+                withContext(Dispatchers.Main){
+                    if(monthExpense == "---"){
+                        _monthExpense.value = monthExpense
                     }else{
-                        monthExpense
+                        _monthExpense.value = monthExpense
+
+                        val monthExpenseFormatted = (NumberFormat.getCurrencyInstance().format(monthExpense?.toFloat()))
+                        _monthExpenseFormatted.value = monthExpenseFormatted
                     }
                 }
             }
-
         }
-    }*/
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun getTotalExpense(){

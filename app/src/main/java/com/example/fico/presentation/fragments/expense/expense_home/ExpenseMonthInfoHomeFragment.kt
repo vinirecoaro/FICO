@@ -59,7 +59,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         binding.rvExpenseMonths.adapter = adapter
 
         getAvailableNow()
-        getMonthExpense()
+        //getMonthExpense()
         initMonthExpenseChart()
         initAvailableNowChart()
         viewModel.getExpenseMonths()
@@ -75,12 +75,18 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                 override fun onExpenseMonthSelected(date: String) {
                     val formattedDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(date)
                     getAvailableNow(formattedDate)
-                    getMonthExpense(formattedDate)
+                    //getMonthExpense(formattedDate)
+                    viewModel.getMonthExpense2(formattedDate)
                     initMonthExpenseChart(formattedDate)
                     initAvailableNowChart(formattedDate)
                 }
             })
         }
+
+        viewModel.monthExpenseFormattedLiveData.observe(viewLifecycleOwner){monthExpense ->
+            binding.tvTotalExpensesThisMonthValue.text = monthExpense
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -113,7 +119,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+/*    @RequiresApi(Build.VERSION_CODES.O)
     private fun getMonthExpense(date : String = viewModel.getCurrentlyDate()) {
         lifecycleScope.launch(Dispatchers.Main) {
             try {
@@ -122,7 +128,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             } catch (exception: Exception) {
             }
         }
-    }
+    }*/
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initMonthExpenseChart(date : String = viewModel.getCurrentlyDate()) {
