@@ -650,6 +650,36 @@ class FirebaseAPI private constructor() {
         return@withContext informationPerMonthInfo
     }
 
+    suspend fun observeInfoPerMonth() : Flow<List<InformationPerMonthExpense>> = callbackFlow{
+        val infoList = mutableListOf<InformationPerMonthExpense>()
+        val valueEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // Quando os dados mudam, enviamos o valor para o fluxo
+                for(month in snapshot.children){
+                    val monthInfo = InformationPerMonthExpense(
+                        month.key.toString(),
+                        month.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString(),
+                        month.child(AppConstants.DATABASE.BUDGET).value.toString(),
+                        month.child(AppConstants.DATABASE.EXPENSE).value.toString(),
+                    )
+                    infoList.add(monthInfo)
+                }
+                trySend(infoList.toList())
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Em caso de erro, fechamos o fluxo com erro
+                close(databaseError.toException())
+            }
+        }
+        information_per_month.addValueEventListener(valueEventListener)
+
+        awaitClose {
+            information_per_month.removeEventListener(valueEventListener)
+        }
+
+    }
+
     fun formatDateForFilterOnExpenseList(date: String) : String{
         var formattedDate = ""
         val month = date.substring(5,7)
