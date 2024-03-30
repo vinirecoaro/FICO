@@ -48,7 +48,6 @@ class FirebaseAPI private constructor() {
             AppConstants.DATABASE.DEFAULT_VALUES)
         private var user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         private var user_root = rootRef.child(auth.currentUser?.uid.toString())
-        private var expense_categories = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.CATEGORIES)
 
     }
 
@@ -59,7 +58,6 @@ class FirebaseAPI private constructor() {
         default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
         user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         user_root = rootRef.child(auth.currentUser?.uid.toString())
-        expense_categories = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.CATEGORIES)
     }
 
     suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO){
@@ -650,36 +648,6 @@ class FirebaseAPI private constructor() {
         return@withContext informationPerMonthInfo
     }
 
-    suspend fun observeInfoPerMonth() : Flow<List<InformationPerMonthExpense>> = callbackFlow{
-        val infoList = mutableListOf<InformationPerMonthExpense>()
-        val valueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // Quando os dados mudam, enviamos o valor para o fluxo
-                for(month in snapshot.children){
-                    val monthInfo = InformationPerMonthExpense(
-                        month.key.toString(),
-                        month.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString(),
-                        month.child(AppConstants.DATABASE.BUDGET).value.toString(),
-                        month.child(AppConstants.DATABASE.EXPENSE).value.toString(),
-                    )
-                    infoList.add(monthInfo)
-                }
-                trySend(infoList.toList())
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Em caso de erro, fechamos o fluxo com erro
-                close(databaseError.toException())
-            }
-        }
-        information_per_month.addValueEventListener(valueEventListener)
-
-        awaitClose {
-            information_per_month.removeEventListener(valueEventListener)
-        }
-
-    }
-
     fun formatDateForFilterOnExpenseList(date: String) : String{
         var formattedDate = ""
         val month = date.substring(5,7)
@@ -743,60 +711,6 @@ class FirebaseAPI private constructor() {
             formattedDate = "$year-12"
         }
         return formattedDate
-    }
-
-    suspend fun addExpenseCategory(category : String) : Boolean = withContext(Dispatchers.IO){
-        var result = false
-        expense_categories.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    var maxIndex = 0
-                    for(child in snapshot.children){
-                        if(child.key?.toInt()!! > maxIndex){
-                            maxIndex = child.key?.toInt()!!
-                        }
-                    }
-                    expense_categories.child((maxIndex + 1).toString()).setValue(category)
-                    result = true
-                }else{
-                    expense_categories.child("1").setValue(category)
-                    result = true
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
-        return@withContext result
-    }
-
-    suspend fun getExpenseCategories() : List<String> = suspendCoroutine { continuation ->
-        var isCompleted = false
-        expense_categories.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val categories = mutableListOf<String>()
-                if(snapshot.exists()){
-                    for(child in snapshot.children){
-                        categories.add(child.value.toString())
-                    }
-                    if(!isCompleted){
-                        isCompleted = true
-                        continuation.resume(categories)
-                    }
-
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                if(!isCompleted){
-                    isCompleted = true
-                    continuation.resume(emptyList())
-                }
-            }
-        })
-
     }
 
 }
