@@ -87,6 +87,10 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             binding.tvTotalExpensesThisMonthValue.text = monthExpense
         }
 
+        viewModel.informationPerMonthLiveData.observe(viewLifecycleOwner){
+
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -56,6 +56,9 @@ class HomeViewModel(
     private val _availableNowFormatted = MutableLiveData<String?>()
     val availableNowFormattedLiveData : LiveData<String?> = _availableNowFormatted
 
+    private val _informationPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
+    val informationPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _informationPerMonth
+
     init{
         getTotalExpense()
         getInfoPerMonth()
@@ -212,6 +215,14 @@ class HomeViewModel(
                 }
             }
             _infoPerMonth.value = monthWithExpenses
+        }
+    }
+
+    fun getInfoPerMonth2(){
+        viewModelScope.async {
+            firebaseAPI.observeInfoPerMonth().collect{informationPerMonthList ->
+                _informationPerMonth.value = informationPerMonthList
+            }
         }
     }
 
