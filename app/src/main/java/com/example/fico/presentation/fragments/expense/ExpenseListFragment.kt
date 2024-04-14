@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -132,7 +131,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     FormatValuesFromDatabase().priceToFile(expense.price),
                     expense.description,
                     expense.category,
-                    expense.date
+                    expense.inputDate
                 )
                 expenseList.add(modifiedExpense)
             }

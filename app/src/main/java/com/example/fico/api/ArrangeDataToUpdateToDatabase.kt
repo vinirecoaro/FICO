@@ -62,16 +62,16 @@ class ArrangeDataToUpdateToDatabase {
                     currentInstallment = "0$currentInstallment"
                 }
 
-                var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.date), i)
-                val expenseId = "${formattedExpense.date}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+                var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.inputDate), i)
+                val expenseId = "${formattedExpense.inputDate}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
                 formattedExpense.id = expenseId
 
                 expenseList.add(formattedExpense)
 
             }
         }else{
-            val expenseId = "${expense.date}-${inputTime}-${randonNum}"
-            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.date)
+            val expenseId = "${expense.inputDate}-${inputTime}-${randonNum}"
+            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.inputDate)
 
             expenseList.add(formattedExpense)
         }
@@ -104,8 +104,8 @@ class ArrangeDataToUpdateToDatabase {
 
             val randonNumId = randonNums[selectedIndex]
 
-            val expenseId = "${expense.date}-${inputTime}-${randonNumId}"
-            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.date)
+            val expenseId = "${expense.inputDate}-${inputTime}-${randonNumId}"
+            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.inputDate)
 
             expenseList.add(formattedExpense)
 
@@ -132,11 +132,11 @@ class ArrangeDataToUpdateToDatabase {
     }
 
     private fun formatExpenseToInstallmentExpense(expense : Expense, installmentNumber : Int) : Expense {
-        val month = expense.date.substring(5,7).toInt()
+        val month = expense.inputDate.substring(5,7).toInt()
         var newMonth = month + installmentNumber
-        var year = expense.date.substring(0,4).toInt()
+        var year = expense.inputDate.substring(0,4).toInt()
         var sumYear : Int = 0
-        var day = expense.date.substring(8,10).toInt()
+        var day = expense.inputDate.substring(8,10).toInt()
         var newDescription = expense.description + " Parcela ${installmentNumber+1}"
         if(newMonth > 12 ){
             if(newMonth % 12 == 0){
@@ -198,7 +198,7 @@ class ArrangeDataToUpdateToDatabase {
 
             if(!editExpense){ // Just Add expense price
                 for (i in 0 until newExpenseNOfInstallments) {
-                    val date = updateInstallmenteExpenseDate(expense.date, i)
+                    val date = updateInstallmenteExpenseDate(expense.inputDate, i)
                     val existDate = currentInformationPerMonth.any { it.date == date }
                     if (!existDate) {
 
@@ -244,9 +244,9 @@ class ArrangeDataToUpdateToDatabase {
                     1
                 }
 
-                val oldExpenseMonths = monthsOfInstallmentExpense(oldExpense.date, oldExpenseNOfInstallments)
+                val oldExpenseMonths = monthsOfInstallmentExpense(oldExpense.inputDate, oldExpenseNOfInstallments)
 
-                val newExpenseMonths = monthsOfInstallmentExpense(expense.date, newExpenseNOfInstallments)
+                val newExpenseMonths = monthsOfInstallmentExpense(expense.inputDate, newExpenseNOfInstallments)
 
                 val months = HashSet<String>(oldExpenseMonths + newExpenseMonths)
 
@@ -329,7 +329,7 @@ class ArrangeDataToUpdateToDatabase {
 
 
             for (expense in expenseList) {
-                val date = expense.date.substring(0,7)
+                val date = expense.inputDate.substring(0,7)
                 val existDate = currentInformationPerMonth.any { it.date == date }
                 if (!existDate) {
 
@@ -415,10 +415,10 @@ class ArrangeDataToUpdateToDatabase {
 
         if(!installment){
             for(expense in expensesList){
-                months.add(expense.date.substring(0,7))
+                months.add(expense.inputDate.substring(0,7))
             }
             for(month in months){
-                val expensesOfMonth = expensesList.filter { it.date.substring(0,7) == month.substring(0,7) }
+                val expensesOfMonth = expensesList.filter { it.inputDate.substring(0,7) == month.substring(0,7) }
                 var sumPrices = BigDecimal(0)
 
                 for(expense in expensesOfMonth){
@@ -435,7 +435,7 @@ class ArrangeDataToUpdateToDatabase {
             for(expense in expensesList){
                 for (i in 0 until expense.nOfInstallment.toFloat().toInt()){
                     val price = BigDecimal(expense.price).divide(BigDecimal(expense.nOfInstallment), 8, RoundingMode.HALF_UP).toString()
-                    val date = updateInstallmenteExpenseDate(expense.date, i)
+                    val date = updateInstallmenteExpenseDate(expense.inputDate, i)
 
                     val newExpense = Expense("", price, expense.description, expense.category, date)
 
@@ -443,10 +443,10 @@ class ArrangeDataToUpdateToDatabase {
                 }
             }
             for(expense in installmentExpenseList){
-                months.add(expense.date.substring(0,7))
+                months.add(expense.inputDate.substring(0,7))
             }
             for(month in months){
-                val expensesOfMonth = installmentExpenseList.filter { it.date.substring(0,7) == month.substring(0,7) }
+                val expensesOfMonth = installmentExpenseList.filter { it.inputDate.substring(0,7) == month.substring(0,7) }
                 var sumPrices = BigDecimal(0)
 
                 for(expense in expensesOfMonth){

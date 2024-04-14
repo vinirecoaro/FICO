@@ -2,8 +2,6 @@ package com.example.fico.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
 
 typealias ExpenseDomain = Expense
 
@@ -12,11 +10,13 @@ data class Expense(
     var price: String,
     var description: String,
     var category: String,
-    var date: String,
+    var paymentDate: String,
+    var purchaseDate: String,
     var nOfInstallment: String = "1"
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
@@ -30,7 +30,8 @@ data class Expense(
         parcel.writeString(price)
         parcel.writeString(description)
         parcel.writeString(category)
-        parcel.writeString(date)
+        parcel.writeString(paymentDate)
+        parcel.writeString(purchaseDate)
         parcel.writeString(nOfInstallment)
     }
 

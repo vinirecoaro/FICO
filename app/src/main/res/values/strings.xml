@@ -66,4 +66,7 @@
     <string name="image">image</string>
     <string name="description">description</string>
     <string name="button_state">button_state</string>
+    <string name="purchase_date">Data da Compra</string>
+    <string name="payment_date">Data de Pagamento</string>
+
 </resources>

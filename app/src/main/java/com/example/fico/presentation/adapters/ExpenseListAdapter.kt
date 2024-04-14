@@ -40,7 +40,7 @@ class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter
         val formattedPrice = currencyFormat.format(formattedNum)
         holder.price.text = formattedPrice
 
-        holder.date.text = item.date
+        holder.date.text = item.inputDate
 
         holder.itemView.setOnClickListener {
             listener?.onListItemClick(position)

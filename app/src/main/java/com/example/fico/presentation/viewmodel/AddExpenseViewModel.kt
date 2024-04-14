@@ -24,33 +24,16 @@ class AddExpenseViewModel(
 ) : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpenseLocal(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) = viewModelScope.launch{
-
-        val formattedDate = FormatValuesToDatabase().expenseDate(date)
-        val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
-        val preFormattedExpense = Expense("",formattedPrice, description, category, formattedDate)
-        val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(preFormattedExpense, installment, nOfInstallments)
-        
-        for(expense in expenseList){
-            insertExpenseUseCase(ExpenseDomain(
-                expense.id,
-                expense.price,
-                expense.description,
-                expense.category,
-                expense.date
-            ))
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addExpense(price: String, description: String, category: String, date: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
+    suspend fun addExpense(price: String, description: String, category: String, paymentDate: String, purchaseDate: String, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean>{
         return viewModelScope.async(Dispatchers.IO){
 
-            val formattedDate = FormatValuesToDatabase().expenseDate(date)
+            val formattedPaymentDate = FormatValuesToDatabase().expenseDate(paymentDate)
+
+            val formattedPurchaseDate = FormatValuesToDatabase().expenseDate(purchaseDate)
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
 
-            val expense = Expense("",formattedPrice, description, category, formattedDate)
+            val expense = Expense("",formattedPrice, description, category, formattedPaymentDate, formattedPurchaseDate)
 
             val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(expense, installment, nOfInstallments)
 

@@ -75,7 +75,7 @@ class UploadFile : Service() {
 
                         val expensePriceFormatted = BigDecimal(expense.price).divide(BigDecimal(expense.nOfInstallment), 8, RoundingMode.HALF_UP).toString()
 
-                        val _expense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.date)
+                        val _expense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.inputDate)
 
                         val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt())
 

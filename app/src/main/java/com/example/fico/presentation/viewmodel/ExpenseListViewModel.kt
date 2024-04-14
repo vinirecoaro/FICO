@@ -65,7 +65,7 @@ class ExpenseListViewModel(
      fun undoDeleteExpense(deletedExpense : Expense, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO){
 
-            val formattedDate = FormatValuesToDatabase().expenseDate(deletedExpense.date)
+            val formattedDate = FormatValuesToDatabase().expenseDate(deletedExpense.inputDate)
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(FormatValuesFromDatabase().price(deletedExpense.price), nOfInstallments)
 

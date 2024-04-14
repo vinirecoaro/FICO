@@ -25,9 +25,9 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
             //Format data to delete item
             val position = viewHolder.adapterPosition
             val deleteItem = adapter.getDataAtPosition(position)
-            val day = deleteItem.date.substring(0, 2)
-            val month = deleteItem.date.substring(3, 5)
-            val year = deleteItem.date.substring(6, 10)
+            val day = deleteItem.inputDate.substring(0, 2)
+            val month = deleteItem.inputDate.substring(3, 5)
+            val year = deleteItem.inputDate.substring(6, 10)
             val modifiedDate = "$year-$month-$day"
             val expencePrice = "-${deleteItem.price.replace("R$ ", "").replace(",", ".")}"
             val deleteItemFormatted = Expense(

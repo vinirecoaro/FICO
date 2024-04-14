@@ -8,7 +8,7 @@ fun ExpenseDomain.toEntity() = ExpenseEntity(
     price = price,
     description = description,
     category = category,
-    date = date,
+    date = inputDate,
     nOfInstallment = nOfInstallment
 )
 
@@ -17,6 +17,6 @@ fun ExpenseEntity.toDomain() = ExpenseDomain(
     price = price,
     description = description,
     category = category,
-    date = date,
+    inputDate = date,
     nOfInstallment = nOfInstallment
 )
