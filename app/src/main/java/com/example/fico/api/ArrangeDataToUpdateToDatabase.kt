@@ -62,7 +62,7 @@ class ArrangeDataToUpdateToDatabase {
                     currentInstallment = "0$currentInstallment"
                 }
 
-                var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.inputDate), i)
+                var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate), i)
                 val expenseId = "${formattedExpense.inputDate}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
                 formattedExpense.id = expenseId
 
