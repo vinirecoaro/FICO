@@ -12,6 +12,7 @@ data class Expense(
     var category: String,
     var paymentDate: String,
     var purchaseDate: String,
+    var inputDateTime: String,
     var nOfInstallment: String = "1"
 
 ) : Parcelable {

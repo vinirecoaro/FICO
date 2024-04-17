@@ -343,7 +343,9 @@ class FirebaseAPI private constructor() {
             for(expense in expenseList){
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.PRICE}"] = expense.price
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.DESCRIPTION}"] = expense.description
-                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.DATE}"] = expense.inputDate
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.PAYMENT_DATE}"] = expense.paymentDate
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.PURCHASE_DATE}"] = expense.purchaseDate
+                updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.INPUT_DATE_TIME}"] = expense.inputDateTime
                 updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.CATEGORY}"] = expense.category
             }
 
@@ -381,12 +383,12 @@ class FirebaseAPI private constructor() {
     }
 
     private suspend fun updateInformationPerMonth(expense: Expense)= withContext(Dispatchers.IO){
-        information_per_month.child(expense.inputDate.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
+        information_per_month.child(expense.paymentDate.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
-                information_per_month.child(expense.inputDate.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
+                information_per_month.child(expense.paymentDate.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
                 val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
-                information_per_month.child(expense.inputDate.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
+                information_per_month.child(expense.paymentDate.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
             }
             override fun onCancelled(error: DatabaseError) {
 
@@ -557,14 +559,23 @@ class FirebaseAPI private constructor() {
                             val priceFormatted = priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
                             val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                             val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
-                            val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
-                            var dateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}"
-                            val expense = Expense(id, priceFormatted, description, category, dateFormatted)
-                            expenseList.add(expense)
+                            val paymentDateDatabase = childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
+                            var paymentDateFormatted = "${paymentDateDatabase.substring(8, 10)}/${paymentDateDatabase.substring(5, 7)}/${paymentDateDatabase.substring(0, 4)}"
+                            if((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).exists()) || (!childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).exists())){
+                                val expense = Expense(id, priceFormatted, description, category, paymentDateFormatted, "","")
+                                expenseList.add(expense)
+                            }else{
+                                val purchaseDateDatabase = childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
+                                val purchaseDateFormatted = "${purchaseDateDatabase.substring(8, 10)}/${purchaseDateDatabase.substring(5, 7)}/${purchaseDateDatabase.substring(0, 4)}"
+                                val inputDateTime = childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+                                val expense = Expense(id, priceFormatted, description, category, paymentDateFormatted, purchaseDateFormatted, inputDateTime)
+                                expenseList.add(expense)
+                            }
+
                         }
                     } else {
                         for (childSnapshot in snapshot.children) {
-                            val dateDatabase = childSnapshot.child(AppConstants.DATABASE.DATE).value.toString()
+                            val dateDatabase = childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
                             val dateFromDatabase = "${dateDatabase.substring(0, 4)}-${dateDatabase.substring(5, 7)}"
                             val dateFromFilter = formatDateFromFilterToDatabaseForInfoPerMonth(filter)
                             if (dateFromDatabase == dateFromFilter) {
@@ -573,9 +584,18 @@ class FirebaseAPI private constructor() {
                                 val priceFormatted = priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
                                 val description = childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
                                 val category = childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
-                                val dateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}"
-                                val expense = Expense(id, priceFormatted, description, category, dateFormatted)
-                                expenseList.add(expense)
+                                val paymentDateFormatted = "${dateDatabase.substring(8, 10)}/${dateDatabase.substring(5, 7)}/${dateDatabase.substring(0, 4)}"
+                                if((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).exists()) || (!childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).exists())){
+                                    val expense = Expense(id, priceFormatted, description, category, paymentDateFormatted, "","")
+                                    expenseList.add(expense)
+                                }else{
+                                    val purchaseDateDatabase = childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
+                                    val purchaseDateFormatted = "${purchaseDateDatabase.substring(8, 10)}/${purchaseDateDatabase.substring(5, 7)}/${purchaseDateDatabase.substring(0, 4)}"
+                                    val inputDateTime = childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+                                    val expense = Expense(id, priceFormatted, description, category, paymentDateFormatted, purchaseDateFormatted, inputDateTime)
+                                    expenseList.add(expense)
+                                }
+
                             }
                         }
                     }

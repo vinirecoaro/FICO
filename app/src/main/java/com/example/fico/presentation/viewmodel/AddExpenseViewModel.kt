@@ -31,9 +31,11 @@ class AddExpenseViewModel(
 
             val formattedPurchaseDate = FormatValuesToDatabase().expenseDate(purchaseDate)
 
+            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+
             val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
 
-            val expense = Expense("",formattedPrice, description, category, formattedPaymentDate, formattedPurchaseDate)
+            val expense = Expense("",formattedPrice, description, category, formattedPaymentDate, formattedPurchaseDate,formattedInputDate)
 
             val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(expense, installment, nOfInstallments)
 
