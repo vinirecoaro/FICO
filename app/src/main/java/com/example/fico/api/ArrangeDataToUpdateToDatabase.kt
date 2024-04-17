@@ -63,15 +63,15 @@ class ArrangeDataToUpdateToDatabase {
                 }
 
                 var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate), i)
-                val expenseId = "${formattedExpense.inputDate}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+                val expenseId = "${formattedExpense.purchaseDate}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
                 formattedExpense.id = expenseId
 
                 expenseList.add(formattedExpense)
 
             }
         }else{
-            val expenseId = "${expense.inputDate}-${inputTime}-${randonNum}"
-            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.inputDate)
+            val expenseId = "${expense.purchaseDate}-${inputTime}-${randonNum}"
+            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate)
 
             expenseList.add(formattedExpense)
         }
@@ -104,8 +104,8 @@ class ArrangeDataToUpdateToDatabase {
 
             val randonNumId = randonNums[selectedIndex]
 
-            val expenseId = "${expense.inputDate}-${inputTime}-${randonNumId}"
-            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.inputDate)
+            val expenseId = "${expense.purchaseDate}-${inputTime}-${randonNumId}"
+            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate)
 
             expenseList.add(formattedExpense)
 
@@ -132,11 +132,11 @@ class ArrangeDataToUpdateToDatabase {
     }
 
     private fun formatExpenseToInstallmentExpense(expense : Expense, installmentNumber : Int) : Expense {
-        val month = expense.inputDate.substring(5,7).toInt()
+        val month = expense.paymentDate.substring(5,7).toInt()
         var newMonth = month + installmentNumber
-        var year = expense.inputDate.substring(0,4).toInt()
+        var year = expense.paymentDate.substring(0,4).toInt()
         var sumYear : Int = 0
-        var day = expense.inputDate.substring(8,10).toInt()
+        var day = expense.paymentDate.substring(8,10).toInt()
         var newDescription = expense.description + " Parcela ${installmentNumber+1}"
         if(newMonth > 12 ){
             if(newMonth % 12 == 0){
@@ -162,8 +162,8 @@ class ArrangeDataToUpdateToDatabase {
             dayFormatted = "0$day"
         }
 
-        val date = "$year-$newMonthFormatted-$dayFormatted"
-        val newExpense = Expense(expense.id,expense.price, newDescription, expense.category, date)
+        val paymentDate = "$year-$newMonthFormatted-$dayFormatted"
+        val newExpense = Expense(expense.id,expense.price, newDescription, expense.category, paymentDate, expense.purchaseDate)
 
         return newExpense
     }
