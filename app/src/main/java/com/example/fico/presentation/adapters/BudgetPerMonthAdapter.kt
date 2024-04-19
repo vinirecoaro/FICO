@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.domain.model.Budget
+import com.example.fico.model.Budget
 import com.example.fico.presentation.interfaces.OnListItemClick
 
 class BudgetPerMonthAdapter(private var data : List<Budget>) : RecyclerView.Adapter<BudgetPerMonthAdapter.ViewHolder>(){

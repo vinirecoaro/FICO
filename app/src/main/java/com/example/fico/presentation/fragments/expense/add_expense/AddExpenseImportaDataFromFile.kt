@@ -2,7 +2,7 @@ package com.example.fico.presentation.fragments.expense.add_expense
 
 import android.net.Uri
 import android.os.Environment
-import com.example.fico.domain.model.Expense
+import com.example.fico.model.Expense
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DateUtil

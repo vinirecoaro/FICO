@@ -98,7 +98,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         setUpListeners()
         setColorBasedOnTheme()
 
-        binding.etDate.inputType = InputType.TYPE_NULL
+        binding.etPaymentDate.inputType = InputType.TYPE_NULL
 
         setMaxLength(binding.etInstallments, 3)
 
@@ -117,7 +117,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        binding.etDate.setText(viewModel.getCurrentlyDate())
+        binding.etPaymentDate.setText(viewModel.getCurrentlyDate())
 
         val filter = IntentFilter().apply {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)

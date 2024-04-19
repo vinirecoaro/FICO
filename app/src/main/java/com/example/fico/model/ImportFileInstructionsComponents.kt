@@ -1,4 +1,4 @@
-package com.example.fico.domain.model
+package com.example.fico.model
 
 import androidx.annotation.DrawableRes
 

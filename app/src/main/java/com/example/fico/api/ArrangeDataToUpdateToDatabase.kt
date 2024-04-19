@@ -2,8 +2,8 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.fico.domain.model.Expense
-import com.example.fico.domain.model.InformationPerMonthExpense
+import com.example.fico.model.Expense
+import com.example.fico.model.InformationPerMonthExpense
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode

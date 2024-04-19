@@ -3,7 +3,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fico.domain.model.Expense
+import com.example.fico.model.Expense
 import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
 import com.google.android.material.snackbar.Snackbar

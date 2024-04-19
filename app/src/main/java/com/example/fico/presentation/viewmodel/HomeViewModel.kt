@@ -13,16 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.domain.model.InformationPerMonthExpense
-import com.example.fico.presentation.fragments.expense.expense_home.HomeFragmentState
+import com.example.fico.model.InformationPerMonthExpense
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode

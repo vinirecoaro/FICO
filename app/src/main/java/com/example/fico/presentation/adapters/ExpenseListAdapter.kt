@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.domain.model.Expense
+import com.example.fico.model.Expense
 import com.example.fico.presentation.interfaces.OnListItemClick
 import java.text.DecimalFormat
 import java.text.NumberFormat

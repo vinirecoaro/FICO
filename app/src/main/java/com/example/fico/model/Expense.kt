@@ -1,9 +1,7 @@
-package com.example.fico.domain.model
+package com.example.fico.model
 
 import android.os.Parcel
 import android.os.Parcelable
-
-typealias ExpenseDomain = Expense
 
 data class Expense(
     var id: String,

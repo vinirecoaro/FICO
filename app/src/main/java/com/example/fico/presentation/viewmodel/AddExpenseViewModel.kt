@@ -4,13 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fico.domain.model.Expense
+import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
-import com.example.fico.domain.model.ExpenseDomain
-import com.example.fico.domain.usecase.GetAllExpensesUseCase
-import com.example.fico.domain.usecase.InsertExpenseUseCase
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -19,8 +16,6 @@ import java.time.format.DateTimeFormatter
 
 class AddExpenseViewModel(
     private val firebaseAPI : FirebaseAPI,
-    private val getAllExpensesUseCase: GetAllExpensesUseCase,
-    private val insertExpenseUseCase: InsertExpenseUseCase
 ) : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)

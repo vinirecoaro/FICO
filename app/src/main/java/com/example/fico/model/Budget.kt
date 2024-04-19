@@ -1,4 +1,4 @@
-package com.example.fico.domain.model
+package com.example.fico.model
 
 data class Budget(
     val budget : String,

@@ -1,12 +1,9 @@
 package com.example.fico.di
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Room
 import com.example.fico.api.FirebaseAPI
-import com.example.fico.data.AppDatabase
-import com.example.fico.data.dao.ExpenseDao
-import com.example.fico.data.repository.ExpenseRepositoryImpl
-import com.example.fico.domain.usecase.GetAllExpensesUseCase
-import com.example.fico.domain.usecase.InsertExpenseUseCase
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
@@ -17,9 +14,9 @@ import com.example.fico.presentation.viewmodel.RegisterViewModel
 import com.example.fico.presentation.viewmodel.ResetPasswordViewModel
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
+@RequiresApi(Build.VERSION_CODES.N)
 val appModule = module {
 
     factory<VerifyEmailViewModel> {
@@ -79,8 +76,6 @@ val appModule = module {
     factory<AddExpenseViewModel> {
         AddExpenseViewModel(
             firebaseAPI = get(),
-            getAllExpensesUseCase = get(),
-            insertExpenseUseCase = get()
         )
     }
 
@@ -88,29 +83,5 @@ val appModule = module {
         FirebaseAPI.instance
     }
 
-    factory<GetAllExpensesUseCase>{
-        GetAllExpensesUseCase(
-            get<ExpenseRepositoryImpl>()
-        )
-    }
-
-    factory<InsertExpenseUseCase>{
-        InsertExpenseUseCase(
-            get<ExpenseRepositoryImpl>()
-        )
-    }
-
-    factory<ExpenseRepositoryImpl>{
-        ExpenseRepositoryImpl(
-            dao = get<AppDatabase>().expenseDao()
-        )
-    }
-
-    single<AppDatabase>{
-        Room.databaseBuilder(
-            androidContext(),
-            AppDatabase::class.java, "database-expense"
-        ).build()
-    }
 }
 

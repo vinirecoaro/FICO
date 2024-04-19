@@ -1,7 +1,7 @@
 package com.example.fico.presentation.viewmodel.shared
 
 import androidx.lifecycle.ViewModel
-import com.example.fico.domain.model.ExpenseCategory
+import com.example.fico.model.ExpenseCategory
 import com.example.fico.util.constants.AppConstants
 
 class AddExpenseEditExpenseViewModel : ViewModel() {
