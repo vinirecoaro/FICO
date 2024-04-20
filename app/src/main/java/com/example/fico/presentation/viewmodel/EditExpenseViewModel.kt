@@ -29,7 +29,7 @@ class EditExpenseViewModel : ViewModel() {
     ) : Deferred<Boolean > {
         return viewModelScope.async(Dispatchers.IO) {
 
-            var oldExpenseDate = FormatValuesToDatabase().expenseDate(oldExpense.inputDate)
+            var oldExpenseDate = FormatValuesToDatabase().expenseDate(oldExpense.paymentDate)
 
             var oldExpenseNOfInstallment = 1
 

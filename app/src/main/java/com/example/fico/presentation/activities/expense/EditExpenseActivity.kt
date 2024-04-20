@@ -67,7 +67,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(expense.price, expense.id)
                     val description = FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
                     val nOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id)
-                    val initialDate = FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id, expense.inputDate)
+                    val initialDate = FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id, expense.paymentDate)
 
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(description)
@@ -81,7 +81,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description)
                     binding.actvCategory.setText(expense.category)
-                    binding.etDate.setText(expense.inputDate)
+                    binding.etDate.setText(expense.paymentDate)
                 }
             }
             if (expense != null) {
