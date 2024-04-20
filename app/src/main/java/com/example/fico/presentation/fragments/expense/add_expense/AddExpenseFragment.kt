@@ -191,7 +191,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             binding.etPrice,
                             binding.etDescription,
                             binding.actvCategory,
-                            binding.etDate
+                            binding.etPaymentDate,
+                            binding.etPurchaseDate
                         )
                     ) {
                         val internetConnection = ConnectionFunctions().internetConnectionVerification(requireContext())
@@ -202,7 +203,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
-                                        binding.etDate.text.toString(),
+                                        binding.etPaymentDate.text.toString(),
+                                        binding.etPurchaseDate.text.toString(),
                                         false).await()){
                                     hideKeyboard(requireContext(),binding.btSave)
                                     Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
@@ -214,7 +216,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                             binding.etPrice.text.toString(),
                                             binding.etDescription.text.toString(),
                                             binding.actvCategory.text.toString(),
-                                            binding.etDate.text.toString(),
+                                            binding.etPaymentDate.text.toString(),
+                                            binding.etPurchaseDate.text.toString(),
                                             false).await()){
                                         hideKeyboard(requireContext(),binding.btSave)
                                         Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
@@ -237,7 +240,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             binding.etPrice,
                             binding.etDescription,
                             binding.actvCategory,
-                            binding.etDate
+                            binding.etPaymentDate,
+                            binding.etPurchaseDate
                         )
                     ){
                         if(binding.etInstallments.text.toString() != "0"){
@@ -247,7 +251,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
-                                        binding.etDate.text.toString(),
+                                        binding.etPaymentDate.text.toString(),
+                                        binding.etPurchaseDate.text.toString(),
                                         true,
                                         binding.etInstallments.text.toString().toInt()
                                     ).await()){
@@ -261,7 +266,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
-                                        binding.etDate.text.toString(),
+                                        binding.etPaymentDate.text.toString(),
+                                        binding.etPurchaseDate.text.toString(),
                                         true,
                                         binding.etInstallments.text.toString().toInt()
                                     ).await()){
@@ -284,9 +290,9 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             binding.actvCategory.showDropDown()
         }
 
-        binding.ivDate.setOnClickListener {
+        binding.ivPaymentDate.setOnClickListener {
             binding.btSave.visibility = View.VISIBLE
-            binding.ivDate.isEnabled = false
+            binding.ivPaymentDate.isEnabled = false
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Escolha a Data")
@@ -295,19 +301,45 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             datePicker.addOnPositiveButtonClickListener {
                 val selectedDateInMillis = it
                 val formattedDate = formatDate(selectedDateInMillis)
-                binding.etDate.setText(formattedDate)
-                binding.ivDate.isEnabled = true
+                binding.etPaymentDate.setText(formattedDate)
+                binding.ivPaymentDate.isEnabled = true
             }
 
             datePicker.addOnNegativeButtonClickListener {
-                binding.ivDate.isEnabled = true
+                binding.ivPaymentDate.isEnabled = true
             }
 
             datePicker.addOnDismissListener{
-                binding.ivDate.isEnabled = true
+                binding.ivPaymentDate.isEnabled = true
             }
 
-            datePicker.show(parentFragmentManager,"Tag")
+            datePicker.show(parentFragmentManager,"PaymentDate")
+        }
+
+        binding.ivPurchaseDate.setOnClickListener {
+            binding.btSave.visibility = View.VISIBLE
+            binding.ivPurchaseDate.isEnabled = false
+
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Escolha a Data")
+                .build()
+
+            datePicker.addOnPositiveButtonClickListener {
+                val selectedDateInMillis = it
+                val formattedDate = formatDate(selectedDateInMillis)
+                binding.etPurchaseDate.setText(formattedDate)
+                binding.ivPurchaseDate.isEnabled = true
+            }
+
+            datePicker.addOnNegativeButtonClickListener {
+                binding.ivPurchaseDate.isEnabled = true
+            }
+
+            datePicker.addOnDismissListener{
+                binding.ivPurchaseDate.isEnabled = true
+            }
+
+            datePicker.show(parentFragmentManager,"PurchaseDate")
         }
 
         binding.etPrice.addTextChangedListener(object : TextWatcher {
@@ -582,10 +614,12 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private fun setColorBasedOnTheme() {
         when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_light)
+                binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_light)
+                binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
-                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_dark)
+                binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_dark)
+                binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_dark)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
