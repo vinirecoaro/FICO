@@ -73,7 +73,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     binding.etDescription.setText(description)
                     binding.actvCategory.setText(expense.category)
                     binding.etInstallments.setText(nOfInstallment)
-                    binding.etDate.setText(initialDate)
+                    binding.etPaymentDateEdit.setText(initialDate)
                 }else{
 
                     val priceFormatted = FormatValuesFromDatabase().price(expense.price)
@@ -81,7 +81,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(expense.description)
                     binding.actvCategory.setText(expense.category)
-                    binding.etDate.setText(expense.paymentDate)
+                    binding.etPaymentDateEdit.setText(expense.paymentDate)
                 }
             }
             if (expense != null) {
@@ -106,13 +106,14 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
             val expense = intent.getParcelableExtra<Expense>("expense")
             lifecycleScope.launch(Dispatchers.Main){
                 if(binding.etInstallments.visibility == View.GONE){
-                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etDate)){
+                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etPaymentDateEdit, binding.etPurchaseDateEdit)){
                         if(viewModel.saveEditExpense(
                             expense!!,
                             binding.etPrice.text.toString(),
                             binding.etDescription.text.toString(),
                             binding.actvCategory.text.toString(),
-                            binding.etDate.text.toString(),
+                            binding.etPaymentDateEdit.text.toString(),
+                            binding.etPurchaseDateEdit.text.toString(),
                             false
                         ).await()){
                             hideKeyboard(this@EditExpenseActivity, binding.btSave)
@@ -123,14 +124,15 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                         finish()
                     }
                 }else if(binding.etInstallments.visibility == View.VISIBLE){
-                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etDate)){
+                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etPaymentDateEdit, binding.etPurchaseDateEdit)){
                         if(binding.etInstallments.text.toString() != "0"){
                             if(viewModel.saveEditExpense(
                                     expense!!,
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
-                                    binding.etDate.text.toString(),
+                                    binding.etPaymentDateEdit.text.toString(),
+                                    binding.etPurchaseDateEdit.text.toString(),
                                     true,
                                     binding.etInstallments.text.toString().toInt()
                             ).await()){
@@ -150,9 +152,9 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
         }
 
-        binding.ivDate.setOnClickListener{
+        binding.ivPaymentDate.setOnClickListener{
             binding.btSave.visibility = View.VISIBLE
-            binding.ivDate.isEnabled = false
+            binding.ivPaymentDate.isEnabled = false
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Escolha a Data")
@@ -161,15 +163,37 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
             datePicker.addOnPositiveButtonClickListener {
                 val selectedDateInMillis = it
                 val formattedDate = formatDate(selectedDateInMillis)
-                binding.etDate.setText(formattedDate)
-                binding.ivDate.isEnabled = true
+                binding.etPaymentDateEdit.setText(formattedDate)
+                binding.ivPaymentDate.isEnabled = true
             }
 
             datePicker.addOnNegativeButtonClickListener {
-                binding.ivDate.isEnabled = true
+                binding.ivPaymentDate.isEnabled = true
             }
 
-            datePicker.show(supportFragmentManager,"Tag")
+            datePicker.show(supportFragmentManager,"PaymentDate")
+        }
+
+        binding.ivPurchaseDateEdit.setOnClickListener{
+            binding.btSave.visibility = View.VISIBLE
+            binding.ivPurchaseDateEdit.isEnabled = false
+
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Escolha a Data")
+                .build()
+
+            datePicker.addOnPositiveButtonClickListener {
+                val selectedDateInMillis = it
+                val formattedDate = formatDate(selectedDateInMillis)
+                binding.etPurchaseDateEdit.setText(formattedDate)
+                binding.ivPurchaseDateEdit.isEnabled = true
+            }
+
+            datePicker.addOnNegativeButtonClickListener {
+                binding.ivPurchaseDateEdit.isEnabled = true
+            }
+
+            datePicker.show(supportFragmentManager,"PurchaseDate")
         }
 
         binding.etPrice.addTextChangedListener(object : TextWatcher {
@@ -241,10 +265,12 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
     private fun setColorBasedOnTheme() {
         when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_light)
+                binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_light)
+                binding.ivPurchaseDateEdit.setImageResource(R.drawable.baseline_calendar_month_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
-                binding.ivDate.setImageResource(R.drawable.baseline_calendar_month_dark)
+                binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_dark)
+                binding.ivPurchaseDateEdit.setImageResource(R.drawable.baseline_calendar_month_dark)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }

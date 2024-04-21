@@ -12,6 +12,8 @@ import com.example.fico.api.FormatValuesToDatabase
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class EditExpenseViewModel : ViewModel() {
 
@@ -23,19 +25,22 @@ class EditExpenseViewModel : ViewModel() {
         price: String,
         description: String,
         category: String,
-        date: String,
+        paymentDate: String,
+        purchaseData : String,
         installment : Boolean,
         nOfInstallments: Int = 1
     ) : Deferred<Boolean > {
         return viewModelScope.async(Dispatchers.IO) {
 
-            var oldExpenseDate = FormatValuesToDatabase().expenseDate(oldExpense.paymentDate)
+            var oldExpensePaymentDate = FormatValuesToDatabase().expenseDate(oldExpense.paymentDate)
+            var oldExpensePurchaseDate = FormatValuesToDatabase().expenseDate(oldExpense.purchaseDate)
+            var oldExpenseInputDateTime = FormatValuesToDatabase().expenseDate(oldExpense.inputDateTime)
 
             var oldExpenseNOfInstallment = 1
 
             if(installment){
                 oldExpenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(oldExpense.id).toInt()
-                oldExpenseDate = FormatValuesToDatabase().expenseDate(FormatValuesFromDatabase().installmentExpenseInitialDate(oldExpense.id,oldExpense.inputDate))
+                oldExpensePaymentDate = FormatValuesToDatabase().expenseDate(FormatValuesFromDatabase().installmentExpenseInitialDate(oldExpense.id,oldExpense.paymentDate))
             }
 
             val oldExpenseFormatted = Expense(
@@ -43,15 +48,19 @@ class EditExpenseViewModel : ViewModel() {
                 oldExpense.price,
                 oldExpense.description,
                 oldExpense.category,
-                oldExpenseDate
+                oldExpensePaymentDate,
+                oldExpensePurchaseDate,
+                oldExpenseInputDateTime
             )
 
             val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseList(oldExpenseFormatted, viewModelScope).await()
 
             val newExpensePrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
-            val newExpenseDate = FormatValuesToDatabase().expenseDate(date)
+            val newExpensePaymentDate = FormatValuesToDatabase().expenseDate(paymentDate)
+            val newExpensePurchaseDate = FormatValuesToDatabase().expenseDate(purchaseData)
+            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
-            val newExpense = Expense(id = "", newExpensePrice, description, category, newExpenseDate)
+            val newExpense = Expense(id = "", newExpensePrice, description, category, newExpensePaymentDate, newExpensePurchaseDate, formattedInputDate)
 
             val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpenseFormatted.price, oldExpenseNOfInstallment).await()
 
@@ -63,4 +72,13 @@ class EditExpenseViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentlyDate() : String{
+        val currentDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        return currentDate.format(formatter)
+    }
+
+
 }
+
