@@ -131,7 +131,9 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     FormatValuesFromDatabase().priceToFile(expense.price),
                     expense.description,
                     expense.category,
-                    expense.inputDate
+                    expense.paymentDate,
+                    expense.purchaseDate,
+                    expense.inputDateTime
                 )
                 expenseList.add(modifiedExpense)
             }
