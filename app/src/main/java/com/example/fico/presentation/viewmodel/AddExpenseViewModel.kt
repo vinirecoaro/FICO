@@ -8,11 +8,10 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
+import com.example.fico.util.constants.DateFunctions
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class AddExpenseViewModel(
     private val firebaseAPI : FirebaseAPI,
@@ -26,7 +25,7 @@ class AddExpenseViewModel(
 
             val formattedPurchaseDate = FormatValuesToDatabase().expenseDate(purchaseDate)
 
-            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
 
@@ -40,13 +39,6 @@ class AddExpenseViewModel(
 
             firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentlyDate() : String{
-        val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        return currentDate.format(formatter)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

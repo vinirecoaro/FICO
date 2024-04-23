@@ -52,6 +52,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
+import com.example.fico.util.constants.DateFunctions
 
 class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
@@ -117,7 +118,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        binding.etPaymentDate.setText(viewModel.getCurrentlyDate())
+        binding.etPaymentDate.setText(DateFunctions().getCurrentlyDate())
 
         val filter = IntentFilter().apply {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)

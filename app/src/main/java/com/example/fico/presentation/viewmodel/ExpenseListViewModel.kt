@@ -11,6 +11,7 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.util.constants.DateFunctions
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -65,11 +66,15 @@ class ExpenseListViewModel(
      fun undoDeleteExpense(deletedExpense : Expense, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO){
 
-            val formattedDate = FormatValuesToDatabase().expenseDate(deletedExpense.inputDate)
+            val formattedPaymentDate = FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
+
+            val formattedPurchaseDate = FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
+
+            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(FormatValuesFromDatabase().price(deletedExpense.price), nOfInstallments)
 
-            val expense = Expense("",formattedPrice, deletedExpense.description, deletedExpense.category, formattedDate)
+            val expense = Expense("",formattedPrice, deletedExpense.description, deletedExpense.category, formattedPaymentDate, formattedPurchaseDate, formattedInputDate)
 
             val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(expense, installment, nOfInstallments)
 
