@@ -3,6 +3,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Expense
 import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
@@ -25,17 +26,18 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
             //Format data to delete item
             val position = viewHolder.adapterPosition
             val deleteItem = adapter.getDataAtPosition(position)
-            val day = deleteItem.inputDate.substring(0, 2)
-            val month = deleteItem.inputDate.substring(3, 5)
-            val year = deleteItem.inputDate.substring(6, 10)
-            val modifiedDate = "$year-$month-$day"
+            val formattedPaymentDate = FormatValuesToDatabase().expenseDate(deleteItem.paymentDate)
+            val formattedPurchaseDate = FormatValuesToDatabase().expenseDate(deleteItem.purchaseDate)
+            val formattedInputDateTime = FormatValuesToDatabase().expenseDate(deleteItem.inputDateTime)
             val expencePrice = "-${deleteItem.price.replace("R$ ", "").replace(",", ".")}"
             val deleteItemFormatted = Expense(
                 deleteItem.id,
                 expencePrice,
                 deleteItem.description,
                 deleteItem.category,
-                modifiedDate
+                formattedPaymentDate,
+                formattedPurchaseDate,
+                formattedInputDateTime
             )
 
             //Delete Item and update expense list
@@ -44,14 +46,6 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
             //Show snackbar to undo the action
             val snackbar = Snackbar.make(recyclerView, "Item excluido", Snackbar.LENGTH_LONG)
             snackbar.setAction("Desfazer") {
-                /*val reformattedExpensePrice = deleteItem.price.replace("R$ ", "").replace(",", ".")
-                val expense = Expense(
-                    deleteItem.id,
-                    reformattedExpensePrice,
-                    deleteItem.description,
-                    deleteItem.category,
-                    modifiedDate
-                )*/
                 viewModel.undoDeleteExpense(deleteItem, false, 1)
             }.show()
     }
