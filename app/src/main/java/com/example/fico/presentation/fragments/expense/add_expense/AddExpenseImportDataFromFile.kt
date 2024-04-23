@@ -11,7 +11,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
 
-class AddExpenseImportaDataFromFile(){
+class AddExpenseImportDataFromFile(){
 
     fun readFromExcelFile(filepath: String): Pair<MutableList<Expense>, Boolean> {
         val inputStream = FileInputStream(filepath)
@@ -89,7 +89,8 @@ class AddExpenseImportaDataFromFile(){
                 }
 
             }
-            val expense = Expense("", price, description, category, date, installment)
+            TODO("IMPLEMENT PURCHASE DATA AND INPUT_DATE_TIME")
+            val expense = Expense("", price, description, category, date,"" ,"",installment)
             expenseList.add(expense)
         }
         xlWb.close()

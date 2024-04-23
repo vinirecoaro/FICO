@@ -504,7 +504,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
-                    val outputStream = FileOutputStream(AddExpenseImportaDataFromFile().getNewFileUri().path)
+                    val outputStream = FileOutputStream(AddExpenseImportDataFromFile().getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -512,8 +512,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                         }
                     }
                     // Work with a copy of file
-                    val newPath = AddExpenseImportaDataFromFile().getNewFileUri().path.toString()
-                    var readFileResult = AddExpenseImportaDataFromFile().readFromExcelFile(newPath)
+                    val newPath = AddExpenseImportDataFromFile().getNewFileUri().path.toString()
+                    var readFileResult = AddExpenseImportDataFromFile().readFromExcelFile(newPath)
                     if (readFileResult.second) {
                         lifecycleScope.launch(Dispatchers.Main) {
 
@@ -546,7 +546,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
-                    val outputStream = FileOutputStream(AddExpenseImportaDataFromFile().getNewFileUri().path)
+                    val outputStream = FileOutputStream(AddExpenseImportDataFromFile().getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -554,8 +554,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                         }
                     }
                     // Work with a copy of file
-                    val newPath = AddExpenseImportaDataFromFile().getNewFileUri().path.toString()
-                    var readFileResult = AddExpenseImportaDataFromFile().readFromExcelFile(newPath)
+                    val newPath = AddExpenseImportDataFromFile().getNewFileUri().path.toString()
+                    var readFileResult = AddExpenseImportDataFromFile().readFromExcelFile(newPath)
                     if (readFileResult.second) {
                         lifecycleScope.launch(Dispatchers.Main) {
 
