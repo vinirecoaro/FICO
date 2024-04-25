@@ -20,6 +20,7 @@ import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
 import com.example.fico.presentation.adapters.ExpenseMonthsListAdapter
 import com.example.fico.presentation.interfaces.OnExpenseMonthSelectedListener
 import com.example.fico.presentation.viewmodel.HomeViewModel
+import com.example.fico.util.constants.DateFunctions
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -383,19 +384,8 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentlyDate() : String{
-        val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        var formattedDate = currentDate.format(formatter)
-        val month = formattedDate.substring(3, 5)
-        val year = formattedDate.substring(6, 10)
-        val date = "$year-$month"
-        return date
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun focusOnCurrentMonth(){
-        val currentDate = getCurrentlyDate()
+        val currentDate = FormatValuesToDatabase().expenseDateForInfoPerMonth(DateFunctions().getCurrentlyDate())
         val currentDateFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(currentDate)
         val monthFocusPosition = viewModel.getCurrentMonthPositionOnList(currentDateFormatted)
         if(monthFocusPosition != RecyclerView.NO_POSITION){
