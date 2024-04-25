@@ -91,7 +91,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getAvailableNow(date : String = viewModel.getCurrentlyDate()){
+    private fun getAvailableNow(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()){
         lifecycleScope.launch(Dispatchers.Main) {
             try {
                 val availableNow = viewModel.getAvailableNow(date).await()
@@ -121,7 +121,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getMonthExpense(date : String = viewModel.getCurrentlyDate()) {
+    private fun getMonthExpense(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
         lifecycleScope.launch(Dispatchers.Main) {
             try {
                 val monthExpense = viewModel.getMonthExpense(date).await()
@@ -132,7 +132,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initMonthExpenseChart(date : String = viewModel.getCurrentlyDate()) {
+    private fun initMonthExpenseChart(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
 
         val pieChart = binding.pcMonthExpense
         var holeColor = 1
@@ -260,7 +260,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initAvailableNowChart(date : String = viewModel.getCurrentlyDate()) {
+    private fun initAvailableNowChart(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
 
         val pieChart = binding.pcAvailableNow
         var holeColor = 1
@@ -385,7 +385,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun focusOnCurrentMonth(){
-        val currentDate = FormatValuesToDatabase().expenseDateForInfoPerMonth(DateFunctions().getCurrentlyDate())
+        val currentDate = DateFunctions().getCurrentlyDateYearMonthToDatabase()
         val currentDateFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(currentDate)
         val monthFocusPosition = viewModel.getCurrentMonthPositionOnList(currentDateFormatted)
         if(monthFocusPosition != RecyclerView.NO_POSITION){

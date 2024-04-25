@@ -37,6 +37,7 @@ import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
+import com.example.fico.util.constants.DateFunctions
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -74,8 +75,8 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 
-        binding.actvDate.setText(viewModel.getCurrentlyDateForFilter())
-        viewModel.updateFilter(viewModel.getCurrentlyDateForFilter())
+        binding.actvDate.setText(DateFunctions().getCurrentlyDateForFilter())
+        viewModel.updateFilter(DateFunctions().getCurrentlyDateForFilter())
 
         setUpListeners()
         setColorBasedOnTheme()

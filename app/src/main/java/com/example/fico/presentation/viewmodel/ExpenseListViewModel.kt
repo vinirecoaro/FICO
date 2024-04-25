@@ -86,14 +86,4 @@ class ExpenseListViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentlyDateForFilter() : String{
-        val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val currentDateFormatted = currentDate.format(formatter)
-        val yearMonth = FormatValuesToDatabase().expenseDateForInfoPerMonth(currentDateFormatted)
-        val monthYearFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(yearMonth)
-        return monthYearFormatted
-    }
-
 }

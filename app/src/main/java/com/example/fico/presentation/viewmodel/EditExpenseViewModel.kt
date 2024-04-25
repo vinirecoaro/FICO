@@ -9,6 +9,7 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.util.constants.DateFunctions
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -58,7 +59,7 @@ class EditExpenseViewModel : ViewModel() {
             val newExpensePrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
             val newExpensePaymentDate = FormatValuesToDatabase().expenseDate(paymentDate)
             val newExpensePurchaseDate = FormatValuesToDatabase().expenseDate(purchaseData)
-            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
             val newExpense = Expense(id = "", newExpensePrice, description, category, newExpensePaymentDate, newExpensePurchaseDate, formattedInputDate)
 
@@ -71,14 +72,6 @@ class EditExpenseViewModel : ViewModel() {
             firebaseAPI.editExpense(expenseList, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment)
         }
     }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentlyDate() : String{
-        val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        return currentDate.format(formatter)
-    }
-
 
 }
 

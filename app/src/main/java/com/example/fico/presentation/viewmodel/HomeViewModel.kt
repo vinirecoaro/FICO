@@ -14,6 +14,7 @@ import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.util.constants.DateFunctions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -106,17 +107,6 @@ class HomeViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentlyDate() : String{
-        val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        var formattedDate = currentDate.format(formatter)
-        val month = formattedDate.substring(3, 5)
-        val year = formattedDate.substring(6, 10)
-        val date = "$year-$month"
-        return date
-    }
-
     fun getExpenseMonths() {
         val _expenseMonths = CompletableDeferred<List<String>>()
         viewModelScope.async {
@@ -175,7 +165,7 @@ class HomeViewModel(
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getCurrentDatePositionBarChart() : Int{
-        val currentDate = FormatValuesFromDatabase().formatDateAbbreviated(getCurrentlyDate())
+        val currentDate = FormatValuesFromDatabase().formatDateAbbreviated(DateFunctions().getCurrentlyDateYearMonthToDatabase())
         _infoPerMonthLabel.value?.forEachIndexed { index, informationPerMonthExpense ->
             if(informationPerMonthExpense.date == currentDate){
                 if(index < 1){
