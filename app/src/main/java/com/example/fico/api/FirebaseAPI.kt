@@ -732,6 +732,19 @@ class FirebaseAPI private constructor() {
         return formattedDate
     }
 
+    suspend fun updateExpenseDatabaseInfo(){
+        user_info.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
 }
 
 
