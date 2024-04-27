@@ -735,7 +735,14 @@ class FirebaseAPI private constructor() {
     suspend fun updateExpenseDatabaseInfo(){
         user_info.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.child(AppConstants.DATABASE.DEFAULT_VALUES).exists()){
 
+                }
+                val defaultValues = snapshot.child(AppConstants.DATABASE.DEFAULT_VALUES)
+
+                user_info.child(AppConstants.DATABASE.EXPENSES)
+                    .child(AppConstants.DATABASE.DEFAULT_VALUES)
+                    .updateChildren(snapshot.child(defaultValues))
             }
 
             override fun onCancelled(error: DatabaseError) {
