@@ -8,6 +8,7 @@ import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.model.User
 import com.example.fico.util.constants.AppConstants
+import com.example.fico.util.constants.DateFunctions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -740,13 +741,37 @@ class FirebaseAPI private constructor() {
                 }
                 val defaultValues = snapshot.child(AppConstants.DATABASE.DEFAULT_VALUES)
 
-                user_info.child(AppConstants.DATABASE.EXPENSES)
+               /* user_info.child(AppConstants.DATABASE.EXPENSES)
                     .child(AppConstants.DATABASE.DEFAULT_VALUES)
-                    .updateChildren(snapshot.child(defaultValues))
+                    .updateChildren(snapshot.child(defaultValues))*/
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    suspend fun updateExpensePerListInformation(){
+        val expenseList = mutableListOf<Expense>()
+        expense_list.addListenerForSingleValueEvent(object : ValueEventListener{
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (expense in snapshot.children){
+                    val newExpense = Expense(
+                        expense.key.toString(),
+                        expense.child(AppConstants.DATABASE.PRICE).toString(),
+                        expense.child(AppConstants.DATABASE.DESCRIPTION).toString(),
+                        expense.child(AppConstants.DATABASE.CATEGORY).toString(),
+                        expense.child(AppConstants.DATABASE.DATE).toString(),
+                        expense.child(AppConstants.DATABASE.DATE).toString(),
+                        "${expense.child(AppConstants.DATABASE.DATE)}-${FormatValuesToDatabase().timeNow()}"
+                    )
+                    expenseList.add(newExpense)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
             }
 
         })
