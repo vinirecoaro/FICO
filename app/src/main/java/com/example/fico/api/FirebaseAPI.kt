@@ -752,23 +752,29 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    suspend fun updateExpensePerListInformation(){
-        val expenseList = mutableListOf<Expense>()
+    //Function created to fix data that was updated before new information about expense
+    suspend fun updateExpensePerListInformation() = withContext(Dispatchers.IO){
         expense_list.addListenerForSingleValueEvent(object : ValueEventListener{
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
+                val expenseList = mutableListOf<Expense>()
                 for (expense in snapshot.children){
+                    val date = expense.child(AppConstants.DATABASE.DATE).value.toString()
+                    val inputDateTime = "$date-${FormatValuesToDatabase().timeNow()}"
                     val newExpense = Expense(
                         expense.key.toString(),
-                        expense.child(AppConstants.DATABASE.PRICE).toString(),
-                        expense.child(AppConstants.DATABASE.DESCRIPTION).toString(),
-                        expense.child(AppConstants.DATABASE.CATEGORY).toString(),
-                        expense.child(AppConstants.DATABASE.DATE).toString(),
-                        expense.child(AppConstants.DATABASE.DATE).toString(),
-                        "${expense.child(AppConstants.DATABASE.DATE)}-${FormatValuesToDatabase().timeNow()}"
+                        expense.child(AppConstants.DATABASE.PRICE).value.toString(),
+                        expense.child(AppConstants.DATABASE.DESCRIPTION).value.toString(),
+                        expense.child(AppConstants.DATABASE.CATEGORY).value.toString(),
+
+                        expense.child(AppConstants.DATABASE.DATE).value.toString(),
+                        expense.child(AppConstants.DATABASE.DATE).value.toString(),
+                        inputDateTime
                     )
                     expenseList.add(newExpense)
                 }
+                val expenseListMap = generateMapToUpdateUserExpenses(expenseList)
+                user_root.child(AppConstants.DATABASE.EXPENSES).updateChildren(expenseListMap)
             }
 
             override fun onCancelled(error: DatabaseError) {

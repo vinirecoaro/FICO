@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
+import com.example.fico.api.FirebaseAPI
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.github.mikephil.charting.animation.Easing
@@ -52,6 +53,12 @@ class HomeFragment : Fragment(){
         if(barChartEntries.isNotEmpty()){
             initExpenseEachMonthChart()
         }
+
+        lifecycleScope.launch {
+            val expenseList = FirebaseAPI.instance.updateExpensePerListInformation().await()
+            println(expenseList)
+        }
+
 
         return rootView
     }
