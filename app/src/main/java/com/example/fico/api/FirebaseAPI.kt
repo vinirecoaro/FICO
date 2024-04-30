@@ -798,6 +798,29 @@ class FirebaseAPI private constructor() {
         })
     }
 
+    suspend fun updateInformationPerMonth() = withContext(Dispatchers.IO){
+        user_root.child(AppConstants.DATABASE.INFORMATION_PER_MONTH).addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val infoPerMonthList = mutableListOf<InformationPerMonthExpense>()
+                for(infoPerMonth in snapshot.children){
+                    infoPerMonthList.add(
+                        InformationPerMonthExpense(
+                            infoPerMonth.key.toString(),
+                            infoPerMonth.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString(),
+                            infoPerMonth.child(AppConstants.DATABASE.BUDGET).value.toString(),
+                            infoPerMonth.child(AppConstants.DATABASE.EXPENSE).value.toString(),
+                        )
+                    )
+                }
+                val infoPerMonthMap = generateMapToUpdateInformationPerMonth(infoPerMonthList)
+                user_root.child(AppConstants.DATABASE.EXPENSES).updateChildren(infoPerMonthMap)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
 }
 
 

@@ -56,9 +56,9 @@ class HomeFragment : Fragment(){
 
         lifecycleScope.launch {
             //FirebaseAPI.instance.updateExpensePerListInformation()
-            FirebaseAPI.instance.updateDefaultValues()
+            //FirebaseAPI.instance.updateDefaultValues()
+            FirebaseAPI.instance.updateInformationPerMonth()
         }
-
 
         return rootView
     }
