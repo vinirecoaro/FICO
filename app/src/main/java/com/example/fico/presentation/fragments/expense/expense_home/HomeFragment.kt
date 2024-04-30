@@ -55,8 +55,8 @@ class HomeFragment : Fragment(){
         }
 
         lifecycleScope.launch {
-            val expenseList = FirebaseAPI.instance.updateExpensePerListInformation().await()
-            println(expenseList)
+            //FirebaseAPI.instance.updateExpensePerListInformation()
+            FirebaseAPI.instance.updateDefaultValues()
         }
 
 

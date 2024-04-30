@@ -783,6 +783,21 @@ class FirebaseAPI private constructor() {
         })
     }
 
+    suspend fun updateDefaultValues() = withContext(Dispatchers.IO){
+        user_root.child(AppConstants.DATABASE.DEFAULT_VALUES).addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                user_root.child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.DEFAULT_VALUES).child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(
+                    snapshot.child(AppConstants.DATABASE.DEFAULT_BUDGET).value.toString()
+                )
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
 }
 
 
