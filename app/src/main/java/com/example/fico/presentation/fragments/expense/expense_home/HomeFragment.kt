@@ -23,7 +23,6 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.text.NumberFormat
@@ -55,9 +54,10 @@ class HomeFragment : Fragment(){
         }
 
         lifecycleScope.launch {
-            //FirebaseAPI.instance.updateExpensePerListInformation()
-            //FirebaseAPI.instance.updateDefaultValues()
-            FirebaseAPI.instance.updateInformationPerMonth()
+            //FirebaseAPI.instance.updateExpensePerListInformationPath()
+            //FirebaseAPI.instance.updateDefaultValuesPath()
+            //FirebaseAPI.instance.updateInformationPerMonthPath()
+            FirebaseAPI.instance.updateTotalExpensePath()
         }
 
         return rootView

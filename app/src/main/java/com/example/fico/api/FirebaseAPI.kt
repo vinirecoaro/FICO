@@ -8,7 +8,6 @@ import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.model.User
 import com.example.fico.util.constants.AppConstants
-import com.example.fico.util.constants.DateFunctions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -140,7 +139,7 @@ class FirebaseAPI private constructor() {
 
     suspend fun deleteExpense(oldExpense : Expense) = withContext(Dispatchers.IO){
         updateTotalExpense(oldExpense.price)
-        updateInformationPerMonth(oldExpense)
+        updateInformationPerMonthPath(oldExpense)
         val oldExpenseReference = expense_list.child(oldExpense.id)
         oldExpenseReference.removeValue()
     }
@@ -383,7 +382,7 @@ class FirebaseAPI private constructor() {
         return updatedTotalExpenseMap
     }
 
-    private suspend fun updateInformationPerMonth(expense: Expense)= withContext(Dispatchers.IO){
+    private suspend fun updateInformationPerMonthPath(expense: Expense)= withContext(Dispatchers.IO){
         information_per_month.child(expense.paymentDate.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
@@ -733,7 +732,7 @@ class FirebaseAPI private constructor() {
         return formattedDate
     }
 
-    suspend fun updateExpenseDatabaseInfo(){
+    suspend fun updateExpenseDatabaseInfoPath(){
         user_info.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.child(AppConstants.DATABASE.DEFAULT_VALUES).exists()){
@@ -753,7 +752,7 @@ class FirebaseAPI private constructor() {
     }
 
     //Function created to fix data that was updated before new information about expense
-    suspend fun updateExpensePerListInformation() = withContext(Dispatchers.IO){
+    suspend fun updateExpensePerListInformationPath() = withContext(Dispatchers.IO){
         expense_list.addListenerForSingleValueEvent(object : ValueEventListener{
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -783,7 +782,7 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    suspend fun updateDefaultValues() = withContext(Dispatchers.IO){
+    suspend fun updateDefaultValuesPath() = withContext(Dispatchers.IO){
         user_root.child(AppConstants.DATABASE.DEFAULT_VALUES).addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
@@ -798,7 +797,7 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    suspend fun updateInformationPerMonth() = withContext(Dispatchers.IO){
+    suspend fun updateInformationPerMonthPath() = withContext(Dispatchers.IO){
         user_root.child(AppConstants.DATABASE.INFORMATION_PER_MONTH).addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val infoPerMonthList = mutableListOf<InformationPerMonthExpense>()
@@ -814,6 +813,19 @@ class FirebaseAPI private constructor() {
                 }
                 val infoPerMonthMap = generateMapToUpdateInformationPerMonth(infoPerMonthList)
                 user_root.child(AppConstants.DATABASE.EXPENSES).updateChildren(infoPerMonthMap)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
+    suspend fun updateTotalExpensePath() = withContext(Dispatchers.IO){
+        user_root.child(AppConstants.DATABASE.TOTAL_EXPENSE).addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                user_root.child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue(
+                    snapshot.value.toString()
+                )
             }
 
             override fun onCancelled(error: DatabaseError) {
