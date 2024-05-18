@@ -37,13 +37,13 @@ class FirebaseAPI private constructor() {
         private val auth: FirebaseAuth by lazy { HOLDER.mAuth }
         private val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
         private val rootRef = database.getReference(AppConstants.DATABASE.USERS)
-        private var total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(
+        private var total_expenses_price = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(
             AppConstants.DATABASE.TOTAL_EXPENSE)
-        private var information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(
+        private var expenses_information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(
             AppConstants.DATABASE.INFORMATION_PER_MONTH)
         private var expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(
             AppConstants.DATABASE.EXPENSES_LIST)
-        private var default_values = rootRef.child(auth.currentUser?.uid.toString()).child(
+        private var default_expense_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(
             AppConstants.DATABASE.DEFAULT_VALUES)
         private var user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         private var user_root = rootRef.child(auth.currentUser?.uid.toString())
@@ -51,10 +51,10 @@ class FirebaseAPI private constructor() {
     }
 
     fun updateReferences(){
-        total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
-        information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
+        total_expenses_price = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.TOTAL_EXPENSE)
+        expenses_information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
         expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.EXPENSES_LIST)
-        default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
+        default_expense_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.DEFAULT_VALUES)
         user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         user_root = rootRef.child(auth.currentUser?.uid.toString())
     }
@@ -149,7 +149,7 @@ class FirebaseAPI private constructor() {
         try {
             val bigNum = BigDecimal(budget)
             val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
-            default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(formattedBudget)
+            default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(formattedBudget)
             result.complete(true)
         }catch (e:Exception){
             result.complete(false)
@@ -159,7 +159,7 @@ class FirebaseAPI private constructor() {
 
     suspend fun getBudgetPerMonth() : List<Budget> = suspendCoroutine{ continuation ->
         var isCompleted = false
-        information_per_month.addValueEventListener(object : ValueEventListener{
+        expenses_information_per_month.addValueEventListener(object : ValueEventListener{
             val budgetPerMonth = mutableListOf<Budget>()
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(month in snapshot.children){
@@ -210,7 +210,7 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getDefaultBudget() : Deferred<String> = withContext(Dispatchers.IO){
         val defaultBudget = CompletableDeferred<String>()
-        default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).addValueEventListener(object : ValueEventListener {
+        default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.value.toString()
                 defaultBudget.complete(value)
@@ -241,18 +241,18 @@ class FirebaseAPI private constructor() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistDefaultBudget(): Boolean {
-        return checkIfExistsOnDatabse(default_values.child(AppConstants.DATABASE.DEFAULT_BUDGET))
+        return checkIfExistsOnDatabse(default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET))
     }
 
     private suspend fun updateTotalExpense(value: String) = withContext(Dispatchers.IO){
-        total_expense.addListenerForSingleValueEvent(object : ValueEventListener{
+        total_expenses_price.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val currentTotalExpense = BigDecimal(snapshot.value.toString())
                 val addValue = BigDecimal(value)
                 val newValue = currentTotalExpense.add(addValue)
                 val newBigNum = BigDecimal(newValue.toString())
                 val newFormatted = newBigNum.setScale(8, RoundingMode.HALF_UP)
-                total_expense.setValue(newFormatted.toString())
+                total_expenses_price.setValue(newFormatted.toString())
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -383,12 +383,12 @@ class FirebaseAPI private constructor() {
     }
 
     private suspend fun updateInformationPerMonthPath(expense: Expense)= withContext(Dispatchers.IO){
-        information_per_month.child(expense.paymentDate.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
+        expenses_information_per_month.child(expense.paymentDate.substring(0,7)).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val updatedExpense = sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
-                information_per_month.child(expense.paymentDate.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
+                expenses_information_per_month.child(expense.paymentDate.substring(0,7)).child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
                 val updatedAvailable = subOldAndNewValue(expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW)
-                information_per_month.child(expense.paymentDate.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
+                expenses_information_per_month.child(expense.paymentDate.substring(0,7)).child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
             }
             override fun onCancelled(error: DatabaseError) {
 
@@ -400,7 +400,7 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getAvailableNow(date: String) : String = withContext(Dispatchers.IO) {
         val availableNow = CompletableDeferred<String>()
-        val reference = information_per_month
+        val reference = expenses_information_per_month
         reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
@@ -422,7 +422,7 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getAvailableNow2(date: String): Flow<String?> = callbackFlow{
 
-        val reference = information_per_month.child(date)
+        val reference = expenses_information_per_month.child(date)
 
         val valueEventListener = object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -447,7 +447,7 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getMonthExpense(date: String): String = withContext(Dispatchers.IO) {
         val deferredExpense = CompletableDeferred<String>()
-        val reference = information_per_month
+        val reference = expenses_information_per_month
         reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -469,7 +469,7 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getMonthExpense2(date: String): Flow<String?> = callbackFlow{
 
-        val reference = information_per_month.child(date)
+        val reference = expenses_information_per_month.child(date)
 
         val valueEventListener = object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -494,7 +494,7 @@ class FirebaseAPI private constructor() {
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getTotalExpense() : Deferred<String> = withContext(Dispatchers.IO){
         val totalExpense = CompletableDeferred<String>()
-        total_expense.addValueEventListener(object : ValueEventListener {
+        total_expenses_price.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.value.toString()
                 totalExpense.complete(value)
@@ -520,10 +520,10 @@ class FirebaseAPI private constructor() {
                 close(databaseError.toException())
             }
         }
-        total_expense.addValueEventListener(valueEventListener)
+        total_expenses_price.addValueEventListener(valueEventListener)
 
         awaitClose {
-            total_expense.removeEventListener(valueEventListener)
+            total_expenses_price.removeEventListener(valueEventListener)
         }
 
     }
@@ -612,7 +612,7 @@ class FirebaseAPI private constructor() {
 
     suspend fun getExpenseMonths(formatted : Boolean) : List<String> = suspendCoroutine{ continuation ->
         var isCompleted = false
-        information_per_month.addValueEventListener(object : ValueEventListener{
+        expenses_information_per_month.addValueEventListener(object : ValueEventListener{
             val expenseMonths = mutableListOf<String>()
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(month in snapshot.children){
@@ -644,7 +644,7 @@ class FirebaseAPI private constructor() {
 
     suspend fun getInformationPerMonth() : Deferred<MutableList<InformationPerMonthExpense>> = withContext(Dispatchers.IO){
         val informationPerMonthInfo = CompletableDeferred<MutableList<InformationPerMonthExpense>>()
-        information_per_month.addValueEventListener(object : ValueEventListener{
+        expenses_information_per_month.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val infoList = mutableListOf<InformationPerMonthExpense>()
                 for(month in snapshot.children){
