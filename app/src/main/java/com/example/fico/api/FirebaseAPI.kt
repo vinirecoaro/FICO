@@ -45,12 +45,14 @@ class FirebaseAPI private constructor() {
             AppConstants.DATABASE.EXPENSES_LIST)
         private var default_expense_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(
             AppConstants.DATABASE.DEFAULT_VALUES)
+        private var expenses = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
         private var user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         private var user_root = rootRef.child(auth.currentUser?.uid.toString())
 
     }
 
     fun updateReferences(){
+        expenses = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
         total_expenses_price = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.TOTAL_EXPENSE)
         expenses_information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
         expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.EXPENSES_LIST)
@@ -93,9 +95,9 @@ class FirebaseAPI private constructor() {
 
     suspend fun addNewUserOnDatabase() = withContext(Dispatchers.IO)
     {
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).setValue("")
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
+        expenses.child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
+        expenses.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).setValue("")
+        expenses.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
     }
 
     suspend fun getUserEmail() : String = withContext(Dispatchers.IO){
@@ -190,7 +192,7 @@ class FirebaseAPI private constructor() {
         val result = CompletableDeferred<Boolean>()
         try {
             val updatedInfoPerMonth = generateMapToUpdateMonthBudget(date, newBudget, newAvailableNow)
-            user_root.updateChildren(updatedInfoPerMonth)
+            expenses.updateChildren(updatedInfoPerMonth)
             result.complete(true)
         }catch (e:Exception){
             result.complete(false)
@@ -276,7 +278,7 @@ class FirebaseAPI private constructor() {
             // Add Information per Month
             updates.putAll(generateMapToUpdateInformationPerMonth(masterExpenseList.updatedInformationPerMonth))
 
-            user_root.updateChildren(updates)
+            expenses.updateChildren(updates)
 
             result.complete(true)
         }catch (e : Exception){
@@ -298,7 +300,7 @@ class FirebaseAPI private constructor() {
             // Add Information per Month
             updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
 
-            user_root.updateChildren(updates)
+            expenses.updateChildren(updates)
 
             result.complete(true)
         }catch (e : Exception){
@@ -329,7 +331,7 @@ class FirebaseAPI private constructor() {
             // Add Information per Month
             updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
 
-            user_root.updateChildren(updates)
+            expenses.updateChildren(updates)
 
             result.complete(true)
         }catch (e : Exception){
@@ -730,25 +732,6 @@ class FirebaseAPI private constructor() {
             formattedDate = "$year-12"
         }
         return formattedDate
-    }
-
-    suspend fun updateExpenseDatabaseInfoPath(){
-        user_info.addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.child(AppConstants.DATABASE.DEFAULT_VALUES).exists()){
-
-                }
-                val defaultValues = snapshot.child(AppConstants.DATABASE.DEFAULT_VALUES)
-
-               /* user_info.child(AppConstants.DATABASE.EXPENSES)
-                    .child(AppConstants.DATABASE.DEFAULT_VALUES)
-                    .updateChildren(snapshot.child(defaultValues))*/
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-        })
     }
 
     //Function created to fix data that was updated before new information about expense
