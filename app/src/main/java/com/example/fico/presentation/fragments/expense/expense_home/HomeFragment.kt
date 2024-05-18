@@ -53,12 +53,7 @@ class HomeFragment : Fragment(){
             initExpenseEachMonthChart()
         }
 
-        lifecycleScope.launch {
-            //FirebaseAPI.instance.updateExpensePerListInformationPath()
-            //FirebaseAPI.instance.updateDefaultValuesPath()
-            //FirebaseAPI.instance.updateInformationPerMonthPath()
-            FirebaseAPI.instance.updateTotalExpensePath()
-        }
+
 
         return rootView
     }
@@ -206,6 +201,15 @@ class HomeFragment : Fragment(){
         // Atualize o gráfico
         barChart.invalidate()
 
+    }
+
+    private fun updatePath(){
+        lifecycleScope.launch {
+            FirebaseAPI.instance.updateExpensePerListInformationPath()
+            FirebaseAPI.instance.updateDefaultValuesPath()
+            FirebaseAPI.instance.updateInformationPerMonthPath()
+            FirebaseAPI.instance.updateTotalExpensePath()
+        }
     }
     
 }

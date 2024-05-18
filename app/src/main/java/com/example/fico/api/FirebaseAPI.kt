@@ -41,7 +41,7 @@ class FirebaseAPI private constructor() {
             AppConstants.DATABASE.TOTAL_EXPENSE)
         private var information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(
             AppConstants.DATABASE.INFORMATION_PER_MONTH)
-        private var expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(
+        private var expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(
             AppConstants.DATABASE.EXPENSES_LIST)
         private var default_values = rootRef.child(auth.currentUser?.uid.toString()).child(
             AppConstants.DATABASE.DEFAULT_VALUES)
@@ -53,7 +53,7 @@ class FirebaseAPI private constructor() {
     fun updateReferences(){
         total_expense = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE)
         information_per_month = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
-        expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
+        expense_list = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.EXPENSES_LIST)
         default_values = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.DEFAULT_VALUES)
         user_info = rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
         user_root = rootRef.child(auth.currentUser?.uid.toString())
