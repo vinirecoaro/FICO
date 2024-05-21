@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -29,25 +28,44 @@
             android:padding="16dp"
             tools:context=".presentation.activities.expense.EditExpenseActivity">
 
-            <EditText
-                android:id="@+id/et_price"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_price"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_value"
-                android:inputType="numberDecimal"
+                app:boxBackgroundMode="outline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
-                android:id="@+id/et_description"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_description"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:hint="@string/add_description"
+                app:boxBackgroundMode="outline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_price" />
+                app:layout_constraintTop_toBottomOf="@id/til_price">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <AutoCompleteTextView
                 android:id="@+id/actv_category"
@@ -60,7 +78,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_description" />
+                app:layout_constraintTop_toBottomOf="@id/til_description" />
 
             <TextView
                 android:id="@+id/tv_category"
@@ -82,49 +100,84 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_category"
                 app:spanCount="2" />
 
-            <EditText
-                android:id="@+id/et_installments"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_installments"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:hint="Parcelas"
-                android:inputType="numberDecimal"
+                android:hint="@string/installments"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/rv_category" />
-
-            <EditText
-                android:id="@+id/et_payment_date_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:focusable="false"
-                android:hint="@string/payment_date"
-                android:inputType="date"
+                app:boxBackgroundMode="outline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_installments" />
+                app:layout_constraintTop_toBottomOf="@id/rv_category"
+                tools:visibility="visible">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_installments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:inputType="numberDecimal" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_payment_date_edit"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:hint="@string/payment_date"
+                app:boxBackgroundMode="outline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_installments">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_payment_date_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:focusable="false"
+                    android:inputType="date" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
                 android:id="@+id/iv_payment_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/baseline_calendar_month_light"
-                app:layout_constraintEnd_toEndOf="@id/et_payment_date_edit"
-                app:layout_constraintTop_toTopOf="@id/et_payment_date_edit" />
+                app:layout_constraintBottom_toBottomOf="@id/til_payment_date_edit"
+                app:layout_constraintEnd_toEndOf="@id/til_payment_date_edit"
+                app:layout_constraintTop_toTopOf="@id/til_payment_date_edit" />
 
-            <EditText
-                android:id="@+id/et_purchase_date_edit"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_purchase_date_edit"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:focusable="false"
                 android:hint="@string/purchase_date"
-                android:inputType="date"
+                app:boxBackgroundMode="outline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_payment_date_edit" />
+                app:layout_constraintTop_toBottomOf="@id/til_payment_date_edit">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_purchase_date_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:focusable="false"
+                    android:inputType="date" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
                 android:id="@+id/iv_purchase_date_edit"
@@ -133,8 +186,10 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/baseline_calendar_month_light"
-                app:layout_constraintEnd_toEndOf="@id/et_purchase_date_edit"
-                app:layout_constraintTop_toTopOf="@id/et_purchase_date_edit" />
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="@id/til_purchase_date_edit"
+                app:layout_constraintTop_toTopOf="@id/til_purchase_date_edit"
+                app:layout_constraintBottom_toBottomOf="@id/til_purchase_date_edit"/>
 
             <Button
                 android:id="@+id/bt_save"
@@ -144,7 +199,7 @@
                 android:text="@string/save"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_purchase_date_edit" />
+                app:layout_constraintTop_toBottomOf="@id/til_purchase_date_edit" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

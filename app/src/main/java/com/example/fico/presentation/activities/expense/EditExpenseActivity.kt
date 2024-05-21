@@ -62,7 +62,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                 val lenght = expense.id.length
                 //Verify if is a installment expense
                 if(lenght == 41){
-                    binding.etInstallments.visibility = View.VISIBLE
+                    binding.tilInstallments.visibility = View.VISIBLE
 
                     val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(expense.price, expense.id)
                     val description = FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
@@ -74,6 +74,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     binding.actvCategory.setText(expense.category)
                     binding.etInstallments.setText(nOfInstallment)
                     binding.etPaymentDateEdit.setText(initialDate)
+                    binding.etPurchaseDateEdit.setText(expense.purchaseDate)
                 }else{
 
                     val priceFormatted = FormatValuesFromDatabase().price(expense.price)
@@ -82,6 +83,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     binding.etDescription.setText(expense.description)
                     binding.actvCategory.setText(expense.category)
                     binding.etPaymentDateEdit.setText(expense.paymentDate)
+                    binding.etPurchaseDateEdit.setText(expense.purchaseDate)
                 }
             }
             if (expense != null) {
@@ -105,7 +107,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
             binding.btSave.isEnabled = false
             val expense = intent.getParcelableExtra<Expense>("expense")
             lifecycleScope.launch(Dispatchers.Main){
-                if(binding.etInstallments.visibility == View.GONE){
+                if(binding.tilInstallments.visibility == View.GONE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etPaymentDateEdit, binding.etPurchaseDateEdit)){
                         if(viewModel.saveEditExpense(
                             expense!!,
@@ -123,7 +125,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                         delay(250)
                         finish()
                     }
-                }else if(binding.etInstallments.visibility == View.VISIBLE){
+                }else if(binding.tilInstallments.visibility == View.VISIBLE){
                     if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etPaymentDateEdit, binding.etPurchaseDateEdit)){
                         if(binding.etInstallments.text.toString() != "0"){
                             if(viewModel.saveEditExpense(
