@@ -124,7 +124,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
         }
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requireContext().registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
         }else{
@@ -152,13 +151,13 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_expense_menu_common -> {
-                binding.etInstallments.visibility = View.GONE
+                binding.tilInstallments.visibility = View.GONE
                 clearUserInputs()
                 return true
             }
 
             R.id.add_expense_menu_installments -> {
-                binding.etInstallments.visibility = View.VISIBLE
+                binding.tilInstallments.visibility = View.VISIBLE
                 clearUserInputs()
                 return true
             }
@@ -187,7 +186,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.btSave.setOnClickListener {
             binding.btSave.isEnabled = false
             lifecycleScope.launch(Dispatchers.Main) {
-                if (binding.etInstallments.visibility == View.GONE) {
+                if (binding.tilInstallments.visibility == View.GONE) {
                     if (verifyFields(
                             binding.etPrice,
                             binding.etDescription,
@@ -236,7 +235,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             )
                         }*/
                     }
-                } else if (binding.etInstallments.visibility == View.VISIBLE) {
+                } else if (binding.tilInstallments.visibility == View.VISIBLE) {
                     if (verifyFields(
                             binding.etPrice,
                             binding.etDescription,
