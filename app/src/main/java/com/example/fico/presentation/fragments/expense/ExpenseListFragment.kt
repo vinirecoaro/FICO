@@ -205,7 +205,17 @@ class ExpenseListFragment : Fragment(), XLSInterface {
 
     fun editExpense(expense : Expense){
         val intent = Intent(requireContext(), EditExpenseActivity::class.java)
-        intent.putExtra("expense", expense)
+        val sureExpense = Expense(
+            id = expense.id,
+            price = expense.price,
+            description = expense.description,
+            category = expense.category,
+            paymentDate = expense.paymentDate,
+            purchaseDate = expense.purchaseDate,
+            inputDateTime = expense.inputDateTime,
+            nOfInstallment = expense.nOfInstallment
+        )
+        intent.putExtra("expense", sureExpense)
         startActivity(intent)
     }
 

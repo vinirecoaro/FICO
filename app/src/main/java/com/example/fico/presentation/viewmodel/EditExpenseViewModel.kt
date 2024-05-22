@@ -35,7 +35,6 @@ class EditExpenseViewModel : ViewModel() {
 
             var oldExpensePaymentDate = FormatValuesToDatabase().expenseDate(oldExpense.paymentDate)
             var oldExpensePurchaseDate = FormatValuesToDatabase().expenseDate(oldExpense.purchaseDate)
-            var oldExpenseInputDateTime = FormatValuesToDatabase().expenseDate(oldExpense.inputDateTime)
 
             var oldExpenseNOfInstallment = 1
 
@@ -51,7 +50,7 @@ class EditExpenseViewModel : ViewModel() {
                 oldExpense.category,
                 oldExpensePaymentDate,
                 oldExpensePurchaseDate,
-                oldExpenseInputDateTime
+                ""
             )
 
             val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseList(oldExpenseFormatted, viewModelScope).await()
