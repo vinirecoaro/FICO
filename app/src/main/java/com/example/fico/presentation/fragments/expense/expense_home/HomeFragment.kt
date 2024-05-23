@@ -11,9 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
-import com.example.fico.api.FirebaseAPI
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.github.mikephil.charting.animation.Easing
@@ -23,7 +21,6 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.text.NumberFormat
 
@@ -201,15 +198,6 @@ class HomeFragment : Fragment(){
         // Atualize o gráfico
         barChart.invalidate()
 
-    }
-
-    private fun updatePath(){
-        lifecycleScope.launch {
-            FirebaseAPI.instance.updateExpensePerListInformationPath()
-            FirebaseAPI.instance.updateDefaultValuesPath()
-            FirebaseAPI.instance.updateInformationPerMonthPath()
-            FirebaseAPI.instance.updateTotalExpensePath()
-        }
     }
     
 }
