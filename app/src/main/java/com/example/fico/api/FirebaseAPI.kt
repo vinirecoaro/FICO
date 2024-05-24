@@ -816,6 +816,11 @@ class FirebaseAPI private constructor() {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun verifyExistsExpensesPath(): Boolean{
+        return checkIfExistsOnDatabse(expenses)
+    }
+
 }
 
 

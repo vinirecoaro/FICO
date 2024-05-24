@@ -1,5 +1,7 @@
 package com.example.fico.presentation.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.api.FirebaseAPI
@@ -7,6 +9,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class LogoViewModel(
@@ -39,4 +42,21 @@ class LogoViewModel(
 
     var onUserLogged: () -> Unit = {}
     var onError: (String) -> Unit = {}
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun verifyExistsExpensesPath() : Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.verifyExistsExpensesPath()
+        }
+    }
+
+    fun updateExpensesDatabasePath(){
+        viewModelScope.launch {
+            firebaseAPI.updateExpensePerListInformationPath()
+            firebaseAPI.updateDefaultValuesPath()
+            firebaseAPI.updateInformationPerMonthPath()
+            firebaseAPI.updateTotalExpensePath()
+        }
+    }
+
 }
