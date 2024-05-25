@@ -108,7 +108,8 @@ class ExpenseListFragment : Fragment(), XLSInterface {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.expense_list_menu_generate_excel_file -> {
+            //TODO Change function and instructions to export expenses to file
+            /*R.id.expense_list_menu_generate_excel_file -> {
                 if (checkPermission()){
                     generateFileAndShare()
                 }else{
@@ -117,7 +118,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     }
                 }
                 return true
-            }
+            }*/
 
             else -> return super.onOptionsItemSelected(item)
         }

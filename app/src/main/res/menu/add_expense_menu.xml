@@ -9,9 +9,9 @@
         android:id="@+id/add_expense_menu_installments"
         android:title="@string/purchase_in_installments"
         />
-    <item
+    <!--<item
         android:id="@+id/add_expense_menu_get_data_from_file"
         android:title="@string/import_expenses"
-        />
+        />-->
 
 </menu>

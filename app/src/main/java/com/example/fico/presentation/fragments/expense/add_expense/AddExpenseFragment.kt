@@ -162,7 +162,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 return true
             }
 
-            R.id.add_expense_menu_get_data_from_file -> {
+        //TODO Change function and instructions to add expenses from file
+            /*R.id.add_expense_menu_get_data_from_file -> {
                 lifecycleScope.launch {
                     if (checkPermission()) {
                         if (viewModel.checkIfExistDefaultBudget().await()) {
@@ -175,7 +176,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                     }
                 }
                 return true
-            }
+            }*/
 
             else -> return super.onOptionsItemSelected(item)
         }

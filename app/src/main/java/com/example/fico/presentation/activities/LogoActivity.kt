@@ -21,8 +21,8 @@ import org.koin.android.ext.android.inject
 
 class LogoActivity : AppCompatActivity() {
 
-    private val binding by lazy {ActivityLogoBinding.inflate(layoutInflater)}
-    private val viewModel : LogoViewModel by inject()
+    private val binding by lazy { ActivityLogoBinding.inflate(layoutInflater) }
+    private val viewModel: LogoViewModel by inject()
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,16 +33,16 @@ class LogoActivity : AppCompatActivity() {
         setUpListeners()
 
         lifecycleScope.launch(Dispatchers.Main) {
-            if(!viewModel.isLogged().await()){
+            if (!viewModel.isLogged().await()) {
                 startActivity(Intent(this@LogoActivity, LoginActivity::class.java))
-            }else{
+            } else {
                 finish()
             }
         }
 
     }
 
-    private fun formatLogoImage(){
+    private fun formatLogoImage() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val screenWidth = displayMetrics.widthPixels
@@ -58,9 +58,16 @@ class LogoActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun setUpListeners(){
+    private fun setUpListeners() {
         viewModel.onUserLogged = {
-            startActivity(Intent(this, MainActivity::class.java))
+            lifecycleScope.launch {
+                if (!viewModel.verifyExistsExpensesPath().await()) {
+                    viewModel.updateExpensesDatabasePath().await()
+                    startActivity(Intent(this@LogoActivity, MainActivity::class.java))
+                } else {
+                    startActivity(Intent(this@LogoActivity, MainActivity::class.java))
+                }
+            }
         }
 
         viewModel.onError = { message ->

@@ -39,7 +39,6 @@ class LoginViewModel(
             if(successLogin.await()){
                 if(!verifyExistsExpensesPath().await()){
                     updateExpensesDatabasePath().await()
-
                 }
                 val currentUser = firebaseAPI.currentUser()
                 if(currentUser?.isEmailVerified == true){
