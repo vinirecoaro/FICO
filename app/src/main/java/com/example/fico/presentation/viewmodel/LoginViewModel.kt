@@ -1,5 +1,7 @@
 package com.example.fico.presentation.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.User
@@ -43,5 +45,25 @@ class LoginViewModel(
     var onUserLogged: () -> Unit = {}
     var onUserNotVerified : () -> Unit = {}
     var onError: (String) -> Unit = {}
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun verifyExistsExpensesPath() : Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.verifyExistsExpensesPath()
+        }
+    }
+
+    fun updateExpensesDatabasePath(): Deferred<Unit> = viewModelScope.async{
+        try{
+            viewModelScope.launch {
+                firebaseAPI.updateExpensePerListInformationPath()
+                firebaseAPI.updateDefaultValuesPath()
+                firebaseAPI.updateInformationPerMonthPath()
+                firebaseAPI.updateTotalExpensePath()
+            }
+        }catch (e: Exception){
+
+        }
+    }
 
 }

@@ -24,6 +24,7 @@ class LogoActivity : AppCompatActivity() {
     private val binding by lazy {ActivityLogoBinding.inflate(layoutInflater)}
     private val viewModel : LogoViewModel by inject()
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

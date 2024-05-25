@@ -97,8 +97,8 @@ class FirebaseAPI private constructor() {
     suspend fun addNewUserOnDatabase() = withContext(Dispatchers.IO)
     {
         expenses.child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
-        expenses.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.INFORMATION_PER_MONTH).setValue("")
-        expenses.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
+        expenses.child(AppConstants.DATABASE.INFORMATION_PER_MONTH).setValue("")
+        expenses.child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
     }
 
     suspend fun getUserEmail() : String = withContext(Dispatchers.IO){
