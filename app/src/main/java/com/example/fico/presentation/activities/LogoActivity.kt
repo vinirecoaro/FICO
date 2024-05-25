@@ -65,7 +65,7 @@ class LogoActivity : AppCompatActivity() {
                 }else{
                     Toast.makeText(this@LogoActivity, "Atualizando informações", Toast.LENGTH_LONG).show()
                     delay(2000);
-                    viewModel.updateExpensesDatabasePath()
+                    viewModel.updateExpensesDatabasePath().await()
                     startActivity(Intent(this@LogoActivity, MainActivity::class.java))
                 }
             }

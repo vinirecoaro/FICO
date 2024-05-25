@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
@@ -735,85 +736,99 @@ class FirebaseAPI private constructor() {
     }
 
     //Function created to fix data that was updated before new information about expense
-    suspend fun updateExpensePerListInformationPath() = withContext(Dispatchers.IO){
-        expense_list.addListenerForSingleValueEvent(object : ValueEventListener{
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val expenseList = mutableListOf<Expense>()
-                for (expense in snapshot.children){
-                    val date = expense.child(AppConstants.DATABASE.DATE).value.toString()
-                    val inputDateTime = "$date-${FormatValuesToDatabase().timeNow()}"
-                    val newExpense = Expense(
-                        expense.key.toString(),
-                        expense.child(AppConstants.DATABASE.PRICE).value.toString(),
-                        expense.child(AppConstants.DATABASE.DESCRIPTION).value.toString(),
-                        expense.child(AppConstants.DATABASE.CATEGORY).value.toString(),
-
-                        expense.child(AppConstants.DATABASE.DATE).value.toString(),
-                        expense.child(AppConstants.DATABASE.DATE).value.toString(),
-                        inputDateTime
-                    )
-                    expenseList.add(newExpense)
-                }
-                val expenseListMap = generateMapToUpdateUserExpenses(expenseList)
-                user_root.child(AppConstants.DATABASE.EXPENSES).updateChildren(expenseListMap)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-        })
-    }
-
-    suspend fun updateDefaultValuesPath() = withContext(Dispatchers.IO){
-        user_root.child(AppConstants.DATABASE.DEFAULT_VALUES).addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                user_root.child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.DEFAULT_VALUES).child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(
-                    snapshot.child(AppConstants.DATABASE.DEFAULT_BUDGET).value.toString()
-                )
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
-    }
-
-    suspend fun updateInformationPerMonthPath() = withContext(Dispatchers.IO){
-        user_root.child(AppConstants.DATABASE.INFORMATION_PER_MONTH).addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val infoPerMonthList = mutableListOf<InformationPerMonthExpense>()
-                for(infoPerMonth in snapshot.children){
-                    infoPerMonthList.add(
-                        InformationPerMonthExpense(
-                            infoPerMonth.key.toString(),
-                            infoPerMonth.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString(),
-                            infoPerMonth.child(AppConstants.DATABASE.BUDGET).value.toString(),
-                            infoPerMonth.child(AppConstants.DATABASE.EXPENSE).value.toString(),
+    suspend fun updateExpensePerListInformationPath() = withContext(Dispatchers.IO) {
+        suspendCancellableCoroutine<Unit> { continuation ->
+            expense_list.addListenerForSingleValueEvent(object : ValueEventListener {
+                @RequiresApi(Build.VERSION_CODES.O)
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val expenseList = mutableListOf<Expense>()
+                    for (expense in snapshot.children) {
+                        val date = expense.child(AppConstants.DATABASE.DATE).value.toString()
+                        val inputDateTime = "$date-${FormatValuesToDatabase().timeNow()}"
+                        val newExpense = Expense(
+                            expense.key.toString(),
+                            expense.child(AppConstants.DATABASE.PRICE).value.toString(),
+                            expense.child(AppConstants.DATABASE.DESCRIPTION).value.toString(),
+                            expense.child(AppConstants.DATABASE.CATEGORY).value.toString(),
+                            expense.child(AppConstants.DATABASE.DATE).value.toString(),
+                            expense.child(AppConstants.DATABASE.DATE).value.toString(),
+                            inputDateTime
                         )
-                    )
+                        expenseList.add(newExpense)
+                    }
+                    val expenseListMap = generateMapToUpdateUserExpenses(expenseList)
+                    user_root.child(AppConstants.DATABASE.EXPENSES).updateChildren(expenseListMap)
+                    continuation.resume(Unit) {}
                 }
-                val infoPerMonthMap = generateMapToUpdateInformationPerMonth(infoPerMonthList)
-                user_root.child(AppConstants.DATABASE.EXPENSES).updateChildren(infoPerMonthMap)
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    continuation.resumeWithException(error.toException())
+                }
+            })
+        }
     }
 
-    suspend fun updateTotalExpensePath() = withContext(Dispatchers.IO){
-        user_root.child(AppConstants.DATABASE.TOTAL_EXPENSE).addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                user_root.child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue(
-                    snapshot.value.toString()
-                )
-            }
+    suspend fun updateDefaultValuesPath() = withContext(Dispatchers.IO) {
+        suspendCancellableCoroutine<Unit> { continuation ->
+            user_root.child(AppConstants.DATABASE.DEFAULT_VALUES).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        user_root.child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.DEFAULT_VALUES).child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(
+                            snapshot.child(AppConstants.DATABASE.DEFAULT_BUDGET).value.toString()
+                        )
+                    }
+                    continuation.resume(Unit) {}
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    continuation.resumeWithException(error.toException())
+                }
+            })
+        }
+    }
+
+    suspend fun updateInformationPerMonthPath() = withContext(Dispatchers.IO) {
+        suspendCancellableCoroutine<Unit> { continuation ->
+            user_root.child(AppConstants.DATABASE.INFORMATION_PER_MONTH).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val infoPerMonthList = mutableListOf<InformationPerMonthExpense>()
+                    for (infoPerMonth in snapshot.children) {
+                        infoPerMonthList.add(
+                            InformationPerMonthExpense(
+                                infoPerMonth.key.toString(),
+                                infoPerMonth.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString(),
+                                infoPerMonth.child(AppConstants.DATABASE.BUDGET).value.toString(),
+                                infoPerMonth.child(AppConstants.DATABASE.EXPENSE).value.toString(),
+                            )
+                        )
+                    }
+                    val infoPerMonthMap = generateMapToUpdateInformationPerMonth(infoPerMonthList)
+                    user_root.child(AppConstants.DATABASE.EXPENSES).updateChildren(infoPerMonthMap)
+                    continuation.resume(Unit) {}
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    continuation.resumeWithException(error.toException())
+                }
+            })
+        }
+    }
+
+    suspend fun updateTotalExpensePath() = withContext(Dispatchers.IO) {
+        suspendCancellableCoroutine<Unit> { continuation ->
+            user_root.child(AppConstants.DATABASE.TOTAL_EXPENSE).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    user_root.child(AppConstants.DATABASE.EXPENSES).child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue(
+                        snapshot.value.toString()
+                    )
+                    continuation.resume(Unit) {}
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    continuation.resumeWithException(error.toException())
+                }
+            })
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

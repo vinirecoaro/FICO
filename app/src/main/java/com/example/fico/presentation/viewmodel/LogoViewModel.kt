@@ -50,12 +50,16 @@ class LogoViewModel(
         }
     }
 
-    fun updateExpensesDatabasePath(){
-        viewModelScope.launch {
-            firebaseAPI.updateExpensePerListInformationPath()
-            firebaseAPI.updateDefaultValuesPath()
-            firebaseAPI.updateInformationPerMonthPath()
-            firebaseAPI.updateTotalExpensePath()
+    fun updateExpensesDatabasePath(): Deferred<Unit> = viewModelScope.async{
+        try{
+            viewModelScope.launch {
+                firebaseAPI.updateExpensePerListInformationPath()
+                firebaseAPI.updateDefaultValuesPath()
+                firebaseAPI.updateInformationPerMonthPath()
+                firebaseAPI.updateTotalExpensePath()
+            }
+        }catch (e: Exception){
+
         }
     }
 
