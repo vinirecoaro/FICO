@@ -53,18 +53,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
         viewModel.onUserLogged = {
-            lifecycleScope.launch {
-                if(viewModel.verifyExistsExpensesPath().await()){
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                }else{
-                    Toast.makeText(this@LoginActivity, "Atualizando informações", Toast.LENGTH_LONG).show()
-                    delay(2000);
-                    viewModel.updateExpensesDatabasePath().await()
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                }
-
-            }
-
+            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
         }
         viewModel.onUserNotVerified = {
             startActivity(Intent(this, VerifyEmailActivity::class.java))

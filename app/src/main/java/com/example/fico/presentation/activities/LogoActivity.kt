@@ -60,16 +60,7 @@ class LogoActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners(){
         viewModel.onUserLogged = {
-            lifecycleScope.launch {
-                if(viewModel.verifyExistsExpensesPath().await()){
-                    startActivity(Intent(this@LogoActivity, MainActivity::class.java))
-                }else{
-                    Toast.makeText(this@LogoActivity, "Atualizando informações", Toast.LENGTH_LONG).show()
-                    delay(2000);
-                    viewModel.updateExpensesDatabasePath().await()
-                    startActivity(Intent(this@LogoActivity, MainActivity::class.java))
-                }
-            }
+            startActivity(Intent(this, MainActivity::class.java))
         }
 
         viewModel.onError = { message ->

@@ -1,11 +1,14 @@
 package com.example.fico.presentation.viewmodel
 
+import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.User
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.presentation.activities.expense.MainActivity
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.*
 
@@ -13,6 +16,7 @@ class LoginViewModel(
     private val firebaseAPI : FirebaseAPI
 ) : ViewModel() {
 
+    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun login(email: String, password: String)=
         viewModelScope.async(Dispatchers.IO){
             val user = User("",email, password)
@@ -33,6 +37,10 @@ class LoginViewModel(
                 }
 
             if(successLogin.await()){
+                if(!verifyExistsExpensesPath().await()){
+                    updateExpensesDatabasePath().await()
+
+                }
                 val currentUser = firebaseAPI.currentUser()
                 if(currentUser?.isEmailVerified == true){
                     onUserLogged()

@@ -738,7 +738,8 @@ class FirebaseAPI private constructor() {
     //Function created to fix data that was updated before new information about expense
     suspend fun updateExpensePerListInformationPath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
-            expense_list.addListenerForSingleValueEvent(object : ValueEventListener {
+            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES_LIST)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val expenseList = mutableListOf<Expense>()
