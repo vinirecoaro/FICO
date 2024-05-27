@@ -1,16 +1,11 @@
 package com.example.fico.presentation.fragments.expense
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.databinding.FragmentConfigurationBinding
@@ -20,9 +15,13 @@ import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import org.koin.android.ext.android.inject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class ConfigurationFragment : Fragment(),
     OnListItemClick {
@@ -65,13 +64,27 @@ class ConfigurationFragment : Fragment(),
         val inflater = LayoutInflater.from(requireContext())
         val dialogView = inflater.inflate(R.layout.select_date_for_alert_dialog, null)
 
+        val etDate = dialogView.findViewById<TextInputEditText>(R.id.et_payment_day_ad)
+
         builder.setView(dialogView)
 
         builder.setPositiveButton("Salvar"){dialog, which ->
-            //viewModel.setDefaultPaymentDate()
+            if(etDate.text.isNullOrEmpty()){
+                Snackbar.make(binding.rvConfigurationList, "Digite o dia", Snackbar.LENGTH_LONG).show()
+            }else if (etDate.text.toString().toInt() > 31 ||etDate.text.toString().toInt() <= 0){
+                Snackbar.make(binding.rvConfigurationList, "Dia inválido", Snackbar.LENGTH_LONG).show()
+            }else{
+                viewModel.setDefaultPaymentDay(etDate.text.toString())
+            }
         }
         val alertDialog = builder.create()
         alertDialog.show()
     }
 
+    private fun formatDate(timestamp: Long): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("GMT")
+        val date = Date(timestamp)
+        return sdf.format(date)
+    }
 }

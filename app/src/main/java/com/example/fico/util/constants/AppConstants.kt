@@ -8,6 +8,7 @@ class AppConstants private constructor() {
         const val TOTAL_EXPENSE = "totalExpense"
         const val PRICE = "price"
         const val PAYMENT_DATE = "payment_date"
+        const val PAYMENT_DAY = "payment_day"
         const val PURCHASE_DATE = "purchase_date"
         const val INPUT_DATE_TIME = "input_date_time"
         const val DATE = "date"

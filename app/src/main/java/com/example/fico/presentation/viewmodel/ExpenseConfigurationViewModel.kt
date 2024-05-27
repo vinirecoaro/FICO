@@ -1,6 +1,5 @@
 package com.example.fico.presentation.viewmodel
 
-import android.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,9 +18,9 @@ class ExpenseConfigurationViewModel(private val firebaseAPI: FirebaseAPI) : View
         AppConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE
     )
 
-    fun setDefaultPaymentDate(date: String) {
+    fun setDefaultPaymentDay(date: String) {
         viewModelScope.async {
-            val result = firebaseAPI.setDefaultPaymentDate(date)
+            val result = firebaseAPI.setDefaultPaymentDay(date)
             _setDefaultBudget.value = result
         }
     }

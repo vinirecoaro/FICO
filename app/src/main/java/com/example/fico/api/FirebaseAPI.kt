@@ -2,7 +2,6 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.MutableLiveData
 import com.example.fico.model.Budget
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
@@ -19,7 +18,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.coroutines.resume
@@ -1038,10 +1036,10 @@ class FirebaseAPI private constructor() {
         return checkIfExistsOnDatabse(expenses)
     }
 
-    suspend fun setDefaultPaymentDate(date: String): Boolean {
+    suspend fun setDefaultPaymentDay(date: String): Boolean {
         val successLiveData = CompletableDeferred<Boolean>()
 
-        default_expense_values.child(AppConstants.DATABASE.PAYMENT_DATE).setValue(date)
+        default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).setValue(date)
             .addOnSuccessListener {
                 // Operação bem-sucedida
                 successLiveData.complete(true)

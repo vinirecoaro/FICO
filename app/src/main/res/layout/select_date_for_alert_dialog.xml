@@ -7,36 +7,23 @@
     >
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_payment_date"
+        android:id="@+id/til_payment_day"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/add_date"
+        android:hint="@string/day"
         app:boxBackgroundMode="outline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_payment_date"
+            android:id="@+id/et_payment_day_ad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:focusable="false"
             android:inputType="date" />
 
     </com.google.android.material.textfield.TextInputLayout>
-
-    <ImageView
-        android:id="@+id/iv_payment_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/baseline_calendar_month_light"
-        app:layout_constraintBottom_toBottomOf="@id/til_payment_date"
-        app:layout_constraintEnd_toEndOf="@id/til_payment_date"
-        app:layout_constraintTop_toTopOf="@id/til_payment_date" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
