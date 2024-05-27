@@ -19,6 +19,7 @@ import com.example.fico.presentation.activities.expense.BudgetConfigurationListA
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.android.ext.android.inject
@@ -58,58 +59,13 @@ class ConfigurationFragment : Fragment(),
     }
 
     private fun setDefaultPaymentDateAlertDialog(){
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle("Data de Pagamento Padrão")
 
-        val textInputLayout = TextInputLayout(requireContext()).apply {
-            id = View.generateViewId()
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE)
-            hint = getString(R.string.payment_date)
-        }
+        val inflater = LayoutInflater.from(requireContext())
+        val dialogView = inflater.inflate(R.layout.select_date_for_alert_dialog, null)
 
-// Criar o TextInputEditText
-        val textInputEditText = TextInputEditText(requireContext()).apply {
-            id = View.generateViewId()
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            setHint(getString(R.string.payment_date))
-            inputType = InputType.TYPE_CLASS_DATETIME
-            isFocusable = false
-        }
-
-// Adicionar o TextInputEditText ao TextInputLayout
-        textInputLayout.addView(textInputEditText)
-
-// Criar o ImageView
-        val imageView = ImageView(requireContext()).apply {
-            id = View.generateViewId()
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            setImageResource(R.drawable.baseline_calendar_month_light)
-            isClickable = true
-            isFocusable = true
-        }
-
-// Criar um LinearLayout para conter o TextInputLayout e o ImageView
-        val linearLayout = LinearLayout(requireContext()).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            orientation = LinearLayout.HORIZONTAL
-            addView(textInputLayout)
-            addView(imageView)
-        }
-
-        builder.setView(linearLayout)
+        builder.setView(dialogView)
 
         builder.setPositiveButton("Salvar"){dialog, which ->
             //viewModel.setDefaultPaymentDate()
