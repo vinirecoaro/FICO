@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.room.Room
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
+import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
 import com.example.fico.presentation.viewmodel.HomeViewModel
@@ -69,6 +70,12 @@ val appModule = module {
 
     factory<HomeViewModel> {
             HomeViewModel(
+                firebaseAPI = get()
+            )
+        }
+
+    factory<ExpenseConfigurationViewModel> {
+        ExpenseConfigurationViewModel(
                 firebaseAPI = get()
             )
         }

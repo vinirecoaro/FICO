@@ -26,7 +26,7 @@ class AppConstants private constructor() {
 
     object EXPENSE_CONFIGURATION_LIST {
         const val BUDGET = "Orçamento"
-        const val CATEGORIES = "Categorias"
+        const val DEFAULT_PAYMENT_DATE = "Data de Pagamento Padrão"
 
         object BUDGET_LIST{
             const val DEFAULT_BUDGET = "Orçamento padrão"
