@@ -18,6 +18,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.coroutines.resume
@@ -118,8 +119,7 @@ class FirebaseAPI private constructor() {
         return@withContext auth.fetchSignInMethodsForEmail(currentUser()?.email.toString())
     }
 
-    suspend fun addNewUserOnDatabase() = withContext(Dispatchers.IO)
-    {
+    suspend fun addNewUserOnDatabase() = withContext(Dispatchers.IO) {
         expenses.child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
         expenses.child(AppConstants.DATABASE.INFORMATION_PER_MONTH).setValue("")
         expenses.child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
@@ -231,9 +231,7 @@ class FirebaseAPI private constructor() {
         }
 
     private fun generateMapToUpdateMonthBudget(
-        date: String,
-        newBudget: String,
-        newAvailableNow: String
+        date: String, newBudget: String, newAvailableNow: String
     ): MutableMap<String, Any> {
         val updetedInfoPerMonth = mutableMapOf<String, Any>()
 
@@ -366,8 +364,7 @@ class FirebaseAPI private constructor() {
             // Remove from Expense List
             updates.putAll(
                 generateMapToRemoveUserExpenses(
-                    removeFromExpenseList,
-                    oldExpenseNOfInstallment
+                    removeFromExpenseList, oldExpenseNOfInstallment
                 )
             )
 
@@ -410,8 +407,7 @@ class FirebaseAPI private constructor() {
     }
 
     private fun generateMapToRemoveUserExpenses(
-        expenseIdList: MutableList<String>,
-        nOfInstallments: Int
+        expenseIdList: MutableList<String>, nOfInstallments: Int
     ): MutableMap<String, Any?> {
         val removeFromExpenseList = mutableMapOf<String, Any?>()
 
@@ -456,9 +452,7 @@ class FirebaseAPI private constructor() {
                         expenses_information_per_month.child(expense.paymentDate.substring(0, 7))
                             .child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
                         val updatedAvailable = subOldAndNewValue(
-                            expense,
-                            snapshot,
-                            AppConstants.DATABASE.AVAILABLE_NOW
+                            expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW
                         )
                         expenses_information_per_month.child(expense.paymentDate.substring(0, 7))
                             .child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
@@ -467,8 +461,7 @@ class FirebaseAPI private constructor() {
                     override fun onCancelled(error: DatabaseError) {
 
                     }
-                }
-                )
+                })
         }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -490,8 +483,7 @@ class FirebaseAPI private constructor() {
             override fun onCancelled(error: DatabaseError) {
 
             }
-        }
-        )
+        })
         return@withContext availableNow.await()
     }
 
@@ -587,8 +579,7 @@ class FirebaseAPI private constructor() {
             override fun onCancelled(error: DatabaseError) {
 
             }
-        }
-        )
+        })
         return@withContext totalExpense
     }
 
@@ -653,13 +644,11 @@ class FirebaseAPI private constructor() {
                                     childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
                                 var paymentDateFormatted = "${
                                     paymentDateDatabase.substring(
-                                        8,
-                                        10
+                                        8, 10
                                     )
                                 }/${
                                     paymentDateDatabase.substring(
-                                        5,
-                                        7
+                                        5, 7
                                     )
                                 }/${paymentDateDatabase.substring(0, 4)}"
                                 if ((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE)
@@ -681,13 +670,11 @@ class FirebaseAPI private constructor() {
                                         childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
                                     val purchaseDateFormatted = "${
                                         purchaseDateDatabase.substring(
-                                            8,
-                                            10
+                                            8, 10
                                         )
                                     }/${
                                         purchaseDateDatabase.substring(
-                                            5,
-                                            7
+                                            5, 7
                                         )
                                     }/${purchaseDateDatabase.substring(0, 4)}"
                                     val inputDateTime =
@@ -711,8 +698,7 @@ class FirebaseAPI private constructor() {
                                     childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
                                 val dateFromDatabase = "${dateDatabase.substring(0, 4)}-${
                                     dateDatabase.substring(
-                                        5,
-                                        7
+                                        5, 7
                                     )
                                 }"
                                 val dateFromFilter =
@@ -729,13 +715,11 @@ class FirebaseAPI private constructor() {
                                         childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                                     val paymentDateFormatted = "${
                                         dateDatabase.substring(
-                                            8,
-                                            10
+                                            8, 10
                                         )
                                     }/${dateDatabase.substring(5, 7)}/${
                                         dateDatabase.substring(
-                                            0,
-                                            4
+                                            0, 4
                                         )
                                     }"
                                     if ((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE)
@@ -757,13 +741,11 @@ class FirebaseAPI private constructor() {
                                             childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
                                         val purchaseDateFormatted = "${
                                             purchaseDateDatabase.substring(
-                                                8,
-                                                10
+                                                8, 10
                                             )
                                         }/${
                                             purchaseDateDatabase.substring(
-                                                5,
-                                                7
+                                                5, 7
                                             )
                                         }/${purchaseDateDatabase.substring(0, 4)}"
                                         val inputDateTime =
@@ -969,8 +951,8 @@ class FirebaseAPI private constructor() {
                             user_root.child(AppConstants.DATABASE.EXPENSES)
                                 .child(AppConstants.DATABASE.DEFAULT_VALUES)
                                 .child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(
-                                snapshot.child(AppConstants.DATABASE.DEFAULT_BUDGET).value.toString()
-                            )
+                                    snapshot.child(AppConstants.DATABASE.DEFAULT_BUDGET).value.toString()
+                                )
                         }
                         continuation.resume(Unit) {}
                     }
@@ -1019,8 +1001,8 @@ class FirebaseAPI private constructor() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         user_root.child(AppConstants.DATABASE.EXPENSES)
                             .child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue(
-                            snapshot.value.toString()
-                        )
+                                snapshot.value.toString()
+                            )
                         continuation.resume(Unit) {}
                     }
 
@@ -1037,20 +1019,33 @@ class FirebaseAPI private constructor() {
     }
 
     suspend fun setDefaultPaymentDay(date: String): Boolean {
-        val successLiveData = CompletableDeferred<Boolean>()
+        val result = CompletableDeferred<Boolean>()
 
         default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).setValue(date)
             .addOnSuccessListener {
                 // Operação bem-sucedida
-                successLiveData.complete(true)
-            }
-            .addOnFailureListener { e ->
+                result.complete(true)
+            }.addOnFailureListener { e ->
                 // Operação falhou
-                successLiveData.complete(false)
+                result.complete(false)
             }
 
-        return successLiveData.await()
+        return result.await()
     }
+
+    suspend fun getDefaultPaymentDay(): String {
+        val paymentDay = CompletableDeferred<String>()
+
+        default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).get()
+            .addOnSuccessListener { snapshot ->
+                paymentDay.complete(snapshot.value.toString())
+            }
+            .addOnFailureListener {
+                paymentDay.complete(AppConstants.DEFAULT_MESSAGES.FAIL)
+            }
+        return paymentDay.await()
+    }
+
 
 }
 

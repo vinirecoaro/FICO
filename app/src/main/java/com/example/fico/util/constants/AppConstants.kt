@@ -29,7 +29,7 @@ class AppConstants private constructor() {
         const val BUDGET = "Orçamento"
         const val DEFAULT_PAYMENT_DATE = "Data de Pagamento Padrão"
 
-        object BUDGET_LIST{
+        object BUDGET_LIST {
             const val DEFAULT_BUDGET = "Orçamento padrão"
             const val BUDGET_PER_MONTH = "Orçamento por mês"
         }
@@ -41,8 +41,8 @@ class AppConstants private constructor() {
     }
 
     object XLS {
-        val TITLES : Array<String> = arrayOf("Preço", "Descrição", "Categoria", "Data")
-        val INDEX_NAME : Array<String> = arrayOf("price", "description", "category", "date")
+        val TITLES: Array<String> = arrayOf("Preço", "Descrição", "Categoria", "Data")
+        val INDEX_NAME: Array<String> = arrayOf("price", "description", "category", "date")
         const val SHEET_NAME = "Gastos"
         const val FILE_NAME = "expenses"
     }
@@ -87,6 +87,7 @@ class AppConstants private constructor() {
             const val PAYMENT = "Pagamento"
             const val SERVICES = "Serviços"
         }
+
         object ICON_NAME {
             const val FOOD = "category_icon_food"
             const val TRANSPORT = "category_icon_transport"
@@ -120,6 +121,8 @@ class AppConstants private constructor() {
         }
     }
 
-
+    object DEFAULT_MESSAGES {
+        const val FAIL = "fail"
+    }
 
 }

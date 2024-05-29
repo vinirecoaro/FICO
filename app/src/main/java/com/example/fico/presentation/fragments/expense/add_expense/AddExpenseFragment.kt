@@ -118,7 +118,9 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        binding.etPaymentDate.setText(DateFunctions().getCurrentlyDate())
+        binding.etPurchaseDate.setText(DateFunctions().getCurrentlyDate())
+
+        viewModel.getDefaultPaymentDay()
 
         val filter = IntentFilter().apply {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
@@ -362,6 +364,12 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 }
             }
         })
+
+        viewModel.paymentDayLiveData.observe(viewLifecycleOwner){ paymentDay ->
+            if(paymentDay != AppConstants.DEFAULT_MESSAGES.FAIL){
+                binding.etPaymentDate.setText(paymentDay)
+            }
+        }
 
     }
 
