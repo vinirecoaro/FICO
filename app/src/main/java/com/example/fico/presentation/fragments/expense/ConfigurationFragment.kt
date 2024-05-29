@@ -40,12 +40,32 @@ class ConfigurationFragment : Fragment(),
         configuratonListAdapter.setOnItemClickListener(this)
         binding.rvConfigurationList.adapter = configuratonListAdapter
 
+        setUpListeners()
+
         return rootView
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setUpListeners(){
+        viewModel.setDefaultBudgetLiveData.observe(viewLifecycleOwner) { result ->
+            if (result) {
+                Snackbar.make(
+                    binding.rvConfigurationList,
+                    "Dia de pagamento padrão definido com sucesso",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }else{
+                Snackbar.make(
+                    binding.rvConfigurationList,
+                    "Falha ao definir dia de pagamento padrão",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }
     }
 
     override fun onListItemClick(position: Int) {
@@ -81,10 +101,4 @@ class ConfigurationFragment : Fragment(),
         alertDialog.show()
     }
 
-    private fun formatDate(timestamp: Long): String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        sdf.timeZone = TimeZone.getTimeZone("GMT")
-        val date = Date(timestamp)
-        return sdf.format(date)
-    }
 }
