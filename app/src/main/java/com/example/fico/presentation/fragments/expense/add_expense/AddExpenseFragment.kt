@@ -69,6 +69,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
     private lateinit var adapter : CategoryListAdapter
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val currentDate = DateFunctions().getCurrentlyDate()
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -118,7 +120,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        binding.etPurchaseDate.setText(DateFunctions().getCurrentlyDate())
+        binding.etPurchaseDate.setText(currentDate)
 
         viewModel.getDefaultPaymentDay()
 
@@ -367,6 +369,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
         viewModel.paymentDayLiveData.observe(viewLifecycleOwner){ paymentDay ->
             if(paymentDay != AppConstants.DEFAULT_MESSAGES.FAIL){
+
                 binding.etPaymentDate.setText(paymentDay)
             }
         }
