@@ -178,6 +178,17 @@
             app:layout_constraintEnd_toEndOf="@id/til_purchase_date"
             app:layout_constraintTop_toTopOf="@id/til_purchase_date" />
 
+        <ImageView
+            android:id="@+id/iv_arrow_up_get_purchase_date"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/arrow_up_black"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/til_purchase_date"
+            app:layout_constraintEnd_toStartOf="@id/iv_purchase_date"
+            app:layout_constraintTop_toTopOf="@id/til_purchase_date"
+            />
+
         <Button
             android:id="@+id/bt_save"
             android:layout_width="match_parent"

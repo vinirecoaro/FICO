@@ -374,6 +374,10 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
         }
 
+        binding.ivArrowUpGetPurchaseDate.setOnClickListener {
+            binding.etPaymentDate.text = binding.etPurchaseDate.text
+        }
+
     }
 
     private fun verifyFields(vararg text: EditText): Boolean {
@@ -628,10 +632,12 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             Configuration.UI_MODE_NIGHT_YES -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_light)
                 binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_light)
+                binding.ivArrowUpGetPurchaseDate.setImageResource(R.drawable.arrow_up_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_dark)
                 binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_dark)
+                binding.ivArrowUpGetPurchaseDate.setImageResource(R.drawable.arrow_up_black)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
