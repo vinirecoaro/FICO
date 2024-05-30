@@ -369,8 +369,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
         viewModel.paymentDayLiveData.observe(viewLifecycleOwner){ paymentDay ->
             if(paymentDay != AppConstants.DEFAULT_MESSAGES.FAIL){
-
-                binding.etPaymentDate.setText(paymentDay)
+                val paymentDate = DateFunctions().paymentDate(paymentDay)
+                binding.etPaymentDate.setText(paymentDate)
             }
         }
 

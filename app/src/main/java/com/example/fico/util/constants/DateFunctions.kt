@@ -38,12 +38,13 @@ class DateFunctions {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun paymentDate(payDay: String) : LocalDate{
+    fun paymentDate(payDay: String) : String{
         val day = payDay.toInt()
         val currentDate = LocalDate.now()
-        val closingDate = currentDate.minusDays(7)
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val closingDate = LocalDate.of(currentDate.year, currentDate.month, day).minusDays(7)
 
-        val baseDate = if(day < closingDate.dayOfMonth){
+        val baseDate = if(currentDate.dayOfMonth < closingDate.dayOfMonth){
             LocalDate.of(currentDate.year, currentDate.month, day)
         }else{
             val nextMonthDate = currentDate.plusMonths(1)
@@ -52,9 +53,9 @@ class DateFunctions {
 
         val monthLastDay = YearMonth.of(baseDate.year, baseDate.month).lengthOfMonth()
         return if(day < monthLastDay){
-            baseDate
+            baseDate.format(formatter)
         }else{
-            LocalDate.of(baseDate.year, baseDate.month, monthLastDay).plusDays(1)
+            LocalDate.of(baseDate.year, baseDate.month, monthLastDay).plusDays(1).format(formatter)
         }
     }
 }
