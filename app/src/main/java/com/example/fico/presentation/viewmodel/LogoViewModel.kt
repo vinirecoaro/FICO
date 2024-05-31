@@ -16,6 +16,7 @@ class LogoViewModel(
     private val firebaseAPI : FirebaseAPI
 ) : ViewModel() {
 
+    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun isLogged() : Deferred<Boolean> {
         val result = CompletableDeferred<Boolean>()
         viewModelScope.async(Dispatchers.IO) {
@@ -24,7 +25,12 @@ class LogoViewModel(
                 try {
                     val providers = firebaseAPI.verifyIfUserExists().await()
                     if (providers.signInMethods?.isNotEmpty() == true) {
-                        onUserLogged()
+                        if(verifyExistsExpensesPath().await()){
+                            onUserLogged()
+                        }else{
+                            updateExpensesDatabasePath().await()
+                            onUserLogged()
+                        }
                         result.complete(true)
                     } else {
                         onError("Erro ao verificar o usuário")
@@ -44,13 +50,13 @@ class LogoViewModel(
     var onError: (String) -> Unit = {}
 
     @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun verifyExistsExpensesPath() : Deferred<Boolean> {
+    private suspend fun verifyExistsExpensesPath() : Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO){
             firebaseAPI.verifyExistsExpensesPath()
         }
     }
 
-    fun updateExpensesDatabasePath(): Deferred<Unit> = viewModelScope.async{
+    private fun updateExpensesDatabasePath(): Deferred<Unit> = viewModelScope.async{
         try{
             viewModelScope.launch {
                 firebaseAPI.updateExpensePerListInformationPath()
