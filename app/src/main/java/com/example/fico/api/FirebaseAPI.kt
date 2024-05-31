@@ -1038,7 +1038,11 @@ class FirebaseAPI private constructor() {
 
         default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).get()
             .addOnSuccessListener { snapshot ->
-                paymentDay.complete(snapshot.value.toString())
+                if(snapshot.value != null){
+                    paymentDay.complete(snapshot.value.toString())
+                }else{
+                    paymentDay.complete(AppConstants.DEFAULT_MESSAGES.FAIL)
+                }
             }
             .addOnFailureListener {
                 paymentDay.complete(AppConstants.DEFAULT_MESSAGES.FAIL)
