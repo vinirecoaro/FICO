@@ -5,8 +5,10 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
@@ -71,7 +73,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private lateinit var adapter : CategoryListAdapter
     @RequiresApi(Build.VERSION_CODES.O)
     private val currentDate = DateFunctions().getCurrentlyDate()
-
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             // Action when receive Broadcast
@@ -83,6 +84,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
         }
     }
+    private val sharedPref : SharedPreferences by inject()
 
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
@@ -122,7 +124,14 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         super.onResume()
         binding.etPurchaseDate.setText(currentDate)
 
-        viewModel.getDefaultPaymentDay()
+        val paymentDay = sharedPref.getString(AppConstants.DATABASE.PAYMENT_DAY, null)
+        if(paymentDay != null){
+            val paymentDate = DateFunctions().paymentDate(paymentDay)
+            binding.etPaymentDate.setText(paymentDate)
+        }else{
+            viewModel.getDefaultPaymentDay()
+        }
+
 
         val filter = IntentFilter().apply {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
@@ -370,6 +379,10 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         viewModel.paymentDayLiveData.observe(viewLifecycleOwner){ paymentDay ->
             if(paymentDay != AppConstants.DEFAULT_MESSAGES.FAIL){
                 val paymentDate = DateFunctions().paymentDate(paymentDay)
+                with(sharedPref.edit()){
+                    putString(AppConstants.DATABASE.PAYMENT_DAY, paymentDay)
+                    commit()
+                }
                 binding.etPaymentDate.setText(paymentDate)
             }
         }

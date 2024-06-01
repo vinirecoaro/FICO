@@ -1049,9 +1049,4 @@ class FirebaseAPI private constructor() {
             }
         return paymentDay.await()
     }
-
-
 }
-
-
-

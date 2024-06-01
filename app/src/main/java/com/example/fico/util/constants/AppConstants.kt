@@ -125,4 +125,8 @@ class AppConstants private constructor() {
         const val FAIL = "fail"
     }
 
+    object SHARED_PREFERENCES {
+        const val NAME = "FicoSharedPref"
+    }
+
 }
