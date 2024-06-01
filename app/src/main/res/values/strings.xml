@@ -69,5 +69,12 @@
     <string name="purchase_date">Data da Compra</string>
     <string name="payment_date">Data de Pagamento</string>
     <string name="day">Dia</string>
+    <string name="payment_day_definition_success_message">Dia de pagamento padrão definido com sucesso</string>
+    <string name="payment_day_definition_fail_message">Falha ao definir dia de pagamento padrão</string>
+    <string name="default_payment_day">Data de Pagamento Padrão</string>
+    <string name="default_day">Dia Padrão:</string>
+    <string name="default_day_default_message">Dia Padrão: A definir</string>
+    <string name="type_the_day">Digite o dia</string>
+    <string name="invalid_day">Dia inválido</string>
 
 </resources>

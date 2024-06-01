@@ -58,13 +58,13 @@ class ConfigurationFragment : Fragment(),
             if (result) {
                 Snackbar.make(
                     binding.rvConfigurationList,
-                    "Dia de pagamento padrão definido com sucesso",
+                    getString(R.string.payment_day_definition_success_message),
                     Snackbar.LENGTH_LONG
                 ).show()
             }else{
                 Snackbar.make(
                     binding.rvConfigurationList,
-                    "Falha ao definir dia de pagamento padrão",
+                    getString(R.string.payment_day_definition_fail_message),
                     Snackbar.LENGTH_LONG
                 ).show()
             }
@@ -82,7 +82,7 @@ class ConfigurationFragment : Fragment(),
 
     private fun setDefaultPaymentDateAlertDialog(){
         val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle("Data de Pagamento Padrão")
+        builder.setTitle(getString(R.string.default_payment_day))
 
         val inflater = LayoutInflater.from(requireContext())
         val dialogView = inflater.inflate(R.layout.select_date_for_alert_dialog, null)
@@ -92,20 +92,20 @@ class ConfigurationFragment : Fragment(),
         val paymentDay = sharedPref.getString(AppConstants.DATABASE.PAYMENT_DAY, null)
 
         if(paymentDay != null){
-            val text = "Dia Padrão: $paymentDay"
+            val text = "${getString(R.string.default_day)} $paymentDay"
             tvPaymentDay.text = text
         }else{
-            val text = "Dia Padrão: A definir"
+            val text = getString(R.string.default_day_default_message)
             tvPaymentDay.text = text
         }
 
         builder.setView(dialogView)
 
-        builder.setPositiveButton("Salvar"){dialog, which ->
+        builder.setPositiveButton(getString(R.string.save)){dialog, which ->
             if(etDate.text.isNullOrEmpty()){
-                Snackbar.make(binding.rvConfigurationList, "Digite o dia", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.rvConfigurationList, getString(R.string.type_the_day), Snackbar.LENGTH_LONG).show()
             }else if (etDate.text.toString().toInt() > 31 ||etDate.text.toString().toInt() <= 0){
-                Snackbar.make(binding.rvConfigurationList, "Dia inválido", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.rvConfigurationList, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
             }else{
                 with(sharedPref.edit()){
                     putString(AppConstants.DATABASE.PAYMENT_DAY, etDate.text.toString())
