@@ -20,12 +20,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 
-class ConfigurationFragment : Fragment(),
+class ExpenseConfigurationFragment : Fragment(),
     OnListItemClick {
 
     private var _binding : FragmentConfigurationBinding? = null
