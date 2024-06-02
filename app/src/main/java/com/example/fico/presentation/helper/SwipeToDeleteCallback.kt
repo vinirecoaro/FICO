@@ -1,6 +1,7 @@
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.api.FormatValuesToDatabase
@@ -8,6 +9,8 @@ import com.example.fico.model.Expense
 import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val viewModel: ExpenseListViewModel, private val adapter: ExpenseListAdapter) :
     ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -47,6 +50,11 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
             val snackbar = Snackbar.make(recyclerView, "Item excluido", Snackbar.LENGTH_LONG)
             snackbar.setAction("Desfazer") {
                 viewModel.undoDeleteExpense(deleteItem, false, 1)
+                viewModel.viewModelScope.launch {
+                    delay(200)
+                    viewModel.getExpenseList(viewModel.filterLiveData.value.toString())
+                }
+
             }.show()
     }
 }

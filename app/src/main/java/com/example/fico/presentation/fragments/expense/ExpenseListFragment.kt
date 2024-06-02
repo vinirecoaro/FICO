@@ -46,9 +46,9 @@ import java.io.File
 
 class ExpenseListFragment : Fragment(), XLSInterface {
 
-    private var _binding : FragmentExpenseListBinding? = null
+    private var _binding: FragmentExpenseListBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : ExpenseListViewModel by inject()
+    private val viewModel: ExpenseListViewModel by inject()
     private val expenseListAdapter = ExpenseListAdapter(emptyList())
     private var expenseMonthsList = arrayOf<String>()
     private val permissionRequestCode = 123
@@ -57,13 +57,17 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
-    private companion object{
+    private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
         const val TAG = "PERMISSION_TAG"
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentExpenseListBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
@@ -124,10 +128,10 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         }
     }
 
-    private fun getExpenseList() : MutableList<Expense> {
-        val expenseList : MutableList<Expense> = ArrayList()
+    private fun getExpenseList(): MutableList<Expense> {
+        val expenseList: MutableList<Expense> = ArrayList()
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
-            for(expense in expenses){
+            for (expense in expenses) {
                 var modifiedExpense = Expense(
                     "",
                     FormatValuesFromDatabase().priceToFile(expense.price),
@@ -143,7 +147,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         return expenseList
     }
 
-    fun setUpListeners(){
+    fun setUpListeners() {
         binding.actvDate.setOnClickListener {
             binding.actvDate.showDropDown()
         }
@@ -155,44 +159,38 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             binding.actvDate.setText("")
             viewModel.getExpenseList("")
         }
-        lifecycleScope.launch {
-            viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
-                expenseListAdapter.updateExpenses(expenses)
-                expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
-                    override fun onListItemClick(position: Int) {
-                        val selectItem = expenses[position]
-                        editExpense(selectItem)
-                    }
-                })
-            })
 
-            viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
-                expenseMonthsList = expenseMonths.toTypedArray()
-                actvConfig()
-            })
-
-            binding.actvDate.addTextChangedListener (object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-
+        viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
+            expenseListAdapter.updateExpenses(expenses)
+            expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
+                override fun onListItemClick(position: Int) {
+                    val selectItem = expenses[position]
+                    editExpense(selectItem)
                 }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    viewModel.updateFilter(binding.actvDate.text.toString())
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-
-                }
-
             })
+        })
 
-        }
+        viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
+            expenseMonthsList = expenseMonths.toTypedArray()
+            actvConfig()
+        })
 
+        binding.actvDate.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.updateFilter(binding.actvDate.text.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
     }
 
     private fun actvConfig() {
@@ -204,7 +202,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         binding.actvDate.setAdapter(adapter)
     }
 
-    fun editExpense(expense : Expense){
+    fun editExpense(expense: Expense) {
         val intent = Intent(requireContext(), EditExpenseActivity::class.java)
         val sureExpense = Expense(
             id = expense.id,
@@ -220,14 +218,16 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         startActivity(intent)
     }
 
-    private fun setColorBasedOnTheme(){
+    private fun setColorBasedOnTheme() {
         when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
                 binding.ivClearFilter.setImageResource(R.drawable.baseline_cancel_light)
             }
+
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.ivClearFilter.setImageResource(R.drawable.baseline_cancel_dark)
             }
+
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
@@ -246,7 +246,8 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         val chooser = Intent.createChooser(intent, "Share File")
 
         val resInfoList: List<ResolveInfo> =
-            requireActivity().packageManager.queryIntentActivities(chooser,
+            requireActivity().packageManager.queryIntentActivities(
+                chooser,
                 PackageManager.MATCH_DEFAULT_ONLY
             )
 
@@ -261,8 +262,8 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         startActivity(chooser)
     }
 
-    private fun requestPermission(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 Log.d(TAG, "requestPermission: try")
                 val intent = Intent()
@@ -270,14 +271,13 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                 val uri = Uri.fromParts("package", requireActivity().packageName, null)
                 intent.data = uri
                 storageActivityResultLauncher.launch(intent)
-            }catch (e : java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 Log.d(TAG, "RequestPermission: ", e)
                 val intent = Intent()
                 intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
                 storageActivityResultLauncher.launch(intent)
             }
-        }
-        else{
+        } else {
             ActivityCompat.requestPermissions(
                 requireActivity(), permissions,
                 STORAGE_PERMISSION_CODE
@@ -285,32 +285,32 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         }
     }
 
-    private val storageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-        Log.d(TAG, "storageActivityResultLauncher: ")
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            if(Environment.isExternalStorageManager()){
-                Log.d(TAG, "storageActivityResultLauncher: ")
-                lifecycleScope.launch {
-                    delay(500)
+    private val storageActivityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            Log.d(TAG, "storageActivityResultLauncher: ")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    Log.d(TAG, "storageActivityResultLauncher: ")
+                    lifecycleScope.launch {
+                        delay(500)
+                    }
+                } else {
+                    Log.d(TAG, "storageActivityResultLauncher: ")
+                    Toast.makeText(
+                        requireContext(),
+                        "Manage External Storage Permission is denied ...",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-            }else{
-                Log.d(TAG, "storageActivityResultLauncher: ")
-                Toast.makeText(
-                    requireContext(),
-                    "Manage External Storage Permission is denied ...",
-                    Toast.LENGTH_LONG
-                ).show()
+            } else {
+
             }
         }
-        else{
 
-        }
-    }
-
-    private fun checkPermission() : Boolean{
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+    private fun checkPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
-        }else{
+        } else {
             val write = ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -331,12 +331,12 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == permissionRequestCode) {
-            if(grantResults.isNotEmpty()){
+            if (grantResults.isNotEmpty()) {
                 val write = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val read = grantResults[1] == PackageManager.PERMISSION_GRANTED
-                if(write && read){
+                if (write && read) {
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission granted")
-                }else{
+                } else {
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission denied ...")
                     Toast.makeText(
                         requireContext(),
@@ -348,14 +348,16 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         }
     }
 
-    private fun generateFileAndShare(){
+    private fun generateFileAndShare() {
         val expenseList = getExpenseList()
         val gson = Gson()
-        var jsonArray =gson.toJsonTree(expenseList).asJsonArray
+        var jsonArray = gson.toJsonTree(expenseList).asJsonArray
 
-        var file = generateXlsFile(requireActivity(), AppConstants.XLS.TITLES,
+        var file = generateXlsFile(
+            requireActivity(), AppConstants.XLS.TITLES,
             AppConstants.XLS.INDEX_NAME, jsonArray, HashMap(), AppConstants.XLS.SHEET_NAME,
-            AppConstants.XLS.FILE_NAME, 0)
+            AppConstants.XLS.FILE_NAME, 0
+        )
 
         if (file != null) {
             shareFile(file)
