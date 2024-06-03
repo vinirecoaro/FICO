@@ -35,4 +35,13 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Dia padrão: 18"/>
 
+    <TextView
+        android:id="@+id/tv_payment_day_info_al"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_payment_day_al"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/payment_day_info_message"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
