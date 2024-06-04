@@ -49,9 +49,8 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
             //Show snackbar to undo the action
             val snackbar = Snackbar.make(recyclerView, "Item excluido", Snackbar.LENGTH_LONG)
             snackbar.setAction("Desfazer") {
-                viewModel.undoDeleteExpense(deleteItem, false, 1)
                 viewModel.viewModelScope.launch {
-                    delay(200)
+                    viewModel.undoDeleteExpense(deleteItem, false, 1).await()
                     viewModel.getExpenseList(viewModel.filterLiveData.value.toString())
                 }
 
