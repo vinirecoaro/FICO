@@ -67,7 +67,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".presentation.activities.expense.MainActivity"
+            android:name=".presentation.activities.expense.MainExpenseActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

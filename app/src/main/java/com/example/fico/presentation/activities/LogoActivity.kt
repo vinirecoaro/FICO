@@ -6,16 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityLogoBinding
-import com.example.fico.presentation.activities.expense.MainActivity
+import com.example.fico.presentation.activities.expense.MainExpenseActivity
 import com.example.fico.presentation.viewmodel.LogoViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -60,7 +57,7 @@ class LogoActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners() {
         viewModel.onUserLogged = {
-            startActivity(Intent(this@LogoActivity, MainActivity::class.java))
+            startActivity(Intent(this@LogoActivity, MainExpenseActivity::class.java))
         }
 
         viewModel.onError = { message ->

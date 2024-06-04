@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".presentation.activities.expense.MainActivity">
+        tools:context=".presentation.activities.expense.MainExpenseActivity">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_info_per_month"

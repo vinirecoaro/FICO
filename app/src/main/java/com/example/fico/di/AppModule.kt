@@ -16,6 +16,7 @@ import com.example.fico.presentation.viewmodel.RegisterViewModel
 import com.example.fico.presentation.viewmodel.ResetPasswordViewModel
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
+import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.util.constants.AppConstants
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -25,6 +26,12 @@ val appModule = module {
 
     single {
         androidContext().getSharedPreferences(AppConstants.SHARED_PREFERENCES.NAME, Context.MODE_PRIVATE)
+    }
+
+    factory<ExpensesViewModel> {
+        ExpensesViewModel(
+            firebaseAPI = get()
+        )
     }
 
     factory<VerifyEmailViewModel> {

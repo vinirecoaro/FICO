@@ -1,14 +1,11 @@
 package com.example.fico.presentation.viewmodel
 
-import android.content.Intent
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.User
 import com.example.fico.api.FirebaseAPI
-import com.example.fico.presentation.activities.expense.MainActivity
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.*
 

@@ -21,14 +21,17 @@ import com.example.fico.presentation.activities.GeneralConfigurationActivity
 import com.example.fico.presentation.activities.UserDataActivity
 import com.example.fico.presentation.activities.earning.ConstructionActivity
 import com.example.fico.presentation.viewmodel.MainViewModel
+import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
-class MainActivity : AppCompatActivity(){
+class MainExpenseActivity : AppCompatActivity(){
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<MainViewModel>()
+    private val expensesViewModel : ExpensesViewModel by inject()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +61,7 @@ class MainActivity : AppCompatActivity(){
         setupListeners()
         removeTintOfMenuIcons()
         setImageBasedOnTheme()
+        expensesViewModel.getExpenseList()
     }
 
     private fun getUserEmail(){
@@ -95,7 +99,7 @@ class MainActivity : AppCompatActivity(){
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when(menuItem.itemId){
                 R.id.nav_menu_item_expenses -> {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, MainExpenseActivity::class.java))
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }

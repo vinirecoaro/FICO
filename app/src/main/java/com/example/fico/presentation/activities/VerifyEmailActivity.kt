@@ -3,11 +3,10 @@ package com.example.fico.presentation.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityVerifyEmailBinding
-import com.example.fico.presentation.activities.expense.MainActivity
+import com.example.fico.presentation.activities.expense.MainExpenseActivity
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -46,7 +45,7 @@ class VerifyEmailActivity : AppCompatActivity() {
 
         viewModel.isVerified.observe(this, Observer {isVerified ->
             if(isVerified){
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, MainExpenseActivity::class.java))
             }
         })
 

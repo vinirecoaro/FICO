@@ -17,7 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".presentation.activities.expense.MainActivity">
+            tools:context=".presentation.activities.expense.MainExpenseActivity">
 
             <com.google.android.material.appbar.AppBarLayout
                 app:layout_constraintTop_toTopOf="parent"

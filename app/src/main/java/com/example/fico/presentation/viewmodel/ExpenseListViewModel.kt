@@ -38,7 +38,7 @@ class ExpenseListViewModel(
     fun getExpenseList(filter : String) {
         viewModelScope.async{
             val expenses = firebaseAPI.observeExpenseList(filter).await()
-            val sortedExpenses = expenses.sortedByDescending { it.id }
+            val sortedExpenses = expenses.sortedByDescending { it.paymentDate }
             _expensesLiveData.value = sortedExpenses
         }
     }
