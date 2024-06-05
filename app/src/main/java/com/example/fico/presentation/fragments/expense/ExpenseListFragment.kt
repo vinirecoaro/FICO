@@ -37,6 +37,7 @@ import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
+import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.util.constants.DateFunctions
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
@@ -49,6 +50,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
     private var _binding: FragmentExpenseListBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ExpenseListViewModel by inject()
+    private val expensesViewModel : ExpensesViewModel by inject()
     private val expenseListAdapter = ExpenseListAdapter(emptyList())
     private var expenseMonthsList = arrayOf<String>()
     private val permissionRequestCode = 123
@@ -160,7 +162,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             viewModel.getExpenseList("")
         }
 
-        viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
+        /*viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
             expenseListAdapter.updateExpenses(expenses)
             expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
                 override fun onListItemClick(position: Int) {
@@ -168,7 +170,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     editExpense(selectItem)
                 }
             })
-        })
+        })*/
 
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
             expenseMonthsList = expenseMonths.toTypedArray()
@@ -191,6 +193,17 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             override fun afterTextChanged(s: Editable?) {
             }
         })
+
+        expensesViewModel.expenseListLiveData.observe(viewLifecycleOwner){expenses ->
+            val expensess = expenses
+            expenseListAdapter.updateExpenses(expensess)
+            expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
+                override fun onListItemClick(position: Int) {
+                    val selectItem = expenses[position]
+                    editExpense(selectItem)
+                }
+            })
+        }
     }
 
     private fun actvConfig() {

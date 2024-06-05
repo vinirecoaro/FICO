@@ -11,7 +11,7 @@ import kotlinx.coroutines.async
 class ExpensesViewModel(private val firebaseAPI : FirebaseAPI ) : ViewModel() {
 
     private val _expenseList = MutableLiveData<List<Expense>>()
-    private val expenseListLiveData : LiveData<List<Expense>> = _expenseList
+    val expenseListLiveData : LiveData<List<Expense>> = _expenseList
 
     fun getExpenseList(filter : String = "") {
         viewModelScope.async{

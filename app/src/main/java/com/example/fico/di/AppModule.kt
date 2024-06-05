@@ -3,7 +3,8 @@ package com.example.fico.di
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.room.Room
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
 import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
@@ -26,6 +27,12 @@ val appModule = module {
 
     single {
         androidContext().getSharedPreferences(AppConstants.SHARED_PREFERENCES.NAME, Context.MODE_PRIVATE)
+    }
+
+    single {
+        PreferenceDataStoreFactory.create {
+            androidContext().preferencesDataStoreFile(AppConstants.DATA_STORE.NAME)
+        }
     }
 
     factory<ExpensesViewModel> {

@@ -129,4 +129,8 @@ class AppConstants private constructor() {
         const val NAME = "FicoSharedPref"
     }
 
+    object DATA_STORE {
+        const val NAME = "FicoDataStore"
+    }
+
 }
