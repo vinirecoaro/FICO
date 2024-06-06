@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.fico.DataStoreManager
 import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.presentation.activities.GeneralConfigurationActivity
@@ -32,6 +33,7 @@ class MainExpenseActivity : AppCompatActivity(){
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<MainViewModel>()
     private val expensesViewModel : ExpensesViewModel by inject()
+    private val dataStore : DataStoreManager by inject()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

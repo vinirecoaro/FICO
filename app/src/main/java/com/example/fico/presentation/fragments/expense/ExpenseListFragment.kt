@@ -194,16 +194,6 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             }
         })
 
-        expensesViewModel.expenseListLiveData.observe(viewLifecycleOwner){expenses ->
-            val expensess = expenses
-            expenseListAdapter.updateExpenses(expensess)
-            expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
-                override fun onListItemClick(position: Int) {
-                    val selectItem = expenses[position]
-                    editExpense(selectItem)
-                }
-            })
-        }
     }
 
     private fun actvConfig() {

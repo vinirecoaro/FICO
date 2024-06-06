@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
 import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
@@ -21,6 +22,7 @@ import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.util.constants.AppConstants
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import kotlin.math.sin
 
 @RequiresApi(Build.VERSION_CODES.N)
 val appModule = module {
@@ -29,14 +31,13 @@ val appModule = module {
         androidContext().getSharedPreferences(AppConstants.SHARED_PREFERENCES.NAME, Context.MODE_PRIVATE)
     }
 
-    single {
-        PreferenceDataStoreFactory.create {
-            androidContext().preferencesDataStoreFile(AppConstants.DATA_STORE.NAME)
-        }
+    single<DataStoreManager>(){
+        DataStoreManager(androidContext())
     }
 
     factory<ExpensesViewModel> {
         ExpensesViewModel(
+            dataStore = get(),
             firebaseAPI = get()
         )
     }

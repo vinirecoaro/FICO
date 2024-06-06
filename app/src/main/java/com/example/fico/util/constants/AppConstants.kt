@@ -131,6 +131,7 @@ class AppConstants private constructor() {
 
     object DATA_STORE {
         const val NAME = "FicoDataStore"
+        const val EXPENSE_LIST = "ExpenseList"
     }
 
 }
