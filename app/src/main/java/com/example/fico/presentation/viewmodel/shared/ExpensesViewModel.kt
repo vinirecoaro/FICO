@@ -17,14 +17,21 @@ import kotlinx.coroutines.async
 class ExpensesViewModel(private val dataStore : DataStoreManager,private val firebaseAPI : FirebaseAPI ) : ViewModel() {
 
     private val _expenseList = MutableLiveData<List<Expense>>()
-    val expenseListLiveData : LiveData<List<Expense>> = _expenseList
+    private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
 
     fun getExpenseList(filter : String = "") {
         viewModelScope.async{
             val expenses = firebaseAPI.observeExpenseList(filter).await()
-            val sortedExpenses = expenses.sortedByDescending { it.id }
-            _expenseList.value = sortedExpenses
-            dataStore.updateExpenseList(sortedExpenses)
+            _expenseList.value = expenses
+            dataStore.updateExpenseList(expenses)
+        }
+    }
+
+    fun getExpenseMonths(){
+        viewModelScope.async {
+            val expenseMonths = firebaseAPI.getExpenseMonths(true)
+            _expenseMonthsLiveData.value = expenseMonths
+            dataStore.updateExpenseMonths(expenseMonths)
         }
     }
 

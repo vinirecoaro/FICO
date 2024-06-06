@@ -33,7 +33,6 @@ class MainExpenseActivity : AppCompatActivity(){
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<MainViewModel>()
     private val expensesViewModel : ExpensesViewModel by inject()
-    private val dataStore : DataStoreManager by inject()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +63,7 @@ class MainExpenseActivity : AppCompatActivity(){
         removeTintOfMenuIcons()
         setImageBasedOnTheme()
         expensesViewModel.getExpenseList()
+        expensesViewModel.getExpenseMonths()
     }
 
     private fun getUserEmail(){

@@ -21,9 +21,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class ExpenseListViewModel(
-    private val firebaseAPI : FirebaseAPI,
-    private val dataStore : DataStoreManager
-): ViewModel() {
+    private val firebaseAPI: FirebaseAPI,
+    private val dataStore: DataStoreManager
+) : ViewModel() {
 
 
     private val _expensesLiveData = MutableLiveData<List<Expense>>()
@@ -31,42 +31,49 @@ class ExpenseListViewModel(
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _filterLiveData = MutableLiveData<String>()
-    val filterLiveData : LiveData<String>
+    val filterLiveData: LiveData<String>
         get() = _filterLiveData
 
-    fun updateFilter(filter : String){
+    fun updateFilter(filter: String) {
         _filterLiveData.value = filter
     }
 
-    fun getExpenseList(filter : String) {
-        viewModelScope.async{
+    fun getExpenseList(filter: String) {
+        viewModelScope.async {
             /*val expenses = firebaseAPI.observeExpenseList(filter).await()
             val sortedExpenses = expenses.sortedByDescending { it.paymentDate }*/
             val expenses = dataStore.getExpenseList()
             var sortedExpenses = listOf<Expense>()
-            if(filter != ""){
+            if (filter != "") {
                 val filteredExpenses = expenses.filter {
-                    FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate) == FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(filter) }
-               sortedExpenses = filteredExpenses.sortedByDescending { it.paymentDate }
-            }else{
-                sortedExpenses = expenses.sortedByDescending { it.paymentDate }
+                    FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate) == FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(
+                        filter
+                    )
+                }
+                sortedExpenses = filteredExpenses.sortedByDescending { it.paymentDate }
+            } else {
+                sortedExpenses =
+                    expenses.sortedByDescending { FormatValuesToDatabase().expenseDate(it.paymentDate) }
             }
             _expensesLiveData.value = sortedExpenses
         }
     }
 
-    fun getExpenseMonths(){
+    fun getExpenseMonths() {
         viewModelScope.async {
-            var expenseMonths = firebaseAPI.getExpenseMonths(false).sortedByDescending { it }
+            /*var expenseMonths = firebaseAPI.getExpenseMonths(false).sortedByDescending { it }
             val expenseMonthsFormatted = mutableListOf<String>()
             for (expenseMonth in expenseMonths){
                 expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(expenseMonth))
+            }*/
+            val expenseMonths = dataStore.getExpenseMonths().sortedByDescending {
+                FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(it)
             }
-            _expenseMonthsLiveData.value = expenseMonthsFormatted
+            _expenseMonthsLiveData.value = expenseMonths
         }
     }
 
-    fun deleteExpense(expense : Expense){
+    fun deleteExpense(expense: Expense) {
         viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.deleteExpense(expense)
             val filter = filterLiveData.value.toString()
@@ -75,24 +82,56 @@ class ExpenseListViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-     fun undoDeleteExpense(deletedExpense : Expense, installment : Boolean, nOfInstallments: Int = 1) : Deferred<Boolean> {
-        return viewModelScope.async(Dispatchers.IO){
+    fun undoDeleteExpense(
+        deletedExpense: Expense,
+        installment: Boolean,
+        nOfInstallments: Int = 1
+    ): Deferred<Boolean> {
+        return viewModelScope.async(Dispatchers.IO) {
 
-            val formattedPaymentDate = FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
+            val formattedPaymentDate =
+                FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
 
-            val formattedPurchaseDate = FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
+            val formattedPurchaseDate =
+                FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
 
-            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+            val formattedInputDate =
+                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
-            val formattedPrice = FormatValuesToDatabase().expensePrice(FormatValuesFromDatabase().price(deletedExpense.price), nOfInstallments)
+            val formattedPrice = FormatValuesToDatabase().expensePrice(
+                FormatValuesFromDatabase().price(deletedExpense.price), nOfInstallments
+            )
 
-            val expense = Expense("",formattedPrice, deletedExpense.description, deletedExpense.category, formattedPaymentDate, formattedPurchaseDate, formattedInputDate)
+            val expense = Expense(
+                "",
+                formattedPrice,
+                deletedExpense.description,
+                deletedExpense.category,
+                formattedPaymentDate,
+                formattedPurchaseDate,
+                formattedInputDate
+            )
 
-            val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(expense, installment, nOfInstallments)
+            val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(
+                expense,
+                installment,
+                nOfInstallments
+            )
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(formattedPrice, nOfInstallments, viewModelScope).await()
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(
+                formattedPrice,
+                nOfInstallments,
+                viewModelScope
+            ).await()
 
-            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase().addToInformationPerMonth(expense, installment, nOfInstallments, viewModelScope, false).await()
+            val updatedInformationPerMonth =
+                ArrangeDataToUpdateToDatabase().addToInformationPerMonth(
+                    expense,
+                    installment,
+                    nOfInstallments,
+                    viewModelScope,
+                    false
+                ).await()
 
             firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
         }

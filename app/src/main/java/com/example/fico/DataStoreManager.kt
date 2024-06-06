@@ -19,6 +19,7 @@ class DataStoreManager (context: Context) {
 
     companion object {
         val expenseListKey = stringPreferencesKey(AppConstants.DATA_STORE.EXPENSE_LIST)
+        val expenseMonthsKey = stringPreferencesKey(AppConstants.DATA_STORE.EXPENSE_MONTHS)
     }
 
     suspend fun updateExpenseList(expenseList : List<Expense>){
@@ -33,5 +34,19 @@ class DataStoreManager (context: Context) {
             preferences[expenseListKey]
         }.first()
         return Gson().fromJson(expenseListString, object : TypeToken<List<Expense>>() {}.type)
+    }
+
+    suspend fun updateExpenseMonths(expenseMonths : List<String>){
+        val expenseMonthsString = Gson().toJson(expenseMonths)
+        dataStore.edit { preferences ->
+            preferences[expenseMonthsKey] = expenseMonthsString
+        }
+    }
+
+    suspend fun getExpenseMonths() : List<String>{
+        val expenseMonthsString = dataStore.data.map { preferences ->
+            preferences[expenseMonthsKey]
+        }.first()
+        return Gson().fromJson(expenseMonthsString, object : TypeToken<List<String>>() {}.type)
     }
 }
