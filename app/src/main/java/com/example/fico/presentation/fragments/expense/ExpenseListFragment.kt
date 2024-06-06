@@ -162,7 +162,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             viewModel.getExpenseList("")
         }
 
-        /*viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
+        viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
             expenseListAdapter.updateExpenses(expenses)
             expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
                 override fun onListItemClick(position: Int) {
@@ -170,7 +170,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     editExpense(selectItem)
                 }
             })
-        })*/
+        })
 
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
             expenseMonthsList = expenseMonths.toTypedArray()

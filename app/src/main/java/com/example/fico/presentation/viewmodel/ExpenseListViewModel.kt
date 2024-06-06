@@ -2,10 +2,12 @@ package com.example.fico.presentation.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fico.DataStoreManager
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
@@ -19,7 +21,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class ExpenseListViewModel(
-    private val firebaseAPI : FirebaseAPI
+    private val firebaseAPI : FirebaseAPI,
+    private val dataStore : DataStoreManager
 ): ViewModel() {
 
 
@@ -37,8 +40,17 @@ class ExpenseListViewModel(
 
     fun getExpenseList(filter : String) {
         viewModelScope.async{
-            val expenses = firebaseAPI.observeExpenseList(filter).await()
-            val sortedExpenses = expenses.sortedByDescending { it.paymentDate }
+            /*val expenses = firebaseAPI.observeExpenseList(filter).await()
+            val sortedExpenses = expenses.sortedByDescending { it.paymentDate }*/
+            val expenses = dataStore.getExpenseList()
+            var sortedExpenses = listOf<Expense>()
+            if(filter != ""){
+                val filteredExpenses = expenses.filter {
+                    FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate) == FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(filter) }
+               sortedExpenses = filteredExpenses.sortedByDescending { it.paymentDate }
+            }else{
+                sortedExpenses = expenses.sortedByDescending { it.paymentDate }
+            }
             _expensesLiveData.value = sortedExpenses
         }
     }

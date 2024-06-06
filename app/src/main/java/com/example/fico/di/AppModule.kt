@@ -86,7 +86,8 @@ val appModule = module {
 
     factory<ExpenseListViewModel> {
         ExpenseListViewModel(
-            firebaseAPI = get()
+            firebaseAPI = get(),
+            dataStore = get()
         )
     }
 
