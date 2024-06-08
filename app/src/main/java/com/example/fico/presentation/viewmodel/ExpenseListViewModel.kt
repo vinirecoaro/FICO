@@ -76,8 +76,10 @@ class ExpenseListViewModel(
     fun deleteExpense(expense: Expense) {
         viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.deleteExpense(expense)
-            val filter = filterLiveData.value.toString()
-            getExpenseList(filter)
+            val currentList = _expensesLiveData.value?.toMutableList()
+            currentList?.removeAll { it.id == expense.id }
+            dataStore.updateExpenseList(currentList!!.toList())
+            getExpenseList(_filterLiveData.value.toString())
         }
     }
 
