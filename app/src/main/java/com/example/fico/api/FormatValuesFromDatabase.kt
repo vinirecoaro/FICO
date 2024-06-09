@@ -19,6 +19,10 @@ class FormatValuesFromDatabase {
         return (NumberFormat.getCurrencyInstance().format(justNumber))
     }
 
+    fun date(date : String) : String{
+        return "${date.substring(8, 10)}/${date.substring(5, 7)}/${date.substring(0, 4)}"
+    }
+
     fun priceToFile(expensePrice : String) : String{
         val regex = Regex("[\\d,.]+")
         val justNumber = BigDecimal(regex.find(expensePrice)!!.value.replace(",","."))

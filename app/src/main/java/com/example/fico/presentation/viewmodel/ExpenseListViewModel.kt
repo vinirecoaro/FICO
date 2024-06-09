@@ -95,7 +95,7 @@ class ExpenseListViewModel(
                 FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
 
             val formattedPurchaseDate =
-                FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
+                FormatValuesToDatabase().expenseDate(deletedExpense.purchaseDate)
 
             val formattedInputDate =
                 "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
@@ -134,9 +134,14 @@ class ExpenseListViewModel(
                     viewModelScope,
                     false
                 ).await()
-
+            val updatedExpenseList = dataStore.getExpenseList().toMutableList()
+            val formattedExpense = Expense("",expense.price,expense.description,expense.category,FormatValuesFromDatabase().date(expense.paymentDate),FormatValuesFromDatabase().date(expense.purchaseDate),expense.inputDateTime)
+            updatedExpenseList.add(formattedExpense)
+            dataStore.updateExpenseList(updatedExpenseList)
+            getExpenseList(_filterLiveData.value.toString())
             firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
         }
+
     }
 
 }

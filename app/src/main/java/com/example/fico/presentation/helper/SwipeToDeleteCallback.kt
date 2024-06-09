@@ -51,7 +51,7 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
             snackbar.setAction("Desfazer") {
                 viewModel.viewModelScope.launch {
                     viewModel.undoDeleteExpense(deleteItem, false, 1).await()
-                    viewModel.getExpenseList(viewModel.filterLiveData.value.toString())
+                   // viewModel.getExpenseList(viewModel.filterLiveData.value.toString())
                 }
 
             }.show()
