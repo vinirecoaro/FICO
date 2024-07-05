@@ -78,8 +78,21 @@ class ExpenseListViewModel(
             firebaseAPI.deleteExpense(expense)
             val currentList = dataStore.getExpenseList().toMutableList()
             currentList.removeAll { it.id == expense.id }
+            //Remove from dataStore expense List
             dataStore.updateExpenseList(currentList.toList())
             getExpenseList(_filterLiveData.value.toString())
+            //Remove from dataStore expense Months List
+            val removedExpenseMonth = FormatValuesToDatabase()
+                .expenseDateForInfoPerMonth(expense.paymentDate)
+            val existDate = currentList.any { FormatValuesToDatabase()
+                .expenseDateForInfoPerMonth(it.paymentDate)  ==
+            removedExpenseMonth}
+            if(!existDate){
+                //TODO check this
+                val currentMonthList = dataStore.getExpenseMonths().toMutableList()
+                currentMonthList.removeAll { it == FormatValuesToDatabase()
+                    .expenseDateForInfoPerMonth(expense.paymentDate) }
+            }
         }
     }
 
