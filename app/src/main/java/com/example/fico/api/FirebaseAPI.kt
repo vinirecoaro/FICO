@@ -165,11 +165,16 @@ class FirebaseAPI private constructor() {
         return@withContext userName.await()
     }
 
-    suspend fun deleteExpense(oldExpense: Expense) = withContext(Dispatchers.IO) {
-        updateTotalExpense(oldExpense.price)
-        updateInformationPerMonthPath(oldExpense)
-        val oldExpenseReference = expense_list.child(oldExpense.id)
-        oldExpenseReference.removeValue()
+    suspend fun deleteExpense(oldExpense: Expense) : Result<Unit> = withContext(Dispatchers.IO) {
+        return@withContext try{
+            updateTotalExpense(oldExpense.price)
+            updateInformationPerMonthPath(oldExpense)
+            val oldExpenseReference = expense_list.child(oldExpense.id)
+            oldExpenseReference.removeValue()
+            Result.success(Unit)
+        }catch (e : Exception){
+            Result.failure(e)
+        }
     }
 
     suspend fun setDefaultBudget(budget: String): Boolean = withContext(Dispatchers.IO) {

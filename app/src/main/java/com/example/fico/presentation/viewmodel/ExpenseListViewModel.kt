@@ -14,6 +14,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.util.constants.DateFunctions
+import com.google.android.gms.common.api.Response
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -31,6 +32,9 @@ class ExpenseListViewModel(
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _filterLiveData = MutableLiveData<String>()
+    private val _deleteExpenseResult = MutableLiveData<Boolean>()
+    val deleteExpenseResult : LiveData<Boolean> = _deleteExpenseResult
+    var deletedItem : Expense? = null
     val filterLiveData: LiveData<String>
         get() = _filterLiveData
 
@@ -75,24 +79,31 @@ class ExpenseListViewModel(
 
     fun deleteExpense(expense: Expense) {
         viewModelScope.async(Dispatchers.IO) {
-            firebaseAPI.deleteExpense(expense)
-            val currentList = dataStore.getExpenseList().toMutableList()
-            currentList.removeAll { it.id == expense.id }
-            //Remove from dataStore expense List
-            dataStore.updateExpenseList(currentList.toList())
-            getExpenseList(_filterLiveData.value.toString())
-            //Remove from dataStore expense Months List
-            val removedExpenseMonth = FormatValuesToDatabase()
-                .expenseDateForInfoPerMonth(expense.paymentDate)
-            val existDate = currentList.any { FormatValuesToDatabase()
-                .expenseDateForInfoPerMonth(it.paymentDate)  ==
-            removedExpenseMonth}
-            if(!existDate){
-                //TODO check this
-                val currentMonthList = dataStore.getExpenseMonths().toMutableList()
-                currentMonthList.removeAll { it == FormatValuesToDatabase()
-                    .expenseDateForInfoPerMonth(expense.paymentDate) }
-            }
+            val result = firebaseAPI.deleteExpense(expense)
+             result.fold(
+                 onSuccess = {
+                     deletedItem = expense
+                     val currentList = dataStore.getExpenseList().toMutableList()
+                     currentList.removeAll { it.id == expense.id }
+                     //Remove from dataStore expense List
+                     dataStore.updateExpenseList(currentList.toList())
+                     getExpenseList(_filterLiveData.value.toString())
+                     //Remove from dataStore expense Months List
+                     val removedExpenseMonth = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                     val existDate = currentList.any { DateFunctions().YYYYmmDDtommDD(it.paymentDate) == removedExpenseMonth}
+                     if(!existDate){
+                         val currentMonthList = dataStore.getExpenseMonths().toMutableList()
+                         currentMonthList.removeAll {
+                             it == FormatValuesFromDatabase().formatDateForFilterOnExpenseList(DateFunctions().YYYYmmDDtommDD(expense.paymentDate)) }
+                         //update expense months options
+                         _expenseMonthsLiveData.postValue(currentMonthList)
+                     }
+                     _deleteExpenseResult.postValue(true)
+                 },
+                 onFailure = {
+                     _deleteExpenseResult.postValue(false)
+                 }
+             )
         }
     }
 

@@ -1,6 +1,7 @@
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val viewModel: ExpenseListViewModel, private val adapter: ExpenseListAdapter) :
+class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val viewModel: ExpenseListViewModel, private val adapter: ExpenseListAdapter, private val lifecycleOwner : LifecycleOwner) :
     ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
     override fun onMove(
@@ -46,14 +47,5 @@ class SwipeToDeleteCallback(private val recyclerView: RecyclerView, private val 
             //Delete Item and update expense list
             viewModel.deleteExpense(deleteItemFormatted)
 
-            //Show snackbar to undo the action
-            val snackbar = Snackbar.make(recyclerView, "Item excluido", Snackbar.LENGTH_LONG)
-            snackbar.setAction("Desfazer") {
-                viewModel.viewModelScope.launch {
-                    viewModel.undoDeleteExpense(deleteItem, false, 1).await()
-                   // viewModel.getExpenseList(viewModel.filterLiveData.value.toString())
-                }
-
-            }.show()
     }
 }

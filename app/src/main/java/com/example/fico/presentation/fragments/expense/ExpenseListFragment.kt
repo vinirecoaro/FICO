@@ -25,6 +25,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
@@ -39,6 +40,7 @@ import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.util.constants.DateFunctions
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -77,7 +79,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         binding.rvExpenseList.adapter = expenseListAdapter
 
         val swipeToDeleteCallback =
-            SwipeToDeleteCallback(binding.rvExpenseList, viewModel, expenseListAdapter)
+            SwipeToDeleteCallback(binding.rvExpenseList, viewModel, expenseListAdapter, viewLifecycleOwner)
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 
@@ -149,6 +151,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         return expenseList
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setUpListeners() {
         binding.actvDate.setOnClickListener {
             binding.actvDate.showDropDown()
@@ -193,6 +196,22 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             override fun afterTextChanged(s: Editable?) {
             }
         })
+
+        viewModel.deleteExpenseResult.observe(viewLifecycleOwner){
+            if(it){
+                //Show snackbar to undo the action
+                val snackbar = Snackbar.make(binding.rvExpenseList, "Item excluido", Snackbar.LENGTH_LONG)
+                snackbar.setAction("Desfazer") {
+                    lifecycleScope.launch {
+                        viewModel.undoDeleteExpense(viewModel.deletedItem!!, false, 1).await()
+                    }
+
+                }.show()
+            }else{
+                //Show snackbar with failure message
+                Snackbar.make(binding.rvExpenseList, "Falha ao excluir item", Snackbar.LENGTH_LONG).show()
+            }
+        }
 
     }
 

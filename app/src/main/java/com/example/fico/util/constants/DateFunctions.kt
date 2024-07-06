@@ -27,6 +27,10 @@ class DateFunctions {
         return date // EX: 2024-04
     }
 
+    fun YYYYmmDDtommDD(date : String) : String{
+        return date.substring(0,7)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun getCurrentlyDateForFilter() : String{
         val currentDate = LocalDate.now()
