@@ -115,12 +115,6 @@ class ExpenseListViewModel(
     ): Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO) {
 
-            val formattedPaymentDate =
-                FormatValuesToDatabase().expenseDate(deletedExpense.paymentDate)
-
-            val formattedPurchaseDate =
-                FormatValuesToDatabase().expenseDate(deletedExpense.purchaseDate)
-
             val formattedInputDate =
                 "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
@@ -133,8 +127,8 @@ class ExpenseListViewModel(
                 formattedPrice,
                 deletedExpense.description,
                 deletedExpense.category,
-                formattedPaymentDate,
-                formattedPurchaseDate,
+                deletedExpense.paymentDate,
+                deletedExpense.purchaseDate,
                 formattedInputDate
             )
 
@@ -161,6 +155,7 @@ class ExpenseListViewModel(
             val updatedExpenseList = dataStore.getExpenseList().toMutableList()
             val formattedExpense = Expense(expenseList[0].id,expense.price,expense.description,expense.category,FormatValuesFromDatabase().date(expense.paymentDate),FormatValuesFromDatabase().date(expense.purchaseDate),expense.inputDateTime)
             updatedExpenseList.add(formattedExpense)
+            //TODO put add datastore function insede result from firebaseAPI add function
             dataStore.updateExpenseList(updatedExpenseList)
             getExpenseList(_filterLiveData.value.toString())
             firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
