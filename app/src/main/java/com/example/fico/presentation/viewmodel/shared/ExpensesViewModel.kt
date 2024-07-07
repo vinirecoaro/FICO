@@ -31,7 +31,7 @@ class ExpensesViewModel(private val dataStore : DataStoreManager,private val fir
         viewModelScope.async {
             val expenseMonths = firebaseAPI.getExpenseMonths(true)
             _expenseMonthsLiveData.value = expenseMonths
-            dataStore.updateExpenseMonths(expenseMonths)
+            dataStore.updateAndResetExpenseMonths(expenseMonths)
         }
     }
 

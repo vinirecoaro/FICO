@@ -33,8 +33,10 @@ class ExpenseListViewModel(
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _filterLiveData = MutableLiveData<String>()
     private val _deleteExpenseResult = MutableLiveData<Boolean>()
-    val deleteExpenseResult : LiveData<Boolean> = _deleteExpenseResult
-    var deletedItem : Expense? = null
+    val deleteExpenseResult: LiveData<Boolean> = _deleteExpenseResult
+    var deletedItem: Expense? = null
+    private val _addExpenseResult = MutableLiveData<Boolean>()
+    val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     val filterLiveData: LiveData<String>
         get() = _filterLiveData
 
@@ -80,30 +82,34 @@ class ExpenseListViewModel(
     fun deleteExpense(expense: Expense) {
         viewModelScope.async(Dispatchers.IO) {
             val result = firebaseAPI.deleteExpense(expense)
-             result.fold(
-                 onSuccess = {
-                     deletedItem = expense
-                     val currentList = dataStore.getExpenseList().toMutableList()
-                     currentList.removeAll { it.id == expense.id }
-                     //Remove from dataStore expense List
-                     dataStore.updateExpenseList(currentList.toList())
-                     getExpenseList(_filterLiveData.value.toString())
-                     //Remove from dataStore expense Months List
-                     val removedExpenseMonth = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
-                     val existDate = currentList.any { DateFunctions().YYYYmmDDtommDD(it.paymentDate) == removedExpenseMonth}
-                     if(!existDate){
-                         val currentMonthList = dataStore.getExpenseMonths().toMutableList()
-                         currentMonthList.removeAll {
-                             it == FormatValuesFromDatabase().formatDateForFilterOnExpenseList(DateFunctions().YYYYmmDDtommDD(expense.paymentDate)) }
-                         //update expense months options
-                         _expenseMonthsLiveData.postValue(currentMonthList)
-                     }
-                     _deleteExpenseResult.postValue(true)
-                 },
-                 onFailure = {
-                     _deleteExpenseResult.postValue(false)
-                 }
-             )
+            result.fold(
+                onSuccess = {
+                    deletedItem = expense
+                    val currentList = dataStore.getExpenseList().toMutableList()
+                    currentList.removeAll { it.id == expense.id }
+                    //Remove from dataStore expense List
+                    dataStore.updateExpenseList(currentList.toList())
+                    getExpenseList(_filterLiveData.value.toString())
+                    //Remove from dataStore expense Months List
+                    val removedExpenseMonth = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                    val existDate =
+                        currentList.any { DateFunctions().YYYYmmDDtommDD(it.paymentDate) == removedExpenseMonth }
+                    if (!existDate) {
+                        val currentMonthList = dataStore.getExpenseMonths().toMutableList()
+                        currentMonthList.removeAll {
+                            it == FormatValuesFromDatabase().formatDateForFilterOnExpenseList(
+                                DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                            )
+                        }
+                        //update expense months options
+                        _expenseMonthsLiveData.postValue(currentMonthList)
+                    }
+                    _deleteExpenseResult.postValue(true)
+                },
+                onFailure = {
+                    _deleteExpenseResult.postValue(false)
+                }
+            )
         }
     }
 
@@ -112,8 +118,8 @@ class ExpenseListViewModel(
         deletedExpense: Expense,
         installment: Boolean,
         nOfInstallments: Int = 1
-    ): Deferred<Boolean> {
-        return viewModelScope.async(Dispatchers.IO) {
+    ) {
+        viewModelScope.async(Dispatchers.IO) {
 
             val formattedInputDate =
                 "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
@@ -153,12 +159,32 @@ class ExpenseListViewModel(
                     false
                 ).await()
             val updatedExpenseList = dataStore.getExpenseList().toMutableList()
-            val formattedExpense = Expense(expenseList[0].id,expense.price,expense.description,expense.category,FormatValuesFromDatabase().date(expense.paymentDate),FormatValuesFromDatabase().date(expense.purchaseDate),expense.inputDateTime)
+            val formattedExpense = Expense(
+                expenseList[0].id,
+                expense.price,
+                expense.description,
+                expense.category,
+                FormatValuesFromDatabase().date(expense.paymentDate),
+                FormatValuesFromDatabase().date(expense.purchaseDate),
+                expense.inputDateTime
+            )
             updatedExpenseList.add(formattedExpense)
-            //TODO put add datastore function insede result from firebaseAPI add function
-            dataStore.updateExpenseList(updatedExpenseList)
-            getExpenseList(_filterLiveData.value.toString())
-            firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
+
+            //After update database update local storage
+            var result = firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
+            result.fold(
+                onSuccess = {
+                    dataStore.updateExpenseList(updatedExpenseList)
+                    getExpenseList(_filterLiveData.value.toString())
+                    //TODO update ExpenseMonthList
+                    //dataStore.updateExpenseMonths()
+                    _addExpenseResult.postValue(true)
+                },
+                onFailure = {
+                    _addExpenseResult.postValue(false)
+                }
+            )
+
         }
 
     }

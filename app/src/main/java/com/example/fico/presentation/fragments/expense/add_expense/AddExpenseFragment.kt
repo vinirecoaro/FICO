@@ -63,14 +63,15 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : AddExpenseViewModel by inject()
+    private val viewModel: AddExpenseViewModel by inject()
     private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
-    private lateinit var adapter : CategoryListAdapter
+    private lateinit var adapter: CategoryListAdapter
+
     @RequiresApi(Build.VERSION_CODES.O)
     private val currentDate = DateFunctions().getCurrentlyDate()
     private val receiver = object : BroadcastReceiver() {
@@ -84,7 +85,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
         }
     }
-    private val sharedPref : SharedPreferences by inject()
+    private val sharedPref: SharedPreferences by inject()
 
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
@@ -108,7 +109,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         setMaxLength(binding.etInstallments, 3)
 
         //Create category chooser
-        adapter = CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
+        adapter =
+            CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         return rootView
@@ -125,10 +127,10 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.etPurchaseDate.setText(currentDate)
 
         val paymentDay = sharedPref.getString(AppConstants.DATABASE.PAYMENT_DAY, null)
-        if(paymentDay != null){
+        if (paymentDay != null) {
             val paymentDate = DateFunctions().paymentDate(paymentDay)
             binding.etPaymentDate.setText(paymentDate)
-        }else{
+        } else {
             viewModel.getDefaultPaymentDay()
         }
 
@@ -139,7 +141,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requireContext().registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
-        }else{
+        } else {
             requireContext().registerReceiver(receiver, filter)
         }
 
@@ -175,7 +177,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 return true
             }
 
-        //TODO Change function and instructions to add expenses from file
+            //TODO Change function and instructions to add expenses from file
             /*R.id.add_expense_menu_get_data_from_file -> {
                 lifecycleScope.launch {
                     if (checkPermission()) {
@@ -209,34 +211,29 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             binding.etPurchaseDate
                         )
                     ) {
-                        val internetConnection = ConnectionFunctions().internetConnectionVerification(requireContext())
-                        if(internetConnection){
+                        val internetConnection =
+                            ConnectionFunctions().internetConnectionVerification(requireContext())
+                        if (internetConnection) {
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                            if (existsDefaultBudget){
-                                if(viewModel.addExpense(
+                            if (existsDefaultBudget) {
+                                viewModel.addExpense(
+                                    binding.etPrice.text.toString(),
+                                    binding.etDescription.text.toString(),
+                                    binding.actvCategory.text.toString(),
+                                    binding.etPaymentDate.text.toString(),
+                                    binding.etPurchaseDate.text.toString(),
+                                    false
+                                )
+                            } else {
+                                if (setUpDefaultBudgetAlertDialog().await()) {
+                                    viewModel.addExpense(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
                                         binding.etPaymentDate.text.toString(),
                                         binding.etPurchaseDate.text.toString(),
-                                        false).await()){
-                                    hideKeyboard(requireContext(),binding.btSave)
-                                    Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                    clearUserInputs()
-                                }
-                            } else {
-                                if (setUpDefaultBudgetAlertDialog().await()) {
-                                    if(viewModel.addExpense(
-                                            binding.etPrice.text.toString(),
-                                            binding.etDescription.text.toString(),
-                                            binding.actvCategory.text.toString(),
-                                            binding.etPaymentDate.text.toString(),
-                                            binding.etPurchaseDate.text.toString(),
-                                            false).await()){
-                                        hideKeyboard(requireContext(),binding.btSave)
-                                        Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                        clearUserInputs()
-                                    }
+                                        false
+                                    )
                                 }
                             }
                         }/*else{
@@ -257,26 +254,22 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             binding.etPaymentDate,
                             binding.etPurchaseDate
                         )
-                    ){
-                        if(binding.etInstallments.text.toString() != "0"){
+                    ) {
+                        if (binding.etInstallments.text.toString() != "0") {
                             val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                             if (existsDefaultBudget) {
-                                if(viewModel.addExpense(
-                                        binding.etPrice.text.toString(),
-                                        binding.etDescription.text.toString(),
-                                        binding.actvCategory.text.toString(),
-                                        binding.etPaymentDate.text.toString(),
-                                        binding.etPurchaseDate.text.toString(),
-                                        true,
-                                        binding.etInstallments.text.toString().toInt()
-                                    ).await()){
-                                        hideKeyboard(requireContext(),binding.btSave)
-                                        Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                        clearUserInputs()
-                                }
+                                viewModel.addExpense(
+                                    binding.etPrice.text.toString(),
+                                    binding.etDescription.text.toString(),
+                                    binding.actvCategory.text.toString(),
+                                    binding.etPaymentDate.text.toString(),
+                                    binding.etPurchaseDate.text.toString(),
+                                    true,
+                                    binding.etInstallments.text.toString().toInt()
+                                )
                             } else {
                                 if (setUpDefaultBudgetAlertDialog().await()) {
-                                    if(viewModel.addExpense(
+                                    viewModel.addExpense(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
@@ -284,15 +277,15 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                         binding.etPurchaseDate.text.toString(),
                                         true,
                                         binding.etInstallments.text.toString().toInt()
-                                    ).await()){
-                                        hideKeyboard(requireContext(),binding.btSave)
-                                        Toast.makeText(requireContext(), "Gasto adicionado com sucesso", Toast.LENGTH_LONG).show()
-                                        clearUserInputs()
-                                    }
+                                    )
                                 }
                             }
-                        }else{
-                            Toast.makeText(requireContext(), "O número de parcelas não pode ser 0", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "O número de parcelas não pode ser 0",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }
@@ -323,11 +316,11 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 binding.ivPaymentDate.isEnabled = true
             }
 
-            datePicker.addOnDismissListener{
+            datePicker.addOnDismissListener {
                 binding.ivPaymentDate.isEnabled = true
             }
 
-            datePicker.show(parentFragmentManager,"PaymentDate")
+            datePicker.show(parentFragmentManager, "PaymentDate")
         }
 
         binding.ivPurchaseDate.setOnClickListener {
@@ -349,11 +342,11 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 binding.ivPurchaseDate.isEnabled = true
             }
 
-            datePicker.addOnDismissListener{
+            datePicker.addOnDismissListener {
                 binding.ivPurchaseDate.isEnabled = true
             }
 
-            datePicker.show(parentFragmentManager,"PurchaseDate")
+            datePicker.show(parentFragmentManager, "PurchaseDate")
         }
 
         binding.etPrice.addTextChangedListener(object : TextWatcher {
@@ -376,10 +369,10 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
         })
 
-        viewModel.paymentDayLiveData.observe(viewLifecycleOwner){ paymentDay ->
-            if(paymentDay != AppConstants.DEFAULT_MESSAGES.FAIL){
+        viewModel.paymentDayLiveData.observe(viewLifecycleOwner) { paymentDay ->
+            if (paymentDay != AppConstants.DEFAULT_MESSAGES.FAIL) {
                 val paymentDate = DateFunctions().paymentDate(paymentDay)
-                with(sharedPref.edit()){
+                with(sharedPref.edit()) {
                     putString(AppConstants.DATABASE.PAYMENT_DAY, paymentDay)
                     commit()
                 }
@@ -389,6 +382,22 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
         binding.ivArrowUpGetPurchaseDate.setOnClickListener {
             binding.etPaymentDate.text = binding.etPurchaseDate.text
+        }
+
+        viewModel.addExpenseResult.observe(viewLifecycleOwner) { result ->
+            hideKeyboard(requireContext(), binding.btSave)
+            clearUserInputs()
+            if (result) {
+                Snackbar.make(
+                    binding.rvCategory,
+                    "Gasto adicionado com sucesso",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                //TODO update datastore
+            } else {
+                Snackbar.make(binding.rvCategory, "Falha ao adicionar gasto", Snackbar.LENGTH_LONG)
+                    .show()
+            }
         }
 
     }
@@ -499,7 +508,12 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Comuns")
             .setMessage("Os dados devem estar no formato correto.")
             .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                startActivity(Intent(requireContext(), ComonExpenseImportFileInstructionsActivity::class.java))
+                startActivity(
+                    Intent(
+                        requireContext(),
+                        ComonExpenseImportFileInstructionsActivity::class.java
+                    )
+                )
             }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
                 performFileSearch(READ_COMON_EXPENSE_REQUEST_CODE)
             }.show()
@@ -509,13 +523,18 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Parcelados")
             .setMessage("Os dados devem estar no formato correto.")
             .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                startActivity(Intent(requireContext(), InstallmentExpenseImportFileInstructionsActivity::class.java))
+                startActivity(
+                    Intent(
+                        requireContext(),
+                        InstallmentExpenseImportFileInstructionsActivity::class.java
+                    )
+                )
             }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
                 performFileSearch(READ_INSTALLMENT_EXPENSE_REQUEST_CODE)
             }.show()
     }
 
-    private fun performFileSearch(requestCode : Int) {
+    private fun performFileSearch(requestCode: Int) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "application/vnd.ms-excel" // Define o tipo MIME para arquivos Excel
@@ -533,7 +552,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
-                    val outputStream = FileOutputStream(AddExpenseImportDataFromFile().getNewFileUri().path)
+                    val outputStream =
+                        FileOutputStream(AddExpenseImportDataFromFile().getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -570,12 +590,13 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                     }
                 }
             }
-        } else if ( requestCode == READ_INSTALLMENT_EXPENSE_REQUEST_CODE && resultCode == Activity.RESULT_OK ){
+        } else if (requestCode == READ_INSTALLMENT_EXPENSE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also { uri ->
                 val inputStream = requireContext().contentResolver.openInputStream(uri)
 
                 if (inputStream != null) {
-                    val outputStream = FileOutputStream(AddExpenseImportDataFromFile().getNewFileUri().path)
+                    val outputStream =
+                        FileOutputStream(AddExpenseImportDataFromFile().getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -647,11 +668,13 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_light)
                 binding.ivArrowUpGetPurchaseDate.setImageResource(R.drawable.arrow_up_light)
             }
+
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_dark)
                 binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_dark)
                 binding.ivArrowUpGetPurchaseDate.setImageResource(R.drawable.arrow_up_black)
             }
+
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
@@ -746,9 +769,9 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         }
     }
 
-    private fun hideKeyboard(context: Context, view: View){
+    private fun hideKeyboard(context: Context, view: View) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken,0)
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun formatDate(timestamp: Long): String {
@@ -762,7 +785,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.actvCategory.setText(description)
     }
 
-    private fun clearUserInputs(){
+    private fun clearUserInputs() {
         binding.etPrice.setText("")
         binding.etDescription.setText("")
         binding.actvCategory.setText("")

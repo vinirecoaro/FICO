@@ -203,13 +203,21 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                 val snackbar = Snackbar.make(binding.rvExpenseList, "Item excluido", Snackbar.LENGTH_LONG)
                 snackbar.setAction("Desfazer") {
                     lifecycleScope.launch {
-                        viewModel.undoDeleteExpense(viewModel.deletedItem!!, false, 1).await()
+                        viewModel.undoDeleteExpense(viewModel.deletedItem!!, false, 1)
                     }
 
                 }.show()
             }else{
                 //Show snackbar with failure message
                 Snackbar.make(binding.rvExpenseList, "Falha ao excluir item", Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        viewModel.addExpenseResult.observe(viewLifecycleOwner){result ->
+            if(result){
+                Snackbar.make(binding.rvExpenseList, "Exclusão cancelada com sucesso", Snackbar.LENGTH_LONG).show()
+            }else{
+                Snackbar.make(binding.rvExpenseList, "Falha ao cancelar a exclusão do item", Snackbar.LENGTH_LONG).show()
             }
         }
 

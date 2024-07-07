@@ -36,10 +36,20 @@ class DataStoreManager (context: Context) {
         return Gson().fromJson(expenseListString, object : TypeToken<List<Expense>>() {}.type)
     }
 
-    suspend fun updateExpenseMonths(expenseMonths : List<String>){
-        val expenseMonthsString = Gson().toJson(expenseMonths)
+    suspend fun updateExpenseMonths(newExpenseMonths : List<String>){
         dataStore.edit { preferences ->
-            preferences[expenseMonthsKey] = expenseMonthsString
+            val existingExpenseMonthsString = preferences[expenseMonthsKey] ?: "[]"
+            val existingExpenseMonths = Gson().fromJson(existingExpenseMonthsString, Array<String>::class.java).toMutableList()
+            existingExpenseMonths.addAll(newExpenseMonths)
+            val updatedExpenseMonthsString = Gson().toJson(existingExpenseMonths)
+            preferences[expenseMonthsKey] = updatedExpenseMonthsString
+        }
+    }
+
+    suspend fun updateAndResetExpenseMonths(expenseMonths : List<String>){
+        dataStore.edit { preferences ->
+            val updatedExpenseMonthsString = Gson().toJson(expenseMonths)
+            preferences[expenseMonthsKey] = updatedExpenseMonthsString
         }
     }
 

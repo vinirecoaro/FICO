@@ -333,11 +333,10 @@ class FirebaseAPI private constructor() {
         expenseList: MutableList<Expense>,
         updatedTotalExpense: String,
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>
-    ): Boolean = withContext(Dispatchers.IO) {
+    ): Result<Unit> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any>()
-        val result = CompletableDeferred<Boolean>()
 
-        try {
+        return@withContext try {
             // Add Expense List
             updates.putAll(generateMapToUpdateUserExpenses(expenseList))
 
@@ -349,9 +348,9 @@ class FirebaseAPI private constructor() {
 
             expenses.updateChildren(updates)
 
-            result.complete(true)
+            Result.success(Unit)
         } catch (e: Exception) {
-            result.complete(false)
+            Result.failure(e)
         }
     }
 

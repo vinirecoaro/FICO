@@ -23,6 +23,8 @@ class AddExpenseViewModel(
 
     private val _paymentDay = MutableLiveData<String>()
     val paymentDayLiveData : LiveData<String> = _paymentDay
+    private val _addExpenseResult = MutableLiveData<Boolean>()
+    val addExpenseResult: LiveData<Boolean> = _addExpenseResult
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(
@@ -33,8 +35,8 @@ class AddExpenseViewModel(
         purchaseDate: String,
         installment: Boolean,
         nOfInstallments: Int = 1
-    ): Deferred<Boolean> {
-        return viewModelScope.async(Dispatchers.IO) {
+    ){
+         viewModelScope.async(Dispatchers.IO) {
 
             val formattedPaymentDate = FormatValuesToDatabase().expenseDate(paymentDate)
 
@@ -76,7 +78,15 @@ class AddExpenseViewModel(
                     false
                 ).await()
 
-            firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
+            var result = firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
+             result.fold(
+                 onSuccess = {
+                     _addExpenseResult.postValue(true)
+                 },
+                 onFailure = {
+                     _addExpenseResult.postValue(false)
+                 }
+             )
         }
     }
 
