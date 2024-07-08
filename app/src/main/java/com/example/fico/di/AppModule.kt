@@ -106,6 +106,7 @@ val appModule = module {
     factory<AddExpenseViewModel> {
         AddExpenseViewModel(
             firebaseAPI = get(),
+            dataStore = get()
         )
     }
 

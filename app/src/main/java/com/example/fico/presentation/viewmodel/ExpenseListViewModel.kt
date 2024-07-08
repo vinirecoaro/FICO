@@ -2,7 +2,6 @@ package com.example.fico.presentation.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.datastore.core.DataStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,12 +13,8 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.util.constants.DateFunctions
-import com.google.android.gms.common.api.Response
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class ExpenseListViewModel(
     private val firebaseAPI: FirebaseAPI,
@@ -85,10 +80,12 @@ class ExpenseListViewModel(
             result.fold(
                 onSuccess = {
                     deletedItem = expense
+                    //Get current dataStore Expense list
                     val currentList = dataStore.getExpenseList().toMutableList()
-                    currentList.removeAll { it.id == expense.id }
                     //Remove from dataStore expense List
-                    dataStore.updateExpenseList(currentList.toList())
+                    currentList.removeAll { it.id == expense.id }
+                    dataStore.updateAndResetExpenseList(currentList.toList())
+                    //Update expenseList on screen
                     getExpenseList(_filterLiveData.value.toString())
                     //Remove from dataStore expense Months List
                     val removedExpenseMonth = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
@@ -101,6 +98,7 @@ class ExpenseListViewModel(
                                 DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
                             )
                         }
+                        dataStore.updateAndResetExpenseMonths(currentMonthList)
                         //update expense months options
                         _expenseMonthsLiveData.postValue(currentMonthList)
                     }
@@ -176,8 +174,8 @@ class ExpenseListViewModel(
                 onSuccess = {
                     dataStore.updateExpenseList(updatedExpenseList)
                     getExpenseList(_filterLiveData.value.toString())
-                    //TODO update ExpenseMonthList
-                    //dataStore.updateExpenseMonths()
+                    val expenseMonthsList = listOf(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(updatedInformationPerMonth[0].date))
+                    dataStore.updateExpenseMonths(expenseMonthsList)
                     _addExpenseResult.postValue(true)
                 },
                 onFailure = {

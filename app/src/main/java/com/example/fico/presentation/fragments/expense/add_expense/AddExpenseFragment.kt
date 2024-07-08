@@ -393,7 +393,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                     "Gasto adicionado com sucesso",
                     Snackbar.LENGTH_LONG
                 ).show()
-                //TODO update datastore
             } else {
                 Snackbar.make(binding.rvCategory, "Falha ao adicionar gasto", Snackbar.LENGTH_LONG)
                     .show()

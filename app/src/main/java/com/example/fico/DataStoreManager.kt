@@ -22,9 +22,19 @@ class DataStoreManager (context: Context) {
         val expenseMonthsKey = stringPreferencesKey(AppConstants.DATA_STORE.EXPENSE_MONTHS)
     }
 
-    suspend fun updateExpenseList(expenseList : List<Expense>){
+    suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
         val expenseListString = Gson().toJson(expenseList)
         dataStore.edit { preferences ->
+            preferences[expenseListKey] = expenseListString
+        }
+    }
+
+    suspend fun updateExpenseList(expenseList : List<Expense>){
+        dataStore.edit { preferences ->
+            val existingExpenseListString = preferences[expenseListKey] ?: "[]"
+            val existingExpenseList = Gson().fromJson(existingExpenseListString, Array<Expense>::class.java).toMutableList()
+            existingExpenseList.addAll(expenseList)
+            val expenseListString = Gson().toJson(existingExpenseList)
             preferences[expenseListKey] = expenseListString
         }
     }
@@ -40,8 +50,9 @@ class DataStoreManager (context: Context) {
         dataStore.edit { preferences ->
             val existingExpenseMonthsString = preferences[expenseMonthsKey] ?: "[]"
             val existingExpenseMonths = Gson().fromJson(existingExpenseMonthsString, Array<String>::class.java).toMutableList()
-            existingExpenseMonths.addAll(newExpenseMonths)
-            val updatedExpenseMonthsString = Gson().toJson(existingExpenseMonths)
+            val uniqueExpenseMonths = existingExpenseMonths.toMutableSet()
+            uniqueExpenseMonths.addAll(newExpenseMonths)
+            val updatedExpenseMonthsString = Gson().toJson(uniqueExpenseMonths)
             preferences[expenseMonthsKey] = updatedExpenseMonthsString
         }
     }
