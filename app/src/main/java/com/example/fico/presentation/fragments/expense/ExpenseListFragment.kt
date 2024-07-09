@@ -40,6 +40,7 @@ import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.util.constants.DateFunctions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
@@ -218,6 +219,18 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                 Snackbar.make(binding.rvExpenseList, "Exclusão cancelada com sucesso", Snackbar.LENGTH_LONG).show()
             }else{
                 Snackbar.make(binding.rvExpenseList, "Falha ao cancelar a exclusão do item", Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        viewModel.installmentExpenseSwiped.observe(viewLifecycleOwner){result ->
+            if(result){
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Apagar gasto")
+                    .setMessage("Para apagar um gasto parcelado clique no item desejado e faça a exclusão na janela de edição")
+                    .setPositiveButton("Ok") { dialog, which ->
+                        viewModel.getExpenseList(viewModel.filterLiveData.value.toString())
+                    }
+                    .show()
             }
         }
 

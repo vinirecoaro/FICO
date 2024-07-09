@@ -77,5 +77,6 @@
     <string name="type_the_day">Digite o dia</string>
     <string name="invalid_day">Dia inválido</string>
     <string name="payment_day_info_message">Informar uma data de pagamento padrão. \nExemplo: Data de vencimento da fatura do cartão de crédito.</string>
+    <string name="delete">Apagar</string>
 
 </resources>

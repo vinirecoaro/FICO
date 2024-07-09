@@ -32,6 +32,8 @@ class ExpenseListViewModel(
     var deletedItem: Expense? = null
     private val _addExpenseResult = MutableLiveData<Boolean>()
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
+    private val _installmentExpenseSwiped = MutableLiveData<Boolean>()
+    val installmentExpenseSwiped: LiveData<Boolean> = _installmentExpenseSwiped
     val filterLiveData: LiveData<String>
         get() = _filterLiveData
 
@@ -185,6 +187,10 @@ class ExpenseListViewModel(
 
         }
 
+    }
+
+    fun onInstallmentExpenseSwiped(){
+        _installmentExpenseSwiped.postValue(true)
     }
 
 }

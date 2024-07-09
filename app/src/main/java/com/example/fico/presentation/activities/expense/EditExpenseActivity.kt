@@ -10,6 +10,8 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.Spanned
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -26,6 +28,7 @@ import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.presentation.viewmodel.shared.AddExpenseEditExpenseViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -39,7 +42,8 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
     val binding by lazy { ActivityEditExpenseBinding.inflate(layoutInflater) }
     val viewModel by viewModels<EditExpenseViewModel>()
     private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
-    private lateinit var adapter : CategoryListAdapter
+    private lateinit var adapter: CategoryListAdapter
+    private var expenseIdLength = 0
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,22 +56,31 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         binding.editExpenseToolbar.setTitleTextColor(Color.WHITE)
 
         //Create category chooser
-        adapter = CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
+        adapter =
+            CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         val intent = intent
-        if(intent != null){
+        if (intent != null) {
             val expense = intent.getParcelableExtra<Expense>("expense")
-            if(expense != null){
-                val lenght = expense.id.length
+            if (expense != null) {
+                expenseIdLength = expense.id.length
                 //Verify if is a installment expense
-                if(lenght == 41){
+                if (expenseIdLength == 41) {
                     binding.tilInstallments.visibility = View.VISIBLE
 
-                    val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(expense.price, expense.id)
-                    val description = FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
-                    val nOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id)
-                    val initialDate = FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id, expense.paymentDate)
+                    val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(
+                        expense.price,
+                        expense.id
+                    )
+                    val description =
+                        FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
+                    val nOfInstallment =
+                        FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id)
+                    val initialDate = FormatValuesFromDatabase().installmentExpenseInitialDate(
+                        expense.id,
+                        expense.paymentDate
+                    )
 
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(description)
@@ -75,7 +88,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     binding.etInstallments.setText(nOfInstallment)
                     binding.etPaymentDateEdit.setText(initialDate)
                     binding.etPurchaseDateEdit.setText(expense.purchaseDate)
-                }else{
+                } else {
 
                     val priceFormatted = FormatValuesFromDatabase().price(expense.price)
 
@@ -97,38 +110,58 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
         setUpListeners()
 
-        setMaxLength(binding.etInstallments,3)
+        setMaxLength(binding.etInstallments, 3)
 
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun setUpListeners(){
-        binding.btSave.setOnClickListener{
+    private fun setUpListeners() {
+        binding.btSave.setOnClickListener {
             binding.btSave.isEnabled = false
             val expense = intent.getParcelableExtra<Expense>("expense")
-            lifecycleScope.launch(Dispatchers.Main){
-                if(binding.tilInstallments.visibility == View.GONE){
-                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory, binding.etPaymentDateEdit, binding.etPurchaseDateEdit)){
-                        if(viewModel.saveEditExpense(
-                            expense!!,
-                            binding.etPrice.text.toString(),
-                            binding.etDescription.text.toString(),
-                            binding.actvCategory.text.toString(),
-                            binding.etPaymentDateEdit.text.toString(),
-                            binding.etPurchaseDateEdit.text.toString(),
-                            false
-                        ).await()){
+            lifecycleScope.launch(Dispatchers.Main) {
+                if (binding.tilInstallments.visibility == View.GONE) {
+                    if (verifyFields(
+                            binding.etPrice,
+                            binding.etDescription,
+                            binding.actvCategory,
+                            binding.etPaymentDateEdit,
+                            binding.etPurchaseDateEdit
+                        )
+                    ) {
+                        if (viewModel.saveEditExpense(
+                                expense!!,
+                                binding.etPrice.text.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                binding.etPaymentDateEdit.text.toString(),
+                                binding.etPurchaseDateEdit.text.toString(),
+                                false
+                            ).await()
+                        ) {
                             hideKeyboard(this@EditExpenseActivity, binding.btSave)
-                            Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this@EditExpenseActivity,
+                                "Gasto alterado com sucesso",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                         //delay necessary to return to Expense list with value updated
                         delay(250)
                         finish()
                     }
-                }else if(binding.tilInstallments.visibility == View.VISIBLE){
-                    if(verifyFields(binding.etPrice, binding.etDescription, binding.actvCategory,binding. etInstallments ,binding.etPaymentDateEdit, binding.etPurchaseDateEdit)){
-                        if(binding.etInstallments.text.toString() != "0"){
-                            if(viewModel.saveEditExpense(
+                } else if (binding.tilInstallments.visibility == View.VISIBLE) {
+                    if (verifyFields(
+                            binding.etPrice,
+                            binding.etDescription,
+                            binding.actvCategory,
+                            binding.etInstallments,
+                            binding.etPaymentDateEdit,
+                            binding.etPurchaseDateEdit
+                        )
+                    ) {
+                        if (binding.etInstallments.text.toString() != "0") {
+                            if (viewModel.saveEditExpense(
                                     expense!!,
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
@@ -137,15 +170,24 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                                     binding.etPurchaseDateEdit.text.toString(),
                                     true,
                                     binding.etInstallments.text.toString().toInt()
-                            ).await()){
-                                hideKeyboard(this@EditExpenseActivity,binding.btSave)
-                                Toast.makeText(this@EditExpenseActivity, "Gasto alterado com sucesso", Toast.LENGTH_LONG).show()
+                                ).await()
+                            ) {
+                                hideKeyboard(this@EditExpenseActivity, binding.btSave)
+                                Toast.makeText(
+                                    this@EditExpenseActivity,
+                                    "Gasto alterado com sucesso",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                             //delay necessary to return to Expense list with value updated
                             delay(250)
                             finish()
-                        }else{
-                            Toast.makeText(this@EditExpenseActivity, "O número de parcelas não pode ser 0", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(
+                                this@EditExpenseActivity,
+                                "O número de parcelas não pode ser 0",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }
@@ -154,7 +196,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
         }
 
-        binding.ivPaymentDate.setOnClickListener{
+        binding.ivPaymentDate.setOnClickListener {
             binding.btSave.visibility = View.VISIBLE
             binding.ivPaymentDate.isEnabled = false
 
@@ -173,10 +215,10 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                 binding.ivPaymentDate.isEnabled = true
             }
 
-            datePicker.show(supportFragmentManager,"PaymentDate")
+            datePicker.show(supportFragmentManager, "PaymentDate")
         }
 
-        binding.ivPurchaseDateEdit.setOnClickListener{
+        binding.ivPurchaseDateEdit.setOnClickListener {
             binding.btSave.visibility = View.VISIBLE
             binding.ivPurchaseDateEdit.isEnabled = false
 
@@ -195,7 +237,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                 binding.ivPurchaseDateEdit.isEnabled = true
             }
 
-            datePicker.show(supportFragmentManager,"PurchaseDate")
+            datePicker.show(supportFragmentManager, "PurchaseDate")
         }
 
         binding.etPrice.addTextChangedListener(object : TextWatcher {
@@ -221,10 +263,38 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         }
     }
 
-    private fun verifyFields(vararg text: EditText) : Boolean{
-        for (i in text){
-            if (i.text.toString() == "" || i == null){
-                Snackbar.make(binding.btSave,"Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG).show()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.edit_expense_menu, menu)
+        val deleteMenuItem = menu?.findItem(R.id.edit_expense_menu_delete)
+        // Check if expense is installment
+        if(expenseIdLength == 41){
+            deleteMenuItem!!.isVisible = true
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.edit_expense_menu_delete -> {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Apagar gasto")
+                    .setMessage("Prosseguir com a exclusão deste gasto?")
+                    .setPositiveButton("Confirmar") { dialog, which ->
+
+                    }
+                    .show()
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun verifyFields(vararg text: EditText): Boolean {
+        for (i in text) {
+            if (i.text.toString() == "" || i == null) {
+                Snackbar.make(binding.btSave, "Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG)
+                    .show()
                 return false
             }
         }
@@ -259,9 +329,9 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         editText.filters = newFilters
     }
 
-    private fun hideKeyboard(context: Context, view: View){
+    private fun hideKeyboard(context: Context, view: View) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken,0)
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun setColorBasedOnTheme() {
@@ -270,10 +340,12 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_light)
                 binding.ivPurchaseDateEdit.setImageResource(R.drawable.baseline_calendar_month_light)
             }
+
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_dark)
                 binding.ivPurchaseDateEdit.setImageResource(R.drawable.baseline_calendar_month_dark)
             }
+
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
