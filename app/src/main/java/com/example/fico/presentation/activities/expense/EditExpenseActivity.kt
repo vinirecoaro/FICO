@@ -280,7 +280,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     .setTitle("Apagar gasto")
                     .setMessage("Prosseguir com a exclusão deste gasto?")
                     .setPositiveButton("Confirmar") { dialog, which ->
-
+                        //TODO delete installment expense
                     }
                     .show()
                 return true

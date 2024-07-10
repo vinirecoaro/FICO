@@ -158,17 +158,21 @@ class ExpenseListViewModel(
                     viewModelScope,
                     false
                 ).await()
-            val updatedExpenseList = dataStore.getExpenseList().toMutableList()
-            val formattedExpense = Expense(
-                expenseList[0].id,
-                expense.price,
-                expense.description,
-                expense.category,
-                FormatValuesFromDatabase().date(expense.paymentDate),
-                FormatValuesFromDatabase().date(expense.purchaseDate),
-                expense.inputDateTime
-            )
-            updatedExpenseList.add(formattedExpense)
+
+            //Generate list to update dataStore
+            val updatedExpenseList = mutableListOf<Expense>()
+            expenseList.forEach { updatedExpense ->
+                val formattedExpense = Expense(
+                    updatedExpense.id,
+                    updatedExpense.price,
+                    updatedExpense.description,
+                    updatedExpense.category,
+                    FormatValuesFromDatabase().date(updatedExpense.paymentDate),
+                    FormatValuesFromDatabase().date(updatedExpense.purchaseDate),
+                    updatedExpense.inputDateTime
+                )
+                updatedExpenseList.add(formattedExpense)
+            }
 
             //After update database update local storage
             var result = firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
