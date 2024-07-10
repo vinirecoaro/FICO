@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.fico.model.Expense
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.util.constants.AppConstants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -20,6 +21,7 @@ class DataStoreManager (context: Context) {
     companion object {
         val expenseListKey = stringPreferencesKey(AppConstants.DATA_STORE.EXPENSE_LIST)
         val expenseMonthsKey = stringPreferencesKey(AppConstants.DATA_STORE.EXPENSE_MONTHS)
+        val expenseInfoPerMonthKey = stringPreferencesKey(AppConstants.DATA_STORE.INFO_PER_MONTH)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -69,5 +71,12 @@ class DataStoreManager (context: Context) {
             preferences[expenseMonthsKey]
         }.first()
         return Gson().fromJson(expenseMonthsString, object : TypeToken<List<String>>() {}.type)
+    }
+
+    suspend fun updateAndResetInfoPerMonthExpense(expenseInfoPerMonthList : List<InformationPerMonthExpense>){
+        val expenseInfoPerMonthListString = Gson().toJson(expenseInfoPerMonthList)
+        dataStore.edit { preferences ->
+            preferences[expenseInfoPerMonthKey] = expenseInfoPerMonthListString
+        }
     }
 }

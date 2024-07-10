@@ -6,26 +6,29 @@ import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Expense
+import com.example.fico.model.InformationPerMonthExpense
 import kotlinx.coroutines.async
 
 class ExpensesViewModel(private val dataStore : DataStoreManager,private val firebaseAPI : FirebaseAPI ) : ViewModel() {
 
-    private val _expenseList = MutableLiveData<List<Expense>>()
-    private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
-
     fun getExpenseList(filter : String = "") {
         viewModelScope.async{
             val expenses = firebaseAPI.observeExpenseList(filter).await()
-            _expenseList.value = expenses
             dataStore.updateAndResetExpenseList(expenses)
         }
     }
 
     fun getExpenseMonths(){
         viewModelScope.async {
-            val expenseMonths = firebaseAPI.getExpenseMonths(true)
-            _expenseMonthsLiveData.value = expenseMonths
+            val expenseMonths = firebaseAPI.getExpenseMonths(false)
             dataStore.updateAndResetExpenseMonths(expenseMonths)
+        }
+    }
+
+    fun getExpenseInfoPerMonth(){
+        viewModelScope.async {
+            val expenseInfoPerMonth = firebaseAPI.getInformationPerMonth().await()
+            dataStore.updateAndResetInfoPerMonthExpense(expenseInfoPerMonth)
         }
     }
 

@@ -107,9 +107,7 @@ class AddExpenseViewModel(
                     val expenseMonths = mutableListOf<String>()
                     updatedInformationPerMonth.forEach {
                         expenseMonths.add(
-                            FormatValuesFromDatabase().formatDateForFilterOnExpenseList(
-                                it.date
-                            )
+                            it.date
                         )
                     }
                     dataStore.updateExpenseMonths(expenseMonths)

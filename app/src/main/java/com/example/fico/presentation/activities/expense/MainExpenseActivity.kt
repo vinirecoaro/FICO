@@ -64,6 +64,7 @@ class MainExpenseActivity : AppCompatActivity(){
         setImageBasedOnTheme()
         expensesViewModel.getExpenseList()
         expensesViewModel.getExpenseMonths()
+        expensesViewModel.getExpenseInfoPerMonth()
     }
 
     private fun getUserEmail(){

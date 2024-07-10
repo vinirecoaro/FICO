@@ -69,10 +69,12 @@ class ExpenseListViewModel(
             for (expenseMonth in expenseMonths){
                 expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(expenseMonth))
             }*/
-            val expenseMonths = dataStore.getExpenseMonths().sortedByDescending {
-                FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(it)
+            val expenseMonths = dataStore.getExpenseMonths()
+            val expenseMonthsFormatted = mutableListOf<String>()
+            expenseMonths.forEach {
+                expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(it))
             }
-            _expenseMonthsLiveData.value = expenseMonths
+            _expenseMonthsLiveData.value = expenseMonthsFormatted
         }
     }
 
@@ -92,13 +94,11 @@ class ExpenseListViewModel(
                     //Remove from dataStore expense Months List
                     val removedExpenseMonth = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
                     val existDate =
-                        currentList.any { DateFunctions().YYYYmmDDtommDD(it.paymentDate) == removedExpenseMonth }
+                        currentList.any { DateFunctions().YYYYmmDDtommDD(FormatValuesToDatabase().expenseDate(it.paymentDate)) == removedExpenseMonth }
                     if (!existDate) {
                         val currentMonthList = dataStore.getExpenseMonths().toMutableList()
                         currentMonthList.removeAll {
-                            it == FormatValuesFromDatabase().formatDateForFilterOnExpenseList(
-                                DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
-                            )
+                            it == DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
                         }
                         dataStore.updateAndResetExpenseMonths(currentMonthList)
                         //update expense months options
