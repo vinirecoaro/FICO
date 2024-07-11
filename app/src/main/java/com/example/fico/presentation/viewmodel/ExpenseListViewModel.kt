@@ -102,7 +102,7 @@ class ExpenseListViewModel(
                         }
                         dataStore.updateAndResetExpenseMonths(currentMonthList)
                         //update expense months options
-                        _expenseMonthsLiveData.postValue(currentMonthList)
+                        getExpenseMonths()
                     }
                     _deleteExpenseResult.postValue(true)
                 },
@@ -180,8 +180,9 @@ class ExpenseListViewModel(
                 onSuccess = {
                     dataStore.updateExpenseList(updatedExpenseList)
                     getExpenseList(_filterLiveData.value.toString())
-                    val expenseMonthsList = listOf(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(updatedInformationPerMonth[0].date))
+                    val expenseMonthsList = listOf(updatedInformationPerMonth[0].date)
                     dataStore.updateExpenseMonths(expenseMonthsList)
+                    getExpenseMonths()
                     _addExpenseResult.postValue(true)
                 },
                 onFailure = {
