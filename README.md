@@ -1,4 +1,4 @@
-# FICO
+# FICO - Finantial Control
 This app make the finance control easy
 
 This application stores expense information in a simple and
