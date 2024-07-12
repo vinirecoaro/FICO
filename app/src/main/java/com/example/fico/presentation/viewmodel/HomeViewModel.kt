@@ -10,24 +10,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fico.DataStoreManager
 import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.util.constants.DateFunctions
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.N)
 class HomeViewModel(
-    private val firebaseAPI : FirebaseAPI
+    private val firebaseAPI : FirebaseAPI,
+    private val dataStore : DataStoreManager
 ) : ViewModel() {
 
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
@@ -38,7 +39,6 @@ class HomeViewModel(
     val infoPerMonthLabelLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonthLabel
     private val _totalExpense = MutableLiveData<String>()
     val totalExpenseLiveData : LiveData<String> = _totalExpense
-
     private val _informationPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
     val informationPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _informationPerMonth
 
@@ -60,7 +60,7 @@ class HomeViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+/*    @RequiresApi(Build.VERSION_CODES.N)
     fun getAvailableNow(date: String, formatted : Boolean = true): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO) {
             val availableNow = firebaseAPI.getAvailableNow(date)
@@ -75,9 +75,45 @@ class HomeViewModel(
                 }
             }
         }
+    }*/
+
+    fun getAvailableNow(date : String, formatted: Boolean = true) : Deferred<String>{
+        return viewModelScope.async(Dispatchers.IO){
+            var availableNowString = "---"
+            val informationPerMonthExpense = dataStore.getExpenseInfoPerMonth()
+            val informationPerMonthExpenseFromDate = informationPerMonthExpense.find { it.date == date }
+            if(informationPerMonthExpenseFromDate != null){
+                if(formatted){
+                    availableNowString = NumberFormat.getCurrencyInstance().format(informationPerMonthExpenseFromDate.availableNow.toFloat())
+                    availableNowString
+                }else{
+                    availableNowString = informationPerMonthExpenseFromDate.availableNow
+                    availableNowString
+                }
+            }
+            availableNowString
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    fun getMonthExpense(date : String, formatted: Boolean = true) : Deferred<String>{
+        return viewModelScope.async(Dispatchers.IO){
+            var monthExpense = "---"
+            val informationPerMonthExpense = dataStore.getExpenseInfoPerMonth()
+            val informationPerMonthExpenseFromDate = informationPerMonthExpense.find { it.date == date }
+            if(informationPerMonthExpenseFromDate != null){
+                if(formatted){
+                    monthExpense = NumberFormat.getCurrencyInstance().format(informationPerMonthExpenseFromDate.monthExpense.toFloat())
+                    monthExpense
+                }else{
+                    monthExpense = informationPerMonthExpenseFromDate.monthExpense
+                    monthExpense
+                }
+            }
+            monthExpense
+        }
+    }
+
+    /*@RequiresApi(Build.VERSION_CODES.N)
     fun getMonthExpense(date: String, formatted : Boolean = true): kotlinx.coroutines.Deferred<String> {
         return viewModelScope.async(Dispatchers.IO) {
             val monthExpense = firebaseAPI.getMonthExpense(date)
@@ -92,7 +128,7 @@ class HomeViewModel(
                 }
             }
         }
-    }
+    }*/
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun getTotalExpense(){

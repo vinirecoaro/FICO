@@ -93,7 +93,8 @@ val appModule = module {
 
     factory<HomeViewModel> {
             HomeViewModel(
-                firebaseAPI = get()
+                firebaseAPI = get(),
+                dataStore = get()
             )
         }
 

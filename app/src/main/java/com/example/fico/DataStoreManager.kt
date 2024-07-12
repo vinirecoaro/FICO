@@ -79,4 +79,11 @@ class DataStoreManager (context: Context) {
             preferences[expenseInfoPerMonthKey] = expenseInfoPerMonthListString
         }
     }
+
+    suspend fun getExpenseInfoPerMonth() : List<InformationPerMonthExpense>{
+        val expenseInfoPerMonthString = dataStore.data.map {  preferences ->
+            preferences[expenseInfoPerMonthKey]
+        }.first()
+        return Gson().fromJson(expenseInfoPerMonthString, object : TypeToken<List<InformationPerMonthExpense>>() {}.type)
+    }
 }

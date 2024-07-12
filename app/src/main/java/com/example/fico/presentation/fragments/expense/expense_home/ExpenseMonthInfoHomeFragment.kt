@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
@@ -29,8 +28,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class ExpenseMonthInfoHomeFragment : Fragment() {
 
