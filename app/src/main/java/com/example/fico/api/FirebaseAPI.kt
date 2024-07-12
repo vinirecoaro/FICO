@@ -571,7 +571,6 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getTotalExpense(): Deferred<String> = withContext(Dispatchers.IO) {
         val totalExpense = CompletableDeferred<String>()
         total_expenses_price.addValueEventListener(object : ValueEventListener {

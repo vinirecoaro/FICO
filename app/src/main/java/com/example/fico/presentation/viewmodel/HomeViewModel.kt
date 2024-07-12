@@ -130,8 +130,7 @@ class HomeViewModel(
         }
     }*/
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun getTotalExpense(){
+/*    fun getTotalExpense(){
         viewModelScope.async(Dispatchers.IO){
             firebaseAPI.observeTotalExpense().collect{ totalExpense ->
                 val price = totalExpense?.toFloat()
@@ -140,6 +139,15 @@ class HomeViewModel(
                     _totalExpense.value = priceFormatted
                 }
             }
+        }
+    }*/
+
+    fun getTotalExpense(){
+        viewModelScope.async(Dispatchers.IO){
+            val totalExpense = dataStore.getTotalExpense()
+            val price = totalExpense.toFloat()
+            val priceFormatted = NumberFormat.getCurrencyInstance().format(price)
+            _totalExpense.value = priceFormatted
         }
     }
 

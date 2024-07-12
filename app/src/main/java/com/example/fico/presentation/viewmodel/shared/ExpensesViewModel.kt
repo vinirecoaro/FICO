@@ -32,4 +32,11 @@ class ExpensesViewModel(private val dataStore : DataStoreManager,private val fir
         }
     }
 
+    fun getTotalExpense(){
+        viewModelScope.async {
+            val totalExpense = firebaseAPI.getTotalExpense().await()
+            dataStore.updateTotalExpense(totalExpense)
+        }
+    }
+
 }

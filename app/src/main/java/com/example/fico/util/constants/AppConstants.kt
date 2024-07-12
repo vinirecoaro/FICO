@@ -134,6 +134,7 @@ class AppConstants private constructor() {
         const val EXPENSE_LIST = "ExpenseList"
         const val EXPENSE_MONTHS = "ExpenseMonths"
         const val INFO_PER_MONTH = "ExpenseInfoPerMonth"
+        const val TOTAL_EXPENSE = "TotalExpense"
     }
 
 }
