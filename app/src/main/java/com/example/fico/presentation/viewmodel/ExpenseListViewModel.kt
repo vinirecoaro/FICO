@@ -15,6 +15,8 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.util.constants.DateFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class ExpenseListViewModel(
     private val firebaseAPI: FirebaseAPI,
@@ -84,13 +86,17 @@ class ExpenseListViewModel(
             result.fold(
                 onSuccess = {
                     deletedItem = expense
+
                     //Get current dataStore Expense list
                     val currentList = dataStore.getExpenseList().toMutableList()
+
                     //Remove from dataStore expense List
                     currentList.removeAll { it.id == expense.id }
                     dataStore.updateAndResetExpenseList(currentList.toList())
+
                     //Update expenseList on screen
                     getExpenseList(_filterLiveData.value.toString())
+
                     //Remove from dataStore expense Months List
                     val removedExpenseMonth = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
                     val existDate =
@@ -101,9 +107,17 @@ class ExpenseListViewModel(
                             it == DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
                         }
                         dataStore.updateAndResetExpenseMonths(currentMonthList)
+
                         //update expense months options
                         getExpenseMonths()
                     }
+
+                    //Update dataStore Total Expense
+                    val currentTotalExpense = BigDecimal(dataStore.getTotalExpense())
+                    val priceFormatted = BigDecimal(expense.price).setScale(2,RoundingMode.HALF_UP)
+                    val updatedTotalExpenseFromDataStore = currentTotalExpense.add(priceFormatted)
+                    dataStore.updateTotalExpense(updatedTotalExpenseFromDataStore.toString())
+
                     _deleteExpenseResult.postValue(true)
                 },
                 onFailure = {
@@ -178,12 +192,22 @@ class ExpenseListViewModel(
             var result = firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
             result.fold(
                 onSuccess = {
+
+                    // Update dataStore expenseList
                     dataStore.updateExpenseList(updatedExpenseList)
                     getExpenseList(_filterLiveData.value.toString())
                     val expenseMonthsList = listOf(updatedInformationPerMonth[0].date)
+
+                    // Update dataStore expenseMonths
                     dataStore.updateExpenseMonths(expenseMonthsList)
                     getExpenseMonths()
                     _addExpenseResult.postValue(true)
+
+                    //Update dataStore Total Expense
+                    val currentTotalExpense = BigDecimal(dataStore.getTotalExpense())
+                    val updatedTotalExpenseFromDataStore = currentTotalExpense.add(BigDecimal(formattedPrice))
+                    dataStore.updateTotalExpense(updatedTotalExpenseFromDataStore.toString())
+
                 },
                 onFailure = {
                     _addExpenseResult.postValue(false)
