@@ -60,23 +60,6 @@ class HomeViewModel(
         }
     }
 
-/*    @RequiresApi(Build.VERSION_CODES.N)
-    fun getAvailableNow(date: String, formatted : Boolean = true): kotlinx.coroutines.Deferred<String> {
-        return viewModelScope.async(Dispatchers.IO) {
-            val availableNow = firebaseAPI.getAvailableNow(date)
-            if(availableNow == "---"){
-                availableNow
-            }else{
-                if (formatted){
-                    val availableNowFormatted = (NumberFormat.getCurrencyInstance().format(availableNow.toFloat()))
-                    availableNowFormatted
-                }else{
-                    availableNow
-                }
-            }
-        }
-    }*/
-
     fun getAvailableNow(date : String, formatted: Boolean = true) : Deferred<String>{
         return viewModelScope.async(Dispatchers.IO){
             var availableNowString = "---"
@@ -113,57 +96,25 @@ class HomeViewModel(
         }
     }
 
-    /*@RequiresApi(Build.VERSION_CODES.N)
-    fun getMonthExpense(date: String, formatted : Boolean = true): kotlinx.coroutines.Deferred<String> {
-        return viewModelScope.async(Dispatchers.IO) {
-            val monthExpense = firebaseAPI.getMonthExpense(date)
-            if(monthExpense == "---"){
-                monthExpense
-            }else{
-                if (formatted){
-                    val monthExpenseFormatted = (NumberFormat.getCurrencyInstance().format(monthExpense.toFloat()))
-                    monthExpenseFormatted
-                }else{
-                    monthExpense
-                }
-            }
-        }
-    }*/
-
-/*    fun getTotalExpense(){
-        viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.observeTotalExpense().collect{ totalExpense ->
-                val price = totalExpense?.toFloat()
-                val priceFormatted = (NumberFormat.getCurrencyInstance().format(price))
-                withContext(Dispatchers.Main){
-                    _totalExpense.value = priceFormatted
-                }
-            }
-        }
-    }*/
-
     fun getTotalExpense(){
         viewModelScope.async(Dispatchers.IO){
             val totalExpense = dataStore.getTotalExpense()
             val price = totalExpense.toFloat()
             val priceFormatted = NumberFormat.getCurrencyInstance().format(price)
-            _totalExpense.value = priceFormatted
+            _totalExpense.postValue(priceFormatted)
         }
     }
 
-    fun getExpenseMonths() {
-        val _expenseMonths = CompletableDeferred<List<String>>()
+    fun getExpenseMonths(){
         viewModelScope.async {
-            val expenseMonths = firebaseAPI.getExpenseMonths(false)
-            val sortedExpenseMonths = expenseMonths.sortedBy{ it }
-            val expenseMonthsFormatted : MutableList<String> = mutableListOf()
-            for(expenseMonth in sortedExpenseMonths){
-                expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(expenseMonth))
+            val expenseMonths = dataStore.getExpenseMonths()
+            val sortedExpenseMonths = expenseMonths.sortedBy { it }
+            val expenseMonthsFormatted = mutableListOf<String>()
+            sortedExpenseMonths.forEach { month ->
+                expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(month))
             }
-            _expenseMonths.complete(expenseMonthsFormatted.toList())
-            _expenseMonthsLiveData.value = _expenseMonths.await() ?: emptyList()
+            _expenseMonthsLiveData.postValue(expenseMonthsFormatted)
         }
-
     }
 
     fun getCurrentMonthPositionOnList(date : String) : Int{
@@ -180,16 +131,16 @@ class HomeViewModel(
     }
 
     fun getInfoPerMonth(){
-        viewModelScope.async {
-            val infoPerMonthList = firebaseAPI.getInformationPerMonth().await().toList()
-            val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
-            for(infoPerMonth in infoPerMonthList){
-                if (BigDecimal(infoPerMonth.monthExpense).setScale(2,RoundingMode.HALF_UP) != BigDecimal("0").setScale(2,RoundingMode.HALF_UP)){
-                    monthWithExpenses.add(infoPerMonth)
-                }
-            }
-            _infoPerMonth.value = monthWithExpenses
-        }
+       viewModelScope.async(Dispatchers.IO){
+           val infoPerMonthList = dataStore.getExpenseInfoPerMonth()
+           val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
+           for(infoPerMonth in infoPerMonthList){
+               if (BigDecimal(infoPerMonth.monthExpense).setScale(2,RoundingMode.HALF_UP) != BigDecimal("0").setScale(2,RoundingMode.HALF_UP)){
+                   monthWithExpenses.add(infoPerMonth)
+               }
+           }
+           _infoPerMonth.postValue(monthWithExpenses)
+       }
     }
 
     fun formatInfoPerMonthToLabel(){

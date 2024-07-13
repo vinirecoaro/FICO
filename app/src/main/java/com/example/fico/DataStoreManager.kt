@@ -45,7 +45,7 @@ class DataStoreManager (context: Context) {
     suspend fun getExpenseList() : List<Expense>{
         val expenseListString = dataStore.data.map { preferences ->
             preferences[expenseListKey]
-        }.first()
+        }.first() ?: return emptyList()
         return Gson().fromJson(expenseListString, object : TypeToken<List<Expense>>() {}.type)
     }
 
@@ -70,7 +70,7 @@ class DataStoreManager (context: Context) {
     suspend fun getExpenseMonths() : List<String>{
         val expenseMonthsString = dataStore.data.map { preferences ->
             preferences[expenseMonthsKey]
-        }.first()
+        }.first() ?: return emptyList()
         return Gson().fromJson(expenseMonthsString, object : TypeToken<List<String>>() {}.type)
     }
 
@@ -82,9 +82,9 @@ class DataStoreManager (context: Context) {
     }
 
     suspend fun getExpenseInfoPerMonth() : List<InformationPerMonthExpense>{
-        val expenseInfoPerMonthString = dataStore.data.map {  preferences ->
+        val expenseInfoPerMonthString = dataStore.data.map { preferences ->
             preferences[expenseInfoPerMonthKey]
-        }.first()
+        }.first() ?: return emptyList()
         return Gson().fromJson(expenseInfoPerMonthString, object : TypeToken<List<InformationPerMonthExpense>>() {}.type)
     }
 
