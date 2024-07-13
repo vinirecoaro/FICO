@@ -43,7 +43,6 @@ class HomeViewModel(
     val informationPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _informationPerMonth
 
     init{
-        getTotalExpense()
         getInfoPerMonth()
     }
 

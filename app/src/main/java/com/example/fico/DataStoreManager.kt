@@ -97,7 +97,7 @@ class DataStoreManager (context: Context) {
     suspend fun getTotalExpense() : String{
         val totalExpense = dataStore.data.map { preferences ->
             preferences[totalExpenseKey]
-        }.first()
+        }.first() ?: "0.00"
         return Gson().fromJson(totalExpense, object : TypeToken<String>() {}.type)
     }
 

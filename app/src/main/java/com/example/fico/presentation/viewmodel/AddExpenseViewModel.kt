@@ -86,7 +86,8 @@ class AddExpenseViewModel(
                 firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
             result.fold(
                 onSuccess = {
-                    //Update expense List
+
+                    //Update dataStore expense List
                     val expenseListFormatted = mutableListOf<Expense>()
                     expenseList.forEach { expense ->
                         expenseListFormatted.add(
@@ -103,7 +104,8 @@ class AddExpenseViewModel(
                         )
                     }
                     dataStore.updateExpenseList(expenseListFormatted)
-                    //Update expense Months
+
+                    //Update dataStore expense Months
                     val expenseMonths = mutableListOf<String>()
                     updatedInformationPerMonth.forEach {
                         expenseMonths.add(
@@ -111,8 +113,15 @@ class AddExpenseViewModel(
                         )
                     }
                     dataStore.updateExpenseMonths(expenseMonths)
+
+                    //Update dataStore Total Expense
+                    val currentTotalExpense = BigDecimal(dataStore.getTotalExpense())
+                    val updatedTotalExpense = currentTotalExpense.add(BigDecimal(FormatValuesToDatabase().expensePrice(price,1)))
+                    dataStore.updateTotalExpense(updatedTotalExpense.toString())
+
                     //Update observable
                     _addExpenseResult.postValue(true)
+
                 },
                 onFailure = {
                     _addExpenseResult.postValue(false)

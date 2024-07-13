@@ -50,14 +50,13 @@ class HomeFragment : Fragment(){
             initExpenseEachMonthChart()
         }
 
-
-
         return rootView
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+        viewModel.getTotalExpense()
     }
 
     override fun onDestroyView() {
