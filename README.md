@@ -34,5 +34,13 @@ financial control.
 <img src="https://github.com/user-attachments/assets/d6a02450-51cf-43a2-9c0b-d296f645d90d" alt="Descrição da Imagem" width="200">
 <img src="https://github.com/user-attachments/assets/56fe4ba2-4e79-4c1d-9b50-bce79e5fad1b" alt="Descrição da Imagem" width="200">
 
+## Technologies used
 
+ * Kotlin
+ * Firebase
+ * Koin
+ * MVVM Architecture
 
+## ⏭️ Next Steps
+
+Implement income screens and analysis screens to analyze your balance between income and expenses.
