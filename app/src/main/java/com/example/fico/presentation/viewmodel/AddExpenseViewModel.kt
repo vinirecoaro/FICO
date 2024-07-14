@@ -2,7 +2,6 @@ package com.example.fico.presentation.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.datastore.dataStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,9 +12,8 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.util.constants.DateFunctions
-import com.google.firebase.database.DataSnapshot
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -87,8 +85,10 @@ class AddExpenseViewModel(
             result.fold(
                 onSuccess = {
 
-                    //Update dataStore expense List
+                    //Update dataStore expense List and infoPerMonth
                     val expenseListFormatted = mutableListOf<Expense>()
+                    val currentInfoPerMonth = dataStore.getExpenseInfoPerMonth()
+                    val updatedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
                     expenseList.forEach { expense ->
                         expenseListFormatted.add(
                             Expense(
@@ -102,7 +102,20 @@ class AddExpenseViewModel(
                                 expense.nOfInstallment
                             )
                         )
+                        //Verify if exist month and get its information
+                        val monthInfo = currentInfoPerMonth.find { infoPerMonth ->
+                            infoPerMonth.date == DateFunctions().YYYYmmDDtommDD(expense.paymentDate) }
+                        if(monthInfo != null){
+                            val expensePrice = BigDecimal(expense.price).setScale(8,RoundingMode.HALF_UP)
+                            val monthExpenseUpdated = BigDecimal(monthInfo.monthExpense).add(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
+                            val availableNowUpdated = BigDecimal(monthInfo.availableNow).subtract(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
+                            val monthInfoUpdated = InformationPerMonthExpense(monthInfo.date,availableNowUpdated,monthInfo.budget,monthExpenseUpdated)
+                            updatedInfoPerMonth.add(monthInfoUpdated)
+                        }else{
+                            //TODO need to implement save and get defaultBudget
+                        }
                     }
+                    dataStore.updateInfoPerMonthExpense(updatedInfoPerMonth)
                     dataStore.updateExpenseList(expenseListFormatted)
 
                     //Update dataStore expense Months
@@ -116,8 +129,8 @@ class AddExpenseViewModel(
 
                     //Update dataStore Total Expense
                     val currentTotalExpense = BigDecimal(dataStore.getTotalExpense())
-                    val updatedTotalExpense = currentTotalExpense.add(BigDecimal(FormatValuesToDatabase().expensePrice(price,1)))
-                    dataStore.updateTotalExpense(updatedTotalExpense.toString())
+                    val updatedTotalExpenseDataStore = currentTotalExpense.add(BigDecimal(FormatValuesToDatabase().expensePrice(price,1)))
+                    dataStore.updateTotalExpense(updatedTotalExpenseDataStore.toString())
 
                     //Update observable
                     _addExpenseResult.postValue(true)

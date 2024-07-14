@@ -81,6 +81,23 @@ class DataStoreManager (context: Context) {
         }
     }
 
+    suspend fun updateInfoPerMonthExpense(infoPerMonthList : List<InformationPerMonthExpense>){
+        dataStore.edit { preferences ->
+            val existingInfoPerMonthExpenseString = preferences[expenseInfoPerMonthKey] ?: "[]"
+            val existingInfoPerMonthExpense = Gson().fromJson(existingInfoPerMonthExpenseString, Array<InformationPerMonthExpense>::class.java).toMutableList()
+            infoPerMonthList.forEach{ infoPerMonthToAdd ->
+                existingInfoPerMonthExpense.removeAll {
+                    it.date == infoPerMonthToAdd.date
+                }
+            }
+            val updatedInfoPerMonthExpense = existingInfoPerMonthExpense
+            updatedInfoPerMonthExpense.addAll(infoPerMonthList)
+            val updatedInfoPerMonthExpenseSorted = updatedInfoPerMonthExpense.sortedBy { it.date }
+            val updatedInfoPerMonthExpenseSortedString = Gson().toJson(updatedInfoPerMonthExpenseSorted)
+            preferences[expenseInfoPerMonthKey] = updatedInfoPerMonthExpenseSortedString
+        }
+    }
+
     suspend fun getExpenseInfoPerMonth() : List<InformationPerMonthExpense>{
         val expenseInfoPerMonthString = dataStore.data.map { preferences ->
             preferences[expenseInfoPerMonthKey]
