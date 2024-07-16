@@ -248,7 +248,6 @@ class FirebaseAPI private constructor() {
         return updetedInfoPerMonth
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun getDefaultBudget(): Deferred<String> = withContext(Dispatchers.IO) {
         val defaultBudget = CompletableDeferred<String>()
         default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET)

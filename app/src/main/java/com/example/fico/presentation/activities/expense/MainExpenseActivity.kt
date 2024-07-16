@@ -62,10 +62,13 @@ class MainExpenseActivity : AppCompatActivity(){
         setupListeners()
         removeTintOfMenuIcons()
         setImageBasedOnTheme()
+
+        //Update DataStore with info from database
         expensesViewModel.getExpenseList()
         expensesViewModel.getExpenseMonths()
         expensesViewModel.getExpenseInfoPerMonth()
         expensesViewModel.getTotalExpense()
+        expensesViewModel.getDefaultBudget()
     }
 
     private fun getUserEmail(){

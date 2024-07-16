@@ -23,6 +23,7 @@ class DataStoreManager (context: Context) {
         val expenseMonthsKey = stringPreferencesKey(AppConstants.DATA_STORE.EXPENSE_MONTHS)
         val expenseInfoPerMonthKey = stringPreferencesKey(AppConstants.DATA_STORE.INFO_PER_MONTH)
         val totalExpenseKey = stringPreferencesKey(AppConstants.DATA_STORE.TOTAL_EXPENSE)
+        val defaultBudgetKey = stringPreferencesKey(AppConstants.DATA_STORE.DEFAULT_BUDGET_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -116,6 +117,19 @@ class DataStoreManager (context: Context) {
             preferences[totalExpenseKey]
         }.first() ?: "0.00"
         return Gson().fromJson(totalExpense, object : TypeToken<String>() {}.type)
+    }
+
+    suspend fun updateDefaultBudget(budget : String){
+        dataStore.edit {preferences ->
+            preferences[defaultBudgetKey] = budget
+        }
+    }
+
+    suspend fun getDefaultBudget() : String {
+        val defaultBudget = dataStore.data.map { preferences ->
+            preferences[defaultBudgetKey]
+        }.first()
+        return Gson().fromJson(defaultBudget, object : TypeToken<String>() {}.type)
     }
 
 }

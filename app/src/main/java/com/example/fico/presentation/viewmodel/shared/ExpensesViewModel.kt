@@ -1,5 +1,7 @@
 package com.example.fico.presentation.viewmodel.shared
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,6 +38,13 @@ class ExpensesViewModel(private val dataStore : DataStoreManager,private val fir
         viewModelScope.async {
             val totalExpense = firebaseAPI.getTotalExpense().await()
             dataStore.updateTotalExpense(totalExpense)
+        }
+    }
+
+    fun getDefaultBudget(){
+        viewModelScope.async {
+            val defaultBudget = firebaseAPI.getDefaultBudget().await()
+            dataStore.updateDefaultBudget(defaultBudget)
         }
     }
 

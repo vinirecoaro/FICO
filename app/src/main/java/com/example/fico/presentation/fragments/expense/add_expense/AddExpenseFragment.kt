@@ -46,6 +46,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
+import com.example.fico.DataStoreManager
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.presentation.viewmodel.shared.AddExpenseEditExpenseViewModel
@@ -71,7 +72,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
     private lateinit var adapter: CategoryListAdapter
-
     @RequiresApi(Build.VERSION_CODES.O)
     private val currentDate = DateFunctions().getCurrentlyDate()
     private val receiver = object : BroadcastReceiver() {
@@ -86,6 +86,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         }
     }
     private val sharedPref: SharedPreferences by inject()
+    private val dataStore : DataStoreManager by inject()
 
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
@@ -467,6 +468,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                 rootView, "Orçamento padrão salvo com sucesso", Snackbar.LENGTH_LONG
                             )
                             snackbar.show()
+                            dataStore.updateDefaultBudget(formattedNumString)
                             result.complete(true)
                         }
                     } else {
