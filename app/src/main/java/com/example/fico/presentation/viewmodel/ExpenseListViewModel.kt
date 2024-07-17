@@ -113,6 +113,38 @@ class ExpenseListViewModel(
                         getExpenseMonths()
                     }
 
+                    //Update info per month on dataStore
+                    val currentInfoPerMonth = dataStore.getExpenseInfoPerMonth()
+                    val updatedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
+                    val monthInfo = currentInfoPerMonth.find { infoPerMonth ->
+                        infoPerMonth.date == DateFunctions().YYYYmmDDtommDD(expense.paymentDate) }
+                    if(monthInfo != null){
+                        val expensePrice = BigDecimal(expense.price).setScale(8,RoundingMode.HALF_UP)
+                        val monthExpenseUpdated = BigDecimal(monthInfo.monthExpense).add(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
+                        val availableNowUpdated = BigDecimal(monthInfo.availableNow).subtract(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
+                        val monthInfoUpdated = InformationPerMonthExpense(
+                            monthInfo.date,
+                            availableNowUpdated,
+                            monthInfo.budget,
+                            monthExpenseUpdated
+                        )
+                        updatedInfoPerMonth.add(monthInfoUpdated)
+                    }else{
+                        val date = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                        val defaultBudget = BigDecimal(dataStore.getDefaultBudget()).setScale(8,RoundingMode.HALF_UP)
+                        val monthExpenseUpdated = BigDecimal(expense.price).setScale(8, RoundingMode.HALF_UP).toString()
+                        val availableNowUpdated = defaultBudget.subtract(BigDecimal(expense.price)).setScale(8,RoundingMode.HALF_UP).toString()
+                        val monthInfoUpdated = InformationPerMonthExpense(
+                            date,
+                            availableNowUpdated,
+                            defaultBudget.toString(),
+                            monthExpenseUpdated
+                        )
+                        updatedInfoPerMonth.add(monthInfoUpdated)
+                    }
+                    dataStore.updateInfoPerMonthExpense(updatedInfoPerMonth)
+
+
                     //Update dataStore Total Expense
                     val currentTotalExpense = BigDecimal(dataStore.getTotalExpense())
                     val priceFormatted = BigDecimal(expense.price).setScale(2,RoundingMode.HALF_UP)
