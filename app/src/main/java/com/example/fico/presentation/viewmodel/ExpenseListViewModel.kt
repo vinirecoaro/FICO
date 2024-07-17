@@ -12,6 +12,7 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.util.constants.DateFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -173,40 +174,75 @@ class ExpenseListViewModel(
                     false
                 ).await()
 
-            //Generate list to update dataStore
-            val updatedExpenseList = mutableListOf<Expense>()
-            expenseList.forEach { updatedExpense ->
-                val formattedExpense = Expense(
-                    updatedExpense.id,
-                    updatedExpense.price,
-                    updatedExpense.description,
-                    updatedExpense.category,
-                    FormatValuesFromDatabase().date(updatedExpense.paymentDate),
-                    FormatValuesFromDatabase().date(updatedExpense.purchaseDate),
-                    updatedExpense.inputDateTime
-                )
-                updatedExpenseList.add(formattedExpense)
-            }
-
             //After update database update local storage
             var result = firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
             result.fold(
                 onSuccess = {
 
-                    // Update dataStore expenseList
+                    //Generate list to update dataStore expenseList and InfoPerMonthExpense
+                    val currentInfoPerMonth = dataStore.getExpenseInfoPerMonth()
+                    val updatedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
+                    val updatedExpenseList = mutableListOf<Expense>()
+                    expenseList.forEach { updatedExpense ->
+                        val formattedExpense = Expense(
+                            updatedExpense.id,
+                            updatedExpense.price,
+                            updatedExpense.description,
+                            updatedExpense.category,
+                            FormatValuesFromDatabase().date(updatedExpense.paymentDate),
+                            FormatValuesFromDatabase().date(updatedExpense.purchaseDate),
+                            updatedExpense.inputDateTime
+                        )
+                        //ExpenseList
+                        updatedExpenseList.add(formattedExpense)
+                        // InfoPerMonth
+                        val monthInfo = currentInfoPerMonth.find { infoPerMonth ->
+                            infoPerMonth.date == DateFunctions().YYYYmmDDtommDD(expense.paymentDate) }
+                        if(monthInfo != null){
+                            val expensePrice = BigDecimal(expense.price).setScale(8,RoundingMode.HALF_UP)
+                            val monthExpenseUpdated = BigDecimal(monthInfo.monthExpense).add(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
+                            val availableNowUpdated = BigDecimal(monthInfo.availableNow).subtract(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
+                            val monthInfoUpdated = InformationPerMonthExpense(
+                                monthInfo.date,
+                                availableNowUpdated,
+                                monthInfo.budget,
+                                monthExpenseUpdated
+                            )
+                            updatedInfoPerMonth.add(monthInfoUpdated)
+                        }else{
+                            val date = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                            val defaultBudget = BigDecimal(dataStore.getDefaultBudget()).setScale(8,RoundingMode.HALF_UP)
+                            val monthExpenseUpdated = BigDecimal(expense.price).setScale(8, RoundingMode.HALF_UP).toString()
+                            val availableNowUpdated = defaultBudget.subtract(BigDecimal(expense.price)).setScale(8,RoundingMode.HALF_UP).toString()
+                            val monthInfoUpdated = InformationPerMonthExpense(
+                                date,
+                                availableNowUpdated,
+                                defaultBudget.toString(),
+                                monthExpenseUpdated
+                            )
+                            updatedInfoPerMonth.add(monthInfoUpdated)
+                        }
+                    }
+
+                    // Update dataStore expenseList and InfoPerMonth
                     dataStore.updateExpenseList(updatedExpenseList)
                     getExpenseList(_filterLiveData.value.toString())
-                    val expenseMonthsList = listOf(updatedInformationPerMonth[0].date)
+                    dataStore.updateInfoPerMonthExpense(updatedInfoPerMonth)
 
                     // Update dataStore expenseMonths
+                    val expenseMonthsList = mutableListOf<String>()
+                    updatedInformationPerMonth.forEach { infoPerMonth ->
+                        expenseMonthsList.add(infoPerMonth.date)
+                    }
                     dataStore.updateExpenseMonths(expenseMonthsList)
                     getExpenseMonths()
-                    _addExpenseResult.postValue(true)
 
                     //Update dataStore Total Expense
                     val currentTotalExpense = BigDecimal(dataStore.getTotalExpense())
                     val updatedTotalExpenseFromDataStore = currentTotalExpense.add(BigDecimal(formattedPrice))
                     dataStore.updateTotalExpense(updatedTotalExpenseFromDataStore.toString())
+
+                    _addExpenseResult.postValue(true)
 
                 },
                 onFailure = {
