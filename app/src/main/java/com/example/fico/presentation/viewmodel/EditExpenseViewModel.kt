@@ -2,6 +2,8 @@ package com.example.fico.presentation.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
@@ -19,6 +21,8 @@ import java.time.format.DateTimeFormatter
 class EditExpenseViewModel : ViewModel() {
 
     val firebaseAPI = FirebaseAPI.instance
+    private val _editExpenseResult = MutableLiveData<Boolean>()
+    val editExpenseResult : LiveData<Boolean> = _editExpenseResult
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(
@@ -30,8 +34,8 @@ class EditExpenseViewModel : ViewModel() {
         purchaseData : String,
         installment : Boolean,
         nOfInstallments: Int = 1
-    ) : Deferred<Boolean > {
-        return viewModelScope.async(Dispatchers.IO) {
+    )  {
+        viewModelScope.async(Dispatchers.IO) {
 
             var oldExpensePaymentDate = FormatValuesToDatabase().expenseDate(oldExpense.paymentDate)
             var oldExpensePurchaseDate = FormatValuesToDatabase().expenseDate(oldExpense.purchaseDate)
@@ -68,7 +72,14 @@ class EditExpenseViewModel : ViewModel() {
 
             val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(newExpense, installment, nOfInstallments)
 
-            firebaseAPI.editExpense(expenseList, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment)
+            firebaseAPI.editExpense(expenseList, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment).fold(
+                onSuccess = {
+                    _editExpenseResult.postValue(true)
+                },
+                onFailure = {
+                    _editExpenseResult.postValue(false)
+                }
+            )
         }
     }
 

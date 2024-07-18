@@ -1,6 +1,8 @@
 package com.example.fico.presentation.activities.expense
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -120,6 +122,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
             binding.btSave.isEnabled = false
             val expense = intent.getParcelableExtra<Expense>("expense")
             lifecycleScope.launch(Dispatchers.Main) {
+                // Verify if is commom expense
                 if (binding.tilInstallments.visibility == View.GONE) {
                     if (verifyFields(
                             binding.etPrice,
@@ -129,26 +132,15 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                             binding.etPurchaseDateEdit
                         )
                     ) {
-                        if (viewModel.saveEditExpense(
-                                expense!!,
-                                binding.etPrice.text.toString(),
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                binding.etPaymentDateEdit.text.toString(),
-                                binding.etPurchaseDateEdit.text.toString(),
-                                false
-                            ).await()
-                        ) {
-                            hideKeyboard(this@EditExpenseActivity, binding.btSave)
-                            Toast.makeText(
-                                this@EditExpenseActivity,
-                                "Gasto alterado com sucesso",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        //delay necessary to return to Expense list with value updated
-                        delay(250)
-                        finish()
+                        viewModel.saveEditExpense(
+                            expense!!,
+                            binding.etPrice.text.toString(),
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            binding.etPaymentDateEdit.text.toString(),
+                            binding.etPurchaseDateEdit.text.toString(),
+                            false
+                        )
                     }
                 } else if (binding.tilInstallments.visibility == View.VISIBLE) {
                     if (verifyFields(
@@ -161,27 +153,16 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                         )
                     ) {
                         if (binding.etInstallments.text.toString() != "0") {
-                            if (viewModel.saveEditExpense(
-                                    expense!!,
-                                    binding.etPrice.text.toString(),
-                                    binding.etDescription.text.toString(),
-                                    binding.actvCategory.text.toString(),
-                                    binding.etPaymentDateEdit.text.toString(),
-                                    binding.etPurchaseDateEdit.text.toString(),
-                                    true,
-                                    binding.etInstallments.text.toString().toInt()
-                                ).await()
-                            ) {
-                                hideKeyboard(this@EditExpenseActivity, binding.btSave)
-                                Toast.makeText(
-                                    this@EditExpenseActivity,
-                                    "Gasto alterado com sucesso",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                            //delay necessary to return to Expense list with value updated
-                            delay(250)
-                            finish()
+                            viewModel.saveEditExpense(
+                                expense!!,
+                                binding.etPrice.text.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                binding.etPaymentDateEdit.text.toString(),
+                                binding.etPurchaseDateEdit.text.toString(),
+                                true,
+                                binding.etInstallments.text.toString().toInt()
+                            )
                         } else {
                             Toast.makeText(
                                 this@EditExpenseActivity,
@@ -261,13 +242,27 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         binding.editExpenseToolbar.setNavigationOnClickListener {
             finish()
         }
+
+        viewModel.editExpenseResult.observe(this) { result ->
+            if (result) {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(Activity.RESULT_OK)
+                finish()
+            } else {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.edit_expense_menu, menu)
         val deleteMenuItem = menu?.findItem(R.id.edit_expense_menu_delete)
         // Check if expense is installment
-        if(expenseIdLength == 41){
+        if (expenseIdLength == 41) {
             deleteMenuItem!!.isVisible = true
         }
         return true

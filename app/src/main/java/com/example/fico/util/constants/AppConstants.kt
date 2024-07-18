@@ -138,4 +138,8 @@ class AppConstants private constructor() {
         const val DEFAULT_BUDGET_KEY = "DefaultBudgetKey"
     }
 
+    object REQUEST_CODES {
+        const val EXPENSE_LIST_TO_EDIT_EXPENSE = 1111
+    }
+
 }

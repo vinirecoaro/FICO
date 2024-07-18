@@ -2,6 +2,7 @@ package com.example.fico.presentation.fragments.expense
 
 import SwipeToDeleteCallback
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
@@ -258,7 +259,28 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             nOfInstallment = expense.nOfInstallment
         )
         intent.putExtra("expense", sureExpense)
-        startActivity(intent)
+        startActivityForResult(intent, AppConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // Check if edit expense was successfully completed
+        if(requestCode == AppConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE){
+            if(resultCode == Activity.RESULT_OK){
+                Snackbar.make(
+                    binding.rvExpenseList,
+                    "Gasto alterado com sucesso",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }else{
+                Snackbar.make(
+                    binding.rvExpenseList,
+                    "Falha ao alterar gasto",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }
     }
 
     private fun setColorBasedOnTheme() {

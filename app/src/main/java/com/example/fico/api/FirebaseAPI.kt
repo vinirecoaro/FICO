@@ -359,9 +359,8 @@ class FirebaseAPI private constructor() {
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>,
         removeFromExpenseList: MutableList<String>,
         oldExpenseNOfInstallment: Int
-    ): Boolean = withContext(Dispatchers.IO) {
+    ): Result<Unit> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any?>()
-        val result = CompletableDeferred<Boolean>()
 
         try {
             // Remove from Expense List
@@ -382,9 +381,9 @@ class FirebaseAPI private constructor() {
 
             expenses.updateChildren(updates)
 
-            result.complete(true)
+            Result.success(Unit)
         } catch (e: Exception) {
-            result.complete(false)
+            Result.failure(e)
         }
     }
 

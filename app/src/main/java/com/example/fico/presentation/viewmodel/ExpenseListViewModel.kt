@@ -144,7 +144,6 @@ class ExpenseListViewModel(
                     }
                     dataStore.updateInfoPerMonthExpense(updatedInfoPerMonth)
 
-
                     //Update dataStore Total Expense
                     val currentTotalExpense = BigDecimal(dataStore.getTotalExpense())
                     val priceFormatted = BigDecimal(expense.price).setScale(2,RoundingMode.HALF_UP)
