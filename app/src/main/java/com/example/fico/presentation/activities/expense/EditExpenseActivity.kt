@@ -2,7 +2,6 @@ package com.example.fico.presentation.activities.expense
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -33,8 +32,8 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,7 +41,7 @@ import java.util.*
 class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
     val binding by lazy { ActivityEditExpenseBinding.inflate(layoutInflater) }
-    val viewModel by viewModels<EditExpenseViewModel>()
+    private val viewModel : EditExpenseViewModel by inject()
     private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
     private lateinit var adapter: CategoryListAdapter
     private var expenseIdLength = 0

@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fico.DataStoreManager
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
@@ -15,12 +16,17 @@ import com.example.fico.util.constants.DateFunctions
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class EditExpenseViewModel : ViewModel() {
+class EditExpenseViewModel(
+    private val firebaseAPI : FirebaseAPI,
+    private val dataStore: DataStoreManager
+) : ViewModel() {
 
-    val firebaseAPI = FirebaseAPI.instance
+
     private val _editExpenseResult = MutableLiveData<Boolean>()
     val editExpenseResult : LiveData<Boolean> = _editExpenseResult
 
@@ -74,6 +80,15 @@ class EditExpenseViewModel : ViewModel() {
 
             firebaseAPI.editExpense(expenseList, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment).fold(
                 onSuccess = {
+                    //TODO update dataStore
+
+                    //Update Total Expense on DataStore
+                    val oldExpensePriceFullPrice = BigDecimal(oldExpense.price)
+                    val newExpensePriceFullPrice = BigDecimal(FormatValuesToDatabase().expensePrice(price,1))
+                    val currentTotalExpenseDataStore = BigDecimal(dataStore.getTotalExpense())
+                    val updatedTotalExpenseDataStore = currentTotalExpenseDataStore.subtract(oldExpensePriceFullPrice).add(newExpensePriceFullPrice).setScale(8, RoundingMode.HALF_UP)
+                    dataStore.updateTotalExpense(updatedTotalExpenseDataStore.toString())
+
                     _editExpenseResult.postValue(true)
                 },
                 onFailure = {
