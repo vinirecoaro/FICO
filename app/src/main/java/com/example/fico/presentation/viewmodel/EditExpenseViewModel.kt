@@ -80,7 +80,6 @@ class EditExpenseViewModel(
 
             firebaseAPI.editExpense(expenseList, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment).fold(
                 onSuccess = {
-                    //TODO update dataStore
 
                     //Update Total Expense on DataStore
                     val oldExpensePriceFullPrice = BigDecimal(oldExpense.price)
@@ -88,6 +87,40 @@ class EditExpenseViewModel(
                     val currentTotalExpenseDataStore = BigDecimal(dataStore.getTotalExpense())
                     val updatedTotalExpenseDataStore = currentTotalExpenseDataStore.subtract(oldExpensePriceFullPrice).add(newExpensePriceFullPrice).setScale(8, RoundingMode.HALF_UP)
                     dataStore.updateTotalExpense(updatedTotalExpenseDataStore.toString())
+
+                    //Update expenseList and infoPerMonth on dataStore
+                    val updatedExpenseListDataStore = dataStore.getExpenseList().toMutableList()
+                    val updatedInfoPerMonth = dataStore.getExpenseInfoPerMonth().toMutableList()
+                        //Remove old expenses
+                    removeFromExpenseList.forEach { expenseId ->
+                        //Remove expenses from expense list
+                        updatedExpenseListDataStore.removeAll{it.id == expenseId}
+                        //Remove expense values from info per month list
+                        //TODO
+                        updatedExpenseListDataStore
+                    }
+                        //Add new expenses
+                    expenseList.forEach { expense ->
+                        val formattedExpense = Expense(
+                            expense.id,
+                            expense.price,
+                            expense.description,
+                            expense.category,
+                            FormatValuesFromDatabase().date(expense.paymentDate),
+                            FormatValuesFromDatabase().date(expense.purchaseDate),
+                            expense.inputDateTime
+                        )
+                        updatedExpenseListDataStore.add(formattedExpense)
+                    }
+                        //Update expense list on dataStore
+                    dataStore.updateAndResetExpenseList(updatedExpenseListDataStore)
+                        //infoPerMonth
+
+
+
+
+                    //Update expense months on dataStore
+                    //TODO
 
                     _editExpenseResult.postValue(true)
                 },
