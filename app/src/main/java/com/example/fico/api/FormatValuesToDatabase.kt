@@ -2,6 +2,7 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.fico.model.Expense
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalTime

@@ -60,7 +60,8 @@ class EditExpenseViewModel(
                 oldExpense.category,
                 oldExpensePaymentDate,
                 oldExpensePurchaseDate,
-                ""
+                "",
+                oldExpenseNOfInstallment.toString()
             )
 
             val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseList(oldExpenseFormatted, viewModelScope).await()
@@ -95,10 +96,10 @@ class EditExpenseViewModel(
                     removeFromExpenseList.forEach { expenseId ->
                         //Remove expenses from expense list
                         updatedExpenseListDataStore.removeAll{it.id == expenseId}
-                        //Remove expense values from info per month list
-                        //TODO
-                        updatedExpenseListDataStore
                     }
+                    //Remove old expense values from info per month list
+                    val oldExpenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(oldExpenseFormatted, installment, oldExpenseFormatted.nOfInstallment.toInt())
+
                         //Add new expenses
                     expenseList.forEach { expense ->
                         val formattedExpense = Expense(
