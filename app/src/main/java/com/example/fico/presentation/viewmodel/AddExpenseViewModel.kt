@@ -104,7 +104,7 @@ class AddExpenseViewModel(
                         )
                         //Verify if exist month and get its information
                         val monthInfo = currentInfoPerMonth.find { infoPerMonth ->
-                            infoPerMonth.date == DateFunctions().YYYYmmDDtommDD(expense.paymentDate) }
+                            infoPerMonth.date == DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate) }
                         if(monthInfo != null){
                             val expensePrice = BigDecimal(expense.price).setScale(8,RoundingMode.HALF_UP)
                             val monthExpenseUpdated = BigDecimal(monthInfo.monthExpense).add(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
@@ -117,7 +117,7 @@ class AddExpenseViewModel(
                             )
                             updatedInfoPerMonth.add(monthInfoUpdated)
                         }else{
-                            val date = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                            val date = DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate)
                             val defaultBudget = BigDecimal(dataStore.getDefaultBudget()).setScale(8,RoundingMode.HALF_UP)
                             val monthExpenseUpdated = BigDecimal(expense.price).setScale(8, RoundingMode.HALF_UP).toString()
                             val availableNowUpdated = defaultBudget.subtract(BigDecimal(expense.price)).setScale(8,RoundingMode.HALF_UP).toString()

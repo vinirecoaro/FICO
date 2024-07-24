@@ -99,13 +99,13 @@ class ExpenseListViewModel(
                     getExpenseList(_filterLiveData.value.toString())
 
                     //Remove from dataStore expense Months List
-                    val removedExpenseMonth = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                    val removedExpenseMonth = DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate)
                     val existDate =
-                        currentList.any { DateFunctions().YYYYmmDDtommDD(FormatValuesToDatabase().expenseDate(it.paymentDate)) == removedExpenseMonth }
+                        currentList.any { DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(it.paymentDate)) == removedExpenseMonth }
                     if (!existDate) {
                         val currentMonthList = dataStore.getExpenseMonths().toMutableList()
                         currentMonthList.removeAll {
-                            it == DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                            it == DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate)
                         }
                         dataStore.updateAndResetExpenseMonths(currentMonthList)
 
@@ -117,7 +117,7 @@ class ExpenseListViewModel(
                     val currentInfoPerMonth = dataStore.getExpenseInfoPerMonth()
                     val updatedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
                     val monthInfo = currentInfoPerMonth.find { infoPerMonth ->
-                        infoPerMonth.date == DateFunctions().YYYYmmDDtommDD(expense.paymentDate) }
+                        infoPerMonth.date == DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate) }
                     if(monthInfo != null){
                         val expensePrice = BigDecimal(expense.price).setScale(8,RoundingMode.HALF_UP)
                         val monthExpenseUpdated = BigDecimal(monthInfo.monthExpense).add(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
@@ -130,7 +130,7 @@ class ExpenseListViewModel(
                         )
                         updatedInfoPerMonth.add(monthInfoUpdated)
                     }else{
-                        val date = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                        val date = DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate)
                         val defaultBudget = BigDecimal(dataStore.getDefaultBudget()).setScale(8,RoundingMode.HALF_UP)
                         val monthExpenseUpdated = BigDecimal(expense.price).setScale(8, RoundingMode.HALF_UP).toString()
                         val availableNowUpdated = defaultBudget.subtract(BigDecimal(expense.price)).setScale(8,RoundingMode.HALF_UP).toString()
@@ -228,7 +228,7 @@ class ExpenseListViewModel(
                         updatedExpenseList.add(formattedExpense)
                         // InfoPerMonth
                         val monthInfo = currentInfoPerMonth.find { infoPerMonth ->
-                            infoPerMonth.date == DateFunctions().YYYYmmDDtommDD(expense.paymentDate) }
+                            infoPerMonth.date == DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate) }
                         if(monthInfo != null){
                             val expensePrice = BigDecimal(expense.price).setScale(8,RoundingMode.HALF_UP)
                             val monthExpenseUpdated = BigDecimal(monthInfo.monthExpense).add(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
@@ -241,7 +241,7 @@ class ExpenseListViewModel(
                             )
                             updatedInfoPerMonth.add(monthInfoUpdated)
                         }else{
-                            val date = DateFunctions().YYYYmmDDtommDD(expense.paymentDate)
+                            val date = DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate)
                             val defaultBudget = BigDecimal(dataStore.getDefaultBudget()).setScale(8,RoundingMode.HALF_UP)
                             val monthExpenseUpdated = BigDecimal(expense.price).setScale(8, RoundingMode.HALF_UP).toString()
                             val availableNowUpdated = defaultBudget.subtract(BigDecimal(expense.price)).setScale(8,RoundingMode.HALF_UP).toString()

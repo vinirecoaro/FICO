@@ -12,14 +12,12 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.util.constants.DateFunctions
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class EditExpenseViewModel(
     private val firebaseAPI : FirebaseAPI,
@@ -56,7 +54,7 @@ class EditExpenseViewModel(
             val oldExpenseFormatted = Expense(
                 oldExpense.id,
                 oldExpense.price,
-                oldExpense.description,
+                FormatValuesFromDatabase().installmentExpenseDescription(oldExpense.description),
                 oldExpense.category,
                 oldExpensePaymentDate,
                 oldExpensePurchaseDate,
@@ -91,16 +89,35 @@ class EditExpenseViewModel(
 
                     //Update expenseList and infoPerMonth on dataStore
                     val updatedExpenseListDataStore = dataStore.getExpenseList().toMutableList()
-                    val updatedInfoPerMonth = dataStore.getExpenseInfoPerMonth().toMutableList()
+                    val updatedInfoPerMonthDataStore = dataStore.getExpenseInfoPerMonth().toMutableSet()
                         //Remove old expenses
                     removeFromExpenseList.forEach { expenseId ->
                         //Remove expenses from expense list
                         updatedExpenseListDataStore.removeAll{it.id == expenseId}
                     }
-                    //Remove old expense values from info per month list
-                    val oldExpenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(oldExpenseFormatted, installment, oldExpenseFormatted.nOfInstallment.toInt())
-
-                        //Add new expenses
+                        //Remove old expense values from info per month list
+                    val oldExpenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(
+                        oldExpenseFormatted,
+                        installment,
+                        oldExpenseFormatted.nOfInstallment.toInt()
+                    )
+                    oldExpenseList.forEach {oldExpense ->
+                        val oldExpenseDateYYYYmm = DateFunctions().YYYYmmDDtoYYYYmm(oldExpense.paymentDate)
+                        val infoOfMonth = updatedInfoPerMonthDataStore.find { it.date == oldExpenseDateYYYYmm }
+                        val currentMonthExpenseOldExpense = BigDecimal(infoOfMonth!!.monthExpense).setScale(8, RoundingMode.HALF_UP)
+                        val currentAvailableNowOldExpense = BigDecimal(infoOfMonth.availableNow).setScale(8, RoundingMode.HALF_UP)
+                        val updatedMonthExpenseOldExpense = currentMonthExpenseOldExpense.subtract(BigDecimal(oldExpense.price))
+                        val updatedAvailableNowOldExpense = currentAvailableNowOldExpense.add(BigDecimal(oldExpense.price))
+                        val updatedInfoOfMonth = InformationPerMonthExpense(
+                            infoOfMonth.date,
+                            updatedAvailableNowOldExpense.toString(),
+                            infoOfMonth.budget,
+                            updatedMonthExpenseOldExpense.toString()
+                        )
+                        updatedInfoPerMonthDataStore.removeAll{it.date == updatedInfoOfMonth.date}
+                        updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
+                    }
+                    //Add new expenses
                     expenseList.forEach { expense ->
                         val formattedExpense = Expense(
                             expense.id,
@@ -113,10 +130,8 @@ class EditExpenseViewModel(
                         )
                         updatedExpenseListDataStore.add(formattedExpense)
                     }
-                        //Update expense list on dataStore
+                    //Update expense list on dataStore
                     dataStore.updateAndResetExpenseList(updatedExpenseListDataStore)
-                        //infoPerMonth
-
 
 
 
