@@ -117,18 +117,38 @@ class EditExpenseViewModel(
                         updatedInfoPerMonthDataStore.removeAll{it.date == updatedInfoOfMonth.date}
                         updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
                     }
-                    //Add new expenses
-                    expenseList.forEach { expense ->
+                        //Add new expenses
+                    expenseList.forEach { newExpenseDataStore ->
                         val formattedExpense = Expense(
-                            expense.id,
-                            expense.price,
-                            expense.description,
-                            expense.category,
-                            FormatValuesFromDatabase().date(expense.paymentDate),
-                            FormatValuesFromDatabase().date(expense.purchaseDate),
-                            expense.inputDateTime
+                            newExpenseDataStore.id,
+                            newExpenseDataStore.price,
+                            newExpenseDataStore.description,
+                            newExpenseDataStore.category,
+                            FormatValuesFromDatabase().date(newExpenseDataStore.paymentDate),
+                            FormatValuesFromDatabase().date(newExpenseDataStore.purchaseDate),
+                            newExpenseDataStore.inputDateTime
                         )
                         updatedExpenseListDataStore.add(formattedExpense)
+                        //Add new expense values to info per month list
+                        //TODO Need to test
+                        val newExpenseDateYYYYmm = DateFunctions().YYYYmmDDtoYYYYmm(newExpenseDataStore.paymentDate)
+                        val infoOfMonth = updatedInfoPerMonthDataStore.find { it.date == newExpenseDateYYYYmm }
+                        if(infoOfMonth != null){
+                            val currentMonthExpenseNewExpense = BigDecimal(infoOfMonth.monthExpense).setScale(8, RoundingMode.HALF_UP)
+                            val currentAvailableNowNewExpense = BigDecimal(infoOfMonth.availableNow).setScale(8, RoundingMode.HALF_UP)
+                            val updatedMonthExpenseNewExpense = currentMonthExpenseNewExpense.add(BigDecimal(newExpenseDataStore.price))
+                            val updatedAvailableNowNewExpense = currentAvailableNowNewExpense.subtract(BigDecimal(newExpenseDataStore.price))
+                            val updatedInfoOfMonth = InformationPerMonthExpense(
+                                infoOfMonth.date,
+                                updatedMonthExpenseNewExpense.toString(),
+                                infoOfMonth.budget,
+                                updatedAvailableNowNewExpense.toString()
+                            )
+                            updatedInfoPerMonthDataStore.removeAll{it.date == updatedInfoOfMonth.date}
+                            updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
+                        }else{
+                            //TODO make the case when doesn't exist date
+                        }
                     }
                     //Update expense list on dataStore
                     dataStore.updateAndResetExpenseList(updatedExpenseListDataStore)
