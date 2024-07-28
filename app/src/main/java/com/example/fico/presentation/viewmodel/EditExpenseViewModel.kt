@@ -148,11 +148,21 @@ class EditExpenseViewModel(
                             updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
                         }else{
                             //TODO make the case when doesn't exist date
+                            val defaultBudget = BigDecimal(dataStore.getDefaultBudget()).setScale(8, RoundingMode.HALF_UP)
+                            val updatedAvailableNowNewExpense = defaultBudget.subtract(BigDecimal(newExpenseDataStore.price)).setScale(8, RoundingMode.HALF_UP)
+                            val updatedInfoOfMonth = InformationPerMonthExpense(
+                                DateFunctions().YYYYmmDDtoYYYYmm(newExpenseDataStore.paymentDate),
+                                newExpenseDataStore.paymentDate,
+                                defaultBudget.toString(),
+                                updatedAvailableNowNewExpense.toString()
+                            )
+                            updatedInfoPerMonthDataStore.removeAll{it.date == updatedInfoOfMonth.date}
+                            updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
                         }
                     }
                     //Update expense list on dataStore
                     dataStore.updateAndResetExpenseList(updatedExpenseListDataStore)
-
+                    dataStore.updateAndResetInfoPerMonthExpense(updatedInfoPerMonthDataStore.toList())
 
 
                     //Update expense months on dataStore
