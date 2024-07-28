@@ -140,9 +140,9 @@ class EditExpenseViewModel(
                             val updatedAvailableNowNewExpense = currentAvailableNowNewExpense.subtract(BigDecimal(newExpenseDataStore.price))
                             val updatedInfoOfMonth = InformationPerMonthExpense(
                                 infoOfMonth.date,
-                                updatedMonthExpenseNewExpense.toString(),
+                                updatedAvailableNowNewExpense.toString(),
                                 infoOfMonth.budget,
-                                updatedAvailableNowNewExpense.toString()
+                                updatedMonthExpenseNewExpense.toString()
                             )
                             updatedInfoPerMonthDataStore.removeAll{it.date == updatedInfoOfMonth.date}
                             updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
@@ -152,9 +152,9 @@ class EditExpenseViewModel(
                             val updatedAvailableNowNewExpense = defaultBudget.subtract(BigDecimal(newExpenseDataStore.price)).setScale(8, RoundingMode.HALF_UP)
                             val updatedInfoOfMonth = InformationPerMonthExpense(
                                 DateFunctions().YYYYmmDDtoYYYYmm(newExpenseDataStore.paymentDate),
-                                newExpenseDataStore.paymentDate,
+                                updatedAvailableNowNewExpense.toString(),
                                 defaultBudget.toString(),
-                                updatedAvailableNowNewExpense.toString()
+                                newExpenseDataStore.paymentDate
                             )
                             updatedInfoPerMonthDataStore.removeAll{it.date == updatedInfoOfMonth.date}
                             updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
@@ -166,7 +166,7 @@ class EditExpenseViewModel(
 
 
                     //Update expense months on dataStore
-                    //TODO
+
 
                     _editExpenseResult.postValue(true)
                 },
