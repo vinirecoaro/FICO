@@ -130,7 +130,6 @@ class EditExpenseViewModel(
                         )
                         updatedExpenseListDataStore.add(formattedExpense)
                         //Add new expense values to info per month list
-                        //TODO Need to test
                         val newExpenseDateYYYYmm = DateFunctions().YYYYmmDDtoYYYYmm(newExpenseDataStore.paymentDate)
                         val infoOfMonth = updatedInfoPerMonthDataStore.find { it.date == newExpenseDateYYYYmm }
                         if(infoOfMonth != null){
@@ -147,7 +146,6 @@ class EditExpenseViewModel(
                             updatedInfoPerMonthDataStore.removeAll{it.date == updatedInfoOfMonth.date}
                             updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
                         }else{
-                            //TODO make the case when doesn't exist date
                             val defaultBudget = BigDecimal(dataStore.getDefaultBudget()).setScale(8, RoundingMode.HALF_UP)
                             val updatedAvailableNowNewExpense = defaultBudget.subtract(BigDecimal(newExpenseDataStore.price)).setScale(8, RoundingMode.HALF_UP)
                             val updatedInfoOfMonth = InformationPerMonthExpense(
@@ -164,9 +162,16 @@ class EditExpenseViewModel(
                     dataStore.updateAndResetExpenseList(updatedExpenseListDataStore)
                     dataStore.updateAndResetInfoPerMonthExpense(updatedInfoPerMonthDataStore.toList())
 
-
                     //Update expense months on dataStore
-
+                    val updatedExpenseMonthsDataStore = mutableListOf<String>()
+                    updatedInfoPerMonthDataStore.forEach{infoPerMonthDataStore ->
+                        val monthExpense = BigDecimal(infoPerMonthDataStore.monthExpense).setScale(2,RoundingMode.HALF_UP)
+                        val zeroBigDecimal = BigDecimal(0)
+                        if(monthExpense > zeroBigDecimal){
+                            updatedExpenseMonthsDataStore.add(infoPerMonthDataStore.date)
+                        }
+                    }
+                    dataStore.updateAndResetExpenseMonths(updatedExpenseMonthsDataStore)
 
                     _editExpenseResult.postValue(true)
                 },
