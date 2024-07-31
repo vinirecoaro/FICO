@@ -273,7 +273,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     "Gasto alterado com sucesso",
                     Snackbar.LENGTH_LONG
                 ).show()
-            }else{
+            }else if(resultCode == Activity.RESULT_CANCELED){
                 Snackbar.make(
                     binding.rvExpenseList,
                     "Falha ao alterar gasto",

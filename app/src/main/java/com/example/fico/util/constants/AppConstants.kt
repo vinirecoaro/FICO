@@ -142,4 +142,8 @@ class AppConstants private constructor() {
         const val EXPENSE_LIST_TO_EDIT_EXPENSE = 1111
     }
 
+    object  RESULT_CODES {
+        const val BACK_BUTTON_PRESSED = 111111
+    }
+
 }
