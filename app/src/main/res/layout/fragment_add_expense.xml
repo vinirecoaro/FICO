@@ -173,7 +173,7 @@
             android:layout_marginEnd="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/baseline_calendar_month_light"
+            android:src="@drawable/baseline_calendar_month_dark"
             app:layout_constraintBottom_toBottomOf="@+id/til_purchase_date"
             app:layout_constraintEnd_toEndOf="@id/til_purchase_date"
             app:layout_constraintTop_toTopOf="@id/til_purchase_date" />

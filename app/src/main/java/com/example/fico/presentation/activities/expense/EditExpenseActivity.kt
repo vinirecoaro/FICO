@@ -196,6 +196,10 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                 binding.ivPaymentDate.isEnabled = true
             }
 
+            datePicker.addOnDismissListener {
+                binding.ivPaymentDate.isEnabled = true
+            }
+
             datePicker.show(supportFragmentManager, "PaymentDate")
         }
 
@@ -256,6 +260,10 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             }
+        }
+
+        binding.ivArrowUpGetPurchaseDateEdit.setOnClickListener {
+            binding.etPaymentDateEdit.text = binding.etPurchaseDateEdit.text
         }
     }
 
@@ -335,11 +343,14 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
             Configuration.UI_MODE_NIGHT_YES -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_light)
                 binding.ivPurchaseDateEdit.setImageResource(R.drawable.baseline_calendar_month_light)
+                binding.ivArrowUpGetPurchaseDateEdit.setImageResource(R.drawable.arrow_up_light)
             }
 
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_dark)
                 binding.ivPurchaseDateEdit.setImageResource(R.drawable.baseline_calendar_month_dark)
+                binding.ivArrowUpGetPurchaseDateEdit.setImageResource(R.drawable.arrow_up_black)
+
             }
 
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
@@ -348,6 +359,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
     private fun formatDate(timestamp: Long): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("GMT")
         val date = Date(timestamp)
         return sdf.format(date)
     }
