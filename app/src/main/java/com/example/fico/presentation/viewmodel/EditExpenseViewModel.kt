@@ -182,5 +182,14 @@ class EditExpenseViewModel(
         }
     }
 
+    fun deleteInstallmentExpense(expense : Expense){
+        viewModelScope.async(Dispatchers.IO){
+            var expensePaymentDate = FormatValuesToDatabase().expenseDate(FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id,expense.paymentDate))
+            var expensePurchaseDate = FormatValuesToDatabase().expenseDate(expense.purchaseDate)
+
+            var expenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).toInt()
+        }
+    }
+
 }
 
