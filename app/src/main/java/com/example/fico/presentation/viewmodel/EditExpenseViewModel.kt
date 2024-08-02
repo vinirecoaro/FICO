@@ -1,6 +1,7 @@
 package com.example.fico.presentation.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -186,8 +187,23 @@ class EditExpenseViewModel(
         viewModelScope.async(Dispatchers.IO){
             var expensePaymentDate = FormatValuesToDatabase().expenseDate(FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id,expense.paymentDate))
             var expensePurchaseDate = FormatValuesToDatabase().expenseDate(expense.purchaseDate)
-
             var expenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).toInt()
+
+            val formattedExpense = Expense(
+                expense.id,
+                expense.price,
+                FormatValuesFromDatabase().installmentExpenseDescription(expense.description),
+                expense.category,
+                expensePaymentDate,
+                expensePurchaseDate,
+                "",
+                expenseNOfInstallment.toString()
+            )
+
+            val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseListDataStore(dataStore.getExpenseList(),formattedExpense)
+
+            removeFromExpenseList.forEach { Log.e("id",it) }
+
         }
     }
 

@@ -131,6 +131,17 @@ class ArrangeDataToUpdateToDatabase {
         return@async expenseIdList
     }
 
+    fun removeFromExpenseListDataStore(dataStoreExpenseList : List<Expense>, expense: Expense) : List<String>{
+        val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(expense.id)
+
+        val expenseIdList : MutableList<String> = mutableListOf()
+
+        for(expenseItem in dataStoreExpenseList.filter { FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id) == commonId }){
+            expenseIdList.add(expenseItem.id)
+        }
+        return expenseIdList.toList()
+    }
+
     private fun formatExpenseToInstallmentExpense(expense : Expense, installmentNumber : Int) : Expense {
         val month = expense.paymentDate.substring(5,7).toInt()
         var newMonth = month + installmentNumber

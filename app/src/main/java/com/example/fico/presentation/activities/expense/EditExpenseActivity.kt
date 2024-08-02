@@ -46,6 +46,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
     private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
     private lateinit var adapter: CategoryListAdapter
     private var expenseIdLength = 0
+    lateinit var editingExpense : Expense
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +67,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         if (intent != null) {
             val expense = intent.getParcelableExtra<Expense>("expense")
             if (expense != null) {
+                editingExpense = expense
                 expenseIdLength = expense.id.length
                 //Verify if is a installment expense
                 if (expenseIdLength == 41) {
@@ -284,7 +286,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                     .setTitle("Apagar gasto")
                     .setMessage("Prosseguir com a exclusão deste gasto?")
                     .setPositiveButton("Confirmar") { dialog, which ->
-                        //TODO delete installment expense
+                        viewModel.deleteInstallmentExpense(editingExpense)
                     }
                     .show()
                 return true
