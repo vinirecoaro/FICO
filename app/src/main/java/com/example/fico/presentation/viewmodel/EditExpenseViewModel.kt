@@ -202,6 +202,10 @@ class EditExpenseViewModel(
 
             val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseListDataStore(dataStore.getExpenseList(),formattedExpense)
 
+            val expensePriceNegative = BigDecimal(expense.price).multiply(BigDecimal("-1")).toString()
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpenseDataStore(dataStore.getTotalExpense(), expensePriceNegative, expenseNOfInstallment).await()
+
+            Log.e("totalExpenseUpdated", updatedTotalExpense)
             removeFromExpenseList.forEach { Log.e("id",it) }
 
         }
