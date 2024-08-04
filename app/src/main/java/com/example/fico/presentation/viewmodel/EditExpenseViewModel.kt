@@ -191,8 +191,7 @@ class EditExpenseViewModel(
 
             val formattedExpense = Expense(
                 expense.id,
-                expense.price,
-                FormatValuesFromDatabase().installmentExpenseDescription(expense.description),
+                BigDecimal(expense.price).multiply(BigDecimal("-1")).toString(),                FormatValuesFromDatabase().installmentExpenseDescription(expense.description),
                 expense.category,
                 expensePaymentDate,
                 expensePurchaseDate,
@@ -200,13 +199,37 @@ class EditExpenseViewModel(
                 expenseNOfInstallment.toString()
             )
 
-            val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseListDataStore(dataStore.getExpenseList(),formattedExpense)
+            //Id's to remove from expense list
+            val removeFromExpenseList = ArrangeDataToUpdateToDatabase().removeFromExpenseListDataStore(
+                dataStore.getExpenseList(),
+                formattedExpense
+            ).await()
 
-            val expensePriceNegative = BigDecimal(expense.price).multiply(BigDecimal("-1")).toString()
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpenseDataStore(dataStore.getTotalExpense(), expensePriceNegative, expenseNOfInstallment).await()
+            //Updated total expense
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpenseDataStore(
+                dataStore.getTotalExpense(),
+                formattedExpense.price,
+                expenseNOfInstallment
+            ).await()
 
-            Log.e("totalExpenseUpdated", updatedTotalExpense)
-            removeFromExpenseList.forEach { Log.e("id",it) }
+            //Updated info per month
+            val updatedInformationPerMonthExpense = ArrangeDataToUpdateToDatabase().addToInformationPerMonthDataStore(
+                expense = formattedExpense,
+                installment = true,
+                newExpenseNOfInstallments =  expenseNOfInstallment,
+                editExpense = false,
+                infoPerMonthDataStore = dataStore.getExpenseInfoPerMonth()
+            ).await()
+
+            firebaseAPI.deleteInstallmentExpense(
+                removeFromExpenseList,
+                expenseNOfInstallment,
+                updatedTotalExpense,
+                updatedInformationPerMonthExpense
+            ).fold(
+                onSuccess = {},
+                onFailure = {}
+            )
 
         }
     }

@@ -177,6 +177,36 @@ class FirebaseAPI private constructor() {
         }
     }
 
+    suspend fun deleteInstallmentExpense(
+        removeFromExpenseList: MutableList<String>,
+        expenseNOfInstallment: Int,
+        updatedTotalExpense: String,
+        updatedInformationPerMonth: MutableList<InformationPerMonthExpense>
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        val updates = mutableMapOf<String, Any?>()
+
+        return@withContext try {
+            // Remove from expense list
+            updates.putAll(
+                generateMapToRemoveUserExpenses(
+                    removeFromExpenseList, expenseNOfInstallment
+                )
+            )
+
+            // Add Updated Total Expense
+            updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
+
+            // Add Information per Month
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
+
+            expenses.updateChildren(updates)
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun setDefaultBudget(budget: String): Boolean = withContext(Dispatchers.IO) {
         val result = CompletableDeferred<Boolean>()
         try {
