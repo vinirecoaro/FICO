@@ -28,6 +28,8 @@ class EditExpenseViewModel(
 
     private val _editExpenseResult = MutableLiveData<Boolean>()
     val editExpenseResult : LiveData<Boolean> = _editExpenseResult
+    private val _deleteInstallmentExpenseResult = MutableLiveData<Boolean>()
+    val deleteInstallmentExpenseResult : LiveData<Boolean> = _deleteInstallmentExpenseResult
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(
@@ -227,8 +229,12 @@ class EditExpenseViewModel(
                 updatedTotalExpense,
                 updatedInformationPerMonthExpense
             ).fold(
-                onSuccess = {},
-                onFailure = {}
+                onSuccess = {
+                    _deleteInstallmentExpenseResult.postValue(true)
+                },
+                onFailure = {
+                    _deleteInstallmentExpenseResult.postValue(false)
+                }
             )
 
         }

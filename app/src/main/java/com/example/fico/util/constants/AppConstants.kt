@@ -144,6 +144,8 @@ class AppConstants private constructor() {
 
     object  RESULT_CODES {
         const val BACK_BUTTON_PRESSED = 111111
+        const val DELETE_INSTALLMENT_EXPENSE_RESULT_OK = 111112
+        const val DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE = 111113
     }
 
 }

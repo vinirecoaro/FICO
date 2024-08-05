@@ -279,6 +279,18 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     "Falha ao alterar gasto",
                     Snackbar.LENGTH_LONG
                 ).show()
+            }else if(resultCode == AppConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK){
+                Snackbar.make(
+                    binding.rvExpenseList,
+                    "Gasto excluído com sucesso",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }else if(resultCode == AppConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE){
+                Snackbar.make(
+                    binding.rvExpenseList,
+                    "Falha ao excluir gasto",
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         }
     }

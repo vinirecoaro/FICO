@@ -267,6 +267,16 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         binding.ivArrowUpGetPurchaseDateEdit.setOnClickListener {
             binding.etPaymentDateEdit.text = binding.etPurchaseDateEdit.text
         }
+
+        viewModel.deleteInstallmentExpenseResult.observe(this){result ->
+            if(result){
+                setResult(AppConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK)
+                finish()
+            }else{
+                setResult(AppConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE)
+                finish()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
