@@ -236,7 +236,6 @@ class EditExpenseViewModel(
                     val updatedTotalExpenseDataStore = currentTotalExpenseDataStore.subtract(newExpensePriceFullPrice).setScale(8, RoundingMode.HALF_UP)
                     dataStore.updateTotalExpense(updatedTotalExpenseDataStore.toString())
 
-                    //TODO test
                     //Update expenseList and infoPerMonth on dataStore
                     val updatedExpenseListDataStore = dataStore.getExpenseList().toMutableList()
                     val updatedInfoPerMonthDataStore = dataStore.getExpenseInfoPerMonth().toMutableSet()
@@ -287,7 +286,6 @@ class EditExpenseViewModel(
                     _deleteInstallmentExpenseResult.postValue(false)
                 }
             )
-
         }
     }
 

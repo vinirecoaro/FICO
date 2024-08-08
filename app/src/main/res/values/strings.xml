@@ -78,5 +78,9 @@
     <string name="invalid_day">Dia inválido</string>
     <string name="payment_day_info_message">Informar uma data de pagamento padrão. \nExemplo: Data de vencimento da fatura do cartão de crédito.</string>
     <string name="delete">Apagar</string>
+    <string name="default_budget_activity_title">Orçamento padrão</string>
+    <string name="default_budget_tip_message">Definir qual será o limite de gasto padrão para todos os mesas sem definição de orçamento</string>
+    <string name="change_default_budget_success_message">"Orçamento padrão definido com sucesso"</string>
+    <string name="change_default_budget_failure_message">"Falha ao definir o orçamento padrão"</string>
 
 </resources>

@@ -32,7 +32,7 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.setDefaultBudgetToolbar.setTitle("Orçamento padrão")
+        binding.setDefaultBudgetToolbar.title = getString(R.string.default_budget_activity_title)
         binding.setDefaultBudgetToolbar.setTitleTextColor(Color.WHITE)
 
         //Insert a back button on Navigation bar
@@ -46,7 +46,7 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
 
     private fun setUpListeners(){
         binding.ivInfoMoney.setOnClickListener {
-            val snackbar = Snackbar.make(it, "Definir qual será o limite de gasto para o mês atual e os meses seguintes", Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(it, getString(R.string.default_budget_tip_message), Snackbar.LENGTH_LONG)
             snackbar.show()
         }
         binding.btSave.setOnClickListener {
@@ -60,13 +60,13 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
                 val formattedNumString = formatedNum
 
                 if(viewModel.setDefaultBudget(formattedNumString).await() && binding.etAvailablePerMonth.text.toString() != ""){
-                    val snackbar = Snackbar.make(it, "Default Budget definido com sucesso",Snackbar.LENGTH_LONG)
+                    val snackbar = Snackbar.make(it, getString(R.string.change_default_budget_success_message),Snackbar.LENGTH_LONG)
                     snackbar.show()
                     Handler().postDelayed({
                         finish()
                     }, 1300)
                 }else{
-                    val snackbar = Snackbar.make(it, "Falha ao definir o Default Budget",Snackbar.LENGTH_LONG)
+                    val snackbar = Snackbar.make(it, getString(R.string.change_default_budget_failure_message),Snackbar.LENGTH_LONG)
                     snackbar.show()
                     Handler().postDelayed({
                         finish()
