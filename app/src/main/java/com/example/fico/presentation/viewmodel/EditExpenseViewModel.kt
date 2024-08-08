@@ -251,7 +251,7 @@ class EditExpenseViewModel(
                     }
                     //Remove expense values from info per month list
                     expensesToRemoveList.forEach {expenseToRemove ->
-                        val oldExpenseDateYYYYmm = DateFunctions().YYYYmmDDtoYYYYmm(expenseToRemove.paymentDate)
+                        val oldExpenseDateYYYYmm = DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(expenseToRemove.paymentDate))
                         val infoOfMonth = updatedInfoPerMonthDataStore.find { it.date == oldExpenseDateYYYYmm }
                         val currentMonthExpenseOldExpense = BigDecimal(infoOfMonth!!.monthExpense).setScale(8, RoundingMode.HALF_UP)
                         val currentAvailableNowOldExpense = BigDecimal(infoOfMonth.availableNow).setScale(8, RoundingMode.HALF_UP)
@@ -270,7 +270,16 @@ class EditExpenseViewModel(
                     dataStore.updateAndResetExpenseList(updatedExpenseListDataStore)
                     dataStore.updateAndResetInfoPerMonthExpense(updatedInfoPerMonthDataStore.toList())
 
-
+                    //Update expense months on dataStore
+                    val updatedExpenseMonthsDataStore = mutableListOf<String>()
+                    updatedInfoPerMonthDataStore.forEach{infoPerMonthDataStore ->
+                        val monthExpense = BigDecimal(infoPerMonthDataStore.monthExpense).setScale(2,RoundingMode.HALF_UP)
+                        val zeroBigDecimal = BigDecimal(0)
+                        if(monthExpense > zeroBigDecimal){
+                            updatedExpenseMonthsDataStore.add(infoPerMonthDataStore.date)
+                        }
+                    }
+                    dataStore.updateAndResetExpenseMonths(updatedExpenseMonthsDataStore)
 
                     _deleteInstallmentExpenseResult.postValue(true)
                 },
