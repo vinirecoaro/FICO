@@ -17,6 +17,7 @@ import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.example.fico.presentation.viewmodel.LogoViewModel
 import com.example.fico.presentation.viewmodel.RegisterViewModel
 import com.example.fico.presentation.viewmodel.ResetPasswordViewModel
+import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
@@ -57,6 +58,13 @@ val appModule = module {
 
     factory<EditExpenseViewModel> {
         EditExpenseViewModel(
+            firebaseAPI = get(),
+            dataStore = get()
+        )
+    }
+
+    factory<SetDefaultBudgetViewModel> {
+        SetDefaultBudgetViewModel(
             firebaseAPI = get(),
             dataStore = get()
         )

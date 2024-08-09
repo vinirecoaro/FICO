@@ -9,7 +9,6 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
@@ -19,13 +18,14 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
 class SetDefaultBudgetActivity : AppCompatActivity() {
 
     private val binding by lazy{ActivitySetDefaultBudgetBinding.inflate(layoutInflater)}
-    private val viewModel by viewModels<SetDefaultBudgetViewModel>()
+    private val viewModel : SetDefaultBudgetViewModel by inject()
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +40,7 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setUpListeners()
-        getDefaultBudget()
+        viewModel.getDefaultBudget()
         setColorBasedOnTheme()
     }
 
@@ -103,14 +103,10 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
             finish()
         }
 
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun getDefaultBudget() = lifecycleScope.launch(Dispatchers.Main){
-        val existBudget = viewModel.checkIfExistDefaultBudget().await()
-        if(existBudget){
-            val defaultBudget = FormatValuesFromDatabase().price(viewModel.getDefaultBudget().await())
-            binding.etAvailablePerMonth.setText(defaultBudget)
+        viewModel.defaultBudgetResult.observe(this){defaultBudget ->
+            if(defaultBudget != null){
+                binding.etAvailablePerMonth.setText(defaultBudget)
+            }
         }
     }
 
