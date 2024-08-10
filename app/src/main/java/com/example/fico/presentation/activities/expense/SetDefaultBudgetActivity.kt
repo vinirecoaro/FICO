@@ -14,9 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivitySetDefaultBudgetBinding
 import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
-import com.example.fico.api.FormatValuesFromDatabase
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
@@ -59,22 +57,13 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
                 val formatedNum = formatNum.format(numClean/100).replace(",",".")
                 val formattedNumString = formatedNum
 
-                if(viewModel.setDefaultBudget(formattedNumString).await() && binding.etAvailablePerMonth.text.toString() != ""){
-                    val snackbar = Snackbar.make(it, getString(R.string.change_default_budget_success_message),Snackbar.LENGTH_LONG)
-                    snackbar.show()
-                    Handler().postDelayed({
-                        finish()
-                    }, 1300)
-                }else{
-                    val snackbar = Snackbar.make(it, getString(R.string.change_default_budget_failure_message),Snackbar.LENGTH_LONG)
-                    snackbar.show()
-                    Handler().postDelayed({
-                        finish()
-                    }, 1300)
+                if(binding.etAvailablePerMonth.text.toString() != ""){
+                    viewModel.setDefaultBudget(formattedNumString)
                 }
             }
             binding.btSave.isEnabled = true
         }
+
         binding.etAvailablePerMonth.onFocusChangeListener = View.OnFocusChangeListener{ _, hasFocus ->
             if(hasFocus){
                 binding.etAvailablePerMonth.setText("")
@@ -103,9 +92,19 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
             finish()
         }
 
-        viewModel.defaultBudgetResult.observe(this){defaultBudget ->
+        viewModel.getDefaultBudgetResult.observe(this){ defaultBudget ->
             if(defaultBudget != null){
                 binding.etAvailablePerMonth.setText(defaultBudget)
+            }
+        }
+
+        viewModel.setDefaultBudgetResult.observe(this){ result ->
+            if(result){
+                viewModel.getDefaultBudget()
+                Snackbar.make(binding.btSave, getString(R.string.change_default_budget_success_message),Snackbar.LENGTH_LONG).show()
+            }
+            else{
+                Snackbar.make(binding.btSave, getString(R.string.change_default_budget_failure_message),Snackbar.LENGTH_LONG).show()
             }
         }
     }

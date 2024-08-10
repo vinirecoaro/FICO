@@ -166,6 +166,7 @@ class AddExpenseViewModel(
     }
 
     suspend fun setDefaultBudget(budget: String): Deferred<Boolean> {
+        //TODO update this function
         return viewModelScope.async(Dispatchers.IO) {
             val bigNum = BigDecimal(budget)
             val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()

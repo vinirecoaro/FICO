@@ -207,18 +207,16 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    suspend fun setDefaultBudget(budget: String): Boolean = withContext(Dispatchers.IO) {
-        val result = CompletableDeferred<Boolean>()
+    suspend fun setDefaultBudget(budget: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val bigNum = BigDecimal(budget)
             val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
             default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET)
                 .setValue(formattedBudget)
-            result.complete(true)
+            Result.success(Unit)
         } catch (e: Exception) {
-            result.complete(false)
+            Result.failure(e)
         }
-        return@withContext result.await()
     }
 
     suspend fun getBudgetPerMonth(): List<Budget> = suspendCoroutine { continuation ->
