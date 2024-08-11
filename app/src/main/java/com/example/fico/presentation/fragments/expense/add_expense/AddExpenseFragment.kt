@@ -400,6 +400,15 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
         }
 
+        viewModel.setDefaultBudgetResult.observe(requireActivity()){ result ->
+            if(result){
+                Snackbar.make(binding.btSave, getString(R.string.change_default_budget_success_message),Snackbar.LENGTH_LONG).show()
+            }
+            else{
+                Snackbar.make(binding.btSave, getString(R.string.change_default_budget_failure_message),Snackbar.LENGTH_LONG).show()
+            }
+        }
+
     }
 
     private fun verifyFields(vararg text: EditText): Boolean {
@@ -461,26 +470,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                     val formattedNumString = formatedNum.toString()
                         .replace(",", ".")
 
-                    if (viewModel.setDefaultBudget(formattedNumString).await()) {
-                        val rootView: View? = activity?.findViewById(android.R.id.content)
-                        if (rootView != null) {
-                            val snackbar = Snackbar.make(
-                                rootView, "Orçamento padrão salvo com sucesso", Snackbar.LENGTH_LONG
-                            )
-                            snackbar.show()
-                            dataStore.updateDefaultBudget(formattedNumString)
-                            result.complete(true)
-                        }
-                    } else {
-                        val rootView: View? = activity?.findViewById(android.R.id.content)
-                        if (rootView != null) {
-                            val snackbar = Snackbar.make(
-                                rootView, "Falha ao editar o Orçamento Padrão", Snackbar.LENGTH_LONG
-                            )
-                            snackbar.show()
-                            result.complete(false)
-                        }
-                    }
+                    viewModel.setDefaultBudget(formattedNumString)
+
                 }
             }
             saveButton.isEnabled = true

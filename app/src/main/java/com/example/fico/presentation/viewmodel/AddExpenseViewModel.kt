@@ -27,6 +27,8 @@ class AddExpenseViewModel(
     val paymentDayLiveData: LiveData<String> = _paymentDay
     private val _addExpenseResult = MutableLiveData<Boolean>()
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
+    private val _setDefaultBudgetResult = MutableLiveData<Boolean>()
+    val setDefaultBudgetResult : LiveData<Boolean> = _setDefaultBudgetResult
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(
@@ -165,12 +167,17 @@ class AddExpenseViewModel(
         }
     }
 
-    suspend fun setDefaultBudget(budget: String): Deferred<Boolean> {
-        //TODO update this function
-        return viewModelScope.async(Dispatchers.IO) {
-            val bigNum = BigDecimal(budget)
-            val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
-            firebaseAPI.setDefaultBudget(formattedBudget)
+    suspend fun setDefaultBudget(budget: String) {
+        viewModelScope.async(Dispatchers.IO){
+            firebaseAPI.setDefaultBudget(budget).fold(
+                onSuccess = {
+                    dataStore.updateDefaultBudget(budget)
+                    _setDefaultBudgetResult.postValue(true)
+                },
+                onFailure = {
+                    _setDefaultBudgetResult.postValue(false)
+                }
+            )
         }
     }
 

@@ -21,19 +21,11 @@ class SetDefaultBudgetViewModel(
     private val _setDefaultBudgetResult = MutableLiveData<Boolean>()
     val setDefaultBudgetResult : LiveData<Boolean> = _setDefaultBudgetResult
 
-   /* suspend fun setDefaultBudget(budget: String) : Deferred<Boolean> {
-        return viewModelScope.async(Dispatchers.IO) {
-            val value = budget.toFloat()
-            val formattedBudget = "%.2f".format(value).replace(",",".")
-                firebaseAPI.setDefaultBudget(formattedBudget)
-        }
-    }*/
-
     suspend fun setDefaultBudget(budget: String){
         viewModelScope.async(Dispatchers.IO){
             firebaseAPI.setDefaultBudget(budget).fold(
                 onSuccess = {
-                    //TODO update dataStore
+                    dataStore.updateDefaultBudget(budget)
                     _setDefaultBudgetResult.postValue(true)
                 },
                 onFailure = {
