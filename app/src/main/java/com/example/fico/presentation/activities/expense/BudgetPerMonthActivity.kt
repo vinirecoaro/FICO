@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fico.R
 import com.example.fico.databinding.ActivityBudgetPerMonthBinding
 import com.example.fico.model.Budget
 import com.example.fico.presentation.adapters.BudgetPerMonthAdapter
@@ -36,7 +37,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.budgetPerMonthToolbar.setTitle("Orçamento por mês")
+        binding.budgetPerMonthToolbar.title = getString(R.string.budget_per_month_activity_title)
         binding.budgetPerMonthToolbar.setTitleTextColor(Color.WHITE)
 
         binding.rvBudgetPerMonth.layoutManager = LinearLayoutManager(this)
@@ -76,10 +77,10 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         val result = CompletableDeferred<Boolean>()
         val builder = AlertDialog.Builder(this)
 
-        builder.setTitle("Editar Budget")
+        builder.setTitle(getString(R.string.edit_budget))
 
         val newBudget = EditText(this)
-        newBudget.hint = "Digite o novo Budget"
+        newBudget.hint = getString(R.string.type_new_budget)
         newBudget.inputType = InputType.TYPE_CLASS_NUMBER
         builder.setView(newBudget)
 
@@ -101,7 +102,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
             }
         })
 
-        builder.setPositiveButton("Salvar") { dialog, which ->
+        builder.setPositiveButton(getString(R.string.save)) { dialog, which ->
             val saveButton =  (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
             saveButton.isEnabled = false
             lifecycleScope.launch {
@@ -117,7 +118,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     if(viewModel.editBudget(formattedNumString, budget).await()){
                         val rootView: View? = findViewById(android.R.id.content)
                         if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, "Budget redefinido com sucesso", Snackbar.LENGTH_LONG)
+                            val snackbar = Snackbar.make(rootView, getString(R.string.redefine_month_budget_success_message), Snackbar.LENGTH_LONG)
                             snackbar.show()
                             viewModel.getBudgetPerMonth()
                             result.complete(true)
@@ -125,7 +126,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     }else{
                         val rootView: View? = findViewById(android.R.id.content)
                         if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, "Falha ao redefinir o Budget", Snackbar.LENGTH_LONG)
+                            val snackbar = Snackbar.make(rootView, getString(R.string.redefine_month_budget_failure_message), Snackbar.LENGTH_LONG)
                             snackbar.show()
                             result.complete(false)
                         }
@@ -135,7 +136,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
             saveButton.isEnabled = true
         }
 
-        builder.setNegativeButton("Cancelar") { dialog, which ->
+        builder.setNegativeButton(R.string.cancel) { dialog, which ->
 
         }
 
