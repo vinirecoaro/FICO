@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fico.DataStoreManager
 import com.example.fico.model.Budget
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
@@ -15,23 +16,26 @@ import kotlinx.coroutines.async
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class BudgetPerMonthViewModel : ViewModel() {
-    private val firebaseAPI = FirebaseAPI.instance
+class BudgetPerMonthViewModel(
+    private val firebaseAPI : FirebaseAPI,
+    private val dataStore : DataStoreManager
+) : ViewModel() {
+
     private val _budgetPerMonthList = MutableLiveData<List<Budget>>()
     val budgetPerMonthList : LiveData<List<Budget>> = _budgetPerMonthList
-
-   fun getBudgetPerMonth() = viewModelScope.async {
-       val budgetList = firebaseAPI.getBudgetPerMonth()
-       val sortedBudgetList = budgetList.sortedByDescending { it.date }
-       val budgetListFormatted  = mutableListOf<Budget>()
-       for(budget in sortedBudgetList){
-           val budgetDate = firebaseAPI.formatDateForFilterOnExpenseList(budget.date)
-           val budgetValue = budget.budget
-           val budgetItem = Budget(budgetValue,budgetDate)
-           budgetListFormatted.add(budgetItem)
+    
+    fun getBudgetPerMonth(){
+        viewModelScope.async(Dispatchers.IO){
+            val infoPerMonthList = dataStore.getExpenseInfoPerMonth()
+            var sortedBudgetList = mutableListOf<Budget>()
+            infoPerMonthList.forEach { infoPerMonth ->
+                val budget = Budget(infoPerMonth.budget, infoPerMonth.date)
+                sortedBudgetList.add(budget)
+            }
+            sortedBudgetList = sortedBudgetList.sortedByDescending { it.date }.toMutableList()
+            _budgetPerMonthList.value = sortedBudgetList
         }
-           _budgetPerMonthList.value = budgetListFormatted
-        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun editBudget(newBudget: String, budget: Budget) : Deferred<Boolean> {

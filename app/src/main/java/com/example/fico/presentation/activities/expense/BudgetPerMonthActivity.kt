@@ -24,13 +24,14 @@ import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
 class BudgetPerMonthActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityBudgetPerMonthBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<BudgetPerMonthViewModel>()
+    private val viewModel : BudgetPerMonthViewModel by inject()
     private val budgetPerMonthListAdapter = BudgetPerMonthAdapter(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {

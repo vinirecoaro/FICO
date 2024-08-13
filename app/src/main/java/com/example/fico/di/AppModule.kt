@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
+import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
 import com.example.fico.presentation.viewmodel.EditExpenseViewModel
 import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
@@ -65,6 +66,13 @@ val appModule = module {
 
     factory<SetDefaultBudgetViewModel> {
         SetDefaultBudgetViewModel(
+            firebaseAPI = get(),
+            dataStore = get()
+        )
+    }
+
+    factory<BudgetPerMonthViewModel> {
+        BudgetPerMonthViewModel(
             firebaseAPI = get(),
             dataStore = get()
         )
