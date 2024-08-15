@@ -248,19 +248,16 @@ class FirebaseAPI private constructor() {
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun editBudget(date: String, newBudget: String, newAvailableNow: String): Boolean =
+    suspend fun editBudget(date: String, newBudget: String, newAvailableNow: String): Result<Unit> =
         withContext(Dispatchers.IO) {
-            val result = CompletableDeferred<Boolean>()
             try {
                 val updatedInfoPerMonth =
                     generateMapToUpdateMonthBudget(date, newBudget, newAvailableNow)
                 expenses.updateChildren(updatedInfoPerMonth)
-                result.complete(true)
+                Result.success(Unit)
             } catch (e: Exception) {
-                result.complete(false)
+                Result.failure(e)
             }
-            return@withContext result.await()
         }
 
     private fun generateMapToUpdateMonthBudget(

@@ -48,12 +48,12 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         setSupportActionBar(binding.budgetPerMonthToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        viewModel.getBudgetPerMonth()
         setUpListeners()
     }
 
     private fun setUpListeners(){
         lifecycleScope.launch {
-            viewModel.getBudgetPerMonth()
 
             viewModel.budgetPerMonthList.observe(this@BudgetPerMonthActivity, Observer {budgetList ->
                 budgetPerMonthListAdapter.updateList(budgetList)
@@ -70,6 +70,14 @@ class BudgetPerMonthActivity : AppCompatActivity() {
 
         binding.budgetPerMonthToolbar.setNavigationOnClickListener {
             finish()
+        }
+        viewModel.editBudgetResult.observe(this){ result ->
+            if(result){
+                viewModel.getBudgetPerMonth()
+                Snackbar.make(binding.rvBudgetPerMonth, getString(R.string.redefine_month_budget_success_message), Snackbar.LENGTH_LONG).show()
+            }else{
+                Snackbar.make(binding.rvBudgetPerMonth, getString(R.string.redefine_month_budget_failure_message), Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -116,22 +124,8 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     val formatedNum = formatNum.format(numClean/100)
                     val formattedNumString = formatedNum.toString().replace(",",".")
 
-                    if(viewModel.editBudget(formattedNumString, budget).await()){
-                        val rootView: View? = findViewById(android.R.id.content)
-                        if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, getString(R.string.redefine_month_budget_success_message), Snackbar.LENGTH_LONG)
-                            snackbar.show()
-                            viewModel.getBudgetPerMonth()
-                            result.complete(true)
-                        }
-                    }else{
-                        val rootView: View? = findViewById(android.R.id.content)
-                        if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, getString(R.string.redefine_month_budget_failure_message), Snackbar.LENGTH_LONG)
-                            snackbar.show()
-                            result.complete(false)
-                        }
-                    }
+                    viewModel.editBudget(formattedNumString, budget)
+
                 }
             }
             saveButton.isEnabled = true

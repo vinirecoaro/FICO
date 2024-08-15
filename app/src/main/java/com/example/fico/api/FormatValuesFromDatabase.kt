@@ -133,4 +133,35 @@ class FormatValuesFromDatabase {
         return formattedDate
     }
 
+    fun formatDateFromFilterToDatabaseForInfoPerMonth(date: String): String {
+        var formattedDate = ""
+        val month = date.substring(5,7)
+        if(month == "01"){
+            formattedDate = "Janeiro - ${date.substring(0,4)}"
+        } else if(month == "02"){
+            formattedDate = "Fevereiro - ${date.substring(0,4)}"
+        } else if(month == "03"){
+            formattedDate = "Março - ${date.substring(0,4)}"
+        } else if(month == "04"){
+            formattedDate = "Abril - ${date.substring(0,4)}"
+        } else if(month == "05"){
+            formattedDate = "Maio - ${date.substring(0,4)}"
+        } else if(month == "06"){
+            formattedDate = "Junho - ${date.substring(0,4)}"
+        } else if(month == "07"){
+            formattedDate = "Julho - ${date.substring(0,4)}"
+        } else if(month == "08"){
+            formattedDate = "Agosto - ${date.substring(0,4)}"
+        } else if(month == "09"){
+            formattedDate = "Setembro-${date.substring(0,4)}"
+        } else if(month == "10"){
+            formattedDate = "Outubro-${date.substring(0,4)}"
+        } else if(month == "11"){
+            formattedDate = "Novembro-${date.substring(0,4)}"
+        } else if(month == "12"){
+            formattedDate = "Dezembro-${date.substring(0,4)}"
+        }
+        return formattedDate
+    }
+
 }
