@@ -136,6 +136,7 @@ class AppConstants private constructor() {
         const val INFO_PER_MONTH = "ExpenseInfoPerMonth"
         const val TOTAL_EXPENSE = "TotalExpense"
         const val DEFAULT_BUDGET_KEY = "DefaultBudgetKey"
+        const val DEFAULT_PAYMENT_DAY_KEY = "DefaultPaymentDayKey"
     }
 
     object REQUEST_CODES {

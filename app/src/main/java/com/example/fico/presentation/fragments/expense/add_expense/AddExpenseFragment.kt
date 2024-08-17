@@ -86,7 +86,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         }
     }
     private val sharedPref: SharedPreferences by inject()
-    private val dataStore : DataStoreManager by inject()
 
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
@@ -371,12 +370,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         })
 
         viewModel.paymentDayLiveData.observe(viewLifecycleOwner) { paymentDay ->
-            if (paymentDay != AppConstants.DEFAULT_MESSAGES.FAIL) {
+            if(paymentDay != null){
                 val paymentDate = DateFunctions().paymentDate(paymentDay)
-                with(sharedPref.edit()) {
-                    putString(AppConstants.DATABASE.PAYMENT_DAY, paymentDay)
-                    commit()
-                }
                 binding.etPaymentDate.setText(paymentDate)
             }
         }

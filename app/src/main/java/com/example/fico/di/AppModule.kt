@@ -124,7 +124,8 @@ val appModule = module {
 
     factory<ExpenseConfigurationViewModel> {
         ExpenseConfigurationViewModel(
-                firebaseAPI = get()
+                firebaseAPI = get(),
+                dataStore = get()
             )
         }
 

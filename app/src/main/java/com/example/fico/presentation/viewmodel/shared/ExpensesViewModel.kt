@@ -10,6 +10,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class ExpensesViewModel(private val dataStore : DataStoreManager,private val firebaseAPI : FirebaseAPI ) : ViewModel() {
 
@@ -45,6 +46,13 @@ class ExpensesViewModel(private val dataStore : DataStoreManager,private val fir
         viewModelScope.async {
             val defaultBudget = firebaseAPI.getDefaultBudget().await()
             dataStore.updateDefaultBudget(defaultBudget)
+        }
+    }
+
+    fun getDefaultPaymentDay() {
+        viewModelScope.launch {
+            val paymentDay = firebaseAPI.getDefaultPaymentDay()
+            dataStore.setDefaultPaymentDay(paymentDay)
         }
     }
 

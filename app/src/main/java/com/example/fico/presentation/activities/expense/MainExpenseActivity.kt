@@ -69,6 +69,7 @@ class MainExpenseActivity : AppCompatActivity(){
         expensesViewModel.getExpenseInfoPerMonth()
         expensesViewModel.getTotalExpense()
         expensesViewModel.getDefaultBudget()
+        expensesViewModel.getDefaultPaymentDay()
     }
 
     private fun getUserEmail(){

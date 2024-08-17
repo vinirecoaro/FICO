@@ -1198,19 +1198,13 @@ class FirebaseAPI private constructor() {
         return checkIfExistsOnDatabse(expenses)
     }
 
-    suspend fun setDefaultPaymentDay(date: String): Boolean {
-        val result = CompletableDeferred<Boolean>()
-
-        default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).setValue(date)
-            .addOnSuccessListener {
-                // Operação bem-sucedida
-                result.complete(true)
-            }.addOnFailureListener { e ->
-                // Operação falhou
-                result.complete(false)
-            }
-
-        return result.await()
+    suspend fun setDefaultPaymentDay(date: String): Result<Unit> = withContext(Dispatchers.IO){
+        try{
+            default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).setValue(date)
+            Result.success(Unit)
+        }catch (e : Exception){
+            Result.failure(e)
+        }
     }
 
     suspend fun getDefaultPaymentDay(): String {

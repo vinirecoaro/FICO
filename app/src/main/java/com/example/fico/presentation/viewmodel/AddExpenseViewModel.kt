@@ -183,7 +183,8 @@ class AddExpenseViewModel(
 
     fun getDefaultPaymentDay() {
         viewModelScope.launch {
-            val result = firebaseAPI.getDefaultPaymentDay()
+            //TODO test
+            val result = dataStore.getDefaultPaymentDay()
             _paymentDay.value = result
         }
     }
