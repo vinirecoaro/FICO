@@ -1207,7 +1207,7 @@ class FirebaseAPI private constructor() {
         }
     }
 
-    suspend fun getDefaultPaymentDay(): String {
+    suspend fun getDefaultPaymentDay(): Deferred<String> = withContext(Dispatchers.IO){
         val paymentDay = CompletableDeferred<String>()
 
         default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).get()
@@ -1221,6 +1221,6 @@ class FirebaseAPI private constructor() {
             .addOnFailureListener {
                 paymentDay.complete(AppConstants.DEFAULT_MESSAGES.FAIL)
             }
-        return paymentDay.await()
+        return@withContext paymentDay
     }
 }

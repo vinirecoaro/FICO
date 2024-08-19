@@ -124,16 +124,10 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+
+        viewModel.getDefaultPaymentDay()
+
         binding.etPurchaseDate.setText(currentDate)
-
-        val paymentDay = sharedPref.getString(AppConstants.DATABASE.PAYMENT_DAY, null)
-        if (paymentDay != null) {
-            val paymentDate = DateFunctions().paymentDate(paymentDay)
-            binding.etPaymentDate.setText(paymentDate)
-        } else {
-            viewModel.getDefaultPaymentDay()
-        }
-
 
         val filter = IntentFilter().apply {
             addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)

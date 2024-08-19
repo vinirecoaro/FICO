@@ -183,9 +183,10 @@ class AddExpenseViewModel(
 
     fun getDefaultPaymentDay() {
         viewModelScope.launch {
-            //TODO test
             val result = dataStore.getDefaultPaymentDay()
-            _paymentDay.value = result
+            if(result != null){
+                _paymentDay.value = result!!
+            }
         }
     }
 

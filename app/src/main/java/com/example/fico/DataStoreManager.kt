@@ -24,7 +24,7 @@ class DataStoreManager (context: Context) {
         val expenseInfoPerMonthKey = stringPreferencesKey(AppConstants.DATA_STORE.INFO_PER_MONTH)
         val totalExpenseKey = stringPreferencesKey(AppConstants.DATA_STORE.TOTAL_EXPENSE)
         val defaultBudgetKey = stringPreferencesKey(AppConstants.DATA_STORE.DEFAULT_BUDGET_KEY)
-        val defaultPaymentDayKey = stringPreferencesKey(AppConstants.DATA_STORE.DEFAULT_BUDGET_KEY)
+        val defaultPaymentDayKey = stringPreferencesKey(AppConstants.DATA_STORE.DEFAULT_PAYMENT_DAY_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -139,11 +139,11 @@ class DataStoreManager (context: Context) {
         }
     }
 
-    suspend fun getDefaultPaymentDay() : String{
+    suspend fun getDefaultPaymentDay() : String?{
         val defaultPaymentDay = dataStore.data.map { preferences ->
             preferences[defaultPaymentDayKey]
         }.first()
-        return Gson().fromJson(defaultPaymentDay, object : TypeToken<String>() {}.type)
+        return Gson().fromJson(defaultPaymentDay, object : TypeToken<String?>() {}.type)
     }
 
 }
