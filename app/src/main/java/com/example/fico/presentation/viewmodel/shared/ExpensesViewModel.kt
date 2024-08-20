@@ -13,7 +13,10 @@ import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class ExpensesViewModel(private val dataStore : DataStoreManager,private val firebaseAPI : FirebaseAPI ) : ViewModel() {
+class ExpensesViewModel(
+    private val dataStore : DataStoreManager,
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
     fun getExpenseList(filter : String = "") {
         viewModelScope.async{
