@@ -61,20 +61,20 @@ class AddExpenseViewModel(
                 formattedInputDate
             )
 
-            val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(
+            val expenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).addToExpenseList(
                 expense,
                 installment,
                 nOfInstallments
             )
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).calculateUpdatedTotalExpense(
                 formattedPrice,
                 nOfInstallments,
                 viewModelScope
             ).await()
 
             val updatedInformationPerMonth =
-                ArrangeDataToUpdateToDatabase().addToInformationPerMonth(
+                ArrangeDataToUpdateToDatabase(firebaseAPI).addToInformationPerMonth(
                     expense,
                     installment,
                     nOfInstallments,

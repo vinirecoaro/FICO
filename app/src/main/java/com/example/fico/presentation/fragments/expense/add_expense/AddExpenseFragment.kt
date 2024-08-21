@@ -47,6 +47,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
 import com.example.fico.DataStoreManager
+import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.presentation.viewmodel.shared.AddExpenseEditExpenseViewModel
@@ -85,7 +86,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
         }
     }
-    private val sharedPref: SharedPreferences by inject()
+    private val firebaseAPI : FirebaseAPI by inject()
+
 
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
@@ -550,7 +552,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             val expensesList = readFileResult.first
 
                             // innit the upload data to database service
-                            val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
+                            val serviceIntent = Intent(requireContext(), UploadFile(firebaseAPI)::class.java)
                             serviceIntent.putParcelableArrayListExtra(
                                 "expensesList", ArrayList(expensesList)
                             )
@@ -593,7 +595,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             val expensesList = readFileResult.first
 
                             // innit the upload data to database service
-                            val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
+                            val serviceIntent = Intent(requireContext(), UploadFile(firebaseAPI)::class.java)
                             serviceIntent.putParcelableArrayListExtra(
                                 "expensesList", ArrayList(expensesList)
                             )

@@ -1,4 +1,4 @@
-import com.example.fico.api.FirebaseAPI2
+import com.example.fico.api.FirebaseAPI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -6,6 +6,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -16,7 +17,7 @@ import org.mockito.MockitoAnnotations
 @ExperimentalCoroutinesApi
 class FirebaseAPITest {
 
-    private lateinit var firebaseAPI: FirebaseAPI2
+    private lateinit var firebaseAPI: FirebaseAPI
     private lateinit var mockDatabaseReference: DatabaseReference
     private lateinit var mockFirebaseAuth: FirebaseAuth
     private lateinit var mockFirebaseUser: FirebaseUser
@@ -40,12 +41,13 @@ class FirebaseAPITest {
 
         // Setup the DatabaseReference to return itself when child() or orderByKey() is called
         `when`(mockDatabaseReference.child(anyString())).thenReturn(mockDatabaseReference)
-        `when`(mockDatabaseReference.orderByKey()).thenReturn(mockDatabaseReference) // Adicionando esta linha
+        `when`(mockDatabaseReference.orderByKey()).thenReturn(mockDatabaseReference)
 
         // Injecting the mocks into FirebaseAPI
-        firebaseAPI = FirebaseAPI2(auth = mockFirebaseAuth, database = mockFirebaseDatabase)
+        firebaseAPI = FirebaseAPI(auth = mockFirebaseAuth, database = mockFirebaseDatabase)
     }
 
+    //Verify if getting data from database is returning a expenseList when have data
     @Test
     fun `test observeExpenseList with data`() = runTest {
         val mockDataSnapshot = mock(DataSnapshot::class.java)
@@ -93,4 +95,26 @@ class FirebaseAPITest {
         assertEquals(1, expensesList.size)
         assertEquals("Test Description", expensesList[0].description)
     }
+
+    //Verify if getting data from database is returning a empty expenseList when do not have data on database
+    @Test
+    fun `test observeExpenseList with empty data`() = runTest {
+        val mockDataSnapshot = mock(DataSnapshot::class.java)
+
+        // Simulate an empty snapshot
+        `when`(mockDataSnapshot.exists()).thenReturn(false)
+
+        // Mock the ValueEventListener to trigger onDataChange
+        doAnswer { invocation ->
+            val listener = invocation.getArgument<ValueEventListener>(0)
+            listener.onDataChange(mockDataSnapshot)
+            null
+        }.`when`(mockDatabaseReference).addValueEventListener(any(ValueEventListener::class.java))
+
+        val expensesList = firebaseAPI.observeExpenseList().await()
+
+        verify(mockDatabaseReference, times(1)).orderByKey()
+        assertTrue(expensesList.isEmpty())
+    }
+
 }

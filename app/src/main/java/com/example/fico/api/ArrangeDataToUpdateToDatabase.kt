@@ -10,9 +10,7 @@ import java.math.RoundingMode
 import java.util.*
 import kotlin.collections.HashSet
 
-class ArrangeDataToUpdateToDatabase {
-
-    private val firebaseAPI = FirebaseAPI.instance
+class ArrangeDataToUpdateToDatabase(private val firebaseAPI : FirebaseAPI) {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun calculateUpdatedTotalExpense(expensePrice : String, expenseNOfInstallments: Int, viewModelScope : CoroutineScope, oldExpensePrice : String = "0", oldExpenseNOfInstallments : Int = 1): Deferred<String> {

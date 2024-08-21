@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.example.fico.DataStoreManager
+import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
@@ -16,6 +17,7 @@ import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
 import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.example.fico.presentation.viewmodel.LogoViewModel
+import com.example.fico.presentation.viewmodel.MainViewModel
 import com.example.fico.presentation.viewmodel.RegisterViewModel
 import com.example.fico.presentation.viewmodel.ResetPasswordViewModel
 import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
@@ -23,6 +25,8 @@ import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.util.constants.AppConstants
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import kotlin.math.sin
@@ -33,6 +37,10 @@ val appModule = module {
     single {
         androidContext().getSharedPreferences(AppConstants.SHARED_PREFERENCES.NAME, Context.MODE_PRIVATE)
     }
+
+    //Create a singleton for FirebaseDatabase and FirebaseAuth
+    single { FirebaseDatabase.getInstance() }
+    single { FirebaseAuth.getInstance() }
 
     single<DataStoreManager>(){
         DataStoreManager(androidContext())
@@ -47,6 +55,12 @@ val appModule = module {
 
     factory<VerifyEmailViewModel> {
         VerifyEmailViewModel(
+            firebaseAPI = get()
+        )
+    }
+
+    factory<MainViewModel> {
+        MainViewModel(
             firebaseAPI = get()
         )
     }
@@ -137,7 +151,10 @@ val appModule = module {
     }
 
     factory<FirebaseAPI>{
-        FirebaseAPI.instance
+        FirebaseAPI(
+            auth = get(),
+            database = get()
+        )
     }
 
 }

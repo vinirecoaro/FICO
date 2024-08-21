@@ -10,9 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
-
-    private val firebaseAPI = FirebaseAPI.instance
+class MainViewModel(
+    private val firebaseAPI : FirebaseAPI
+) : ViewModel() {
 
     fun getUserEmail() : Deferred<String> =
         viewModelScope.async{

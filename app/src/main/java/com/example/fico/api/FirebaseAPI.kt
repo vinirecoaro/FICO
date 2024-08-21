@@ -26,46 +26,37 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-class FirebaseAPI private constructor() {
+class FirebaseAPI(
+    private val auth : FirebaseAuth,
+    private val database : FirebaseDatabase
+) {
+    private val rootRef = database.getReference(AppConstants.DATABASE.USERS)
+    private var total_expenses_price =
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+            .child(
+                AppConstants.DATABASE.TOTAL_EXPENSE
+            )
+    private var expenses_information_per_month =
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+            .child(
+                AppConstants.DATABASE.INFORMATION_PER_MONTH
+            )
+    private var expense_list =
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+            .child(
+                AppConstants.DATABASE.EXPENSES_LIST
+            )
+    private var default_expense_values =
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+            .child(
+                AppConstants.DATABASE.DEFAULT_VALUES
+            )
+    private var expenses =
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+    private var user_info =
+        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
+    private var user_root = rootRef.child(auth.currentUser?.uid.toString())
 
-    private object HOLDER {
-        val INSTANCE = FirebaseAPI()
-        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-        val mDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
-    }
-
-    companion object {
-        val instance: FirebaseAPI by lazy { HOLDER.INSTANCE }
-        private val auth: FirebaseAuth by lazy { HOLDER.mAuth }
-        private val database: FirebaseDatabase by lazy { HOLDER.mDatabase }
-        private val rootRef = database.getReference(AppConstants.DATABASE.USERS)
-        private var total_expenses_price =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-                .child(
-                    AppConstants.DATABASE.TOTAL_EXPENSE
-                )
-        private var expenses_information_per_month =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-                .child(
-                    AppConstants.DATABASE.INFORMATION_PER_MONTH
-                )
-        private var expense_list =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-                .child(
-                    AppConstants.DATABASE.EXPENSES_LIST
-                )
-        private var default_expense_values =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-                .child(
-                    AppConstants.DATABASE.DEFAULT_VALUES
-                )
-        private var expenses =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-        private var user_info =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
-        private var user_root = rootRef.child(auth.currentUser?.uid.toString())
-
-    }
 
     fun updateReferences() {
         expenses =

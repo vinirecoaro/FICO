@@ -31,7 +31,7 @@ import org.koin.android.ext.android.inject
 class MainExpenseActivity : AppCompatActivity(){
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel : MainViewModel by inject()
     private val expensesViewModel : ExpensesViewModel by inject()
 
     @RequiresApi(Build.VERSION_CODES.O)

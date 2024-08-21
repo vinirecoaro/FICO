@@ -46,8 +46,6 @@ class ExpenseListViewModel(
 
     fun getExpenseList(filter: String) {
         viewModelScope.async {
-            /*val expenses = firebaseAPI.observeExpenseList(filter).await()
-            val sortedExpenses = expenses.sortedByDescending { it.paymentDate }*/
             val expenses = dataStore.getExpenseList()
             var sortedExpenses = listOf<Expense>()
             if (filter != "") {
@@ -67,11 +65,6 @@ class ExpenseListViewModel(
 
     fun getExpenseMonths() {
         viewModelScope.async {
-            /*var expenseMonths = firebaseAPI.getExpenseMonths(false).sortedByDescending { it }
-            val expenseMonthsFormatted = mutableListOf<String>()
-            for (expenseMonth in expenseMonths){
-                expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(expenseMonth))
-            }*/
             val expenseMonths = dataStore.getExpenseMonths()
             val expenseMonthsFormatted = mutableListOf<String>()
             expenseMonths.forEach {
@@ -184,20 +177,20 @@ class ExpenseListViewModel(
                 formattedInputDate
             )
 
-            val expenseList = ArrangeDataToUpdateToDatabase().addToExpenseList(
+            val expenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).addToExpenseList(
                 expense,
                 installment,
                 nOfInstallments
             )
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(
+            val updatedTotalExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).calculateUpdatedTotalExpense(
                 formattedPrice,
                 nOfInstallments,
                 viewModelScope
             ).await()
 
             val updatedInformationPerMonth =
-                ArrangeDataToUpdateToDatabase().addToInformationPerMonth(
+                ArrangeDataToUpdateToDatabase(firebaseAPI).addToInformationPerMonth(
                     expense,
                     installment,
                     nOfInstallments,
