@@ -1,14 +1,9 @@
 package com.example.fico.presentation.viewmodel.shared
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
-import com.example.fico.model.Expense
-import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.util.constants.AppConstants
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -20,14 +15,14 @@ class ExpensesViewModel(
 
     fun getExpenseList(filter : String = "") {
         viewModelScope.async{
-            val expenses = firebaseAPI.observeExpenseList(filter).await()
+            val expenses = firebaseAPI.getExpenseList(filter).await()
             dataStore.updateAndResetExpenseList(expenses)
         }
     }
 
     fun getExpenseMonths(){
         viewModelScope.async {
-            val expenseMonths = firebaseAPI.getExpenseMonths(false)
+            val expenseMonths = firebaseAPI.getExpenseMonths()
             dataStore.updateAndResetExpenseMonths(expenseMonths)
         }
     }

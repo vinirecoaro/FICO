@@ -37,6 +37,7 @@ class ExpenseListViewModel(
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _installmentExpenseSwiped = MutableLiveData<Boolean>()
     val installmentExpenseSwiped: LiveData<Boolean> = _installmentExpenseSwiped
+    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase(dataStore)
     val filterLiveData: LiveData<String>
         get() = _filterLiveData
 
@@ -177,20 +178,20 @@ class ExpenseListViewModel(
                 formattedInputDate
             )
 
-            val expenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).addToExpenseList(
+            val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
                 expense,
                 installment,
                 nOfInstallments
             )
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).calculateUpdatedTotalExpense(
+            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
                 formattedPrice,
                 nOfInstallments,
                 viewModelScope
             ).await()
 
             val updatedInformationPerMonth =
-                ArrangeDataToUpdateToDatabase(firebaseAPI).addToInformationPerMonth(
+                arrangeDataToUpdateToDatabase.addToInformationPerMonth(
                     expense,
                     installment,
                     nOfInstallments,

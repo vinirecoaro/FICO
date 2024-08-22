@@ -29,6 +29,7 @@ class AddExpenseViewModel(
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _setDefaultBudgetResult = MutableLiveData<Boolean>()
     val setDefaultBudgetResult : LiveData<Boolean> = _setDefaultBudgetResult
+    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase(dataStore)
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(
@@ -61,20 +62,20 @@ class AddExpenseViewModel(
                 formattedInputDate
             )
 
-            val expenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).addToExpenseList(
+            val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
                 expense,
                 installment,
                 nOfInstallments
             )
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).calculateUpdatedTotalExpense(
+            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
                 formattedPrice,
                 nOfInstallments,
                 viewModelScope
             ).await()
 
             val updatedInformationPerMonth =
-                ArrangeDataToUpdateToDatabase(firebaseAPI).addToInformationPerMonth(
+                arrangeDataToUpdateToDatabase.addToInformationPerMonth(
                     expense,
                     installment,
                     nOfInstallments,
@@ -160,7 +161,6 @@ class AddExpenseViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistDefaultBudget(): Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.checkIfExistDefaultBudget()

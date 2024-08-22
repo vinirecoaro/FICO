@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
+import com.example.fico.DataStoreManager
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Expense
@@ -14,9 +15,10 @@ import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class UploadFile(private val firebaseAPI : FirebaseAPI) : Service() {
+class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:DataStoreManager) : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Default)
+    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase(dataStore)
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -32,19 +34,19 @@ class UploadFile(private val firebaseAPI : FirebaseAPI) : Service() {
             if(!installmentExpense){
                 if (_expenses != null) {
 
-                    val updatedTotalExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
+                    val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
 
                     masterExpenseList.updatedTotalExpense = updatedTotalExpense
 
-                    val expensePerMonthList = ArrangeDataToUpdateToDatabase(firebaseAPI).joinExpensesOfMonth(_expenses, installmentExpense)
+                    val expensePerMonthList = arrangeDataToUpdateToDatabase.joinExpensesOfMonth(_expenses, installmentExpense)
 
-                    val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase(firebaseAPI).addToInformationPerMonthFromUpdatedFile(expensePerMonthList,serviceScope).await()
+                    val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(expensePerMonthList,serviceScope).await()
 
                     for (info in updatedInformationPerMonth){
                         masterExpenseList.updatedInformationPerMonth.add(info)
                     }
 
-                    val expenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).addToExpenseListFromFileCommonExpense(_expenses)
+                    val expenseList = arrangeDataToUpdateToDatabase.addToExpenseListFromFileCommonExpense(_expenses)
 
                    for(expenseFromExpenseList in expenseList){
                        masterExpenseList.expenseList.add(expenseFromExpenseList)
@@ -58,13 +60,13 @@ class UploadFile(private val firebaseAPI : FirebaseAPI) : Service() {
             } else{
                 if (_expenses != null) {
 
-                    val updatedTotalExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
+                    val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
 
                     masterExpenseList.updatedTotalExpense = updatedTotalExpense
 
-                    val expensePerMonthList = ArrangeDataToUpdateToDatabase(firebaseAPI).joinExpensesOfMonth(_expenses, installmentExpense)
+                    val expensePerMonthList = arrangeDataToUpdateToDatabase.joinExpensesOfMonth(_expenses, installmentExpense)
 
-                    val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase(firebaseAPI).addToInformationPerMonthFromUpdatedFile(expensePerMonthList,serviceScope).await()
+                    val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(expensePerMonthList,serviceScope).await()
 
                     for (info in updatedInformationPerMonth){
                         masterExpenseList.updatedInformationPerMonth.add(info)
@@ -76,7 +78,7 @@ class UploadFile(private val firebaseAPI : FirebaseAPI) : Service() {
 
                         val _expense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
 
-                        val expenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).addToExpenseList(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt())
+                        val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt())
 
                         for(expenseFromExpenseList in expenseList){
                             masterExpenseList.expenseList.add(expenseFromExpenseList)

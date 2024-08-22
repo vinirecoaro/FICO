@@ -88,7 +88,7 @@ class FirebaseAPITest {
         }.`when`(mockDatabaseReference).addValueEventListener(any(ValueEventListener::class.java))
 
         // Call the function observing the expense list
-        val expensesList = firebaseAPI.observeExpenseList().await()
+        val expensesList = firebaseAPI.getExpenseList().await()
 
         // Verify that orderByKey was called and validate the results
         verify(mockDatabaseReference, times(1)).orderByKey()
@@ -111,7 +111,7 @@ class FirebaseAPITest {
             null
         }.`when`(mockDatabaseReference).addValueEventListener(any(ValueEventListener::class.java))
 
-        val expensesList = firebaseAPI.observeExpenseList().await()
+        val expensesList = firebaseAPI.getExpenseList().await()
 
         verify(mockDatabaseReference, times(1)).orderByKey()
         assertTrue(expensesList.isEmpty())

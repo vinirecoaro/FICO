@@ -87,6 +87,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         }
     }
     private val firebaseAPI : FirebaseAPI by inject()
+    private val dataStore : DataStoreManager by inject()
 
 
     private companion object {
@@ -552,7 +553,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             val expensesList = readFileResult.first
 
                             // innit the upload data to database service
-                            val serviceIntent = Intent(requireContext(), UploadFile(firebaseAPI)::class.java)
+                            val serviceIntent = Intent(requireContext(), UploadFile(firebaseAPI, dataStore)::class.java)
                             serviceIntent.putParcelableArrayListExtra(
                                 "expensesList", ArrayList(expensesList)
                             )
@@ -595,7 +596,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             val expensesList = readFileResult.first
 
                             // innit the upload data to database service
-                            val serviceIntent = Intent(requireContext(), UploadFile(firebaseAPI)::class.java)
+                            val serviceIntent = Intent(requireContext(), UploadFile(firebaseAPI, dataStore)::class.java)
                             serviceIntent.putParcelableArrayListExtra(
                                 "expensesList", ArrayList(expensesList)
                             )

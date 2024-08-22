@@ -18,7 +18,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.coroutines.resume
@@ -280,7 +279,6 @@ class FirebaseAPI(
         return@withContext defaultBudget
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistsOnDatabse(reference: DatabaseReference): Boolean =
         withContext(Dispatchers.IO) {
             val futureResult = CompletableDeferred<Boolean>()
@@ -298,7 +296,6 @@ class FirebaseAPI(
             return@withContext futureResult.await()
         }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun checkIfExistDefaultBudget(): Boolean {
         return checkIfExistsOnDatabse(default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET))
     }
@@ -642,160 +639,6 @@ class FirebaseAPI(
     suspend fun getExpenseList(filter: String = ""): Deferred<List<Expense>> =
         withContext(Dispatchers.IO) {
             val expensesList = CompletableDeferred<MutableList<Expense>>()
-            expense_list.orderByKey().addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val expenseList = mutableListOf<Expense>()
-                    if (snapshot.exists()) {
-                        if (filter == "") {
-                            for (childSnapshot in snapshot.children) {
-                                val id = childSnapshot.key.toString()
-                                val priceDatabase =
-                                    BigDecimal(childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString())
-                                val priceFormatted =
-                                    priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
-                                val description =
-                                    childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
-                                val category =
-                                    childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
-                                val paymentDateDatabase =
-                                    childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
-                                var paymentDateFormatted = "${
-                                    paymentDateDatabase.substring(
-                                        8, 10
-                                    )
-                                }/${
-                                    paymentDateDatabase.substring(
-                                        5, 7
-                                    )
-                                }/${paymentDateDatabase.substring(0, 4)}"
-                                if ((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE)
-                                        .exists()) || (!childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME)
-                                        .exists())
-                                ) {
-                                    val expense = Expense(
-                                        id,
-                                        priceFormatted,
-                                        description,
-                                        category,
-                                        paymentDateFormatted,
-                                        "",
-                                        ""
-                                    )
-                                    expenseList.add(expense)
-                                } else {
-                                    val purchaseDateDatabase =
-                                        childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
-                                    val purchaseDateFormatted = "${
-                                        purchaseDateDatabase.substring(
-                                            8, 10
-                                        )
-                                    }/${
-                                        purchaseDateDatabase.substring(
-                                            5, 7
-                                        )
-                                    }/${purchaseDateDatabase.substring(0, 4)}"
-                                    val inputDateTime =
-                                        childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).value.toString()
-                                    val expense = Expense(
-                                        id,
-                                        priceFormatted,
-                                        description,
-                                        category,
-                                        paymentDateFormatted,
-                                        purchaseDateFormatted,
-                                        inputDateTime
-                                    )
-                                    expenseList.add(expense)
-                                }
-
-                            }
-                        } else {
-                            for (childSnapshot in snapshot.children) {
-                                val dateDatabase =
-                                    childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
-                                val dateFromDatabase = "${dateDatabase.substring(0, 4)}-${
-                                    dateDatabase.substring(
-                                        5, 7
-                                    )
-                                }"
-                                val dateFromFilter =
-                                    formatDateFromFilterToDatabaseForInfoPerMonth(filter)
-                                if (dateFromDatabase == dateFromFilter) {
-                                    val id = childSnapshot.key.toString()
-                                    val priceDatabase =
-                                        BigDecimal(childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString())
-                                    val priceFormatted =
-                                        priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
-                                    val description =
-                                        childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
-                                    val category =
-                                        childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
-                                    val paymentDateFormatted = "${
-                                        dateDatabase.substring(
-                                            8, 10
-                                        )
-                                    }/${dateDatabase.substring(5, 7)}/${
-                                        dateDatabase.substring(
-                                            0, 4
-                                        )
-                                    }"
-                                    if ((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE)
-                                            .exists()) || (!childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME)
-                                            .exists())
-                                    ) {
-                                        val expense = Expense(
-                                            id,
-                                            priceFormatted,
-                                            description,
-                                            category,
-                                            paymentDateFormatted,
-                                            "",
-                                            ""
-                                        )
-                                        expenseList.add(expense)
-                                    } else {
-                                        val purchaseDateDatabase =
-                                            childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
-                                        val purchaseDateFormatted = "${
-                                            purchaseDateDatabase.substring(
-                                                8, 10
-                                            )
-                                        }/${
-                                            purchaseDateDatabase.substring(
-                                                5, 7
-                                            )
-                                        }/${purchaseDateDatabase.substring(0, 4)}"
-                                        val inputDateTime =
-                                            childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).value.toString()
-                                        val expense = Expense(
-                                            id,
-                                            priceFormatted,
-                                            description,
-                                            category,
-                                            paymentDateFormatted,
-                                            purchaseDateFormatted,
-                                            inputDateTime
-                                        )
-                                        expenseList.add(expense)
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                    expensesList.complete(expenseList)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-            })
-            return@withContext expensesList
-        }
-
-    suspend fun observeExpenseList(filter: String = ""): Deferred<List<Expense>> =
-        withContext(Dispatchers.IO) {
-            val expensesList = CompletableDeferred<MutableList<Expense>>()
             expense_list.orderByKey().addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val expenseList = mutableListOf<Expense>()
@@ -947,19 +790,14 @@ class FirebaseAPI(
             return@withContext expensesList
         }
 
-    suspend fun getExpenseMonths(formatted: Boolean): List<String> =
+    suspend fun getExpenseMonths(): List<String> =
         suspendCoroutine { continuation ->
             var isCompleted = false
             expenses_information_per_month.addValueEventListener(object : ValueEventListener {
                 val expenseMonths = mutableListOf<String>()
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (month in snapshot.children) {
-                        var date: String
-                        if (formatted) {
-                            date = formatDateForFilterOnExpenseList(month.key.toString())
-                        } else {
-                            date = month.key.toString()
-                        }
+                        val date: String = month.key.toString()
                         if (month.child(AppConstants.DATABASE.BUDGET).value != month.child(
                                 AppConstants.DATABASE.AVAILABLE_NOW
                             ).value
@@ -1011,37 +849,6 @@ class FirebaseAPI(
             })
             return@withContext informationPerMonthInfo
         }
-
-    fun formatDateForFilterOnExpenseList(date: String): String {
-        var formattedDate = ""
-        val month = date.substring(5, 7)
-        if (month == "01") {
-            formattedDate = "Janeiro - ${date.substring(0, 4)}"
-        } else if (month == "02") {
-            formattedDate = "Fevereiro - ${date.substring(0, 4)}"
-        } else if (month == "03") {
-            formattedDate = "Março - ${date.substring(0, 4)}"
-        } else if (month == "04") {
-            formattedDate = "Abril - ${date.substring(0, 4)}"
-        } else if (month == "05") {
-            formattedDate = "Maio - ${date.substring(0, 4)}"
-        } else if (month == "06") {
-            formattedDate = "Junho - ${date.substring(0, 4)}"
-        } else if (month == "07") {
-            formattedDate = "Julho - ${date.substring(0, 4)}"
-        } else if (month == "08") {
-            formattedDate = "Agosto - ${date.substring(0, 4)}"
-        } else if (month == "09") {
-            formattedDate = "Setembro - ${date.substring(0, 4)}"
-        } else if (month == "10") {
-            formattedDate = "Outubro - ${date.substring(0, 4)}"
-        } else if (month == "11") {
-            formattedDate = "Novembro - ${date.substring(0, 4)}"
-        } else if (month == "12") {
-            formattedDate = "Dezembro - ${date.substring(0, 4)}"
-        }
-        return formattedDate
-    }
 
     fun formatDateFromFilterToDatabaseForInfoPerMonth(date: String): String {
         var formattedDate = ""

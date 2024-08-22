@@ -1,7 +1,9 @@
 package com.example.fico.api
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.fico.DataStoreManager
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import kotlinx.coroutines.*
@@ -10,7 +12,7 @@ import java.math.RoundingMode
 import java.util.*
 import kotlin.collections.HashSet
 
-class ArrangeDataToUpdateToDatabase(private val firebaseAPI : FirebaseAPI) {
+class ArrangeDataToUpdateToDatabase(private val dataStore : DataStoreManager) {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun calculateUpdatedTotalExpense(expensePrice : String, expenseNOfInstallments: Int, viewModelScope : CoroutineScope, oldExpensePrice : String = "0", oldExpenseNOfInstallments : Int = 1): Deferred<String> {
@@ -20,7 +22,7 @@ class ArrangeDataToUpdateToDatabase(private val firebaseAPI : FirebaseAPI) {
 
             val expenseNOfInstallmentsBigNum = BigDecimal(expenseNOfInstallments)
             val oldExpenseNOfInstallmentsBigNum = BigDecimal(oldExpenseNOfInstallments)
-            val currentTotalExpense = firebaseAPI.getTotalExpense().await()
+            val currentTotalExpense = dataStore.getTotalExpense()
             val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
             val expensePriceBigNum = BigDecimal(expensePrice).multiply(expenseNOfInstallmentsBigNum)
             val oldExpenseBigNum = BigDecimal(oldExpensePrice)
@@ -135,7 +137,8 @@ class ArrangeDataToUpdateToDatabase(private val firebaseAPI : FirebaseAPI) {
 
         val expenseIdList : MutableList<String> = mutableListOf()
 
-        val expenseList = firebaseAPI.getExpenseList("").await()
+        val expenseList = dataStore.getExpenseList()
+
         val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(expense.id)
 
         for(expenseItem in expenseList.filter { FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id) == commonId }){
@@ -219,9 +222,9 @@ class ArrangeDataToUpdateToDatabase(private val firebaseAPI : FirebaseAPI) {
         oldExpense : Expense = Expense("","0","","","","","")
     ) : Deferred<MutableList<InformationPerMonthExpense>> =
         viewModelScope.async(Dispatchers.IO){
-            val currentInformationPerMonth = firebaseAPI.getInformationPerMonth().await()
+            val currentInformationPerMonth = dataStore.getExpenseInfoPerMonth()
             val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
-            val defaultBudget = BigDecimal(firebaseAPI.getDefaultBudget().await())
+            val defaultBudget = BigDecimal(dataStore.getDefaultBudget())
             val defaultBudgetString = defaultBudget.setScale(8, RoundingMode.HALF_UP).toString()
 
             if(!editExpense){ // Just Add expense price
@@ -354,7 +357,7 @@ class ArrangeDataToUpdateToDatabase(private val firebaseAPI : FirebaseAPI) {
     ) : Deferred<MutableList<InformationPerMonthExpense>> {
             val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
             val deferredNewInformationPerMonth = CompletableDeferred<MutableList<InformationPerMonthExpense>>()
-            val defaultBudget = BigDecimal(firebaseAPI.getDefaultBudget().await())
+            val defaultBudget = BigDecimal(dataStore.getDefaultBudget())
             val defaultBudgetString = defaultBudget.setScale(8, RoundingMode.HALF_UP).toString()
 
             if(!editExpense){ // Just Add expense price
@@ -484,9 +487,9 @@ class ArrangeDataToUpdateToDatabase(private val firebaseAPI : FirebaseAPI) {
         viewModelScope: CoroutineScope,
     ) : Deferred<MutableList<InformationPerMonthExpense>> =
         viewModelScope.async(Dispatchers.IO){
-            val currentInformationPerMonth = firebaseAPI.getInformationPerMonth().await()
+            val currentInformationPerMonth = dataStore.getExpenseInfoPerMonth()
             val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
-            val defaultBudget = BigDecimal(firebaseAPI.getDefaultBudget().await())
+            val defaultBudget = BigDecimal(dataStore.getDefaultBudget())
             val defaultBudgetString = defaultBudget.setScale(8, RoundingMode.HALF_UP).toString()
 
 

@@ -30,6 +30,7 @@ class EditExpenseViewModel(
     val editExpenseResult : LiveData<Boolean> = _editExpenseResult
     private val _deleteInstallmentExpenseResult = MutableLiveData<Boolean>()
     val deleteInstallmentExpenseResult : LiveData<Boolean> = _deleteInstallmentExpenseResult
+    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase(dataStore)
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(
@@ -65,7 +66,7 @@ class EditExpenseViewModel(
                 oldExpenseNOfInstallment.toString()
             )
 
-            val removeFromExpenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).removeFromExpenseList(oldExpenseFormatted, viewModelScope).await()
+            val removeFromExpenseList = arrangeDataToUpdateToDatabase.removeFromExpenseList(oldExpenseFormatted, viewModelScope).await()
 
             val newExpensePrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
             val newExpensePaymentDate = FormatValuesToDatabase().expenseDate(paymentDate)
@@ -74,11 +75,11 @@ class EditExpenseViewModel(
 
             val newExpense = Expense(id = "", newExpensePrice, description, category, newExpensePaymentDate, newExpensePurchaseDate, formattedInputDate)
 
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpenseFormatted.price, oldExpenseNOfInstallment).await()
+            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpenseFormatted.price, oldExpenseNOfInstallment).await()
 
-            val updatedInformationPerMonth = ArrangeDataToUpdateToDatabase(firebaseAPI).addToInformationPerMonth(newExpense, installment, nOfInstallments, viewModelScope, true, oldExpenseFormatted).await()
+            val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonth(newExpense, installment, nOfInstallments, viewModelScope, true, oldExpenseFormatted).await()
 
-            val expenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).addToExpenseList(newExpense, installment, nOfInstallments)
+            val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(newExpense, installment, nOfInstallments)
 
             firebaseAPI.editExpense(expenseList, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment).fold(
                 onSuccess = {
@@ -99,7 +100,7 @@ class EditExpenseViewModel(
                         updatedExpenseListDataStore.removeAll{it.id == expenseId}
                     }
                         //Remove old expense values from info per month list
-                    val oldExpenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).addToExpenseList(
+                    val oldExpenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
                         oldExpenseFormatted,
                         installment,
                         oldExpenseFormatted.nOfInstallment.toInt()
@@ -202,20 +203,20 @@ class EditExpenseViewModel(
             )
 
             //Id's to remove from expense list
-            val removeFromExpenseList = ArrangeDataToUpdateToDatabase(firebaseAPI).removeFromExpenseListDataStore(
+            val removeFromExpenseList = arrangeDataToUpdateToDatabase.removeFromExpenseListDataStore(
                 dataStore.getExpenseList(),
                 formattedExpense
             ).await()
 
             //Updated total expense
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).calculateUpdatedTotalExpenseDataStore(
+            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpenseDataStore(
                 dataStore.getTotalExpense(),
                 formattedExpense.price,
                 expenseNOfInstallment
             ).await()
 
             //Updated info per month
-            val updatedInformationPerMonthExpense = ArrangeDataToUpdateToDatabase(firebaseAPI).addToInformationPerMonthDataStore(
+            val updatedInformationPerMonthExpense = arrangeDataToUpdateToDatabase.addToInformationPerMonthDataStore(
                 expense = formattedExpense,
                 installment = true,
                 newExpenseNOfInstallments =  expenseNOfInstallment,
