@@ -34,7 +34,11 @@ class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:Da
             if(!installmentExpense){
                 if (_expenses != null) {
 
-                    val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
+                    val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+                        dataStore.getTotalExpense(),
+                        sumAllExpenses(_expenses),
+                        1
+                    ).await()
 
                     masterExpenseList.updatedTotalExpense = updatedTotalExpense
 
@@ -60,7 +64,11 @@ class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:Da
             } else{
                 if (_expenses != null) {
 
-                    val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(sumAllExpenses(_expenses), 1, serviceScope).await()
+                    val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+                        dataStore.getTotalExpense(),
+                        sumAllExpenses(_expenses),
+                        1,
+                    ).await()
 
                     masterExpenseList.updatedTotalExpense = updatedTotalExpense
 

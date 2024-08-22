@@ -1,7 +1,6 @@
 package com.example.fico.api
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.model.Expense
@@ -14,34 +13,19 @@ import kotlin.collections.HashSet
 
 class ArrangeDataToUpdateToDatabase(private val dataStore : DataStoreManager) {
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun calculateUpdatedTotalExpense(expensePrice : String, expenseNOfInstallments: Int, viewModelScope : CoroutineScope, oldExpensePrice : String = "0", oldExpenseNOfInstallments : Int = 1): Deferred<String> {
-        var updatedTotalExpense : BigDecimal
-        val updatedTotalExpenseString = CompletableDeferred<String>()
-        viewModelScope.async(Dispatchers.IO){
-
-            val expenseNOfInstallmentsBigNum = BigDecimal(expenseNOfInstallments)
-            val oldExpenseNOfInstallmentsBigNum = BigDecimal(oldExpenseNOfInstallments)
-            val currentTotalExpense = dataStore.getTotalExpense()
-            val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
-            val expensePriceBigNum = BigDecimal(expensePrice).multiply(expenseNOfInstallmentsBigNum)
-            val oldExpenseBigNum = BigDecimal(oldExpensePrice)
-            val oldExpensePriceBigNum = oldExpenseBigNum.multiply(oldExpenseNOfInstallmentsBigNum)
-
-            updatedTotalExpense = bigNumCurrentTotalExpense.add(expensePriceBigNum).subtract(oldExpensePriceBigNum).setScale(8, RoundingMode.HALF_UP)
-            updatedTotalExpenseString.complete(updatedTotalExpense.toString())
-
-        }
-        return updatedTotalExpenseString
-    }
-
-    fun calculateUpdatedTotalExpenseDataStore(totalExpenseDataStore: String, expensePrice : String, expenseNOfInstallments: Int, oldExpensePrice : String = "0", oldExpenseNOfInstallments : Int = 1): Deferred<String> {
+    fun calculateUpdatedTotalExpense(
+        currentTotalExpense: String,
+        expensePrice : String,
+        expenseNOfInstallments: Int,
+        oldExpensePrice : String = "0",
+        oldExpenseNOfInstallments : Int = 1)
+    : Deferred<String>{
         var updatedTotalExpense : BigDecimal
         val updatedTotalExpenseString = CompletableDeferred<String>()
 
         val expenseNOfInstallmentsBigNum = BigDecimal(expenseNOfInstallments)
         val oldExpenseNOfInstallmentsBigNum = BigDecimal(oldExpenseNOfInstallments)
-        val bigNumCurrentTotalExpense = BigDecimal(totalExpenseDataStore)
+        val bigNumCurrentTotalExpense = BigDecimal(currentTotalExpense)
         val expensePriceBigNum = BigDecimal(expensePrice).multiply(expenseNOfInstallmentsBigNum)
         val oldExpenseBigNum = BigDecimal(oldExpensePrice)
         val oldExpensePriceBigNum = oldExpenseBigNum.multiply(oldExpenseNOfInstallmentsBigNum)

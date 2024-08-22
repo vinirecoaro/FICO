@@ -1,7 +1,6 @@
 package com.example.fico.presentation.viewmodel
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -75,7 +74,12 @@ class EditExpenseViewModel(
 
             val newExpense = Expense(id = "", newExpensePrice, description, category, newExpensePaymentDate, newExpensePurchaseDate, formattedInputDate)
 
-            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(newExpense.price, nOfInstallments, viewModelScope, oldExpenseFormatted.price, oldExpenseNOfInstallment).await()
+            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+                dataStore.getTotalExpense(),
+                newExpense.price,
+                nOfInstallments,
+                oldExpenseFormatted.price,
+                oldExpenseNOfInstallment).await()
 
             val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonth(newExpense, installment, nOfInstallments, viewModelScope, true, oldExpenseFormatted).await()
 
@@ -209,7 +213,7 @@ class EditExpenseViewModel(
             ).await()
 
             //Updated total expense
-            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpenseDataStore(
+            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
                 formattedExpense.price,
                 expenseNOfInstallment

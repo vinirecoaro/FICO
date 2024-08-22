@@ -65,6 +65,10 @@ class FirebaseAPITest {
         val mockPurchaseDateSnapshot = mock(DataSnapshot::class.java)
         val mockInputDateTimeSnapshot = mock(DataSnapshot::class.java)
 
+        // Setup the return of exists() function
+        `when`(mockPurchaseDateSnapshot.exists()).thenReturn(true)
+        `when`(mockInputDateTimeSnapshot.exists()).thenReturn(true)
+
         `when`(mockChildSnapshot.key).thenReturn("id")
         `when`(mockChildSnapshot.child("price")).thenReturn(mockPriceSnapshot)
         `when`(mockChildSnapshot.child("description")).thenReturn(mockDescriptionSnapshot)
@@ -77,8 +81,8 @@ class FirebaseAPITest {
         `when`(mockDescriptionSnapshot.value).thenReturn("Test Description")
         `when`(mockCategorySnapshot.value).thenReturn("Test Category")
         `when`(mockPaymentDateSnapshot.value).thenReturn("2023-08-19")
-        `when`(mockPurchaseDateSnapshot.exists()).thenReturn(false)  // Simulating a missing field
-        `when`(mockInputDateTimeSnapshot.exists()).thenReturn(false) // Simulating a missing field
+        `when`(mockPurchaseDateSnapshot.value).thenReturn("2023-07-16")  // Simulating a missing field
+        `when`(mockInputDateTimeSnapshot.value).thenReturn("2023-07-18-17-27-55") // Simulating a missing field
 
         // Mock the ValueEventListener to trigger onDataChange
         doAnswer { invocation ->
@@ -93,7 +97,12 @@ class FirebaseAPITest {
         // Verify that orderByKey was called and validate the results
         verify(mockDatabaseReference, times(1)).orderByKey()
         assertEquals(1, expensesList.size)
+        assertEquals("123.45000000", expensesList[0].price)
         assertEquals("Test Description", expensesList[0].description)
+        assertEquals("Test Category", expensesList[0].category)
+        assertEquals("19/08/2023", expensesList[0].paymentDate)
+        assertEquals("16/07/2023", expensesList[0].purchaseDate)
+        assertEquals("2023-07-18-17-27-55", expensesList[0].inputDateTime)
     }
 
     //Verify if getting data from database is returning a empty expenseList when do not have data on database

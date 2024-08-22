@@ -185,9 +185,9 @@ class ExpenseListViewModel(
             )
 
             val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+                dataStore.getTotalExpense(),
                 formattedPrice,
-                nOfInstallments,
-                viewModelScope
+                nOfInstallments
             ).await()
 
             val updatedInformationPerMonth =

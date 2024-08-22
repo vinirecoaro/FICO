@@ -656,15 +656,10 @@ class FirebaseAPI(
                                     childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
                                 val paymentDateDatabase =
                                     childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
-                                var paymentDateFormatted = "${
-                                    paymentDateDatabase.substring(
-                                        8, 10
-                                    )
-                                }/${
-                                    paymentDateDatabase.substring(
-                                        5, 7
-                                    )
-                                }/${paymentDateDatabase.substring(0, 4)}"
+                                var paymentDateFormatted =
+                                        "${paymentDateDatabase.substring(8, 10)}/" +
+                                        "${paymentDateDatabase.substring(5, 7)}/" +
+                                        paymentDateDatabase.substring(0, 4)
                                 if ((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE)
                                         .exists()) || (!childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME)
                                         .exists())
@@ -682,15 +677,10 @@ class FirebaseAPI(
                                 } else {
                                     val purchaseDateDatabase =
                                         childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
-                                    val purchaseDateFormatted = "${
-                                        purchaseDateDatabase.substring(
-                                            8, 10
-                                        )
-                                    }/${
-                                        purchaseDateDatabase.substring(
-                                            5, 7
-                                        )
-                                    }/${purchaseDateDatabase.substring(0, 4)}"
+                                    val purchaseDateFormatted =
+                                        "${purchaseDateDatabase.substring(8, 10)}/" +
+                                        "${purchaseDateDatabase.substring(5, 7)}/" +
+                                        purchaseDateDatabase.substring(0, 4)
                                     val inputDateTime =
                                         childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).value.toString()
                                     val expense = Expense(
