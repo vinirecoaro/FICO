@@ -49,7 +49,7 @@ class FirebaseAPITest {
 
     //Verify if getting data from database is returning a expenseList when have data
     @Test
-    fun `test observeExpenseList with data`() = runTest {
+    fun `test getExpenseList with data`() = runTest {
         val mockDataSnapshot = mock(DataSnapshot::class.java)
         val mockChildSnapshot = mock(DataSnapshot::class.java)
 
@@ -107,7 +107,7 @@ class FirebaseAPITest {
 
     //Verify if getting data from database is returning a empty expenseList when do not have data on database
     @Test
-    fun `test observeExpenseList with empty data`() = runTest {
+    fun `test getExpenseList with empty data`() = runTest {
         val mockDataSnapshot = mock(DataSnapshot::class.java)
 
         // Simulate an empty snapshot

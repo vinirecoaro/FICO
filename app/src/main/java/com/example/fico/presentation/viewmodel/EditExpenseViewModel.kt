@@ -65,7 +65,7 @@ class EditExpenseViewModel(
                 oldExpenseNOfInstallment.toString()
             )
 
-            val removeFromExpenseList = arrangeDataToUpdateToDatabase.removeFromExpenseList(oldExpenseFormatted, viewModelScope).await()
+            val removeFromExpenseList = arrangeDataToUpdateToDatabase.removeFromExpenseList(oldExpenseFormatted, dataStore.getExpenseList())
 
             val newExpensePrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
             val newExpensePaymentDate = FormatValuesToDatabase().expenseDate(paymentDate)
@@ -225,8 +225,9 @@ class EditExpenseViewModel(
                 installment = true,
                 newExpenseNOfInstallments =  expenseNOfInstallment,
                 editExpense = false,
-                infoPerMonthDataStore = dataStore.getExpenseInfoPerMonth()
-            ).await()
+                currentInfoPerMonth = dataStore.getExpenseInfoPerMonth(),
+                defaultBudget = dataStore.getDefaultBudget()
+            )
 
             firebaseAPI.deleteInstallmentExpense(
                 removeFromExpenseList,
