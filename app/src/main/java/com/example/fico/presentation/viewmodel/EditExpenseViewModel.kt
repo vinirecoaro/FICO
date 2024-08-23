@@ -29,7 +29,7 @@ class EditExpenseViewModel(
     val editExpenseResult : LiveData<Boolean> = _editExpenseResult
     private val _deleteInstallmentExpenseResult = MutableLiveData<Boolean>()
     val deleteInstallmentExpenseResult : LiveData<Boolean> = _deleteInstallmentExpenseResult
-    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase(dataStore)
+    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(
@@ -81,7 +81,15 @@ class EditExpenseViewModel(
                 oldExpenseFormatted.price,
                 oldExpenseNOfInstallment).await()
 
-            val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonth(newExpense, installment, nOfInstallments, viewModelScope, true, oldExpenseFormatted).await()
+            val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonth(
+                newExpense,
+                installment,
+                nOfInstallments,
+                dataStore.getExpenseInfoPerMonth(),
+                dataStore.getDefaultBudget(),
+                true,
+                oldExpenseFormatted
+            )
 
             val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(newExpense, installment, nOfInstallments)
 
@@ -207,10 +215,9 @@ class EditExpenseViewModel(
             )
 
             //Id's to remove from expense list
-            val removeFromExpenseList = arrangeDataToUpdateToDatabase.removeFromExpenseListDataStore(
-                dataStore.getExpenseList(),
-                formattedExpense
-            ).await()
+            val removeFromExpenseList = arrangeDataToUpdateToDatabase.removeFromExpenseList(
+                formattedExpense,dataStore.getExpenseList()
+            )
 
             //Updated total expense
             val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
@@ -220,7 +227,7 @@ class EditExpenseViewModel(
             ).await()
 
             //Updated info per month
-            val updatedInformationPerMonthExpense = arrangeDataToUpdateToDatabase.addToInformationPerMonthDataStore(
+            val updatedInformationPerMonthExpense = arrangeDataToUpdateToDatabase.addToInformationPerMonth(
                 expense = formattedExpense,
                 installment = true,
                 newExpenseNOfInstallments =  expenseNOfInstallment,

@@ -3,10 +3,7 @@ package com.example.fico.di
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.preferencesDataStoreFile
 import com.example.fico.DataStoreManager
-import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
@@ -29,7 +26,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import kotlin.math.sin
 
 @RequiresApi(Build.VERSION_CODES.N)
 val appModule = module {

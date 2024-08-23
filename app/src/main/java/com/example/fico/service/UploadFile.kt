@@ -18,7 +18,7 @@ import java.math.RoundingMode
 class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:DataStoreManager) : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Default)
-    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase(dataStore)
+    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -44,7 +44,11 @@ class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:Da
 
                     val expensePerMonthList = arrangeDataToUpdateToDatabase.joinExpensesOfMonth(_expenses, installmentExpense)
 
-                    val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(expensePerMonthList,serviceScope).await()
+                    val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(
+                        expensePerMonthList,
+                        dataStore.getExpenseInfoPerMonth(),
+                        dataStore.getDefaultBudget()
+                    )
 
                     for (info in updatedInformationPerMonth){
                         masterExpenseList.updatedInformationPerMonth.add(info)
@@ -74,7 +78,11 @@ class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:Da
 
                     val expensePerMonthList = arrangeDataToUpdateToDatabase.joinExpensesOfMonth(_expenses, installmentExpense)
 
-                    val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(expensePerMonthList,serviceScope).await()
+                    val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(
+                        expensePerMonthList,
+                        dataStore.getExpenseInfoPerMonth(),
+                        dataStore.getDefaultBudget()
+                    )
 
                     for (info in updatedInformationPerMonth){
                         masterExpenseList.updatedInformationPerMonth.add(info)

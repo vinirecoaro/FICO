@@ -37,7 +37,7 @@ class ExpenseListViewModel(
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _installmentExpenseSwiped = MutableLiveData<Boolean>()
     val installmentExpenseSwiped: LiveData<Boolean> = _installmentExpenseSwiped
-    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase(dataStore)
+    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     val filterLiveData: LiveData<String>
         get() = _filterLiveData
 
@@ -195,9 +195,10 @@ class ExpenseListViewModel(
                     expense,
                     installment,
                     nOfInstallments,
-                    viewModelScope,
+                    dataStore.getExpenseInfoPerMonth(),
+                    dataStore.getDefaultBudget(),
                     false
-                ).await()
+                )
 
             //After update database update local storage
             var result = firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)

@@ -11,7 +11,7 @@ import java.math.RoundingMode
 import java.util.*
 import kotlin.collections.HashSet
 
-class ArrangeDataToUpdateToDatabase(private val dataStore : DataStoreManager) {
+class ArrangeDataToUpdateToDatabase() {
 
     fun calculateUpdatedTotalExpense(
         currentTotalExpense: String,
@@ -128,20 +128,6 @@ class ArrangeDataToUpdateToDatabase(private val dataStore : DataStoreManager) {
         return expenseIdList
     }
 
-    fun removeFromExpenseListDataStore(dataStoreExpenseList : List<Expense>, expense: Expense) : Deferred<MutableList<String>>{
-        val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(expense.id)
-
-        val deferredExpenseIdList = CompletableDeferred<MutableList<String>>()
-        val expenseIdList : MutableList<String> = mutableListOf()
-
-        for(expenseItem in dataStoreExpenseList.filter { FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id) == commonId }){
-            expenseIdList.add(expenseItem.id)
-        }
-
-        deferredExpenseIdList.complete(expenseIdList)
-        return deferredExpenseIdList
-    }
-
     private fun formatExpenseToInstallmentExpense(expense : Expense, installmentNumber : Int) : Expense {
         val month = expense.paymentDate.substring(5,7).toInt()
         var newMonth = month + installmentNumber
@@ -192,142 +178,7 @@ class ArrangeDataToUpdateToDatabase(private val dataStore : DataStoreManager) {
         return randomSequence.toString()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addToInformationPerMonth(
-        expense : Expense,
-        installment : Boolean,
-        newExpenseNOfInstallments: Int,
-        viewModelScope: CoroutineScope,
-        editExpense : Boolean,
-        oldExpense : Expense = Expense("","0","","","","","")
-    ) : Deferred<MutableList<InformationPerMonthExpense>> =
-        viewModelScope.async(Dispatchers.IO){
-            val currentInformationPerMonth = dataStore.getExpenseInfoPerMonth()
-            val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
-            val defaultBudget = BigDecimal(dataStore.getDefaultBudget())
-            val defaultBudgetString = defaultBudget.setScale(8, RoundingMode.HALF_UP).toString()
-
-            if(!editExpense){ // Just Add expense price
-                for (i in 0 until newExpenseNOfInstallments) {
-                    val date = updateInstallmenteExpenseDate(expense.paymentDate, i)
-                    val existDate = currentInformationPerMonth.any { it.date == date }
-                    if (!existDate) {
-
-                        val updatedAvailableNow = defaultBudget.subtract(BigDecimal(expense.price))
-                            .setScale(8, RoundingMode.HALF_UP).toString()
-
-                        val monthInfo = InformationPerMonthExpense(
-                            date,
-                            updatedAvailableNow,
-                            defaultBudgetString,
-                            expense.price
-                        )
-
-                        newInformationPerMonth.add(monthInfo)
-
-                    } else {
-                        val currentMonthInfo = currentInformationPerMonth.find { it.date == date }
-                        val currentAvailableNow = BigDecimal(currentMonthInfo!!.availableNow)
-                        val currentMonthExpense = BigDecimal(currentMonthInfo.monthExpense)
-
-                        val updatedAvailableNow =
-                            currentAvailableNow.subtract(BigDecimal(expense.price))
-                                .setScale(8, RoundingMode.HALF_UP).toString()
-                        val updatedMonthExpense = currentMonthExpense.add(BigDecimal(expense.price))
-                            .setScale(8, RoundingMode.HALF_UP).toString()
-
-                        val monthInfo = InformationPerMonthExpense(
-                            date,
-                            updatedAvailableNow,
-                            currentMonthInfo.budget,
-                            updatedMonthExpense
-                        )
-
-                        newInformationPerMonth.add(monthInfo)
-
-                    }
-                }
-            }else{
-                // Remove old expense price and add updated expense price - Edit Expense
-                val oldExpenseNOfInstallments : Int = if(installment){
-                    FormatValuesFromDatabase().installmentExpenseNofInstallment(oldExpense.id).toInt()
-                }else{
-                    1
-                }
-
-                val oldExpenseMonths = monthsOfInstallmentExpense(oldExpense.paymentDate, oldExpenseNOfInstallments)
-
-                val newExpenseMonths = monthsOfInstallmentExpense(expense.paymentDate, newExpenseNOfInstallments)
-
-                val months = HashSet<String>(oldExpenseMonths + newExpenseMonths)
-
-                for (month in months){
-
-                    var currentAvailableNow = defaultBudget
-                    var currentMonthExpense = BigDecimal("0").setScale(8, RoundingMode.HALF_UP)
-
-                    if (currentInformationPerMonth.any { it.date == month }) {
-                        val currentMonthInfo = currentInformationPerMonth.find { it.date == month }
-
-                        if (currentMonthInfo != null) {
-                            currentAvailableNow = BigDecimal(currentMonthInfo.availableNow)
-                            currentMonthExpense = BigDecimal(currentMonthInfo.monthExpense)
-                        }
-                    }
-
-                    if(oldExpenseMonths.any { it == month } && newExpenseMonths.any { it == month }){
-                        val updatedAvailableNow =
-                            currentAvailableNow.add(BigDecimal(oldExpense.price)).subtract(BigDecimal(expense.price))
-                                .setScale(8, RoundingMode.HALF_UP).toString()
-                        val updatedMonthExpense = currentMonthExpense.subtract(BigDecimal(oldExpense.price)).add(BigDecimal(expense.price))
-                            .setScale(8, RoundingMode.HALF_UP).toString()
-
-                        val monthInfo = InformationPerMonthExpense(
-                            month,
-                            updatedAvailableNow,
-                            defaultBudgetString,
-                            updatedMonthExpense
-                        )
-                        newInformationPerMonth.add(monthInfo)
-                    }
-
-                    else if(oldExpenseMonths.any { it == month }){
-                        val updatedAvailableNow =
-                            currentAvailableNow.add(BigDecimal(oldExpense.price))
-                                .setScale(8, RoundingMode.HALF_UP).toString()
-                        val updatedMonthExpense = currentMonthExpense.subtract(BigDecimal(oldExpense.price))
-                            .setScale(8, RoundingMode.HALF_UP).toString()
-
-                        val monthInfo = InformationPerMonthExpense(
-                            month,
-                            updatedAvailableNow,
-                            defaultBudgetString,
-                            updatedMonthExpense
-                        )
-                        newInformationPerMonth.add(monthInfo)
-                    }
-
-                    else if(newExpenseMonths.any { it == month }){
-                        val updatedAvailableNow =
-                            currentAvailableNow.subtract(BigDecimal(expense.price))
-                                .setScale(8, RoundingMode.HALF_UP).toString()
-                        val updatedMonthExpense = currentMonthExpense.add(BigDecimal(expense.price))
-                            .setScale(8, RoundingMode.HALF_UP).toString()
-
-                        val monthInfo = InformationPerMonthExpense(
-                            month,
-                            updatedAvailableNow,
-                            defaultBudgetString,
-                            updatedMonthExpense
-                        )
-                        newInformationPerMonth.add(monthInfo)
-                    }
-                }
-            }
-            return@async newInformationPerMonth
-        }
-
-    fun addToInformationPerMonthDataStore(
+    fun addToInformationPerMonth(
         expense : Expense,
         installment : Boolean,
         newExpenseNOfInstallments: Int,
@@ -461,24 +312,21 @@ class ArrangeDataToUpdateToDatabase(private val dataStore : DataStoreManager) {
             return newInformationPerMonth
         }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun addToInformationPerMonthFromUpdatedFile(
+    fun addToInformationPerMonthFromUpdatedFile(
         expenseList : MutableList<Expense>,
-        viewModelScope: CoroutineScope,
-    ) : Deferred<MutableList<InformationPerMonthExpense>> =
-        viewModelScope.async(Dispatchers.IO){
-            val currentInformationPerMonth = dataStore.getExpenseInfoPerMonth()
+        currentInfoPerMonth : List<InformationPerMonthExpense>,
+        defaultBudget : String
+    ) : MutableList<InformationPerMonthExpense>{
             val newInformationPerMonth = mutableListOf<InformationPerMonthExpense>()
-            val defaultBudget = BigDecimal(dataStore.getDefaultBudget())
-            val defaultBudgetString = defaultBudget.setScale(8, RoundingMode.HALF_UP).toString()
-
+            val defaultBudgetBigDecimal = BigDecimal(defaultBudget)
+            val defaultBudgetString = defaultBudgetBigDecimal.setScale(8, RoundingMode.HALF_UP).toString()
 
             for (expense in expenseList) {
                 val date = expense.paymentDate.substring(0,7)
-                val existDate = currentInformationPerMonth.any { it.date == date }
+                val existDate = currentInfoPerMonth.any { it.date == date }
                 if (!existDate) {
 
-                    val updatedAvailableNow = defaultBudget.subtract(BigDecimal(expense.price))
+                    val updatedAvailableNow = defaultBudgetBigDecimal.subtract(BigDecimal(expense.price))
                         .setScale(8, RoundingMode.HALF_UP).toString()
 
                     val monthInfo = InformationPerMonthExpense(
@@ -491,7 +339,7 @@ class ArrangeDataToUpdateToDatabase(private val dataStore : DataStoreManager) {
                     newInformationPerMonth.add(monthInfo)
 
                 } else {
-                    val currentMonthInfo = currentInformationPerMonth.find { it.date == date }
+                    val currentMonthInfo = currentInfoPerMonth.find { it.date == date }
                     val currentAvailableNow = BigDecimal(currentMonthInfo!!.availableNow)
                     val currentMonthExpense = BigDecimal(currentMonthInfo.monthExpense)
 
@@ -512,7 +360,7 @@ class ArrangeDataToUpdateToDatabase(private val dataStore : DataStoreManager) {
 
                 }
             }
-            return@async newInformationPerMonth
+            return newInformationPerMonth
         }
 
     private fun updateInstallmenteExpenseDate(expenseDate: String, iteraction: Int): String {
