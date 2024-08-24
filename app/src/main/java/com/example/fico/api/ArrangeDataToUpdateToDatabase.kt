@@ -2,10 +2,8 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.fico.DataStoreManager
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
-import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -15,13 +13,12 @@ class ArrangeDataToUpdateToDatabase() {
 
     fun calculateUpdatedTotalExpense(
         currentTotalExpense: String,
-        expensePrice : String,
+        expensePrice: String,
         expenseNOfInstallments: Int,
-        oldExpensePrice : String = "0",
-        oldExpenseNOfInstallments : Int = 1)
-    : Deferred<String>{
-        var updatedTotalExpense : BigDecimal
-        val updatedTotalExpenseString = CompletableDeferred<String>()
+        oldExpensePrice: String = "0",
+        oldExpenseNOfInstallments: Int = 1
+    ): String {
+        val updatedTotalExpense: BigDecimal
 
         val expenseNOfInstallmentsBigNum = BigDecimal(expenseNOfInstallments)
         val oldExpenseNOfInstallmentsBigNum = BigDecimal(oldExpenseNOfInstallments)
@@ -30,10 +27,11 @@ class ArrangeDataToUpdateToDatabase() {
         val oldExpenseBigNum = BigDecimal(oldExpensePrice)
         val oldExpensePriceBigNum = oldExpenseBigNum.multiply(oldExpenseNOfInstallmentsBigNum)
 
-        updatedTotalExpense = bigNumCurrentTotalExpense.add(expensePriceBigNum).subtract(oldExpensePriceBigNum).setScale(8, RoundingMode.HALF_UP)
-        updatedTotalExpenseString.complete(updatedTotalExpense.toString())
+        updatedTotalExpense =
+            bigNumCurrentTotalExpense.add(expensePriceBigNum).subtract(oldExpensePriceBigNum)
+                .setScale(8, RoundingMode.HALF_UP)
 
-        return updatedTotalExpenseString
+        return updatedTotalExpense.toString()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

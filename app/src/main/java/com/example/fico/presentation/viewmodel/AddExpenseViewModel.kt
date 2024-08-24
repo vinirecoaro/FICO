@@ -72,7 +72,7 @@ class AddExpenseViewModel(
                 dataStore.getTotalExpense(),
                 formattedPrice,
                 nOfInstallments
-            ).await()
+            )
 
             val updatedInformationPerMonth =
                 arrangeDataToUpdateToDatabase.addToInformationPerMonth(

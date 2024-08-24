@@ -38,7 +38,7 @@ class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:Da
                         dataStore.getTotalExpense(),
                         sumAllExpenses(_expenses),
                         1
-                    ).await()
+                    )
 
                     masterExpenseList.updatedTotalExpense = updatedTotalExpense
 
@@ -72,7 +72,7 @@ class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:Da
                         dataStore.getTotalExpense(),
                         sumAllExpenses(_expenses),
                         1,
-                    ).await()
+                    )
 
                     masterExpenseList.updatedTotalExpense = updatedTotalExpense
 
