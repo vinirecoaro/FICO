@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/navigation_expense_list"
         android:name="com.example.fico.presentation.fragments.expense.ExpenseListFragment"
-        android:label="@string/list"
+        android:label="@string/transactions"
         tools:layout="@layout/fragment_expense_list" />
 
     <fragment

@@ -11,8 +11,8 @@
         android:title="@string/add" />
     <item
         android:id="@+id/navigation_expense_list"
-        android:icon="@drawable/ic_list_24"
-        android:title="@string/list" />
+        android:icon="@drawable/transaction_icon_24"
+        android:title="@string/transactions" />
     <item
         android:id="@+id/navigation_config"
         android:icon="@drawable/config_image_dark"

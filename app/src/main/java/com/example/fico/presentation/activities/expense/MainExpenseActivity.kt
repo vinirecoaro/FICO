@@ -7,15 +7,14 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.fico.DataStoreManager
 import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.presentation.activities.GeneralConfigurationActivity
@@ -41,6 +40,7 @@ class MainExpenseActivity : AppCompatActivity(){
 
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setTitleTextColor(Color.WHITE)
+        binding.toolbar.background = ContextCompat.getDrawable(this, R.drawable.rounded_toolbar_corner)
 
         val navView: BottomNavigationView = binding.bottomNavigation
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
