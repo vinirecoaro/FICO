@@ -3,6 +3,7 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ac_home_24"
+        android:enabled="true"
         android:title="@string/home" />
     <item
         android:id="@+id/navigation_add_expense"

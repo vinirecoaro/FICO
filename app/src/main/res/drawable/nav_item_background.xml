@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="true">
         <shape android:shape="rectangle">
-            <solid android:color="#6C63FF" /> <!-- Cor do fundo do item selecionado -->
+            <solid android:color="#BABABF" /> <!-- Cor do fundo do item selecionado -->
             <corners android:radius="20dp" /> <!-- Arredondamento dos cantos -->
         </shape>
     </item>

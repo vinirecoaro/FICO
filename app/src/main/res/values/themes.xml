@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.FICO" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.FICO" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Screen Background color. -->
         <item name="android:windowBackground">@color/blue_10</item>
         <!-- Primary brand color. -->
@@ -13,7 +13,8 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <!-- Toolbar icons color -->
+        <item name="colorControlNormal">@color/white</item>
     </style>
 
     <style name="Theme.App.SplashScreen" parent = "Theme.SplashScreen">
