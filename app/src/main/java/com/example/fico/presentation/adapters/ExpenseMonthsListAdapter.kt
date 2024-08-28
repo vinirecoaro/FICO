@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.presentation.interfaces.OnExpenseMonthSelectedListener
@@ -38,13 +39,17 @@ class ExpenseMonthsListAdapter(private val context : Context, private var expens
 
         val theme = holder.itemView.context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         if (theme == Configuration.UI_MODE_NIGHT_YES) {
-            holder.cardView.setCardBackgroundColor(
-                if (position == selectedItemIndex) context.resources.getColor(R.color.grey_300) else context.resources.getColor(R.color.grey_500)
-            )
+            if (position == selectedItemIndex){
+                holder.cardView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.rounded_month_expense_corner_dark_mode_selected, null)
+            }else{
+                holder.cardView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.rounded_month_expense_corner_dark_mode, null)
+            }
         }else{
-            holder.cardView.setCardBackgroundColor(
-                if (position == selectedItemIndex) context.resources.getColor(R.color.grey_200) else Color.WHITE
-            )
+            if (position == selectedItemIndex){
+                holder.cardView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.rounded_month_expense_corner_light_mode_selected, null)
+            }else{
+                holder.cardView.background = ResourcesCompat.getDrawable(context.resources, R.drawable.rounded_month_expense_corner_light_mode, null)
+            }
         }
 
         holder.cardView.setOnClickListener {

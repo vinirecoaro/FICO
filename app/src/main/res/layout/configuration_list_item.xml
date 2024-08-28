@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/tv_configuration_list_item"
-        android:background="@drawable/rounded_border"
+        android:background="@drawable/rounded_config_item_corner"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="35dp"

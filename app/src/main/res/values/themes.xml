@@ -15,6 +15,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Toolbar icons color -->
         <item name="colorControlNormal">@color/white</item>
+
     </style>
 
     <style name="Theme.App.SplashScreen" parent = "Theme.SplashScreen">
