@@ -50,7 +50,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:menu="@menu/bottom_navigation_menu" />
+                app:menu="@menu/bottom_navigation_menu"
+                android:background="?attr/bottomAppBarBackgroundColor"
+                app:itemIconTint="?attr/bottomAppBarItemIconTint"
+                app:itemTextColor="?attr/bottomAppBarItemTextColor"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

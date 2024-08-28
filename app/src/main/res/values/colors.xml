@@ -16,6 +16,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="blue_10">#F1F9FD</color>
+    <color name="blue_30">#D5E4ED</color>
     <color name="blue_50">#C4DDED</color>
     <color name="blue_100">#7EBEEA</color>
     <color name="blue_200">#43A7DC</color>

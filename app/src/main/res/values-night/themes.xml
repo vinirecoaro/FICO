@@ -13,6 +13,11 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Toolbar icons color -->
         <item name="colorControlNormal">@color/white</item>
+        <!-- Bottom App Bar Color -->
+        <item name="bottomAppBarBackgroundColor">@color/black_100</item>
+        <item name="bottomAppBarItemIconTint">@color/white</item>
+        <item name="bottomAppBarItemTextColor">@color/white</item>
+        <item name="colorSecondaryContainer">@color/grey_500</item>
     </style>
 
     <style name="Theme.App.SplashScreen" parent = "Theme.SplashScreen">
