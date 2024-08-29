@@ -24,7 +24,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
@@ -48,13 +47,13 @@ import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
-import com.example.fico.presentation.viewmodel.shared.AddExpenseEditExpenseViewModel
 import com.example.fico.shared.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import com.example.fico.shared.DateFunctions
+import com.example.fico.shared.constants.ExpenseCategoriesList
 
 class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
@@ -64,7 +63,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private var _binding: FragmentAddExpenseBinding? = null
     private val binding get() = _binding!!
     private val viewModel: AddExpenseViewModel by inject()
-    private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -110,7 +108,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         setMaxLength(binding.etInstallments, 3)
 
         //Create category chooser
-        adapter = CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
+        adapter = CategoryListAdapter(ExpenseCategoriesList.categoryList.sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         return rootView

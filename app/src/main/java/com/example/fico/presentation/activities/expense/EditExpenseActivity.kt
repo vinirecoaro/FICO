@@ -17,7 +17,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
@@ -27,7 +26,7 @@ import com.example.fico.presentation.viewmodel.EditExpenseViewModel
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
-import com.example.fico.presentation.viewmodel.shared.AddExpenseEditExpenseViewModel
+import com.example.fico.shared.constants.ExpenseCategoriesList
 import com.example.fico.shared.constants.StringConstants
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -43,7 +42,6 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
     val binding by lazy { ActivityEditExpenseBinding.inflate(layoutInflater) }
     private val viewModel : EditExpenseViewModel by inject()
-    private val sharedViewModel by viewModels<AddExpenseEditExpenseViewModel>()
     private lateinit var adapter: CategoryListAdapter
     private var expenseIdLength = 0
     lateinit var editingExpense : Expense
@@ -60,7 +58,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
         //Create category chooser
         adapter =
-            CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
+            CategoryListAdapter(ExpenseCategoriesList.categoryList.sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         val intent = intent
