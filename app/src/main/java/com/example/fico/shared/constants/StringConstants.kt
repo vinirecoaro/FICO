@@ -1,6 +1,6 @@
-package com.example.fico.util.constants
+package com.example.fico.shared.constants
 
-class AppConstants private constructor() {
+class StringConstants private constructor() {
 
     object DATABASE {
         const val USERS = "users"

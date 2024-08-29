@@ -28,7 +28,7 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.presentation.viewmodel.shared.AddExpenseEditExpenseViewModel
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -246,7 +246,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
         })
 
         binding.editExpenseToolbar.setNavigationOnClickListener {
-            setResult(AppConstants.RESULT_CODES.BACK_BUTTON_PRESSED)
+            setResult(StringConstants.RESULT_CODES.BACK_BUTTON_PRESSED)
             finish()
         }
 
@@ -270,10 +270,10 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
         viewModel.deleteInstallmentExpenseResult.observe(this){result ->
             if(result){
-                setResult(AppConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK)
+                setResult(StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK)
                 finish()
             }else{
-                setResult(AppConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE)
+                setResult(StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE)
                 finish()
             }
         }

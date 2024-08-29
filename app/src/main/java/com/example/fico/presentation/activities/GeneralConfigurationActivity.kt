@@ -4,10 +4,9 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.databinding.ActivityGeneralConfigurationBinding
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import com.example.fico.presentation.adapters.GeneralConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
@@ -42,10 +41,10 @@ class GeneralConfigurationActivity : AppCompatActivity(),OnListItemClick {
 
     override fun onListItemClick(position: Int) {
         val item = viewModel.configurationList[position]
-        if(item == AppConstants.GENERAL_CONFIGURATION_LIST.PERSONAL_DATA){
+        if(item == StringConstants.GENERAL_CONFIGURATION_LIST.PERSONAL_DATA){
             startActivity(Intent(this, UserDataActivity::class.java))
         }
-        else if(item == AppConstants.GENERAL_CONFIGURATION_LIST.LOGOUT){
+        else if(item == StringConstants.GENERAL_CONFIGURATION_LIST.LOGOUT){
             viewModel.logoff()
             finish()
             val intent = Intent(this, LoginActivity::class.java)

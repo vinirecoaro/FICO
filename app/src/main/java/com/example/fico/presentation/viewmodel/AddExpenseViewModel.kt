@@ -13,7 +13,7 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.util.constants.DateFunctions
+import com.example.fico.shared.DateFunctions
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode

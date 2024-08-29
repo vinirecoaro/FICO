@@ -15,12 +15,10 @@ import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.util.constants.DateFunctions
-import kotlinx.coroutines.CompletableDeferred
+import com.example.fico.shared.DateFunctions
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat

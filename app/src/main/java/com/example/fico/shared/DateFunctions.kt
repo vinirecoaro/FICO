@@ -1,4 +1,4 @@
-package com.example.fico.util.constants
+package com.example.fico.shared
 
 import android.os.Build
 import androidx.annotation.RequiresApi

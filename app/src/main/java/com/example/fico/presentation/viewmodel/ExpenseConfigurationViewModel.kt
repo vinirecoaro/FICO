@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import kotlinx.coroutines.async
 
 class ExpenseConfigurationViewModel(
@@ -18,8 +18,8 @@ class ExpenseConfigurationViewModel(
     val setDefaultBudgetLiveData: LiveData<Boolean> = _setDefaultBudget
 
     val configurationList: MutableList<String> = mutableListOf(
-        AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET,
-        AppConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE
+        StringConstants.EXPENSE_CONFIGURATION_LIST.BUDGET,
+        StringConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE
     )
 
     fun setDefaultPaymentDay(date: String) {

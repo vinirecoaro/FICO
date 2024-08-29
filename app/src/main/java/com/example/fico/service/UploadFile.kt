@@ -10,7 +10,7 @@ import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Expense
 import com.example.fico.model.UpdateFromFileExpenseList
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -61,7 +61,7 @@ class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:Da
                    }
 
                     if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
-                        val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+                        val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
                         sendBroadcast(intentConcludedWarning)
                     }
                 }
@@ -103,7 +103,7 @@ class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:Da
                     }
 
                     if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
-                        val intentConcludedWarning = Intent(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+                        val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
                         sendBroadcast(intentConcludedWarning)
                     }
 

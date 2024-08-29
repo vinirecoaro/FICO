@@ -2,154 +2,154 @@ package com.example.fico.presentation.viewmodel.shared
 
 import androidx.lifecycle.ViewModel
 import com.example.fico.model.ExpenseCategory
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 
 class AddExpenseEditExpenseViewModel : ViewModel() {
 
     val categoryList = listOf(
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.FOOD,
-            AppConstants.CATEGORY_LIST.ICON_NAME.FOOD,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.FOOD,
+            StringConstants.CATEGORY_LIST.ICON_NAME.FOOD,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.TRANSPORT,
-            AppConstants.CATEGORY_LIST.ICON_NAME.TRANSPORT,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.TRANSPORT,
+            StringConstants.CATEGORY_LIST.ICON_NAME.TRANSPORT,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.ENTERTAINMENT,
-            AppConstants.CATEGORY_LIST.ICON_NAME.ENTERTAINMENT,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.ENTERTAINMENT,
+            StringConstants.CATEGORY_LIST.ICON_NAME.ENTERTAINMENT,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.MARKET,
-            AppConstants.CATEGORY_LIST.ICON_NAME.MARKET,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.MARKET,
+            StringConstants.CATEGORY_LIST.ICON_NAME.MARKET,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.EDUCATION,
-            AppConstants.CATEGORY_LIST.ICON_NAME.EDUCATION,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.EDUCATION,
+            StringConstants.CATEGORY_LIST.ICON_NAME.EDUCATION,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.GIFT,
-            AppConstants.CATEGORY_LIST.ICON_NAME.GIFT,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.GIFT,
+            StringConstants.CATEGORY_LIST.ICON_NAME.GIFT,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.HEALTHY,
-            AppConstants.CATEGORY_LIST.ICON_NAME.HEALTHY,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.HEALTHY,
+            StringConstants.CATEGORY_LIST.ICON_NAME.HEALTHY,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.GAMES,
-            AppConstants.CATEGORY_LIST.ICON_NAME.GAMES,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.GAMES,
+            StringConstants.CATEGORY_LIST.ICON_NAME.GAMES,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.INVESTMENT,
-            AppConstants.CATEGORY_LIST.ICON_NAME.INVESTMENT,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.INVESTMENT,
+            StringConstants.CATEGORY_LIST.ICON_NAME.INVESTMENT,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.ELETRONICS,
-            AppConstants.CATEGORY_LIST.ICON_NAME.ELETRONICS,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.ELETRONICS,
+            StringConstants.CATEGORY_LIST.ICON_NAME.ELETRONICS,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.REPAIR,
-            AppConstants.CATEGORY_LIST.ICON_NAME.REPAIR,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.REPAIR,
+            StringConstants.CATEGORY_LIST.ICON_NAME.REPAIR,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.ACESSORIES,
-            AppConstants.CATEGORY_LIST.ICON_NAME.ACESSORIES,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.ACESSORIES,
+            StringConstants.CATEGORY_LIST.ICON_NAME.ACESSORIES,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.CLOTHING,
-            AppConstants.CATEGORY_LIST.ICON_NAME.CLOTHING,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.CLOTHING,
+            StringConstants.CATEGORY_LIST.ICON_NAME.CLOTHING,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.CAR,
-            AppConstants.CATEGORY_LIST.ICON_NAME.CAR,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.CAR,
+            StringConstants.CATEGORY_LIST.ICON_NAME.CAR,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.MOTORCYCLE,
-            AppConstants.CATEGORY_LIST.ICON_NAME.MOTORCYCLE,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.MOTORCYCLE,
+            StringConstants.CATEGORY_LIST.ICON_NAME.MOTORCYCLE,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.TRIP,
-            AppConstants.CATEGORY_LIST.ICON_NAME.TRIP,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.TRIP,
+            StringConstants.CATEGORY_LIST.ICON_NAME.TRIP,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.HOUSE,
-            AppConstants.CATEGORY_LIST.ICON_NAME.HOUSE,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.HOUSE,
+            StringConstants.CATEGORY_LIST.ICON_NAME.HOUSE,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.DONATION,
-            AppConstants.CATEGORY_LIST.ICON_NAME.DONATION,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.DONATION,
+            StringConstants.CATEGORY_LIST.ICON_NAME.DONATION,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.BET,
-            AppConstants.CATEGORY_LIST.ICON_NAME.BET,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.BET,
+            StringConstants.CATEGORY_LIST.ICON_NAME.BET,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.PETS,
-            AppConstants.CATEGORY_LIST.ICON_NAME.PETS,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.PETS,
+            StringConstants.CATEGORY_LIST.ICON_NAME.PETS,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.FEES,
-            AppConstants.CATEGORY_LIST.ICON_NAME.FEES,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.FEES,
+            StringConstants.CATEGORY_LIST.ICON_NAME.FEES,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.GYM,
-            AppConstants.CATEGORY_LIST.ICON_NAME.GYM,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.GYM,
+            StringConstants.CATEGORY_LIST.ICON_NAME.GYM,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.CELLPHONE,
-            AppConstants.CATEGORY_LIST.ICON_NAME.CELLPHONE,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.CELLPHONE,
+            StringConstants.CATEGORY_LIST.ICON_NAME.CELLPHONE,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.PERSONAL_HYGIENE,
-            AppConstants.CATEGORY_LIST.ICON_NAME.PERSONAL_HYGIENE,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.PERSONAL_HYGIENE,
+            StringConstants.CATEGORY_LIST.ICON_NAME.PERSONAL_HYGIENE,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.PHARMACY,
-            AppConstants.CATEGORY_LIST.ICON_NAME.PHARMACY,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.PHARMACY,
+            StringConstants.CATEGORY_LIST.ICON_NAME.PHARMACY,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.CASH_WITHDRAWAL,
-            AppConstants.CATEGORY_LIST.ICON_NAME.CASH_WITHDRAWAL,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.CASH_WITHDRAWAL,
+            StringConstants.CATEGORY_LIST.ICON_NAME.CASH_WITHDRAWAL,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.RIDE,
-            AppConstants.CATEGORY_LIST.ICON_NAME.RIDE,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.RIDE,
+            StringConstants.CATEGORY_LIST.ICON_NAME.RIDE,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.PAYMENT,
-            AppConstants.CATEGORY_LIST.ICON_NAME.PAYMENT,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.PAYMENT,
+            StringConstants.CATEGORY_LIST.ICON_NAME.PAYMENT,
             false
         ),
         ExpenseCategory(
-            AppConstants.CATEGORY_LIST.DESCRIPTION.SERVICES,
-            AppConstants.CATEGORY_LIST.ICON_NAME.SERVICES,
+            StringConstants.CATEGORY_LIST.DESCRIPTION.SERVICES,
+            StringConstants.CATEGORY_LIST.ICON_NAME.SERVICES,
             false
         )
 

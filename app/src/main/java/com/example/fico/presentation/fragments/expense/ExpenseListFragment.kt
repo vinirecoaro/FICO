@@ -26,20 +26,19 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.FragmentExpenseListBinding
 import com.example.fico.model.Expense
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import com.example.fico.presentation.activities.expense.EditExpenseActivity
 import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
-import com.example.fico.util.constants.DateFunctions
+import com.example.fico.shared.DateFunctions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -257,14 +256,14 @@ class ExpenseListFragment : Fragment(), XLSInterface {
             nOfInstallment = expense.nOfInstallment
         )
         intent.putExtra("expense", sureExpense)
-        startActivityForResult(intent, AppConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)
+        startActivityForResult(intent, StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         // Check if edit expense was successfully completed
-        if(requestCode == AppConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE){
+        if(requestCode == StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE){
             if(resultCode == Activity.RESULT_OK){
                 Snackbar.make(
                     binding.rvExpenseList,
@@ -277,13 +276,13 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     "Falha ao alterar gasto",
                     Snackbar.LENGTH_LONG
                 ).show()
-            }else if(resultCode == AppConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK){
+            }else if(resultCode == StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK){
                 Snackbar.make(
                     binding.rvExpenseList,
                     "Gasto excluído com sucesso",
                     Snackbar.LENGTH_LONG
                 ).show()
-            }else if(resultCode == AppConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE){
+            }else if(resultCode == StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE){
                 Snackbar.make(
                     binding.rvExpenseList,
                     "Falha ao excluir gasto",
@@ -310,7 +309,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
     private fun shareFile(filePath: File) {
         val fileUri = FileProvider.getUriForFile(
             requireContext(),
-            AppConstants.FILE_PROVIDER.AUTHORITY, // authorities deve corresponder ao valor definido no AndroidManifest.xml
+            StringConstants.FILE_PROVIDER.AUTHORITY, // authorities deve corresponder ao valor definido no AndroidManifest.xml
             filePath
         )
         val intent = Intent(Intent.ACTION_SEND)
@@ -429,9 +428,9 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         var jsonArray = gson.toJsonTree(expenseList).asJsonArray
 
         var file = generateXlsFile(
-            requireActivity(), AppConstants.XLS.TITLES,
-            AppConstants.XLS.INDEX_NAME, jsonArray, HashMap(), AppConstants.XLS.SHEET_NAME,
-            AppConstants.XLS.FILE_NAME, 0
+            requireActivity(), StringConstants.XLS.TITLES,
+            StringConstants.XLS.INDEX_NAME, jsonArray, HashMap(), StringConstants.XLS.SHEET_NAME,
+            StringConstants.XLS.FILE_NAME, 0
         )
 
         if (file != null) {

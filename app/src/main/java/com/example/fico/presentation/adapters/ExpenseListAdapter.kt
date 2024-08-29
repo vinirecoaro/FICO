@@ -3,11 +3,14 @@ package com.example.fico.presentation.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.model.Expense
+import com.example.fico.model.ExpenseCategory
 import com.example.fico.presentation.interfaces.OnListItemClick
+import com.example.fico.shared.constants.ExpenseCategoriesList
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -15,11 +18,13 @@ import java.util.*
 class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
 
     private var listener: OnListItemClick? = null
+    private val categoriesList = ExpenseCategoriesList.categoryList
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val description: TextView = itemView.findViewById(R.id.tv_description)
         val price: TextView = itemView.findViewById(R.id.tv_price)
         val date: TextView = itemView.findViewById(R.id.tv_date)
+        val categoryImg: ImageView = itemView.findViewById(R.id.iv_category_expense_item_list)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,6 +46,10 @@ class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter
         holder.price.text = formattedPrice
 
         holder.date.text = item.paymentDate
+
+        val categoryPathName = categoriesList.find{ it.description == item.category }
+        val iconPath = holder.itemView.context.resources.getIdentifier(categoryPathName!!.iconName, "drawable", holder.itemView.context.packageName)
+        holder.categoryImg.setImageResource(iconPath)
 
         holder.itemView.setOnClickListener {
             listener?.onListItemClick(position)

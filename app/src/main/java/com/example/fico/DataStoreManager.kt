@@ -8,23 +8,23 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class DataStoreManager (context: Context) {
-    private val Context.dataStore : DataStore<Preferences> by preferencesDataStore(AppConstants.DATA_STORE.NAME)
+    private val Context.dataStore : DataStore<Preferences> by preferencesDataStore(StringConstants.DATA_STORE.NAME)
     private val dataStore = context.dataStore
 
     companion object {
-        val expenseListKey = stringPreferencesKey(AppConstants.DATA_STORE.EXPENSE_LIST)
-        val expenseMonthsKey = stringPreferencesKey(AppConstants.DATA_STORE.EXPENSE_MONTHS)
-        val expenseInfoPerMonthKey = stringPreferencesKey(AppConstants.DATA_STORE.INFO_PER_MONTH)
-        val totalExpenseKey = stringPreferencesKey(AppConstants.DATA_STORE.TOTAL_EXPENSE)
-        val defaultBudgetKey = stringPreferencesKey(AppConstants.DATA_STORE.DEFAULT_BUDGET_KEY)
-        val defaultPaymentDayKey = stringPreferencesKey(AppConstants.DATA_STORE.DEFAULT_PAYMENT_DAY_KEY)
+        val expenseListKey = stringPreferencesKey(StringConstants.DATA_STORE.EXPENSE_LIST)
+        val expenseMonthsKey = stringPreferencesKey(StringConstants.DATA_STORE.EXPENSE_MONTHS)
+        val expenseInfoPerMonthKey = stringPreferencesKey(StringConstants.DATA_STORE.INFO_PER_MONTH)
+        val totalExpenseKey = stringPreferencesKey(StringConstants.DATA_STORE.TOTAL_EXPENSE)
+        val defaultBudgetKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_BUDGET_KEY)
+        val defaultPaymentDayKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_PAYMENT_DAY_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){

@@ -7,7 +7,7 @@ import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.model.User
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -29,51 +29,51 @@ class FirebaseAPI(
     private val auth : FirebaseAuth,
     private val database : FirebaseDatabase
 ) {
-    private val rootRef = database.getReference(AppConstants.DATABASE.USERS)
+    private val rootRef = database.getReference(StringConstants.DATABASE.USERS)
     private var total_expenses_price =
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
             .child(
-                AppConstants.DATABASE.TOTAL_EXPENSE
+                StringConstants.DATABASE.TOTAL_EXPENSE
             )
     private var expenses_information_per_month =
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
             .child(
-                AppConstants.DATABASE.INFORMATION_PER_MONTH
+                StringConstants.DATABASE.INFORMATION_PER_MONTH
             )
     private var expense_list =
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
             .child(
-                AppConstants.DATABASE.EXPENSES_LIST
+                StringConstants.DATABASE.EXPENSES_LIST
             )
     private var default_expense_values =
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
             .child(
-                AppConstants.DATABASE.DEFAULT_VALUES
+                StringConstants.DATABASE.DEFAULT_VALUES
             )
     private var expenses =
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
     private var user_info =
-        rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
+        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.USER_INFO)
     private var user_root = rootRef.child(auth.currentUser?.uid.toString())
 
 
     fun updateReferences() {
         expenses =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
+            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
         total_expenses_price =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-                .child(AppConstants.DATABASE.TOTAL_EXPENSE)
+            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
+                .child(StringConstants.DATABASE.TOTAL_EXPENSE)
         expenses_information_per_month =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-                .child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
+            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
+                .child(StringConstants.DATABASE.INFORMATION_PER_MONTH)
         expense_list =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-                .child(AppConstants.DATABASE.EXPENSES_LIST)
+            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
+                .child(StringConstants.DATABASE.EXPENSES_LIST)
         default_expense_values =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.EXPENSES)
-                .child(AppConstants.DATABASE.DEFAULT_VALUES)
+            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
+                .child(StringConstants.DATABASE.DEFAULT_VALUES)
         user_info =
-            rootRef.child(auth.currentUser?.uid.toString()).child(AppConstants.DATABASE.USER_INFO)
+            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.USER_INFO)
         user_root = rootRef.child(auth.currentUser?.uid.toString())
     }
 
@@ -110,9 +110,9 @@ class FirebaseAPI(
     }
 
     suspend fun addNewUserOnDatabase() = withContext(Dispatchers.IO) {
-        expenses.child(AppConstants.DATABASE.EXPENSES_LIST).setValue("")
-        expenses.child(AppConstants.DATABASE.INFORMATION_PER_MONTH).setValue("")
-        expenses.child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
+        expenses.child(StringConstants.DATABASE.EXPENSES_LIST).setValue("")
+        expenses.child(StringConstants.DATABASE.INFORMATION_PER_MONTH).setValue("")
+        expenses.child(StringConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
     }
 
     suspend fun getUserEmail(): String = withContext(Dispatchers.IO) {
@@ -123,7 +123,7 @@ class FirebaseAPI(
     suspend fun editUserName(name: String): Boolean = withContext(Dispatchers.IO) {
         val result = CompletableDeferred<Boolean>()
         try {
-            user_info.child(AppConstants.DATABASE.NAME).setValue(name)
+            user_info.child(StringConstants.DATABASE.NAME).setValue(name)
             result.complete(true)
         } catch (e: Exception) {
             result.complete(false)
@@ -132,15 +132,15 @@ class FirebaseAPI(
     }
 
     suspend fun setUserName(name: String) = withContext(Dispatchers.IO) {
-        user_info.child(AppConstants.DATABASE.NAME).setValue(name)
+        user_info.child(StringConstants.DATABASE.NAME).setValue(name)
     }
 
     suspend fun getUserName(): String = withContext(Dispatchers.IO) {
         val userName = CompletableDeferred<String>()
         user_info.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.child(AppConstants.DATABASE.NAME).exists()) {
-                    val username2 = snapshot.child(AppConstants.DATABASE.NAME).value.toString()
+                if (snapshot.child(StringConstants.DATABASE.NAME).exists()) {
+                    val username2 = snapshot.child(StringConstants.DATABASE.NAME).value.toString()
                     userName.complete(username2)
                 } else {
                     userName.complete("User")
@@ -201,7 +201,7 @@ class FirebaseAPI(
         try {
             val bigNum = BigDecimal(budget)
             val formattedBudget = bigNum.setScale(8, RoundingMode.HALF_UP).toString()
-            default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET)
+            default_expense_values.child(StringConstants.DATABASE.DEFAULT_BUDGET)
                 .setValue(formattedBudget)
             Result.success(Unit)
         } catch (e: Exception) {
@@ -217,7 +217,7 @@ class FirebaseAPI(
                 for (month in snapshot.children) {
                     val date = month.key.toString()
                     val budget =
-                        month.child(AppConstants.DATABASE.BUDGET).value.toString().toFloat()
+                        month.child(StringConstants.DATABASE.BUDGET).value.toString().toFloat()
                     val formattedBudget = "R$ %.2f".format(budget).replace(".", ",")
                     val budgetItem = Budget(formattedBudget, date)
                     budgetPerMonth.add(budgetItem)
@@ -255,9 +255,9 @@ class FirebaseAPI(
     ): MutableMap<String, Any> {
         val updetedInfoPerMonth = mutableMapOf<String, Any>()
 
-        updetedInfoPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/$date/${AppConstants.DATABASE.BUDGET}"] =
+        updetedInfoPerMonth["${StringConstants.DATABASE.INFORMATION_PER_MONTH}/$date/${StringConstants.DATABASE.BUDGET}"] =
             newBudget
-        updetedInfoPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/$date/${AppConstants.DATABASE.AVAILABLE_NOW}"] =
+        updetedInfoPerMonth["${StringConstants.DATABASE.INFORMATION_PER_MONTH}/$date/${StringConstants.DATABASE.AVAILABLE_NOW}"] =
             newAvailableNow
 
         return updetedInfoPerMonth
@@ -265,7 +265,7 @@ class FirebaseAPI(
 
     suspend fun getDefaultBudget(): Deferred<String> = withContext(Dispatchers.IO) {
         val defaultBudget = CompletableDeferred<String>()
-        default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET)
+        default_expense_values.child(StringConstants.DATABASE.DEFAULT_BUDGET)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val value = snapshot.value.toString()
@@ -297,7 +297,7 @@ class FirebaseAPI(
         }
 
     suspend fun checkIfExistDefaultBudget(): Boolean {
-        return checkIfExistsOnDatabse(default_expense_values.child(AppConstants.DATABASE.DEFAULT_BUDGET))
+        return checkIfExistsOnDatabse(default_expense_values.child(StringConstants.DATABASE.DEFAULT_BUDGET))
     }
 
     private suspend fun updateTotalExpense(value: String) = withContext(Dispatchers.IO) {
@@ -404,17 +404,17 @@ class FirebaseAPI(
         val updatesOfExpenseList = mutableMapOf<String, Any>()
 
         for (expense in expenseList) {
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.PRICE}"] =
+            updatesOfExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${StringConstants.DATABASE.PRICE}"] =
                 expense.price
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.DESCRIPTION}"] =
+            updatesOfExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
                 expense.description
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.PAYMENT_DATE}"] =
+            updatesOfExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${StringConstants.DATABASE.PAYMENT_DATE}"] =
                 expense.paymentDate
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.PURCHASE_DATE}"] =
+            updatesOfExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${StringConstants.DATABASE.PURCHASE_DATE}"] =
                 expense.purchaseDate
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.INPUT_DATE_TIME}"] =
+            updatesOfExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
                 expense.inputDateTime
-            updatesOfExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${AppConstants.DATABASE.CATEGORY}"] =
+            updatesOfExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${expense.id}/${StringConstants.DATABASE.CATEGORY}"] =
                 expense.category
         }
 
@@ -427,7 +427,7 @@ class FirebaseAPI(
         val removeFromExpenseList = mutableMapOf<String, Any?>()
 
         for (i in 0 until nOfInstallments) {
-            removeFromExpenseList["${AppConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}"] =
+            removeFromExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}"] =
                 null
         }
 
@@ -439,11 +439,11 @@ class FirebaseAPI(
 
         // Add expenseList on updateList for installment expense
         for (monthInfo in informationPerMonthList) {
-            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${AppConstants.DATABASE.AVAILABLE_NOW}"] =
+            updatesOfInformationPerMonth["${StringConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${StringConstants.DATABASE.AVAILABLE_NOW}"] =
                 monthInfo.availableNow
-            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${AppConstants.DATABASE.BUDGET}"] =
+            updatesOfInformationPerMonth["${StringConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${StringConstants.DATABASE.BUDGET}"] =
                 monthInfo.budget
-            updatesOfInformationPerMonth["${AppConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${AppConstants.DATABASE.EXPENSE}"] =
+            updatesOfInformationPerMonth["${StringConstants.DATABASE.INFORMATION_PER_MONTH}/${monthInfo.date}/${StringConstants.DATABASE.EXPENSE}"] =
                 monthInfo.monthExpense
         }
 
@@ -452,7 +452,7 @@ class FirebaseAPI(
 
     private fun generateMapToUpdateUserTotalExpense(updatedTotalExpense: String): MutableMap<String, Any> {
         val updatedTotalExpenseMap = mutableMapOf<String, Any>()
-        updatedTotalExpenseMap[AppConstants.DATABASE.TOTAL_EXPENSE] = updatedTotalExpense
+        updatedTotalExpenseMap[StringConstants.DATABASE.TOTAL_EXPENSE] = updatedTotalExpense
 
         return updatedTotalExpenseMap
     }
@@ -463,14 +463,14 @@ class FirebaseAPI(
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val updatedExpense =
-                            sumOldAndNewValue(expense, snapshot, AppConstants.DATABASE.EXPENSE)
+                            sumOldAndNewValue(expense, snapshot, StringConstants.DATABASE.EXPENSE)
                         expenses_information_per_month.child(expense.paymentDate.substring(0, 7))
-                            .child(AppConstants.DATABASE.EXPENSE).setValue(updatedExpense)
+                            .child(StringConstants.DATABASE.EXPENSE).setValue(updatedExpense)
                         val updatedAvailable = subOldAndNewValue(
-                            expense, snapshot, AppConstants.DATABASE.AVAILABLE_NOW
+                            expense, snapshot, StringConstants.DATABASE.AVAILABLE_NOW
                         )
                         expenses_information_per_month.child(expense.paymentDate.substring(0, 7))
-                            .child(AppConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
+                            .child(StringConstants.DATABASE.AVAILABLE_NOW).setValue(updatedAvailable)
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -486,7 +486,7 @@ class FirebaseAPI(
         reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    val availableValue = snapshot.child(AppConstants.DATABASE.AVAILABLE_NOW)
+                    val availableValue = snapshot.child(StringConstants.DATABASE.AVAILABLE_NOW)
                         .getValue(String::class.java)
                     availableNow.complete(availableValue.toString())
                 } else {
@@ -511,7 +511,7 @@ class FirebaseAPI(
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     trySend(
-                        snapshot.child(AppConstants.DATABASE.AVAILABLE_NOW)
+                        snapshot.child(StringConstants.DATABASE.AVAILABLE_NOW)
                             .getValue(String::class.java)
                     )
                 } else {
@@ -539,7 +539,7 @@ class FirebaseAPI(
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val monthExpenseValue =
-                        snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java)
+                        snapshot.child(StringConstants.DATABASE.EXPENSE).getValue(String::class.java)
                     deferredExpense.complete(monthExpenseValue.toString())
                 } else {
                     deferredExpense.complete("---")
@@ -563,7 +563,7 @@ class FirebaseAPI(
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     trySend(
-                        snapshot.child(AppConstants.DATABASE.EXPENSE).getValue(String::class.java)
+                        snapshot.child(StringConstants.DATABASE.EXPENSE).getValue(String::class.java)
                     )
                 } else {
                     trySend("---")
@@ -647,21 +647,21 @@ class FirebaseAPI(
                             for (childSnapshot in snapshot.children) {
                                 val id = childSnapshot.key.toString()
                                 val priceDatabase =
-                                    BigDecimal(childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString())
+                                    BigDecimal(childSnapshot.child(StringConstants.DATABASE.PRICE).value.toString())
                                 val priceFormatted =
                                     priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
                                 val description =
-                                    childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
+                                    childSnapshot.child(StringConstants.DATABASE.DESCRIPTION).value.toString()
                                 val category =
-                                    childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
+                                    childSnapshot.child(StringConstants.DATABASE.CATEGORY).value.toString()
                                 val paymentDateDatabase =
-                                    childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
+                                    childSnapshot.child(StringConstants.DATABASE.PAYMENT_DATE).value.toString()
                                 var paymentDateFormatted =
                                         "${paymentDateDatabase.substring(8, 10)}/" +
                                         "${paymentDateDatabase.substring(5, 7)}/" +
                                         paymentDateDatabase.substring(0, 4)
-                                if ((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE)
-                                        .exists()) || (!childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME)
+                                if ((!childSnapshot.child(StringConstants.DATABASE.PURCHASE_DATE)
+                                        .exists()) || (!childSnapshot.child(StringConstants.DATABASE.INPUT_DATE_TIME)
                                         .exists())
                                 ) {
                                     val expense = Expense(
@@ -676,13 +676,13 @@ class FirebaseAPI(
                                     expenseList.add(expense)
                                 } else {
                                     val purchaseDateDatabase =
-                                        childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
+                                        childSnapshot.child(StringConstants.DATABASE.PURCHASE_DATE).value.toString()
                                     val purchaseDateFormatted =
                                         "${purchaseDateDatabase.substring(8, 10)}/" +
                                         "${purchaseDateDatabase.substring(5, 7)}/" +
                                         purchaseDateDatabase.substring(0, 4)
                                     val inputDateTime =
-                                        childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+                                        childSnapshot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
                                     val expense = Expense(
                                         id,
                                         priceFormatted,
@@ -699,7 +699,7 @@ class FirebaseAPI(
                         } else {
                             for (childSnapshot in snapshot.children) {
                                 val dateDatabase =
-                                    childSnapshot.child(AppConstants.DATABASE.PAYMENT_DATE).value.toString()
+                                    childSnapshot.child(StringConstants.DATABASE.PAYMENT_DATE).value.toString()
                                 val dateFromDatabase = "${dateDatabase.substring(0, 4)}-${
                                     dateDatabase.substring(
                                         5, 7
@@ -710,13 +710,13 @@ class FirebaseAPI(
                                 if (dateFromDatabase == dateFromFilter) {
                                     val id = childSnapshot.key.toString()
                                     val priceDatabase =
-                                        BigDecimal(childSnapshot.child(AppConstants.DATABASE.PRICE).value.toString())
+                                        BigDecimal(childSnapshot.child(StringConstants.DATABASE.PRICE).value.toString())
                                     val priceFormatted =
                                         priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
                                     val description =
-                                        childSnapshot.child(AppConstants.DATABASE.DESCRIPTION).value.toString()
+                                        childSnapshot.child(StringConstants.DATABASE.DESCRIPTION).value.toString()
                                     val category =
-                                        childSnapshot.child(AppConstants.DATABASE.CATEGORY).value.toString()
+                                        childSnapshot.child(StringConstants.DATABASE.CATEGORY).value.toString()
                                     val paymentDateFormatted = "${
                                         dateDatabase.substring(
                                             8, 10
@@ -726,8 +726,8 @@ class FirebaseAPI(
                                             0, 4
                                         )
                                     }"
-                                    if ((!childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE)
-                                            .exists()) || (!childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME)
+                                    if ((!childSnapshot.child(StringConstants.DATABASE.PURCHASE_DATE)
+                                            .exists()) || (!childSnapshot.child(StringConstants.DATABASE.INPUT_DATE_TIME)
                                             .exists())
                                     ) {
                                         val expense = Expense(
@@ -742,7 +742,7 @@ class FirebaseAPI(
                                         expenseList.add(expense)
                                     } else {
                                         val purchaseDateDatabase =
-                                            childSnapshot.child(AppConstants.DATABASE.PURCHASE_DATE).value.toString()
+                                            childSnapshot.child(StringConstants.DATABASE.PURCHASE_DATE).value.toString()
                                         val purchaseDateFormatted = "${
                                             purchaseDateDatabase.substring(
                                                 8, 10
@@ -753,7 +753,7 @@ class FirebaseAPI(
                                             )
                                         }/${purchaseDateDatabase.substring(0, 4)}"
                                         val inputDateTime =
-                                            childSnapshot.child(AppConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+                                            childSnapshot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
                                         val expense = Expense(
                                             id,
                                             priceFormatted,
@@ -788,8 +788,8 @@ class FirebaseAPI(
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (month in snapshot.children) {
                         val date: String = month.key.toString()
-                        if (month.child(AppConstants.DATABASE.BUDGET).value != month.child(
-                                AppConstants.DATABASE.AVAILABLE_NOW
+                        if (month.child(StringConstants.DATABASE.BUDGET).value != month.child(
+                                StringConstants.DATABASE.AVAILABLE_NOW
                             ).value
                         ) {
                             expenseMonths.add(date)
@@ -821,9 +821,9 @@ class FirebaseAPI(
                     for (month in snapshot.children) {
                         val monthInfo = InformationPerMonthExpense(
                             month.key.toString(),
-                            month.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString(),
-                            month.child(AppConstants.DATABASE.BUDGET).value.toString(),
-                            month.child(AppConstants.DATABASE.EXPENSE).value.toString(),
+                            month.child(StringConstants.DATABASE.AVAILABLE_NOW).value.toString(),
+                            month.child(StringConstants.DATABASE.BUDGET).value.toString(),
+                            month.child(StringConstants.DATABASE.EXPENSE).value.toString(),
                         )
                         infoList.add(monthInfo)
                     }
@@ -878,27 +878,27 @@ class FirebaseAPI(
     suspend fun updateExpensePerListInformationPath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
             rootRef.child(auth.currentUser?.uid.toString())
-                .child(AppConstants.DATABASE.EXPENSES_LIST)
+                .child(StringConstants.DATABASE.EXPENSES_LIST)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     @RequiresApi(Build.VERSION_CODES.O)
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val expenseList = mutableListOf<Expense>()
                         for (expense in snapshot.children) {
-                            val date = expense.child(AppConstants.DATABASE.DATE).value.toString()
+                            val date = expense.child(StringConstants.DATABASE.DATE).value.toString()
                             val inputDateTime = "$date-${FormatValuesToDatabase().timeNow()}"
                             val newExpense = Expense(
                                 expense.key.toString(),
-                                expense.child(AppConstants.DATABASE.PRICE).value.toString(),
-                                expense.child(AppConstants.DATABASE.DESCRIPTION).value.toString(),
-                                expense.child(AppConstants.DATABASE.CATEGORY).value.toString(),
-                                expense.child(AppConstants.DATABASE.DATE).value.toString(),
-                                expense.child(AppConstants.DATABASE.DATE).value.toString(),
+                                expense.child(StringConstants.DATABASE.PRICE).value.toString(),
+                                expense.child(StringConstants.DATABASE.DESCRIPTION).value.toString(),
+                                expense.child(StringConstants.DATABASE.CATEGORY).value.toString(),
+                                expense.child(StringConstants.DATABASE.DATE).value.toString(),
+                                expense.child(StringConstants.DATABASE.DATE).value.toString(),
                                 inputDateTime
                             )
                             expenseList.add(newExpense)
                         }
                         val expenseListMap = generateMapToUpdateUserExpenses(expenseList)
-                        user_root.child(AppConstants.DATABASE.EXPENSES)
+                        user_root.child(StringConstants.DATABASE.EXPENSES)
                             .updateChildren(expenseListMap)
                         continuation.resume(Unit) {}
                     }
@@ -912,14 +912,14 @@ class FirebaseAPI(
 
     suspend fun updateDefaultValuesPath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
-            user_root.child(AppConstants.DATABASE.DEFAULT_VALUES)
+            user_root.child(StringConstants.DATABASE.DEFAULT_VALUES)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
-                            user_root.child(AppConstants.DATABASE.EXPENSES)
-                                .child(AppConstants.DATABASE.DEFAULT_VALUES)
-                                .child(AppConstants.DATABASE.DEFAULT_BUDGET).setValue(
-                                    snapshot.child(AppConstants.DATABASE.DEFAULT_BUDGET).value.toString()
+                            user_root.child(StringConstants.DATABASE.EXPENSES)
+                                .child(StringConstants.DATABASE.DEFAULT_VALUES)
+                                .child(StringConstants.DATABASE.DEFAULT_BUDGET).setValue(
+                                    snapshot.child(StringConstants.DATABASE.DEFAULT_BUDGET).value.toString()
                                 )
                         }
                         continuation.resume(Unit) {}
@@ -934,7 +934,7 @@ class FirebaseAPI(
 
     suspend fun updateInformationPerMonthPath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
-            user_root.child(AppConstants.DATABASE.INFORMATION_PER_MONTH)
+            user_root.child(StringConstants.DATABASE.INFORMATION_PER_MONTH)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val infoPerMonthList = mutableListOf<InformationPerMonthExpense>()
@@ -942,15 +942,15 @@ class FirebaseAPI(
                             infoPerMonthList.add(
                                 InformationPerMonthExpense(
                                     infoPerMonth.key.toString(),
-                                    infoPerMonth.child(AppConstants.DATABASE.AVAILABLE_NOW).value.toString(),
-                                    infoPerMonth.child(AppConstants.DATABASE.BUDGET).value.toString(),
-                                    infoPerMonth.child(AppConstants.DATABASE.EXPENSE).value.toString(),
+                                    infoPerMonth.child(StringConstants.DATABASE.AVAILABLE_NOW).value.toString(),
+                                    infoPerMonth.child(StringConstants.DATABASE.BUDGET).value.toString(),
+                                    infoPerMonth.child(StringConstants.DATABASE.EXPENSE).value.toString(),
                                 )
                             )
                         }
                         val infoPerMonthMap =
                             generateMapToUpdateInformationPerMonth(infoPerMonthList)
-                        user_root.child(AppConstants.DATABASE.EXPENSES)
+                        user_root.child(StringConstants.DATABASE.EXPENSES)
                             .updateChildren(infoPerMonthMap)
                         continuation.resume(Unit) {}
                     }
@@ -964,11 +964,11 @@ class FirebaseAPI(
 
     suspend fun updateTotalExpensePath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
-            user_root.child(AppConstants.DATABASE.TOTAL_EXPENSE)
+            user_root.child(StringConstants.DATABASE.TOTAL_EXPENSE)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        user_root.child(AppConstants.DATABASE.EXPENSES)
-                            .child(AppConstants.DATABASE.TOTAL_EXPENSE).setValue(
+                        user_root.child(StringConstants.DATABASE.EXPENSES)
+                            .child(StringConstants.DATABASE.TOTAL_EXPENSE).setValue(
                                 snapshot.value.toString()
                             )
                         continuation.resume(Unit) {}
@@ -988,7 +988,7 @@ class FirebaseAPI(
 
     suspend fun setDefaultPaymentDay(date: String): Result<Unit> = withContext(Dispatchers.IO){
         try{
-            default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).setValue(date)
+            default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY).setValue(date)
             Result.success(Unit)
         }catch (e : Exception){
             Result.failure(e)
@@ -998,16 +998,16 @@ class FirebaseAPI(
     suspend fun getDefaultPaymentDay(): Deferred<String> = withContext(Dispatchers.IO){
         val paymentDay = CompletableDeferred<String>()
 
-        default_expense_values.child(AppConstants.DATABASE.PAYMENT_DAY).get()
+        default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY).get()
             .addOnSuccessListener { snapshot ->
                 if(snapshot.value != null){
                     paymentDay.complete(snapshot.value.toString())
                 }else{
-                    paymentDay.complete(AppConstants.DEFAULT_MESSAGES.FAIL)
+                    paymentDay.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
                 }
             }
             .addOnFailureListener {
-                paymentDay.complete(AppConstants.DEFAULT_MESSAGES.FAIL)
+                paymentDay.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
             }
         return@withContext paymentDay
     }

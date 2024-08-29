@@ -5,10 +5,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
@@ -31,7 +29,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.service.UploadFile
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import com.example.fico.presentation.activities.expense.ComonExpenseImportFileInstructionsActivity
 import com.example.fico.presentation.activities.expense.InstallmentExpenseImportFileInstructionsActivity
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
@@ -51,12 +49,12 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.presentation.viewmodel.shared.AddExpenseEditExpenseViewModel
-import com.example.fico.util.constants.ConnectionFunctions
+import com.example.fico.shared.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
-import com.example.fico.util.constants.DateFunctions
+import com.example.fico.shared.DateFunctions
 
 class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
@@ -78,7 +76,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             // Action when receive Broadcast
-            if (intent?.action == AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD) {
+            if (intent?.action == StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD) {
                 // Show message to user
                 Toast.makeText(
                     context, "Dados salvos com sucesso !!", Toast.LENGTH_SHORT
@@ -112,8 +110,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         setMaxLength(binding.etInstallments, 3)
 
         //Create category chooser
-        adapter =
-            CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
+        adapter = CategoryListAdapter(sharedViewModel.categoryList.sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         return rootView
@@ -133,7 +130,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.etPurchaseDate.setText(currentDate)
 
         val filter = IntentFilter().apply {
-            addAction(AppConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
+            addAction(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

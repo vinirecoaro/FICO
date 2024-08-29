@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.databinding.FragmentConfigurationBinding
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import com.example.fico.presentation.activities.expense.BudgetConfigurationListActivity
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
@@ -69,9 +69,9 @@ class ExpenseConfigurationFragment : Fragment(),
 
     override fun onListItemClick(position: Int) {
         val item = viewModel.configurationList[position]
-        if(item == AppConstants.EXPENSE_CONFIGURATION_LIST.BUDGET){
+        if(item == StringConstants.EXPENSE_CONFIGURATION_LIST.BUDGET){
             startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
-        }else if(item == AppConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE){
+        }else if(item == StringConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE){
             setDefaultPaymentDateAlertDialog()
         }
     }
@@ -85,7 +85,7 @@ class ExpenseConfigurationFragment : Fragment(),
 
         val etDate = dialogView.findViewById<TextInputEditText>(R.id.et_payment_day_ad)
         val tvPaymentDay = dialogView.findViewById<TextView>(R.id.tv_payment_day_al)
-        val paymentDay = sharedPref.getString(AppConstants.DATABASE.PAYMENT_DAY, null)
+        val paymentDay = sharedPref.getString(StringConstants.DATABASE.PAYMENT_DAY, null)
 
         if(paymentDay != null){
             val text = "${getString(R.string.default_day)} $paymentDay"
@@ -104,7 +104,7 @@ class ExpenseConfigurationFragment : Fragment(),
                 Snackbar.make(binding.rvConfigurationList, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
             }else{
                 with(sharedPref.edit()){
-                    putString(AppConstants.DATABASE.PAYMENT_DAY, etDate.text.toString())
+                    putString(StringConstants.DATABASE.PAYMENT_DAY, etDate.text.toString())
                     commit()
                 }
                 viewModel.setDefaultPaymentDay(etDate.text.toString())

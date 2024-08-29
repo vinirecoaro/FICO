@@ -21,7 +21,7 @@ import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
-import com.example.fico.util.constants.AppConstants
+import com.example.fico.shared.constants.StringConstants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import org.koin.android.ext.koin.androidContext
@@ -31,7 +31,7 @@ import org.koin.dsl.module
 val appModule = module {
 
     single {
-        androidContext().getSharedPreferences(AppConstants.SHARED_PREFERENCES.NAME, Context.MODE_PRIVATE)
+        androidContext().getSharedPreferences(StringConstants.SHARED_PREFERENCES.NAME, Context.MODE_PRIVATE)
     }
 
     //Create a singleton for FirebaseDatabase and FirebaseAuth
