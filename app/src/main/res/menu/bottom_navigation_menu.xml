@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ac_home_24"
+        android:icon="@drawable/statistic_24"
         android:enabled="true"
-        android:title="@string/home" />
+        android:title="@string/overview" />
     <item
         android:id="@+id/navigation_add_expense"
         android:icon="@drawable/ic_add_24"
