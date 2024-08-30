@@ -40,7 +40,6 @@ class MainExpenseActivity : AppCompatActivity(){
 
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setTitleTextColor(Color.WHITE)
-        binding.toolbar.background = ContextCompat.getDrawable(this, R.drawable.rounded_toolbar_corner)
 
         val navView: BottomNavigationView = binding.bottomNavigation
         val navController = findNavController(R.id.nav_host_fragment_activity_main)

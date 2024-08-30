@@ -14,7 +14,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/set_default_budget_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"/>
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/rounded_toolbar_corner"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
