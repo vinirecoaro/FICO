@@ -21,6 +21,7 @@ import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
+import com.example.fico.shared.constants.CategoriesList
 import com.example.fico.shared.constants.StringConstants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -151,6 +152,10 @@ val appModule = module {
             auth = get(),
             database = get()
         )
+    }
+
+    factory<CategoriesList>{
+        CategoriesList(androidContext())
     }
 
 }

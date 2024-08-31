@@ -39,6 +39,7 @@ import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.ExpenseListViewModel
 import com.example.fico.shared.DateFunctions
+import com.example.fico.shared.constants.CategoriesList
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -52,7 +53,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
     private var _binding: FragmentExpenseListBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ExpenseListViewModel by inject()
-    private val expenseListAdapter = ExpenseListAdapter(emptyList())
+    private lateinit var expenseListAdapter : ExpenseListAdapter
     private var expenseMonthsList = arrayOf<String>()
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
@@ -64,6 +65,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         private const val STORAGE_PERMISSION_CODE = 100
         const val TAG = "PERMISSION_TAG"
     }
+    private val categoriesList : CategoriesList by inject()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -75,6 +77,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         val rootView = binding.root
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
+        expenseListAdapter = ExpenseListAdapter(emptyList(),categoriesList.getExpenseCategoryList())
         binding.rvExpenseList.adapter = expenseListAdapter
 
         val swipeToDeleteCallback =

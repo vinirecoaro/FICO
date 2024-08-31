@@ -26,7 +26,7 @@ import com.example.fico.presentation.viewmodel.EditExpenseViewModel
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
-import com.example.fico.shared.constants.ExpenseCategoriesList
+import com.example.fico.shared.constants.CategoriesList
 import com.example.fico.shared.constants.StringConstants
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -45,6 +45,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
     private lateinit var adapter: CategoryListAdapter
     private var expenseIdLength = 0
     lateinit var editingExpense : Expense
+    private val categoriesList : CategoriesList by inject()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +59,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
 
         //Create category chooser
         adapter =
-            CategoryListAdapter(ExpenseCategoriesList.categoryList.sortedBy { it.description }, this)
+            CategoryListAdapter(categoriesList.getExpenseCategoryList().sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         val intent = intent

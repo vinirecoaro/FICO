@@ -54,7 +54,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import com.example.fico.shared.DateFunctions
-import com.example.fico.shared.constants.ExpenseCategoriesList
+import com.example.fico.shared.constants.CategoriesList
 
 class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
@@ -91,6 +91,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         private const val TAG = "PERMISSION_TAG"
     }
     private lateinit var menu : Menu
+    private val categoriesList : CategoriesList by inject()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -109,7 +110,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         setMaxLength(binding.etInstallments, 3)
 
         //Create category chooser
-        adapter = CategoryListAdapter(ExpenseCategoriesList.categoryList.sortedBy { it.description }, this)
+        adapter = CategoryListAdapter(categoriesList.getExpenseCategoryList().sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
         return rootView

@@ -10,15 +10,13 @@ import com.example.fico.R
 import com.example.fico.model.Expense
 import com.example.fico.model.ExpenseCategory
 import com.example.fico.presentation.interfaces.OnListItemClick
-import com.example.fico.shared.constants.ExpenseCategoriesList
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
+class ExpenseListAdapter(private var data: List<Expense>, private val categories : List<ExpenseCategory>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
 
     private var listener: OnListItemClick? = null
-    private val categoriesList = ExpenseCategoriesList.categoryList
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val description: TextView = itemView.findViewById(R.id.tv_description)
@@ -47,7 +45,7 @@ class ExpenseListAdapter(private var data: List<Expense>) : RecyclerView.Adapter
 
         holder.date.text = item.paymentDate
 
-        val categoryPathName = categoriesList.find{ it.description == item.category }
+        val categoryPathName = categories.find{ it.description == item.category }
         val iconPath = holder.itemView.context.resources.getIdentifier(categoryPathName!!.iconName, "drawable", holder.itemView.context.packageName)
         holder.categoryImg.setImageResource(iconPath)
 

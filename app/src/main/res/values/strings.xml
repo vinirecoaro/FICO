@@ -92,5 +92,35 @@
     <string name="overview">Visão Geral</string>
     <string name="add_income">Adicionar Receita</string>
     <string name="add_expense_title">Adicionar Despesa</string>
+    <string name="category_list_description_food">Comida</string>
+    <string name="category_list_description_transport">Transporte</string>
+    <string name="category_list_description_entertainment">Entretenimento</string>
+    <string name="category_list_description_market">Mercado</string>
+    <string name="category_list_description_education">Educação</string>
+    <string name="category_list_description_gift">Presente</string>
+    <string name="category_list_description_healthy">Saúde</string>
+    <string name="category_list_description_games">Jogos</string>
+    <string name="category_list_description_investment">Investimento</string>
+    <string name="category_list_description_eletronics">Eletrônicos</string>
+    <string name="category_list_description_repair">Reparo</string>
+    <string name="category_list_description_acessories">Acessórios</string>
+    <string name="category_list_description_clothing">Roupas</string>
+    <string name="category_list_description_car">Carro</string>
+    <string name="category_list_description_motorcycle">Moto</string>
+    <string name="category_list_description_trip">Viagem</string>
+    <string name="category_list_description_house">Casa</string>
+    <string name="category_list_description_donation">Doação</string>
+    <string name="category_list_description_bet">Apostas</string>
+    <string name="category_list_description_pets">Pets</string>
+    <string name="category_list_description_fees">Taxas</string>
+    <string name="category_list_description_gym">Academia</string>
+    <string name="category_list_description_cellphone">Celular</string>
+    <string name="category_list_description_personal_hygiene">Higiene Pessoal</string>
+    <string name="category_list_description_pharmacy">Farmácia</string>
+    <string name="category_list_description_cash_withdrawal">Saque de Dinheiro</string>
+    <string name="category_list_description_ride">Passeio</string>
+    <string name="category_list_description_payment">Pagamento</string>
+    <string name="category_list_description_services">Serviços</string>
+
 
 </resources>
