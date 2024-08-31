@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/add_expense_menu_common"
@@ -13,5 +14,18 @@
         android:id="@+id/add_expense_menu_get_data_from_file"
         android:title="@string/import_expenses"
         />-->
+    <item
+        android:id="@+id/add_earning_transaction_menu"
+        android:title="@string/add_income"
+        app:showAsAction="always"
+        android:icon="@drawable/earnings_drawer_icon"
+        />
+    <item
+        android:id="@+id/add_expense_transaction_menu"
+        android:title="@string/add_expense_title"
+        app:showAsAction="always"
+        android:icon="@drawable/expenses_drawer_icon"
+        android:visible="false"
+        />
 
 </menu>

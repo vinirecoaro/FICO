@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/navigation_add_expense"
         android:name="com.example.fico.presentation.fragments.expense.add_expense.AddExpenseFragment"
-        android:label="@string/add"
+        android:label="@string/add_expense_title"
         tools:layout="@layout/fragment_add_expense" />
 
     <fragment

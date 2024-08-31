@@ -24,40 +24,51 @@
         android:layout_height="match_parent"
         tools:context=".presentation.activities.expense.SetDefaultBudgetActivity">
 
-        <EditText
-            android:id="@+id/et_available_per_month"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_available_per_month"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:hint="@string/available_per_month"
+            android:layout_marginTop="32dp"
             android:inputType="numberDecimal"
+            android:hint="@string/available_per_month"
+            app:boxBackgroundMode="outline"
             app:layout_constraintEnd_toStartOf="@id/iv_info_money"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/bt_save"
             app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintHorizontal_chainStyle="packed"/>
+            app:layout_constraintHorizontal_chainStyle="packed">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_available_per_month"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
             android:id="@+id/iv_info_money"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/et_available_per_month"
-            app:layout_constraintStart_toEndOf="@id/et_available_per_month"
-            app:layout_constraintBottom_toBottomOf="@id/et_available_per_month"
+            app:layout_constraintTop_toTopOf="@id/til_available_per_month"
+            app:layout_constraintStart_toEndOf="@id/til_available_per_month"
+            app:layout_constraintBottom_toBottomOf="@id/til_available_per_month"
             android:src="@drawable/baseline_info_dark"/>
 
         <Button
             android:id="@+id/bt_save"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_available_per_month"/>
+            app:layout_constraintTop_toBottomOf="@id/til_available_per_month"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

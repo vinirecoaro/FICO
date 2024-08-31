@@ -43,6 +43,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.adapters.CategoryListAdapter
@@ -85,7 +86,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private val firebaseAPI : FirebaseAPI by inject()
     private val dataStore : DataStoreManager by inject()
 
-
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
         private const val TAG = "PERMISSION_TAG"
@@ -99,7 +99,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             inflater, container, false
         )
         var rootView = binding.root
-
+        
         setUpListeners()
         setColorBasedOnTheme()
 

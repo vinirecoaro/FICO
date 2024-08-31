@@ -90,5 +90,7 @@
     <string name="cancel">Cancelar</string>
     <string name="transactions">Transações</string>
     <string name="overview">Visão Geral</string>
+    <string name="add_income">Adicionar Receita</string>
+    <string name="add_expense_title">Adicionar Despesa</string>
 
 </resources>
