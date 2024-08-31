@@ -90,6 +90,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         private const val STORAGE_PERMISSION_CODE = 100
         private const val TAG = "PERMISSION_TAG"
     }
+    private lateinit var menu : Menu
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -99,7 +100,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             inflater, container, false
         )
         var rootView = binding.root
-        
+
         setUpListeners()
         setColorBasedOnTheme()
 
@@ -151,6 +152,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.add_expense_menu, menu)
+        //Save instance of menu
+        this.menu = menu
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -185,6 +188,26 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 return true
             }*/
 
+            R.id.add_earning_transaction_menu -> {
+                menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
+                menu.findItem(R.id.add_expense_menu_common).isVisible = false
+                menu.findItem(R.id.add_expense_menu_installments).isVisible = false
+                menu.findItem(R.id.add_expense_transaction_menu).isVisible = true
+                (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_income)
+                viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EARNING)
+                return true
+            }
+
+            R.id.add_expense_transaction_menu -> {
+                menu.findItem(R.id.add_earning_transaction_menu).isVisible = true
+                menu.findItem(R.id.add_expense_menu_common).isVisible = true
+                menu.findItem(R.id.add_expense_menu_installments).isVisible = true
+                menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
+                (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_expense_title)
+                viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EXPENSE)
+                return true
+            }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -194,30 +217,21 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.btSave.setOnClickListener {
             binding.btSave.isEnabled = false
             lifecycleScope.launch(Dispatchers.Main) {
-                if (binding.tilInstallments.visibility == View.GONE) {
-                    if (verifyFields(
-                            binding.etPrice,
-                            binding.etDescription,
-                            binding.actvCategory,
-                            binding.etPaymentDate,
-                            binding.etPurchaseDate
-                        )
-                    ) {
-                        val internetConnection =
-                            ConnectionFunctions().internetConnectionVerification(requireContext())
-                        if (internetConnection) {
-                            val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                            if (existsDefaultBudget) {
-                                viewModel.addExpense(
-                                    binding.etPrice.text.toString(),
-                                    binding.etDescription.text.toString(),
-                                    binding.actvCategory.text.toString(),
-                                    binding.etPaymentDate.text.toString(),
-                                    binding.etPurchaseDate.text.toString(),
-                                    false
-                                )
-                            } else {
-                                if (setUpDefaultBudgetAlertDialog().await()) {
+                if(viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_EXPENSE){
+                    if (binding.tilInstallments.visibility == View.GONE) {
+                        if (verifyFields(
+                                binding.etPrice,
+                                binding.etDescription,
+                                binding.actvCategory,
+                                binding.etPaymentDate,
+                                binding.etPurchaseDate
+                            )
+                        ) {
+                            val internetConnection =
+                                ConnectionFunctions().internetConnectionVerification(requireContext())
+                            if (internetConnection) {
+                                val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                                if (existsDefaultBudget) {
                                     viewModel.addExpense(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
@@ -226,9 +240,19 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                         binding.etPurchaseDate.text.toString(),
                                         false
                                     )
+                                } else {
+                                    if (setUpDefaultBudgetAlertDialog().await()) {
+                                        viewModel.addExpense(
+                                            binding.etPrice.text.toString(),
+                                            binding.etDescription.text.toString(),
+                                            binding.actvCategory.text.toString(),
+                                            binding.etPaymentDate.text.toString(),
+                                            binding.etPurchaseDate.text.toString(),
+                                            false
+                                        )
+                                    }
                                 }
-                            }
-                        }/*else{
+                            }/*else{
                             viewModel.addExpenseLocal(
                                 binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
@@ -237,30 +261,19 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                 false
                             )
                         }*/
-                    }
-                } else if (binding.tilInstallments.visibility == View.VISIBLE) {
-                    if (verifyFields(
-                            binding.etPrice,
-                            binding.etDescription,
-                            binding.actvCategory,
-                            binding.etPaymentDate,
-                            binding.etPurchaseDate
-                        )
-                    ) {
-                        if (binding.etInstallments.text.toString() != "0") {
-                            val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                            if (existsDefaultBudget) {
-                                viewModel.addExpense(
-                                    binding.etPrice.text.toString(),
-                                    binding.etDescription.text.toString(),
-                                    binding.actvCategory.text.toString(),
-                                    binding.etPaymentDate.text.toString(),
-                                    binding.etPurchaseDate.text.toString(),
-                                    true,
-                                    binding.etInstallments.text.toString().toInt()
-                                )
-                            } else {
-                                if (setUpDefaultBudgetAlertDialog().await()) {
+                        }
+                    } else if (binding.tilInstallments.visibility == View.VISIBLE) {
+                        if (verifyFields(
+                                binding.etPrice,
+                                binding.etDescription,
+                                binding.actvCategory,
+                                binding.etPaymentDate,
+                                binding.etPurchaseDate
+                            )
+                        ) {
+                            if (binding.etInstallments.text.toString() != "0") {
+                                val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                                if (existsDefaultBudget) {
                                     viewModel.addExpense(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
@@ -270,14 +283,26 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                         true,
                                         binding.etInstallments.text.toString().toInt()
                                     )
+                                } else {
+                                    if (setUpDefaultBudgetAlertDialog().await()) {
+                                        viewModel.addExpense(
+                                            binding.etPrice.text.toString(),
+                                            binding.etDescription.text.toString(),
+                                            binding.actvCategory.text.toString(),
+                                            binding.etPaymentDate.text.toString(),
+                                            binding.etPurchaseDate.text.toString(),
+                                            true,
+                                            binding.etInstallments.text.toString().toInt()
+                                        )
+                                    }
                                 }
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "O número de parcelas não pode ser 0",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "O número de parcelas não pode ser 0",
-                                Toast.LENGTH_LONG
-                            ).show()
                         }
                     }
                 }

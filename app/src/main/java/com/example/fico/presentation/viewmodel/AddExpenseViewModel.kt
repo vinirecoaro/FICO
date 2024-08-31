@@ -14,6 +14,8 @@ import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.shared.DateFunctions
+import com.example.fico.shared.constants.StringConstants
+import com.google.firebase.database.MutableData
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -30,6 +32,7 @@ class AddExpenseViewModel(
     private val _setDefaultBudgetResult = MutableLiveData<Boolean>()
     val setDefaultBudgetResult : LiveData<Boolean> = _setDefaultBudgetResult
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
+    private var operation : String = StringConstants.ADD_TRANSACTION.ADD_EXPENSE
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(
@@ -191,5 +194,11 @@ class AddExpenseViewModel(
         }
     }
 
+    fun changeOperation(operation : String){
+        this.operation = operation
+    }
 
+    fun getOperation() : String{
+        return operation
+    }
 }
