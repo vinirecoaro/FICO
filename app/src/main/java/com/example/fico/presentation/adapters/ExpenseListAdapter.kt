@@ -8,13 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.model.Expense
-import com.example.fico.model.ExpenseCategory
+import com.example.fico.model.TransactionCategory
 import com.example.fico.presentation.interfaces.OnListItemClick
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class ExpenseListAdapter(private var data: List<Expense>, private val categories : List<ExpenseCategory>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
+class ExpenseListAdapter(private var data: List<Expense>, private val categories : List<TransactionCategory>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
 
     private var listener: OnListItemClick? = null
 

@@ -1,153 +1,153 @@
 package com.example.fico.shared.constants
 import android.content.Context
 import com.example.fico.R
-import com.example.fico.model.ExpenseCategory
+import com.example.fico.model.TransactionCategory
 
 class CategoriesList(private val context : Context) {
 
-        fun getExpenseCategoryList() : List<ExpenseCategory>{
+        fun getExpenseCategoryList() : List<TransactionCategory>{
             return listOf(
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_food),
                     StringConstants.CATEGORY_LIST.ICON_NAME.FOOD,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_transport),
                     StringConstants.CATEGORY_LIST.ICON_NAME.TRANSPORT,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_entertainment),
                     StringConstants.CATEGORY_LIST.ICON_NAME.ENTERTAINMENT,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_market),
                     StringConstants.CATEGORY_LIST.ICON_NAME.MARKET,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_education),
                     StringConstants.CATEGORY_LIST.ICON_NAME.EDUCATION,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_gift),
                     StringConstants.CATEGORY_LIST.ICON_NAME.GIFT,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_healthy),
                     StringConstants.CATEGORY_LIST.ICON_NAME.HEALTHY,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_games),
                     StringConstants.CATEGORY_LIST.ICON_NAME.GAMES,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_investment),
                     StringConstants.CATEGORY_LIST.ICON_NAME.INVESTMENT,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_eletronics),
                     StringConstants.CATEGORY_LIST.ICON_NAME.ELETRONICS,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_repair),
                     StringConstants.CATEGORY_LIST.ICON_NAME.REPAIR,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_acessories),
                     StringConstants.CATEGORY_LIST.ICON_NAME.ACESSORIES,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_clothing),
                     StringConstants.CATEGORY_LIST.ICON_NAME.CLOTHING,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_car),
                     StringConstants.CATEGORY_LIST.ICON_NAME.CAR,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_motorcycle),
                     StringConstants.CATEGORY_LIST.ICON_NAME.MOTORCYCLE,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_trip),
                     StringConstants.CATEGORY_LIST.ICON_NAME.TRIP,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_house),
                     StringConstants.CATEGORY_LIST.ICON_NAME.HOUSE,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_donation),
                     StringConstants.CATEGORY_LIST.ICON_NAME.DONATION,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_bet),
                     StringConstants.CATEGORY_LIST.ICON_NAME.BET,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_pets),
                     StringConstants.CATEGORY_LIST.ICON_NAME.PETS,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_fees),
                     StringConstants.CATEGORY_LIST.ICON_NAME.FEES,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_gym),
                     StringConstants.CATEGORY_LIST.ICON_NAME.GYM,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_cellphone),
                     StringConstants.CATEGORY_LIST.ICON_NAME.CELLPHONE,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_personal_hygiene),
                     StringConstants.CATEGORY_LIST.ICON_NAME.PERSONAL_HYGIENE,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_pharmacy),
                     StringConstants.CATEGORY_LIST.ICON_NAME.PHARMACY,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_cash_withdrawal),
                     StringConstants.CATEGORY_LIST.ICON_NAME.CASH_WITHDRAWAL,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_ride),
                     StringConstants.CATEGORY_LIST.ICON_NAME.RIDE,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_payment),
                     StringConstants.CATEGORY_LIST.ICON_NAME.PAYMENT,
                     false
                 ),
-                ExpenseCategory(
+                TransactionCategory(
                     context.getString(R.string.category_list_description_services),
                     StringConstants.CATEGORY_LIST.ICON_NAME.SERVICES,
                     false
@@ -155,4 +155,29 @@ class CategoriesList(private val context : Context) {
 
             )
         }
+
+    fun getEarningCategoryList() : List<TransactionCategory>{
+        return listOf(
+            TransactionCategory(
+                context.getString(R.string.category_list_description_sale_of_shares),
+                StringConstants.CATEGORY_LIST.ICON_NAME.SALE_OF_SHARES,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_salary),
+                StringConstants.CATEGORY_LIST.ICON_NAME.SALARY,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_cashback),
+                StringConstants.CATEGORY_LIST.ICON_NAME.CASHBACK,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_freelance),
+                StringConstants.CATEGORY_LIST.ICON_NAME.FREELANCE,
+                false
+            ),
+        )
+    }
 }

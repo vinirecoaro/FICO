@@ -121,6 +121,10 @@
     <string name="category_list_description_ride">Passeio</string>
     <string name="category_list_description_payment">Pagamento</string>
     <string name="category_list_description_services">Serviços</string>
+    <string name="category_list_description_sale_of_shares">Venda de Ações</string>
+    <string name="category_list_description_salary">Salário</string>
+    <string name="category_list_description_cashback">Cashback</string>
+    <string name="category_list_description_freelance">Freelance</string>
 
 
 </resources>

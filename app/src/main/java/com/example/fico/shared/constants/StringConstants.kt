@@ -118,6 +118,10 @@ class StringConstants private constructor() {
             const val RIDE = "category_icon_ride"
             const val PAYMENT = "category_icon_payment"
             const val SERVICES = "category_icon_services"
+            const val SALE_OF_SHARES = "category_icon_sale_of_shares"
+            const val SALARY = "category_icon_salary"
+            const val CASHBACK = "category_icon_cashback"
+            const val FREELANCE = "category_icon_freelance"
         }
     }
 
