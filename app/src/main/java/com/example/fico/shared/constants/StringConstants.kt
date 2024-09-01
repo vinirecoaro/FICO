@@ -122,6 +122,9 @@ class StringConstants private constructor() {
             const val SALARY = "category_icon_salary"
             const val CASHBACK = "category_icon_cashback"
             const val FREELANCE = "category_icon_freelance"
+            const val OTHER = "category_icon_other"
+            const val DIVIDEND = "category_icon_dividend"
+            const val BENEFITS = "category_icon_benefits"
         }
     }
 

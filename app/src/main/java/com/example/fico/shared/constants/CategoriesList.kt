@@ -178,6 +178,21 @@ class CategoriesList(private val context : Context) {
                 StringConstants.CATEGORY_LIST.ICON_NAME.FREELANCE,
                 false
             ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_other),
+                StringConstants.CATEGORY_LIST.ICON_NAME.OTHER,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_dividend),
+                StringConstants.CATEGORY_LIST.ICON_NAME.DIVIDEND,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_benefits),
+                StringConstants.CATEGORY_LIST.ICON_NAME.BENEFITS,
+                false
+            ),
         )
     }
 }

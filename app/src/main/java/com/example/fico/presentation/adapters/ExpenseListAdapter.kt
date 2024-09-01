@@ -45,8 +45,10 @@ class ExpenseListAdapter(private var data: List<Expense>, private val categories
 
         holder.date.text = item.paymentDate
 
-        val categoryPathName = categories.find{ it.description == item.category }
-        val iconPath = holder.itemView.context.resources.getIdentifier(categoryPathName!!.iconName, "drawable", holder.itemView.context.packageName)
+        val itemCategory = item.category
+        val categoryPathName = categories.find{ it.description == itemCategory }
+        val iconName = categoryPathName!!.iconName
+        val iconPath = holder.itemView.context.resources.getIdentifier(iconName, "drawable", holder.itemView.context.packageName)
         holder.categoryImg.setImageResource(iconPath)
 
         holder.itemView.setOnClickListener {

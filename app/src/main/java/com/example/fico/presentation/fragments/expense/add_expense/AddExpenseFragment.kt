@@ -196,6 +196,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 menu.findItem(R.id.add_expense_transaction_menu).isVisible = true
                 (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_income)
                 viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EARNING)
+                adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
                 return true
             }
 
@@ -206,6 +207,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
                 (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_expense_title)
                 viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EXPENSE)
+                adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
                 return true
             }
 

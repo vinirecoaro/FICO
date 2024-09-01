@@ -9,12 +9,13 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.model.Expense
 import com.example.fico.model.TransactionCategory
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 
 
 class CategoryListAdapter(
-    private val categories : List<TransactionCategory>,
+    private var categories : List<TransactionCategory>,
     private val listener: OnCategorySelectedListener,
     ) : RecyclerView.Adapter<CategoryListAdapter.ViewHolder>() {
 
@@ -67,6 +68,11 @@ class CategoryListAdapter(
 
     fun selectCategory(category : String){
         selectedItemIndex = categories.indexOfFirst { it.description == category}
+        notifyDataSetChanged()
+    }
+
+    fun updateCategories(categoryList: List<TransactionCategory>){
+        categories = categoryList
         notifyDataSetChanged()
     }
 
