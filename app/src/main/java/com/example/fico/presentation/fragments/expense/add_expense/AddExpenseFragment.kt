@@ -190,24 +190,12 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }*/
 
             R.id.add_earning_transaction_menu -> {
-                menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
-                menu.findItem(R.id.add_expense_menu_common).isVisible = false
-                menu.findItem(R.id.add_expense_menu_installments).isVisible = false
-                menu.findItem(R.id.add_expense_transaction_menu).isVisible = true
-                (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_income)
-                viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EARNING)
-                adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
+                changeComponentsToEarningState()
                 return true
             }
 
             R.id.add_expense_transaction_menu -> {
-                menu.findItem(R.id.add_earning_transaction_menu).isVisible = true
-                menu.findItem(R.id.add_expense_menu_common).isVisible = true
-                menu.findItem(R.id.add_expense_menu_installments).isVisible = true
-                menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
-                (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_expense_title)
-                viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EXPENSE)
-                adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
+                changeComponentsToExpenseState()
                 return true
             }
 
@@ -364,6 +352,32 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
             datePicker.addOnDismissListener {
                 binding.ivPurchaseDate.isEnabled = true
+            }
+
+            datePicker.show(parentFragmentManager, "PurchaseDate")
+        }
+
+        binding.ivReceivedDate.setOnClickListener {
+            binding.btSave.visibility = View.VISIBLE
+            binding.ivReceivedDate.isEnabled = false
+
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Escolha a Data")
+                .build()
+
+            datePicker.addOnPositiveButtonClickListener {
+                val selectedDateInMillis = it
+                val formattedDate = formatDate(selectedDateInMillis)
+                binding.etReceivedDate.setText(formattedDate)
+                binding.ivReceivedDate.isEnabled = true
+            }
+
+            datePicker.addOnNegativeButtonClickListener {
+                binding.ivReceivedDate.isEnabled = true
+            }
+
+            datePicker.addOnDismissListener {
+                binding.ivReceivedDate.isEnabled = true
             }
 
             datePicker.show(parentFragmentManager, "PurchaseDate")
@@ -674,12 +688,15 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_light)
                 binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_light)
                 binding.ivArrowUpGetPurchaseDate.setImageResource(R.drawable.arrow_up_light)
+                binding.ivReceivedDate.setImageResource(R.drawable.baseline_calendar_month_light)
+
             }
 
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_dark)
                 binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_dark)
                 binding.ivArrowUpGetPurchaseDate.setImageResource(R.drawable.arrow_up_black)
+                binding.ivReceivedDate.setImageResource(R.drawable.baseline_calendar_month_dark)
             }
 
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
@@ -798,6 +815,46 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.actvCategory.setText("")
         binding.etInstallments.setText("")
         adapter.clearCategorySelection()
+    }
+
+    private fun changeComponentsToEarningState(){
+        menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
+        menu.findItem(R.id.add_expense_menu_common).isVisible = false
+        menu.findItem(R.id.add_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_expense_transaction_menu).isVisible = true
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_income)
+        viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EARNING)
+        binding.tilPurchaseDate.visibility = View.GONE
+        binding.etPurchaseDate.visibility = View.GONE
+        binding.ivPurchaseDate.visibility = View.GONE
+        binding.ivArrowUpGetPurchaseDate.visibility = View.GONE
+        binding.tilPaymentDate.visibility = View.GONE
+        binding.etPaymentDate.visibility = View.GONE
+        binding.ivPaymentDate.visibility = View.GONE
+        binding.tilReceivedDate.visibility = View.VISIBLE
+        binding.etReceivedDate.visibility = View.VISIBLE
+        binding.ivReceivedDate.visibility = View.VISIBLE
+        adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
+    }
+
+    private fun changeComponentsToExpenseState(){
+        menu.findItem(R.id.add_earning_transaction_menu).isVisible = true
+        menu.findItem(R.id.add_expense_menu_common).isVisible = true
+        menu.findItem(R.id.add_expense_menu_installments).isVisible = true
+        menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_expense_title)
+        viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EXPENSE)
+        binding.tilPurchaseDate.visibility = View.VISIBLE
+        binding.etPurchaseDate.visibility = View.VISIBLE
+        binding.ivPurchaseDate.visibility = View.VISIBLE
+        binding.ivArrowUpGetPurchaseDate.visibility = View.VISIBLE
+        binding.tilPaymentDate.visibility = View.VISIBLE
+        binding.etPaymentDate.visibility = View.VISIBLE
+        binding.ivPaymentDate.visibility = View.VISIBLE
+        binding.tilReceivedDate.visibility = View.GONE
+        binding.etReceivedDate.visibility = View.GONE
+        binding.ivReceivedDate.visibility = View.GONE
+        adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
     }
 
 }

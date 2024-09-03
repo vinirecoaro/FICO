@@ -189,6 +189,43 @@
             app:layout_constraintTop_toTopOf="@id/til_purchase_date"
             />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_received_date"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:hint="@string/add_date"
+            app:boxBackgroundMode="outline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_purchase_date"
+            android:visibility="gone">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_received_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:focusable="false"
+                android:inputType="date"
+                android:visibility="gone"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/iv_received_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/baseline_calendar_month_dark"
+            app:layout_constraintBottom_toBottomOf="@+id/til_received_date"
+            app:layout_constraintEnd_toEndOf="@id/til_received_date"
+            app:layout_constraintTop_toTopOf="@id/til_received_date"
+            android:visibility="gone"/>
+
         <Button
             android:id="@+id/bt_save"
             android:layout_width="wrap_content"
@@ -197,7 +234,7 @@
             android:text="@string/save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_purchase_date" />
+            app:layout_constraintTop_toBottomOf="@id/til_received_date" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
