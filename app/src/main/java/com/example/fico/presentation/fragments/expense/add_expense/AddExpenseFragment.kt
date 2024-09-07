@@ -163,12 +163,14 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         when (item.itemId) {
             R.id.add_expense_menu_common -> {
                 binding.tilInstallments.visibility = View.GONE
+                binding.etPaymentDate.hint = getString(R.string.payment_date)
                 clearUserInputs()
                 return true
             }
 
             R.id.add_expense_menu_installments -> {
                 binding.tilInstallments.visibility = View.VISIBLE
+                binding.etPaymentDate.hint = getString(R.string.payment_date_field_installment_hint)
                 clearUserInputs()
                 return true
             }
@@ -834,6 +836,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.tilReceivedDate.visibility = View.VISIBLE
         binding.etReceivedDate.visibility = View.VISIBLE
         binding.ivReceivedDate.visibility = View.VISIBLE
+        binding.tilInstallments.visibility = View.VISIBLE
+        binding.etInstallments.visibility = View.VISIBLE
         adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
 
