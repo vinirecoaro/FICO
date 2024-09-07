@@ -71,6 +71,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                 //Verify if is a installment expense
                 if (expenseIdLength == 41) {
                     binding.tilInstallments.visibility = View.VISIBLE
+                    binding.tilPaymentDateEdit.hint = getString(R.string.payment_date_field_installment_hint)
 
                     val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(
                         expense.price,
