@@ -1,5 +1,6 @@
 package com.example.fico.presentation.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,7 @@ class ExpenseListAdapter(private var data: List<Expense>, private val categories
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
         val formattedPrice = currencyFormat.format(formattedNum)
         holder.price.text = formattedPrice
+        holder.price.setTextColor(Color.RED)
 
         holder.date.text = item.paymentDate
 
