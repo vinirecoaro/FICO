@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.FICO" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Screen Background color. -->
+        <item name="android:windowBackground">@color/black_500</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/blue_400</item>
         <item name="colorPrimaryVariant">@color/blue_500</item>
@@ -18,6 +20,8 @@
         <item name="bottomAppBarItemIconTint">@color/white</item>
         <item name="bottomAppBarItemTextColor">@color/white</item>
         <item name="colorSecondaryContainer">@color/grey_500</item>
+
+        <item name="customCardBackgroundColor">@color/black_400</item>
     </style>
 
     <style name="Theme.App.SplashScreen" parent = "Theme.SplashScreen">
