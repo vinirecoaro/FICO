@@ -153,13 +153,13 @@ class FormatValuesFromDatabase {
         } else if(month == "08"){
             formattedDate = "Agosto - ${date.substring(0,4)}"
         } else if(month == "09"){
-            formattedDate = "Setembro-${date.substring(0,4)}"
+            formattedDate = "Setembro - ${date.substring(0,4)}"
         } else if(month == "10"){
-            formattedDate = "Outubro-${date.substring(0,4)}"
+            formattedDate = "Outubro - ${date.substring(0,4)}"
         } else if(month == "11"){
-            formattedDate = "Novembro-${date.substring(0,4)}"
+            formattedDate = "Novembro - ${date.substring(0,4)}"
         } else if(month == "12"){
-            formattedDate = "Dezembro-${date.substring(0,4)}"
+            formattedDate = "Dezembro - ${date.substring(0,4)}"
         }
         return formattedDate
     }

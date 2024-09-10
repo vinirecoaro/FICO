@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import androidx.activity.viewModels
@@ -21,7 +22,9 @@ import com.example.fico.model.Budget
 import com.example.fico.presentation.adapters.BudgetPerMonthAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -84,14 +87,15 @@ class BudgetPerMonthActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun editBudget(budget : Budget) : CompletableDeferred<Boolean>{
         val result = CompletableDeferred<Boolean>()
-        val builder = AlertDialog.Builder(this)
+        val builder = MaterialAlertDialogBuilder(this)
 
         builder.setTitle(getString(R.string.edit_budget))
 
-        val newBudget = EditText(this)
-        newBudget.hint = getString(R.string.type_new_budget)
-        newBudget.inputType = InputType.TYPE_CLASS_NUMBER
-        builder.setView(newBudget)
+        val inflater = LayoutInflater.from(this)
+        val dialogView = inflater.inflate(R.layout.month_budget_input_field_for_alert_dialog, null)
+
+        val newBudget = dialogView.findViewById<TextInputEditText>(R.id.et_month_budget_ad)
+        builder.setView(dialogView)
 
         newBudget.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -112,7 +116,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         })
 
         builder.setPositiveButton(getString(R.string.save)) { dialog, which ->
-            val saveButton =  (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
             saveButton.isEnabled = false
             lifecycleScope.launch {
                 if(newBudget.text.toString() != ""){
