@@ -1,18 +1,18 @@
 package com.example.fico.presentation.activities.expense
 
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.EditText
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -139,9 +139,23 @@ class BudgetPerMonthActivity : AppCompatActivity() {
 
         }
 
-        val alertDialog = builder.create()
-        alertDialog.show()
+        val dialog = builder.create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getColorOnSurfaceVariant())
+            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getColorOnSurfaceVariant())
+        }
+
+        dialog.show()
         return result
+    }
+
+    private fun getColorOnSurfaceVariant() : Int{
+        val typedValue = TypedValue()
+        val theme: Resources.Theme = this.theme
+        theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, typedValue, true)
+        val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
+        return colorOnSurfaceVariant
     }
 
 }

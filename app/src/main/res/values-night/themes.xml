@@ -20,8 +20,11 @@
         <item name="bottomAppBarItemIconTint">@color/white</item>
         <item name="bottomAppBarItemTextColor">@color/white</item>
         <item name="colorSecondaryContainer">@color/grey_500</item>
-
+        <!-- Custom card background Color -->
         <item name="customCardBackgroundColor">@color/black_400</item>
+        <!-- Dialog button text color -->
+        <item name="colorOnSurfaceVariant">@color/blue_200</item>
+
     </style>
 
     <style name="Theme.App.SplashScreen" parent = "Theme.SplashScreen">
@@ -29,4 +32,5 @@
         <item name="windowSplashScreenAnimatedIcon">@mipmap/app_icon_round</item>
         <item name="postSplashScreenTheme">@style/Theme.FICO</item>
     </style>
+
 </resources>

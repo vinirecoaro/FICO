@@ -1,12 +1,16 @@
 package com.example.fico.presentation.fragments.expense
 
+import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
@@ -98,6 +102,7 @@ class ExpenseConfigurationFragment : Fragment(),
         builder.setView(dialogView)
 
         builder.setPositiveButton(getString(R.string.save)){dialog, which ->
+
             if(etDate.text.isNullOrEmpty()){
                 Snackbar.make(binding.rvConfigurationList, getString(R.string.type_the_day), Snackbar.LENGTH_LONG).show()
             }else if (etDate.text.toString().toInt() > 31 ||etDate.text.toString().toInt() <= 0){
@@ -110,8 +115,21 @@ class ExpenseConfigurationFragment : Fragment(),
                 viewModel.setDefaultPaymentDay(etDate.text.toString())
             }
         }
-        val alertDialog = builder.create()
-        alertDialog.show()
+        val dialog = builder.create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getColorOnSurfaceVariant())
+        }
+
+        dialog.show()
+    }
+
+    private fun getColorOnSurfaceVariant() : Int{
+        val typedValue = TypedValue()
+        val theme: Resources.Theme = requireContext().theme
+        theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, typedValue, true)
+        val colorOnSurfaceVariant = ContextCompat.getColor(requireContext(), typedValue.resourceId)
+        return colorOnSurfaceVariant
     }
 
 }
