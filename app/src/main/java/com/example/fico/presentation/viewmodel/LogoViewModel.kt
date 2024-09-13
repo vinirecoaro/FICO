@@ -22,6 +22,7 @@ class LogoViewModel(
         viewModelScope.async(Dispatchers.IO) {
             val currentUser = firebaseAPI.currentUser()
             if (currentUser != null) {
+                firebaseAPI.updateReferences()
                 try {
                     val providers = firebaseAPI.verifyIfUserExists().await()
                     if (providers.signInMethods?.isNotEmpty() == true) {

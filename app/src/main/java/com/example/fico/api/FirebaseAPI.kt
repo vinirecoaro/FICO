@@ -30,32 +30,13 @@ class FirebaseAPI(
     private val database : FirebaseDatabase
 ) {
     private val rootRef = database.getReference(StringConstants.DATABASE.USERS)
-    private var total_expenses_price =
-        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-            .child(
-                StringConstants.DATABASE.TOTAL_EXPENSE
-            )
-    private var expenses_information_per_month =
-        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-            .child(
-                StringConstants.DATABASE.INFORMATION_PER_MONTH
-            )
-    private var expense_list =
-        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-            .child(
-                StringConstants.DATABASE.EXPENSES_LIST
-            )
-    private var default_expense_values =
-        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-            .child(
-                StringConstants.DATABASE.DEFAULT_VALUES
-            )
-    private var expenses =
-        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-    private var user_info =
-        rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.USER_INFO)
-    private var user_root = rootRef.child(auth.currentUser?.uid.toString())
-
+    private lateinit var user_root : DatabaseReference
+    private lateinit var expenses : DatabaseReference
+    private lateinit var user_info : DatabaseReference
+    private lateinit var total_expenses_price : DatabaseReference
+    private lateinit var expenses_information_per_month : DatabaseReference
+    private lateinit var expense_list : DatabaseReference
+    private lateinit var default_expense_values : DatabaseReference
 
     fun updateReferences() {
         expenses =

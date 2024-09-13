@@ -43,6 +43,13 @@ val appModule = module {
         DataStoreManager(androidContext())
     }
 
+    single {
+        FirebaseAPI(
+            auth = get(),
+            database = get()
+        )
+    }
+
     factory<ExpensesViewModel> {
         ExpensesViewModel(
             dataStore = get(),
@@ -144,13 +151,6 @@ val appModule = module {
         AddExpenseViewModel(
             firebaseAPI = get(),
             dataStore = get(),
-        )
-    }
-
-    factory<FirebaseAPI>{
-        FirebaseAPI(
-            auth = get(),
-            database = get()
         )
     }
 
