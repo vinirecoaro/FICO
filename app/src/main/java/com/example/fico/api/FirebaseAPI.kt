@@ -31,31 +31,21 @@ class FirebaseAPI(
 ) {
     private val rootRef = database.getReference(StringConstants.DATABASE.USERS)
     private lateinit var user_root : DatabaseReference
-    private lateinit var expenses : DatabaseReference
     private lateinit var user_info : DatabaseReference
+    private lateinit var expenses : DatabaseReference
     private lateinit var total_expenses_price : DatabaseReference
     private lateinit var expenses_information_per_month : DatabaseReference
     private lateinit var expense_list : DatabaseReference
     private lateinit var default_expense_values : DatabaseReference
 
     fun updateReferences() {
-        expenses =
-            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-        total_expenses_price =
-            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-                .child(StringConstants.DATABASE.TOTAL_EXPENSE)
-        expenses_information_per_month =
-            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-                .child(StringConstants.DATABASE.INFORMATION_PER_MONTH)
-        expense_list =
-            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-                .child(StringConstants.DATABASE.EXPENSES_LIST)
-        default_expense_values =
-            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.EXPENSES)
-                .child(StringConstants.DATABASE.DEFAULT_VALUES)
-        user_info =
-            rootRef.child(auth.currentUser?.uid.toString()).child(StringConstants.DATABASE.USER_INFO)
         user_root = rootRef.child(auth.currentUser?.uid.toString())
+        user_info = user_root.child(StringConstants.DATABASE.USER_INFO)
+        expenses = user_root.child(StringConstants.DATABASE.EXPENSES)
+        total_expenses_price = expenses.child(StringConstants.DATABASE.TOTAL_EXPENSE)
+        expenses_information_per_month = expenses.child(StringConstants.DATABASE.INFORMATION_PER_MONTH)
+        expense_list = expenses.child(StringConstants.DATABASE.EXPENSES_LIST)
+        default_expense_values = expenses.child(StringConstants.DATABASE.DEFAULT_VALUES)
     }
 
     suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO) {

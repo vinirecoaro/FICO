@@ -85,6 +85,7 @@
     <string name="budget_per_month_activity_title">Orçamento por Mês</string>
     <string name="edit_budget">Editar Orçamento</string>
     <string name="type_new_budget">Digite o novo orçamento</string>
+    <string name="define_default_budget_title">Definir orçamento padrão</string>
     <string name="redefine_month_budget_success_message">Orçamento redefinido com sucesso</string>
     <string name="redefine_month_budget_failure_message">Falha ao redefinir o orçamento</string>
     <string name="cancel">Cancelar</string>

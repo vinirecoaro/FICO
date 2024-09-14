@@ -3,12 +3,14 @@ package com.example.fico.presentation.fragments.expense.add_expense
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +18,7 @@ import android.os.Environment
 import android.provider.Settings
 import android.text.*
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
@@ -55,6 +58,8 @@ import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import com.example.fico.shared.DateFunctions
 import com.example.fico.shared.constants.CategoriesList
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
@@ -458,16 +463,19 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
     private fun setUpDefaultBudgetAlertDialog(): CompletableDeferred<Boolean> {
         val result = CompletableDeferred<Boolean>()
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(requireContext())
 
-        builder.setTitle("Definir o orçamento padrão")
+        builder.setTitle(requireContext().getString(R.string.define_default_budget_title))
 
-        val defaultBudget = EditText(requireContext())
-        defaultBudget.hint = "Orçamento Padrão"
-        defaultBudget.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
-        builder.setView(defaultBudget)
+        val inflater = LayoutInflater.from(requireContext())
+        val dialogView = inflater.inflate(R.layout.month_budget_input_field_for_alert_dialog, null)
 
-        defaultBudget.addTextChangedListener(object : TextWatcher {
+        val defaultBudgetEt = dialogView.findViewById<TextInputEditText>(R.id.et_month_budget_ad)
+        val defaultBudetTil = dialogView.findViewById<TextInputLayout>(R.id.til_month_budget_ad)
+        defaultBudetTil.hint = requireContext().getString(R.string.default_budget_activity_title)
+        builder.setView(dialogView)
+
+        defaultBudgetEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -479,22 +487,22 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                     val formatted = (
                             NumberFormat.getCurrencyInstance().format(parsed / 100.0)
                             )
-                    defaultBudget.removeTextChangedListener(this)
-                    defaultBudget.setText(formatted)
-                    defaultBudget.setSelection(formatted.length)
-                    defaultBudget.addTextChangedListener(this)
+                    defaultBudgetEt.removeTextChangedListener(this)
+                    defaultBudgetEt.setText(formatted)
+                    defaultBudgetEt.setSelection(formatted.length)
+                    defaultBudgetEt.addTextChangedListener(this)
                 }
             }
         })
 
-        builder.setPositiveButton("Salvar") { dialog, which ->
-            val saveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+        builder.setPositiveButton(requireContext().getString(R.string.save)) { dialog, which ->
+            val saveButton = (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
             saveButton.isEnabled = false
             lifecycleScope.launch {
-                if (defaultBudget.text.toString() != "") {
+                if (defaultBudgetEt.text.toString() != "") {
 
                     val regex = Regex("[\\d,.]+")
-                    val justNumber = regex.find(defaultBudget.text.toString())
+                    val justNumber = regex.find(defaultBudgetEt.text.toString())
                     val formatNum = DecimalFormat("#.##")
                     val numClean = justNumber!!.value
                         .replace(",", "")
@@ -510,12 +518,18 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             saveButton.isEnabled = true
         }
 
-        builder.setNegativeButton("Cancelar") { dialog, which ->
+        builder.setNegativeButton(requireContext().getString(R.string.cancel)) { dialog, which ->
 
         }
 
-        val alertDialog = builder.create()
-        alertDialog.show()
+        val dialog = builder.create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getColorOnSurfaceVariant())
+            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getColorOnSurfaceVariant())
+        }
+
+        dialog.show()
         return result
     }
 
@@ -861,6 +875,14 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.etReceivedDate.visibility = View.GONE
         binding.ivReceivedDate.visibility = View.GONE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
+    }
+
+    private fun getColorOnSurfaceVariant() : Int{
+        val typedValue = TypedValue()
+        val theme: Resources.Theme = requireContext().theme
+        theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, typedValue, true)
+        val colorOnSurfaceVariant = ContextCompat.getColor(requireContext(), typedValue.resourceId)
+        return colorOnSurfaceVariant
     }
 
 }
