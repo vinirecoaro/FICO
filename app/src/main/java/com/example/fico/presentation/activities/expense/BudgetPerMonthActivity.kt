@@ -142,18 +142,18 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         val dialog = builder.create()
 
         dialog.setOnShowListener {
-            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getColorOnSurfaceVariant())
-            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getColorOnSurfaceVariant())
+            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
+            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getAlertDialogTextButtonColor())
         }
 
         dialog.show()
         return result
     }
 
-    private fun getColorOnSurfaceVariant() : Int{
+    private fun getAlertDialogTextButtonColor() : Int{
         val typedValue = TypedValue()
         val theme: Resources.Theme = this.theme
-        theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, typedValue, true)
+        theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
         val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
         return colorOnSurfaceVariant
     }

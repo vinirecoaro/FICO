@@ -118,16 +118,16 @@ class ExpenseConfigurationFragment : Fragment(),
         val dialog = builder.create()
 
         dialog.setOnShowListener {
-            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getColorOnSurfaceVariant())
+            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
         }
 
         dialog.show()
     }
 
-    private fun getColorOnSurfaceVariant() : Int{
+    private fun getAlertDialogTextButtonColor() : Int{
         val typedValue = TypedValue()
         val theme: Resources.Theme = requireContext().theme
-        theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, typedValue, true)
+        theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
         val colorOnSurfaceVariant = ContextCompat.getColor(requireContext(), typedValue.resourceId)
         return colorOnSurfaceVariant
     }

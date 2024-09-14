@@ -5,5 +5,6 @@
         <attr name="bottomAppBarItemIconTint" format="color"/>
         <attr name="bottomAppBarItemTextColor" format="color"/>
         <attr name="customCardBackgroundColor" format="color" />
+        <attr name="alertDialogTextButtonColor" format="color" />
     </declare-styleable>
 </resources>

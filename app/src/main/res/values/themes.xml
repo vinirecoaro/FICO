@@ -23,7 +23,7 @@
         <!-- Card background Color -->
         <item name="customCardBackgroundColor">@color/white</item>
         <!-- Dialog button text color -->
-        <item name="colorOnSurfaceVariant">@color/blue_400</item>
+        <item name="alertDialogTextButtonColor">@color/blue_400</item>
 
     </style>
 
