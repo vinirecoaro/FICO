@@ -130,5 +130,6 @@
     <string name="category_list_description_dividend">Dividendo</string>
     <string name="category_list_description_benefits">Benefícios</string>
     <string name="payment_date_field_installment_hint">Data de Pagamento Inicial</string>
+    <string name="define_payment_day">Definir data de pagamento</string>
 
 </resources>

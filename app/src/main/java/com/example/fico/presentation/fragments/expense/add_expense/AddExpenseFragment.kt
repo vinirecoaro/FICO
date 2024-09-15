@@ -47,6 +47,8 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.marginTop
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.adapters.CategoryListAdapter
@@ -419,10 +421,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
         }
 
-        binding.ivArrowUpGetPurchaseDate.setOnClickListener {
-            binding.etPaymentDate.text = binding.etPurchaseDate.text
-        }
-
         viewModel.addExpenseResult.observe(viewLifecycleOwner) { result ->
             hideKeyboard(requireContext(), binding.btSave)
             clearUserInputs()
@@ -444,6 +442,17 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             }
             else{
                 Snackbar.make(binding.btSave, getString(R.string.change_default_budget_failure_message),Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        binding.swtPaymentDay.setOnCheckedChangeListener { compoundButton, isChecked ->
+
+            if(isChecked){
+                binding.tilPaymentDate.visibility = View.VISIBLE
+                binding.ivPaymentDate.visibility = View.VISIBLE
+            }else{
+                binding.tilPaymentDate.visibility = View.GONE
+                binding.ivPaymentDate.visibility = View.GONE
             }
         }
 
@@ -705,7 +714,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             Configuration.UI_MODE_NIGHT_YES -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_light)
                 binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_light)
-                binding.ivArrowUpGetPurchaseDate.setImageResource(R.drawable.arrow_up_light)
                 binding.ivReceivedDate.setImageResource(R.drawable.baseline_calendar_month_light)
 
             }
@@ -713,7 +721,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.ivPaymentDate.setImageResource(R.drawable.baseline_calendar_month_dark)
                 binding.ivPurchaseDate.setImageResource(R.drawable.baseline_calendar_month_dark)
-                binding.ivArrowUpGetPurchaseDate.setImageResource(R.drawable.arrow_up_black)
                 binding.ivReceivedDate.setImageResource(R.drawable.baseline_calendar_month_dark)
             }
 
@@ -845,12 +852,13 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.tilPurchaseDate.visibility = View.GONE
         binding.etPurchaseDate.visibility = View.GONE
         binding.ivPurchaseDate.visibility = View.GONE
-        binding.ivArrowUpGetPurchaseDate.visibility = View.GONE
         binding.tilPaymentDate.visibility = View.GONE
         binding.etPaymentDate.visibility = View.GONE
         binding.ivPaymentDate.visibility = View.GONE
         binding.tilInstallments.visibility = View.GONE
         binding.etInstallments.visibility = View.GONE
+        binding.tvSwtPaymentDay.visibility = View.GONE
+        binding.swtPaymentDay.visibility = View.GONE
         binding.tilReceivedDate.visibility = View.VISIBLE
         binding.etReceivedDate.visibility = View.VISIBLE
         binding.ivReceivedDate.visibility = View.VISIBLE
@@ -867,10 +875,11 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.tilPurchaseDate.visibility = View.VISIBLE
         binding.etPurchaseDate.visibility = View.VISIBLE
         binding.ivPurchaseDate.visibility = View.VISIBLE
-        binding.ivArrowUpGetPurchaseDate.visibility = View.VISIBLE
         binding.tilPaymentDate.visibility = View.VISIBLE
         binding.etPaymentDate.visibility = View.VISIBLE
         binding.ivPaymentDate.visibility = View.VISIBLE
+        binding.tvSwtPaymentDay.visibility = View.VISIBLE
+        binding.swtPaymentDay.visibility = View.VISIBLE
         binding.tilReceivedDate.visibility = View.GONE
         binding.etReceivedDate.visibility = View.GONE
         binding.ivReceivedDate.visibility = View.GONE
