@@ -221,29 +221,20 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             lifecycleScope.launch(Dispatchers.Main) {
                 if(viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_EXPENSE){
                     if (binding.tilInstallments.visibility == View.GONE) {
-                        if (verifyFields(
-                                binding.etPrice,
-                                binding.etDescription,
-                                binding.actvCategory,
-                                binding.etPaymentDate,
-                                binding.etPurchaseDate
-                            )
-                        ) {
-                            val internetConnection =
-                                ConnectionFunctions().internetConnectionVerification(requireContext())
-                            if (internetConnection) {
-                                val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                                if (existsDefaultBudget) {
-                                    viewModel.addExpense(
-                                        binding.etPrice.text.toString(),
-                                        binding.etDescription.text.toString(),
-                                        binding.actvCategory.text.toString(),
-                                        binding.etPaymentDate.text.toString(),
-                                        binding.etPurchaseDate.text.toString(),
-                                        false
-                                    )
-                                } else {
-                                    if (setUpDefaultBudgetAlertDialog().await()) {
+                        if(binding.swtPaymentDay.isChecked){
+                            if (verifyFields(
+                                    binding.etPrice,
+                                    binding.etDescription,
+                                    binding.actvCategory,
+                                    binding.etPaymentDate,
+                                    binding.etPurchaseDate
+                                )
+                            ) {
+                                val internetConnection =
+                                    ConnectionFunctions().internetConnectionVerification(requireContext())
+                                if (internetConnection) {
+                                    val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                                    if (existsDefaultBudget) {
                                         viewModel.addExpense(
                                             binding.etPrice.text.toString(),
                                             binding.etDescription.text.toString(),
@@ -252,58 +243,156 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                             binding.etPurchaseDate.text.toString(),
                                             false
                                         )
+                                    } else {
+                                        if (setUpDefaultBudgetAlertDialog().await()) {
+                                            viewModel.addExpense(
+                                                price = binding.etPrice.text.toString(),
+                                                description = binding.etDescription.text.toString(),
+                                                category = binding.actvCategory.text.toString(),
+                                                paymentDate = binding.etPaymentDate.text.toString(),
+                                                purchaseDate = binding.etPurchaseDate.text.toString(),
+                                                installment = false
+                                            )
+                                        }
                                     }
-                                }
-                            }/*else{
-                            viewModel.addExpenseLocal(
-                                binding.etPrice.text.toString(),
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                binding.etDate.text.toString(),
-                                false
-                            )
-                        }*/
-                        }
-                    } else if (binding.tilInstallments.visibility == View.VISIBLE) {
-                        if (verifyFields(
-                                binding.etPrice,
-                                binding.etDescription,
-                                binding.actvCategory,
-                                binding.etPaymentDate,
-                                binding.etPurchaseDate
-                            )
-                        ) {
-                            if (binding.etInstallments.text.toString() != "0") {
-                                val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                                if (existsDefaultBudget) {
-                                    viewModel.addExpense(
+                                }/*else{
+                                    viewModel.addExpenseLocal(
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
-                                        binding.etPaymentDate.text.toString(),
-                                        binding.etPurchaseDate.text.toString(),
-                                        true,
-                                        binding.etInstallments.text.toString().toInt()
+                                        binding.etDate.text.toString(),
+                                        false
                                     )
-                                } else {
-                                    if (setUpDefaultBudgetAlertDialog().await()) {
+                                }*/
+                            }
+                        }else{
+                            if (verifyFields(
+                                    binding.etPrice,
+                                    binding.etDescription,
+                                    binding.actvCategory,
+                                    binding.etPurchaseDate
+                                )
+                            ) {
+                                val internetConnection =
+                                    ConnectionFunctions().internetConnectionVerification(requireContext())
+                                if (internetConnection) {
+                                    val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                                    if (existsDefaultBudget) {
                                         viewModel.addExpense(
-                                            binding.etPrice.text.toString(),
-                                            binding.etDescription.text.toString(),
-                                            binding.actvCategory.text.toString(),
-                                            binding.etPaymentDate.text.toString(),
-                                            binding.etPurchaseDate.text.toString(),
-                                            true,
-                                            binding.etInstallments.text.toString().toInt()
+                                            price = binding.etPrice.text.toString(),
+                                            description = binding.etDescription.text.toString(),
+                                            category = binding.actvCategory.text.toString(),
+                                            paymentDate = binding.etPurchaseDate.text.toString(),
+                                            purchaseDate = binding.etPurchaseDate.text.toString(),
+                                            installment = false
                                         )
+                                    } else {
+                                        if (setUpDefaultBudgetAlertDialog().await()) {
+                                            viewModel.addExpense(
+                                                binding.etPrice.text.toString(),
+                                                binding.etDescription.text.toString(),
+                                                binding.actvCategory.text.toString(),
+                                                binding.etPaymentDate.text.toString(),
+                                                binding.etPurchaseDate.text.toString(),
+                                                false
+                                            )
+                                        }
                                     }
+                                }/*else{
+                                    viewModel.addExpenseLocal(
+                                        binding.etPrice.text.toString(),
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        binding.etDate.text.toString(),
+                                        false
+                                    )
+                                }*/
+                            }
+                        }
+
+                    } else if (binding.tilInstallments.visibility == View.VISIBLE) {
+                        if(binding.swtPaymentDay.isChecked){
+                            if (verifyFields(
+                                    binding.etPrice,
+                                    binding.etDescription,
+                                    binding.actvCategory,
+                                    binding.etPaymentDate,
+                                    binding.etPurchaseDate
+                                )
+                            ) {
+                                if (binding.etInstallments.text.toString() != "0") {
+                                    val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                                    if (existsDefaultBudget) {
+                                        viewModel.addExpense(
+                                            price = binding.etPrice.text.toString(),
+                                            description =  binding.etDescription.text.toString(),
+                                            category =  binding.actvCategory.text.toString(),
+                                            paymentDate =  binding.etPaymentDate.text.toString(),
+                                            purchaseDate =  binding.etPurchaseDate.text.toString(),
+                                            installment = true,
+                                            nOfInstallments =  binding.etInstallments.text.toString().toInt()
+                                        )
+                                    } else {
+                                        if (setUpDefaultBudgetAlertDialog().await()) {
+                                            viewModel.addExpense(
+                                                price = binding.etPrice.text.toString(),
+                                                description =  binding.etDescription.text.toString(),
+                                                category =  binding.actvCategory.text.toString(),
+                                                paymentDate =  binding.etPaymentDate.text.toString(),
+                                                purchaseDate =  binding.etPurchaseDate.text.toString(),
+                                                installment = true,
+                                                nOfInstallments =  binding.etInstallments.text.toString().toInt()
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "O número de parcelas não pode ser 0",
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 }
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "O número de parcelas não pode ser 0",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                            }
+                        }else{
+                            if (verifyFields(
+                                    binding.etPrice,
+                                    binding.etDescription,
+                                    binding.actvCategory,
+                                    binding.etPurchaseDate
+                                )
+                            ) {
+                                if (binding.etInstallments.text.toString() != "0") {
+                                    val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                                    if (existsDefaultBudget) {
+                                        viewModel.addExpense(
+                                            price = binding.etPrice.text.toString(),
+                                            description =  binding.etDescription.text.toString(),
+                                            category =  binding.actvCategory.text.toString(),
+                                            paymentDate =  binding.etPurchaseDate.text.toString(),
+                                            purchaseDate =  binding.etPurchaseDate.text.toString(),
+                                            installment = true,
+                                            nOfInstallments =  binding.etInstallments.text.toString().toInt()
+                                        )
+                                    } else {
+                                        if (setUpDefaultBudgetAlertDialog().await()) {
+                                            viewModel.addExpense(
+                                                price = binding.etPrice.text.toString(),
+                                                description =  binding.etDescription.text.toString(),
+                                                category =  binding.actvCategory.text.toString(),
+                                                paymentDate =  binding.etPurchaseDate.text.toString(),
+                                                purchaseDate =  binding.etPurchaseDate.text.toString(),
+                                                installment = true,
+                                                nOfInstallments =  binding.etInstallments.text.toString().toInt()
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "O número de parcelas não pode ser 0",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }
                         }
                     }
