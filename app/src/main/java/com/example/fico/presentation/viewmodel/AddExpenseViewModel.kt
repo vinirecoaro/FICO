@@ -15,7 +15,6 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.shared.DateFunctions
 import com.example.fico.shared.constants.StringConstants
-import com.google.firebase.database.MutableData
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -33,6 +32,8 @@ class AddExpenseViewModel(
     val setDefaultBudgetResult : LiveData<Boolean> = _setDefaultBudgetResult
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     private var operation : String = StringConstants.ADD_TRANSACTION.ADD_EXPENSE
+    private val _paymentDateSwitchInitialState = MutableLiveData<Boolean>()
+    val paymentDateSwitchInitialStateLiveData: LiveData<Boolean> = _paymentDateSwitchInitialState
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(
@@ -200,5 +201,12 @@ class AddExpenseViewModel(
 
     fun getOperation() : String{
         return operation
+    }
+
+    fun getPaymentDateSwitchState(){
+        viewModelScope.async(Dispatchers.IO) {
+            val state = dataStore.getPaymentDateSwitchInitialState()
+            _paymentDateSwitchInitialState.postValue(state)
+        }
     }
 }

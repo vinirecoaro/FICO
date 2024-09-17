@@ -100,6 +100,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     private lateinit var menu : Menu
     private val categoriesList : CategoriesList by inject()
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -543,6 +544,10 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                 binding.tilPaymentDate.visibility = View.GONE
                 binding.ivPaymentDate.visibility = View.GONE
             }
+        }
+
+        viewModel.paymentDateSwitchInitialStateLiveData.observe(requireActivity()){ state ->
+            binding.swtPaymentDay.isChecked = state
         }
 
     }
