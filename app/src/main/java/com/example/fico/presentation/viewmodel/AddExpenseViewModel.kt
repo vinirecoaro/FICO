@@ -35,6 +35,10 @@ class AddExpenseViewModel(
     private val _paymentDateSwitchInitialState = MutableLiveData<Boolean>()
     val paymentDateSwitchInitialStateLiveData: LiveData<Boolean> = _paymentDateSwitchInitialState
 
+    init {
+        getPaymentDateSwitchState()
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(
         price: String,
@@ -203,7 +207,7 @@ class AddExpenseViewModel(
         return operation
     }
 
-    fun getPaymentDateSwitchState(){
+    private fun getPaymentDateSwitchState(){
         viewModelScope.async(Dispatchers.IO) {
             val state = dataStore.getPaymentDateSwitchInitialState()
             _paymentDateSwitchInitialState.postValue(state)
