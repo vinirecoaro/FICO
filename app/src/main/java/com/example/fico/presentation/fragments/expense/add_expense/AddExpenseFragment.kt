@@ -133,8 +133,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     override fun onResume() {
         super.onResume()
 
-        viewModel.getDefaultPaymentDay()
-
         binding.etPurchaseDate.setText(currentDate)
 
         val filter = IntentFilter().apply {
@@ -538,6 +536,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         binding.swtPaymentDay.setOnCheckedChangeListener { compoundButton, isChecked ->
 
             if(isChecked){
+                viewModel.getDefaultPaymentDay()
                 binding.tilPaymentDate.visibility = View.VISIBLE
                 binding.ivPaymentDate.visibility = View.VISIBLE
             }else{

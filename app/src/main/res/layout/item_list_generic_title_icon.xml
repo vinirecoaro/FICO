@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_budget_configuration_list_item"
+            android:id="@+id/tv_item_list_generic_title"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
@@ -26,6 +26,7 @@
             />
 
         <ImageView
+            android:id="@+id/iv_item_list_generic_icon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/arrow_next_black"

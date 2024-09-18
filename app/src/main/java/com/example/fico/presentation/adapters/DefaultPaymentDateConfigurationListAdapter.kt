@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.presentation.interfaces.OnListItemClick
 
-class BudgetConfigurationListAdapter(private var data: MutableList<String>) : RecyclerView.Adapter<BudgetConfigurationListAdapter.ViewHolder>() {
+class DefaultPaymentDateConfigurationListAdapter(private var data: MutableList<String>) : RecyclerView.Adapter<DefaultPaymentDateConfigurationListAdapter.ViewHolder>() {
 
     private var listener: OnListItemClick? = null
 
