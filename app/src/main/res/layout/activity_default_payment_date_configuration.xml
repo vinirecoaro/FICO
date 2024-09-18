@@ -26,11 +26,75 @@
         tools:context=".presentation.activities.expense.BudgetConfigurationListActivity"
         android:padding="8dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_default_payment_date_configuration"
+        <LinearLayout
+            android:id="@+id/ll_define_default_day"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_define_default_day"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:textSize="18sp"
+                android:text="@string/define_default_payment_day"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/arrow_next_black"
+                app:tint="?attr/colorOnSecondary" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/v_separator_line_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorOnSecondary"
+            app:layout_constraintTop_toBottomOf="@id/ll_define_default_day" />
+
+        <LinearLayout
+            android:id="@+id/ll_define_switch_state"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/v_separator_line_1">
+
+            <TextView
+                android:id="@+id/tv_define_switch_state"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:textSize="18sp"
+                android:text="@string/define_default_payment_day_switch_state"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/swt_payment_date_state"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/arrow_next_black"
+                app:tint="?attr/colorOnSecondary"
+                android:paddingEnd="8dp"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/v_separator_line_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorOnSecondary"
+            app:layout_constraintTop_toBottomOf="@id/ll_define_switch_state" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
