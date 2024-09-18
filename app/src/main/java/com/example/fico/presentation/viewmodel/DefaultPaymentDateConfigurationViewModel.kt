@@ -16,6 +16,12 @@ class DefaultPaymentDateConfigurationViewModel(
 
     private val _setDefaultBudget = MutableLiveData<Boolean>()
     val setDefaultBudgetLiveData: LiveData<Boolean> = _setDefaultBudget
+    private val _paymentDateSwitchInitialState = MutableLiveData<Boolean>()
+    val paymentDateSwitchInitialStateLiveData: LiveData<Boolean> = _paymentDateSwitchInitialState
+
+    init {
+        getPaymentDateSwitchState()
+    }
 
     fun setDefaultPaymentDay(date: String) {
         viewModelScope.async(Dispatchers.IO) {
@@ -29,6 +35,19 @@ class DefaultPaymentDateConfigurationViewModel(
                 }
             )
 
+        }
+    }
+
+    private fun getPaymentDateSwitchState(){
+        viewModelScope.async(Dispatchers.IO) {
+            val state = dataStore.getPaymentDateSwitchInitialState()
+            _paymentDateSwitchInitialState.postValue(state)
+        }
+    }
+
+    fun setPaymentDateSwitchInitialState(state : Boolean){
+        viewModelScope.async(Dispatchers.IO) {
+            dataStore.setPaymentDateSwitchInitialState(state)
         }
     }
 }

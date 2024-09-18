@@ -61,6 +61,16 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
+        viewModel.paymentDateSwitchInitialStateLiveData.observe(this){ state ->
+            if(state != null){
+                binding.swtPaymentDateState.isChecked = state
+            }
+        }
+
+        binding.swtPaymentDateState.setOnCheckedChangeListener{ _ , state ->
+            viewModel.setPaymentDateSwitchInitialState(state)
+        }
     }
 
     private fun setDefaultPaymentDateAlertDialog(){
