@@ -2,13 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_menu_item_expenses"
-            android:icon="@drawable/expenses_drawer_icon"
-            android:title="@string/expenses" />
-        <item
-            android:id="@+id/nav_menu_item_earnings"
-            android:icon="@drawable/earnings_drawer_icon"
-            android:title="@string/earnings" />
+            android:id="@+id/nav_menu_item_personal_data"
+            android:icon="@drawable/baseline_person_24_black"
+            android:title="@string/personal_data" />
         <item
             android:id="@+id/nav_menu_item_config"
             android:icon="@drawable/config_image_dark"

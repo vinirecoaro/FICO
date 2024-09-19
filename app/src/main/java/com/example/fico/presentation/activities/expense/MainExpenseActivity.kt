@@ -99,24 +99,15 @@ class MainExpenseActivity : AppCompatActivity(){
 
     private fun setupListeners(){
         val navigationView = findViewById<NavigationView>(R.id.nv_main)
-        val headerView = navigationView.getHeaderView(0)
-        headerView.setOnClickListener {
-            startActivity(Intent(this, UserDataActivity::class.java))
-        }
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when(menuItem.itemId){
-                R.id.nav_menu_item_expenses -> {
-                    startActivity(Intent(this, MainExpenseActivity::class.java))
+                R.id.nav_menu_item_personal_data -> {
+                    startActivity(Intent(this, UserDataActivity::class.java))
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
 
-                R.id.nav_menu_item_earnings -> {
-                    startActivity(Intent(this, ConstructionActivity::class.java))
-                    binding.drawerLayout.closeDrawer(GravityCompat.START)
-                    true
-                }
                 R.id.nav_menu_item_config -> {
                     startActivity(Intent(this, GeneralConfigurationActivity::class.java))
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -132,12 +123,15 @@ class MainExpenseActivity : AppCompatActivity(){
         val navigationView = findViewById<NavigationView>(R.id.nv_main)
         val menu = navigationView.menu
         val configMenuItem = menu.findItem(R.id.nav_menu_item_config)
+        val profileMenuItem = menu.findItem(R.id.nav_menu_item_personal_data)
         when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
                 configMenuItem.setIcon(R.drawable.config_image_light)
+                profileMenuItem.setIcon(R.drawable.baseline_person_24_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 configMenuItem.setIcon(R.drawable.config_image_dark)
+                profileMenuItem.setIcon(R.drawable.baseline_person_24_black)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
