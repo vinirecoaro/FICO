@@ -66,7 +66,7 @@ class ExpenseListViewModel(
 
     fun getExpenseMonths() {
         viewModelScope.async {
-            val expenseMonths = dataStore.getExpenseMonths()
+            val expenseMonths = dataStore.getExpenseMonths().sortedByDescending {it}
             val expenseMonthsFormatted = mutableListOf<String>()
             expenseMonths.forEach {
                 expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(it))
