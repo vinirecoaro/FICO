@@ -12,11 +12,14 @@ import com.example.fico.model.Expense
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.shared.constants.StringConstants
 import kotlinx.coroutines.*
+import org.koin.android.ext.android.inject
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class UploadFile(private val firebaseAPI : FirebaseAPI, private val dataStore:DataStoreManager) : Service() {
+class UploadFile : Service() {
 
+    private val dataStore : DataStoreManager by inject()
+    private val firebaseAPI : FirebaseAPI by inject()
     private val serviceScope = CoroutineScope(Dispatchers.Default)
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
 

@@ -710,7 +710,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             val expensesList = readFileResult.first
 
                             // innit the upload data to database service
-                            val serviceIntent = Intent(requireContext(), UploadFile(firebaseAPI, dataStore)::class.java)
+                            val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
                             serviceIntent.putParcelableArrayListExtra(
                                 "expensesList", ArrayList(expensesList)
                             )
@@ -753,7 +753,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                             val expensesList = readFileResult.first
 
                             // innit the upload data to database service
-                            val serviceIntent = Intent(requireContext(), UploadFile(firebaseAPI, dataStore)::class.java)
+                            val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
                             serviceIntent.putParcelableArrayListExtra(
                                 "expensesList", ArrayList(expensesList)
                             )

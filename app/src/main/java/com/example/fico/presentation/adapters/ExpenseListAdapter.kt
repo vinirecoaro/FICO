@@ -49,9 +49,14 @@ class ExpenseListAdapter(private var data: List<Expense>, private val categories
 
         val itemCategory = item.category
         val categoryPathName = categories.find{ it.description == itemCategory }
-        val iconName = categoryPathName!!.iconName
-        val iconPath = holder.itemView.context.resources.getIdentifier(iconName, "drawable", holder.itemView.context.packageName)
-        holder.categoryImg.setImageResource(iconPath)
+        if(categoryPathName != null){
+            val iconName = categoryPathName.iconName
+            val iconPath = holder.itemView.context.resources.getIdentifier(iconName, "drawable", holder.itemView.context.packageName)
+            holder.categoryImg.setImageResource(iconPath)
+        }else{
+            val iconPath = holder.itemView.context.resources.getIdentifier("baseline_cancel_dark", "drawable", holder.itemView.context.packageName)
+            holder.categoryImg.setImageResource(iconPath)
+        }
 
         holder.itemView.setOnClickListener {
             listener?.onListItemClick(position)

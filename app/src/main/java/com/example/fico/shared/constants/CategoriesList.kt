@@ -18,7 +18,12 @@ class CategoriesList(private val context : Context) {
                     false
                 ),
                 TransactionCategory(
-                    context.getString(R.string.category_list_description_entertainment),
+                    context.getString(R.string.category_list_description_entertainment_1),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.ENTERTAINMENT,
+                    false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_entertainment_2),
                     StringConstants.CATEGORY_LIST.ICON_NAME.ENTERTAINMENT,
                     false
                 ),
@@ -28,7 +33,12 @@ class CategoriesList(private val context : Context) {
                     false
                 ),
                 TransactionCategory(
-                    context.getString(R.string.category_list_description_education),
+                    context.getString(R.string.category_list_description_education_1),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.EDUCATION,
+                    false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_education_2),
                     StringConstants.CATEGORY_LIST.ICON_NAME.EDUCATION,
                     false
                 ),
@@ -53,7 +63,12 @@ class CategoriesList(private val context : Context) {
                     false
                 ),
                 TransactionCategory(
-                    context.getString(R.string.category_list_description_eletronics),
+                    context.getString(R.string.category_list_description_eletronics_1),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.ELETRONICS,
+                    false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_eletronics_2),
                     StringConstants.CATEGORY_LIST.ICON_NAME.ELETRONICS,
                     false
                 ),
@@ -123,7 +138,12 @@ class CategoriesList(private val context : Context) {
                     false
                 ),
                 TransactionCategory(
-                    context.getString(R.string.category_list_description_personal_hygiene),
+                    context.getString(R.string.category_list_description_personal_hygiene_1),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.PERSONAL_HYGIENE,
+                    false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_personal_hygiene_2),
                     StringConstants.CATEGORY_LIST.ICON_NAME.PERSONAL_HYGIENE,
                     false
                 ),
@@ -133,7 +153,12 @@ class CategoriesList(private val context : Context) {
                     false
                 ),
                 TransactionCategory(
-                    context.getString(R.string.category_list_description_cash_withdrawal),
+                    context.getString(R.string.category_list_description_cash_withdrawal_1),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.CASH_WITHDRAWAL,
+                    false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_cash_withdrawal_2),
                     StringConstants.CATEGORY_LIST.ICON_NAME.CASH_WITHDRAWAL,
                     false
                 ),
