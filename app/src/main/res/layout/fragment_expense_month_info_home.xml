@@ -6,19 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".presentation.fragments.expense.expense_home.ExpenseMonthInfoHomeFragment">
 
+    <TextView
+
+        android:id="@+id/tv_expenses_title"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/expenses_title"
+        android:textSize="24sp"
+        android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="12dp"
         android:id="@+id/rv_expense_months"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_expenses_title"
         app:spanCount="1" />
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pc_month_expense"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
         app:layout_constraintBottom_toBottomOf="@id/tv_total_expenses_this_month_value"
         app:layout_constraintEnd_toEndOf="@id/tv_total_expenses_this_month"
         app:layout_constraintStart_toStartOf="@id/tv_total_expenses_this_month"
@@ -29,11 +40,14 @@
         style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:text="@string/this_month_expense"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/tv_available_this_month"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_expense_months" />
+        app:layout_constraintTop_toBottomOf="@id/rv_expense_months"
+        android:layout_marginEnd="30dp"
+        />
 
     <TextView
         android:id="@+id/tv_total_expenses_this_month_value"
@@ -61,11 +75,12 @@
         style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="190dp"
         android:text="@string/available"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_total_expenses_this_month"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_total_expenses_this_month" />
+        app:layout_constraintStart_toEndOf="@id/tv_total_expenses_this_month"
+        app:layout_constraintTop_toTopOf="@id/tv_total_expenses_this_month" />
 
     <TextView
         android:id="@+id/tv_available_this_month_value"

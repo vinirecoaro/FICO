@@ -139,5 +139,6 @@
     <string name="payment_date_field_installment_hint">Data de Pagamento Inicial</string>
     <string name="define_payment_day">Definir data de pagamento</string>
     <string name="personal_data">Dados pessoais</string>
+    <string name="expenses_title">Despesas</string>
 
 </resources>
