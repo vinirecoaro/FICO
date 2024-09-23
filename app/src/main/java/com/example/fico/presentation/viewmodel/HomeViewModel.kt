@@ -170,4 +170,10 @@ class HomeViewModel(
         return _infoPerMonthLabel.value!!.size-1
     }
 
+    fun getCategoriesWithMoreExpense(date : String){
+        viewModelScope.async(Dispatchers.IO){
+            val expenseListFromMonth = dataStore.getExpenseList().find { it.paymentDate == date }
+        }
+    }
+
 }
