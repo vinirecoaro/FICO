@@ -21,6 +21,7 @@ import com.example.fico.presentation.interfaces.OnExpenseMonthSelectedListener
 import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.shared.DateFunctions
 import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -49,6 +50,8 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
 
         setUpListeners()
 
+        initEmptyChart(binding.pcExpensePerCategory, binding.pcMonthExpense, binding.pcAvailableNow)
+
         return rootView
     }
 
@@ -60,6 +63,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         getMonthExpense()
         initMonthExpenseChart()
         initAvailableNowChart()
+        viewModel.getCategoriesWithMoreExpense()
         viewModel.getExpenseMonths()
     }
 
@@ -131,45 +135,10 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initMonthExpenseChart(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
 
-        val pieChart = binding.pcMonthExpense
-        var holeColor = 1
-
-        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                holeColor = Color.rgb(104, 110, 106)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                holeColor = Color.WHITE
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
-
-        val emptyEntries: ArrayList<PieEntry> = ArrayList()
-        emptyEntries.add(PieEntry(0f, ""))
-
-        val emptyChartColors = listOf(
-            Color.parseColor("#19d14e"), // FirstColor
-            Color.parseColor("#9aa19c")  // SecondColor
-        )
-
-        val emptyDataSet = PieDataSet(emptyEntries, "Label")
-        emptyDataSet.colors = emptyChartColors
-
-        val emptyData = PieData(emptyDataSet)
-        pieChart.data = emptyData
-
-        pieChart.setUsePercentValues(false)
-        pieChart.description.isEnabled = false
-        pieChart.setHoleRadius(80f) // middle chart hole size
-        pieChart.setTransparentCircleRadius(85f) // Transparent area size
-        pieChart.setHoleColor(holeColor)
-        pieChart.legend.isEnabled = false
-        pieChart.data.setDrawValues(false)// Ocult label values
-        pieChart.animateY(1400, Easing.EaseInOutQuad)// Circular animation on create chart
-
-        pieChart.invalidate()
-
         lifecycleScope.launch{
+
+            val pieChart = binding.pcMonthExpense
+            var holeColor = 1
 
             val monthExpenseValue = viewModel.getMonthExpense(date, formatted = false).await()
             var monthExpenseValueFormatted = 0f
@@ -259,45 +228,10 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initAvailableNowChart(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
 
-        val pieChart = binding.pcAvailableNow
-        var holeColor = 1
-
-        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                holeColor = Color.rgb(104, 110, 106)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                holeColor = Color.WHITE
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
-
-        val emptyEntries: ArrayList<PieEntry> = ArrayList()
-        emptyEntries.add(PieEntry(0f, ""))
-
-        val emptyChartColors = listOf(
-            Color.parseColor("#19d14e"), // FirstColor
-            Color.parseColor("#9aa19c")  // SecondColor
-        )
-
-        val emptyDataSet = PieDataSet(emptyEntries, "Label")
-        emptyDataSet.colors = emptyChartColors
-
-        val emptyData = PieData(emptyDataSet)
-        pieChart.data = emptyData
-
-        pieChart.setUsePercentValues(false)
-        pieChart.description.isEnabled = false
-        pieChart.setHoleRadius(80f) // middle chart hole size
-        pieChart.setTransparentCircleRadius(85f) // Transparent area size
-        pieChart.setHoleColor(holeColor)
-        pieChart.legend.isEnabled = false
-        pieChart.data.setDrawValues(false)// Ocult label values
-        pieChart.animateY(1400, Easing.EaseInOutQuad)// Circular animation on create chart
-
-        pieChart.invalidate()
-
         lifecycleScope.launch{
+
+            val pieChart = binding.pcAvailableNow
+            var holeColor = 1
 
             val monthExpenseValue = viewModel.getMonthExpense(date, formatted = false).await()
             var monthExpenseValueFormatted = 0f
@@ -381,72 +315,15 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initExpensePerCategoryChart(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
+    private fun initExpensePerCategoryChart() {
 
-        val pieChart = binding.pcExpensePerCategory
-        var holeColor = 1
 
-        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                holeColor = Color.rgb(104, 110, 106)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                holeColor = Color.WHITE
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
+    }
 
-        val emptyEntries: ArrayList<PieEntry> = ArrayList()
-        emptyEntries.add(PieEntry(0f, ""))
+    fun initEmptyChart(vararg charts : PieChart){
+        for (chart in charts){
+            var holeColor = 1
 
-        val emptyChartColors = listOf(
-            Color.parseColor("#19d14e"), // FirstColor
-            Color.parseColor("#9aa19c")  // SecondColor
-        )
-
-        val emptyDataSet = PieDataSet(emptyEntries, "Label")
-        emptyDataSet.colors = emptyChartColors
-
-        val emptyData = PieData(emptyDataSet)
-        pieChart.data = emptyData
-
-        pieChart.setUsePercentValues(false)
-        pieChart.description.isEnabled = false
-        pieChart.setHoleRadius(80f) // middle chart hole size
-        pieChart.setTransparentCircleRadius(85f) // Transparent area size
-        pieChart.setHoleColor(holeColor)
-        pieChart.legend.isEnabled = false
-        pieChart.data.setDrawValues(false)// Ocult label values
-        pieChart.animateY(1400, Easing.EaseInOutQuad)// Circular animation on create chart
-
-        pieChart.invalidate()
-
-        lifecycleScope.launch{
-            //Fecth data to fill chart
-            val monthExpenseValue = viewModel.getMonthExpense(date, formatted = false).await()
-            var monthExpenseValueFormatted = 0f
-            if(monthExpenseValue != "---"){
-                monthExpenseValueFormatted = monthExpenseValue.toFloat()
-            }
-
-            val availableNowValue = viewModel.getAvailableNow(date, formatted = false).await()
-            var availableNowValueFormatted = 1f
-            if(availableNowValue != "---"){
-                availableNowValueFormatted = availableNowValue.toFloat()
-            }
-            var availableNowColor = ""
-            val budget = monthExpenseValueFormatted + availableNowValueFormatted
-
-            // Defining color of availableNow part
-            if(availableNowValueFormatted >= (budget/2)){
-                availableNowColor = "#19d14e" // Green
-            }else if(availableNowValueFormatted >= (budget*0.15)){
-                availableNowColor = "#ebe23b" // Yellow
-            }else if(availableNowValueFormatted < (budget*0.15)){
-                availableNowColor = "#ed2b15" // Red
-            }
-
-            // Defining chart insede hole color
             when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
                 Configuration.UI_MODE_NIGHT_YES -> {
                     holeColor = Color.rgb(104, 110, 106)
@@ -457,50 +334,30 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                 Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
             }
 
-            // Create a entries list for Pie Chart
-            val entries = mutableListOf<PieEntry>()
-            if(availableNowValueFormatted < 0){
-                entries.add(PieEntry(0f))
-                entries.add(PieEntry(monthExpenseValueFormatted))
-            }else{
-                entries.add(PieEntry(availableNowValueFormatted))
-                entries.add(PieEntry(monthExpenseValueFormatted))
-            }
+            val emptyEntries: ArrayList<PieEntry> = ArrayList()
+            emptyEntries.add(PieEntry(0f, ""))
 
-            // Colors for parts of chart
-            val colors = listOf(
-                Color.parseColor(availableNowColor), // FirstColor
+            val emptyChartColors = listOf(
+                Color.parseColor("#19d14e"), // FirstColor
                 Color.parseColor("#9aa19c")  // SecondColor
             )
 
-            // Create a data set from entries
-            val dataSet = PieDataSet(entries, "Uso de Recursos")
-            dataSet.colors = colors
+            val emptyDataSet = PieDataSet(emptyEntries, "Label")
+            emptyDataSet.colors = emptyChartColors
 
-            // Data set customizing
-            dataSet.sliceSpace = 2f
+            val emptyData = PieData(emptyDataSet)
+            chart.data = emptyData
 
-            // Create an PieData object from data set
-            val pieData = PieData(dataSet)
-            pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
+            chart.setUsePercentValues(false)
+            chart.description.isEnabled = false
+            chart.setHoleRadius(80f) // middle chart hole size
+            chart.setTransparentCircleRadius(85f) // Transparent area size
+            chart.setHoleColor(holeColor)
+            chart.legend.isEnabled = false
+            chart.data.setDrawValues(false)// Ocult label values
+            chart.animateY(1400, Easing.EaseInOutQuad)// Circular animation on create chart
 
-            // Configure the PieChart
-            pieChart.data = pieData
-            pieChart.setUsePercentValues(false)
-            pieChart.description.isEnabled = false
-            pieChart.setHoleRadius(75f) // middle chart hole size
-            pieChart.setTransparentCircleRadius(80f) // Transparent area size
-            pieChart.setHoleColor(holeColor)
-            pieChart.legend.isEnabled = false
-
-            // Ocult label values
-            pieData.setDrawValues(false)
-
-            // Circular animation on create chart
-            pieChart.animateY(1400, Easing.EaseInOutQuad)
-
-            // Update the chart
-            pieChart.invalidate()
+            chart.invalidate()
         }
     }
 

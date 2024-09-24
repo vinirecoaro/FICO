@@ -14,6 +14,8 @@ import com.example.fico.DataStoreManager
 import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.shared.DateFunctions
 import kotlinx.coroutines.Deferred
@@ -39,6 +41,8 @@ class HomeViewModel(
     val totalExpenseLiveData : LiveData<String> = _totalExpense
     private val _informationPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
     val informationPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _informationPerMonth
+    private val _expensePerCategory = MutableLiveData<List<Pair<String, Double>>>()
+    val expensePerCategory : LiveData<List<Pair<String, Double>>> = _expensePerCategory
 
     init{
         getInfoPerMonth()
@@ -170,9 +174,22 @@ class HomeViewModel(
         return _infoPerMonthLabel.value!!.size-1
     }
 
-    fun getCategoriesWithMoreExpense(date : String){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCategoriesWithMoreExpense(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()){
         viewModelScope.async(Dispatchers.IO){
-            val expenseListFromMonth = dataStore.getExpenseList().find { it.paymentDate == date }
+            val expenseList = dataStore.getExpenseList()
+            val expenseListFromMonth = expenseList.filter { FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate) == date }
+            val sumTotalExpenseByCategory = expenseListFromMonth
+                .groupBy { it.category }
+                .mapValues { entry ->
+                    entry.value.sumOf { it.price.toDouble() }
+                }.toList().sortedByDescending { it.second }
+            if(sumTotalExpenseByCategory.size < 5){
+                _expensePerCategory.postValue(sumTotalExpenseByCategory)
+            }else{
+                val topFive = sumTotalExpenseByCategory.take(5)
+                _expensePerCategory.postValue(topFive)
+            }
         }
     }
 
