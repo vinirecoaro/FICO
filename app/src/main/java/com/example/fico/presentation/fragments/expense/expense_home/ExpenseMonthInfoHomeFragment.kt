@@ -89,6 +89,10 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
 
         }
 
+        viewModel.expensePerCategory.observe(viewLifecycleOwner){ expensePerCategoryList ->
+            initExpensePerCategoryChart(expensePerCategoryList)
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -119,7 +123,6 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             }catch (exception:Exception){}
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getMonthExpense(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
@@ -315,8 +318,59 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initExpensePerCategoryChart() {
+    private fun initExpensePerCategoryChart(categoriesList : List<Pair<String, Double>>) {
 
+        val pieChart = binding.pcExpensePerCategory
+        var holeColor = 1
+
+        // Defining chart insede hole color
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                holeColor = Color.rgb(104, 110, 106)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                holeColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
+        // Create a entries list for Pie Chart and set a color for each entry
+        val entries = mutableListOf<PieEntry>()
+        val paletteColors = viewModel.getPieChartCategoriesColors()
+        val colors = mutableListOf<Int>()
+        categoriesList.forEachIndexed { index, category ->
+            entries.add(PieEntry(category.second.toFloat()))
+            colors.add(paletteColors[index])
+        }
+
+        // Create a data set from entries
+        val dataSet = PieDataSet(entries, "Uso de Recursos")
+        dataSet.colors = colors
+
+        // Data set customizing
+        dataSet.sliceSpace = 2f
+
+        // Create an PieData object from data set
+        val pieData = PieData(dataSet)
+        pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
+
+        // Configure the PieChart
+        pieChart.data = pieData
+        pieChart.setUsePercentValues(false)
+        pieChart.description.isEnabled = false
+        pieChart.setHoleRadius(55f) // middle chart hole size
+        pieChart.setTransparentCircleRadius(60f) // Transparent area size
+        pieChart.setHoleColor(holeColor)
+        pieChart.legend.isEnabled = false
+
+        // Ocult label values
+        pieData.setDrawValues(false)
+
+        // Circular animation on create chart
+        pieChart.animateY(1400, Easing.EaseInOutQuad)
+
+        // Update the chart
+        pieChart.invalidate()
 
     }
 
@@ -371,4 +425,5 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         }
         adapter.selectItem(monthFocusPosition)
     }
+
 }

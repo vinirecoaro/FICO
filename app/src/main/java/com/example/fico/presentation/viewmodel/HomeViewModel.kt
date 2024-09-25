@@ -1,5 +1,6 @@
 package com.example.fico.presentation.viewmodel
 
+import android.graphics.Color
 import android.os.Build
 import android.text.InputType
 import android.text.method.PasswordTransformationMethod
@@ -43,6 +44,12 @@ class HomeViewModel(
     val informationPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _informationPerMonth
     private val _expensePerCategory = MutableLiveData<List<Pair<String, Double>>>()
     val expensePerCategory : LiveData<List<Pair<String, Double>>> = _expensePerCategory
+    private val pieChartPaletteColors = listOf(
+        Color.RED,
+        Color.BLUE,
+        Color.GREEN,
+        Color.YELLOW,
+        Color.MAGENTA)
 
     init{
         getInfoPerMonth()
@@ -191,6 +198,10 @@ class HomeViewModel(
                 _expensePerCategory.postValue(topFive)
             }
         }
+    }
+
+    fun getPieChartCategoriesColors() : List<Int>{
+        return pieChartPaletteColors
     }
 
 }
