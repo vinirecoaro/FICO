@@ -10,17 +10,17 @@
 
         android:id="@+id/tv_expenses_title"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content"
         android:text="@string/expenses_title"
         android:textSize="24sp"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="12dp"
         android:id="@+id/rv_expense_months"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/tv_expenses_title"
@@ -41,13 +41,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
+        android:layout_marginEnd="30dp"
         android:text="@string/this_month_expense"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@id/tv_available_this_month"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_expense_months"
-        android:layout_marginEnd="30dp"
-        />
+        app:layout_constraintTop_toBottomOf="@id/rv_expense_months" />
 
     <TextView
         android:id="@+id/tv_total_expenses_this_month_value"
@@ -96,11 +95,11 @@
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pc_expense_per_category"
-        android:layout_marginTop="16dp"
         android:layout_width="230dp"
-        app:layout_constraintTop_toBottomOf="@id/pc_available_now"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="230dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_height="230dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pc_available_now" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -140,5 +140,6 @@
     <string name="define_payment_day">Definir data de pagamento</string>
     <string name="personal_data">Dados pessoais</string>
     <string name="expenses_title">Despesas</string>
+    <string name="categories">Categorias</string>
 
 </resources>

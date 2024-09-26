@@ -1,9 +1,11 @@
 package com.example.fico.presentation.fragments.expense.expense_home
 
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +24,7 @@ import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.shared.DateFunctions
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -339,12 +342,12 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         val paletteColors = viewModel.getPieChartCategoriesColors()
         val colors = mutableListOf<Int>()
         categoriesList.forEachIndexed { index, category ->
-            entries.add(PieEntry(category.second.toFloat()))
+            entries.add(PieEntry(category.second.toFloat(), category.first))
             colors.add(paletteColors[index])
         }
 
         // Create a data set from entries
-        val dataSet = PieDataSet(entries, "Uso de Recursos")
+        val dataSet = PieDataSet(entries, getString(R.string.categories))
         dataSet.colors = colors
 
         // Data set customizing
@@ -361,10 +364,25 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         pieChart.setHoleRadius(55f) // middle chart hole size
         pieChart.setTransparentCircleRadius(60f) // Transparent area size
         pieChart.setHoleColor(holeColor)
-        pieChart.legend.isEnabled = false
+
+        //Enable legend
+        val legend = pieChart.legend
+        legend.isEnabled = true
+        legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+        legend.orientation = Legend.LegendOrientation.HORIZONTAL
+        legend.setDrawInside(false)
+        legend.textSize = 16f
+        legend.textColor = getColorOnSecondary()
+        // Allow break line on legend
+        legend.isWordWrapEnabled = true // enable break line
+        legend.xEntrySpace = 7f // horizontal space
+        legend.yEntrySpace = 5f // vertical space
+        legend.formToTextSpace = 5f // space between text and icon
 
         // Ocult label values
         pieData.setDrawValues(false)
+        pieChart.setDrawEntryLabels(false)
 
         // Circular animation on create chart
         pieChart.animateY(1400, Easing.EaseInOutQuad)
@@ -424,6 +442,13 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             binding.rvExpenseMonths.scrollToPosition(monthFocusPosition)
         }
         adapter.selectItem(monthFocusPosition)
+    }
+
+    private fun getColorOnSecondary() : Int{
+        val typedValue = TypedValue()
+        val theme: Resources.Theme? = context?.theme
+        theme?.resolveAttribute(com.google.android.material.R.attr.colorOnSecondary, typedValue, true)
+        return typedValue.data
     }
 
 }
