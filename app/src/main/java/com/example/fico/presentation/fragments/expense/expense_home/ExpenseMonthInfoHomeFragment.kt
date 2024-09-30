@@ -364,21 +364,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         pieChart.setHoleRadius(55f) // middle chart hole size
         pieChart.setTransparentCircleRadius(60f) // Transparent area size
         pieChart.setHoleColor(holeColor)
-
-        //Enable legend
-        val legend = pieChart.legend
-        legend.isEnabled = true
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-        legend.orientation = Legend.LegendOrientation.HORIZONTAL
-        legend.setDrawInside(false)
-        legend.textSize = 16f
-        legend.textColor = getColorOnSecondary()
-        // Allow break line on legend
-        legend.isWordWrapEnabled = true // enable break line
-        legend.xEntrySpace = 7f // horizontal space
-        legend.yEntrySpace = 5f // vertical space
-        legend.formToTextSpace = 5f // space between text and icon
+        pieChart.legend.isEnabled = false
 
         // Ocult label values
         pieData.setDrawValues(false)
