@@ -77,7 +77,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         val rootView = binding.root
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
-        expenseListAdapter = ExpenseListAdapter(emptyList(),categoriesList.getExpenseCategoryList())
+        expenseListAdapter = ExpenseListAdapter(emptyList(),categoriesList.getExpenseCategoryListFull())
         binding.rvExpenseList.adapter = expenseListAdapter
 
         val swipeToDeleteCallback =

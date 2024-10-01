@@ -32,6 +32,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import java.text.NumberFormat
 
 class ExpenseMonthInfoHomeFragment : Fragment() {
 
@@ -118,7 +119,8 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
 
                     //Text
-                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
+                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
+                    binding.tvTextCategoriesList1.text = text1
                 }
                 2 -> {
                     //Visibility
@@ -141,8 +143,10 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
 
                     //Text
-                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
-                    binding.tvTextCategoriesList2.text = expensePerCategoryList[1].first
+                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
+                    binding.tvTextCategoriesList1.text = text1
+                    val text2 = "${expensePerCategoryList[1].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[1].second.toFloat())}"
+                    binding.tvTextCategoriesList2.text = text2
                 }
                 3 -> {
                     //Visibility
@@ -166,9 +170,12 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     binding.ivIconCategoriesLegend3.setColorFilter(colors[2])
 
                     //Text
-                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
-                    binding.tvTextCategoriesList2.text = expensePerCategoryList[1].first
-                    binding.tvTextCategoriesList3.text = expensePerCategoryList[2].first
+                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
+                    binding.tvTextCategoriesList1.text = text1
+                    val text2 = "${expensePerCategoryList[1].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[1].second.toFloat())}"
+                    binding.tvTextCategoriesList2.text = text2
+                    val text3 = "${expensePerCategoryList[2].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[2].second.toFloat())}"
+                    binding.tvTextCategoriesList3.text = text3
                 }
                 4 -> {
                     //Visibility
@@ -193,10 +200,14 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     binding.ivIconCategoriesLegend4.setColorFilter(colors[3])
 
                     //Text
-                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
-                    binding.tvTextCategoriesList2.text = expensePerCategoryList[1].first
-                    binding.tvTextCategoriesList3.text = expensePerCategoryList[2].first
-                    binding.tvTextCategoriesList4.text = expensePerCategoryList[3].first
+                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
+                    binding.tvTextCategoriesList1.text = text1
+                    val text2 = "${expensePerCategoryList[1].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[1].second.toFloat())}"
+                    binding.tvTextCategoriesList2.text = text2
+                    val text3 = "${expensePerCategoryList[2].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[2].second.toFloat())}"
+                    binding.tvTextCategoriesList3.text = text3
+                    val text4 = "${expensePerCategoryList[3].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[3].second.toFloat())}"
+                    binding.tvTextCategoriesList4.text = text4
                 }
                 5 -> {
                     //Visibility
@@ -222,11 +233,16 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     binding.ivIconCategoriesLegend5.setColorFilter(colors[4])
 
                     //Text
-                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
-                    binding.tvTextCategoriesList2.text = expensePerCategoryList[1].first
-                    binding.tvTextCategoriesList3.text = expensePerCategoryList[2].first
-                    binding.tvTextCategoriesList4.text = expensePerCategoryList[3].first
-                    binding.tvTextCategoriesList5.text = expensePerCategoryList[4].first
+                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
+                    binding.tvTextCategoriesList1.text = text1
+                    val text2 = "${expensePerCategoryList[1].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[1].second.toFloat())}"
+                    binding.tvTextCategoriesList2.text = text2
+                    val text3 = "${expensePerCategoryList[2].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[2].second.toFloat())}"
+                    binding.tvTextCategoriesList3.text = text3
+                    val text4 = "${expensePerCategoryList[3].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[3].second.toFloat())}"
+                    binding.tvTextCategoriesList4.text = text4
+                    val text5 = "${expensePerCategoryList[4].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[4].second.toFloat())}"
+                    binding.tvTextCategoriesList5.text = text5
                 }
             }
 
@@ -566,13 +582,6 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             binding.rvExpenseMonths.scrollToPosition(monthFocusPosition)
         }
         adapter.selectItem(monthFocusPosition)
-    }
-
-    private fun getColorOnSecondary() : Int{
-        val typedValue = TypedValue()
-        val theme: Resources.Theme? = context?.theme
-        theme?.resolveAttribute(com.google.android.material.R.attr.colorOnSecondary, typedValue, true)
-        return typedValue.data
     }
 
 }

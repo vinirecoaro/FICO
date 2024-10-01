@@ -95,12 +95,12 @@
     <TextView
         android:id="@+id/tv_categories_chart_title"
         android:layout_width="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/pc_expense_per_category"
+        android:layout_marginBottom="8dp"
         android:text="@string/expense_per_category_ranking_title"
-        android:layout_marginBottom="8dp"/>
+        app:layout_constraintBottom_toTopOf="@id/pc_expense_per_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pc_expense_per_category"
@@ -132,6 +132,7 @@
 
         <TextView
             android:id="@+id/tv_text_categories_list_1"
+            style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -148,6 +149,7 @@
 
         <TextView
             android:id="@+id/tv_text_categories_list_2"
+            style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -177,6 +179,7 @@
 
         <TextView
             android:id="@+id/tv_text_categories_list_3"
+            style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -193,6 +196,7 @@
 
         <TextView
             android:id="@+id/tv_text_categories_list_4"
+            style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -222,6 +226,7 @@
 
         <TextView
             android:id="@+id/tv_text_categories_list_5"
+            style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
