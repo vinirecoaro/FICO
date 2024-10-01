@@ -96,144 +96,133 @@
         android:id="@+id/tv_categories_chart_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/expense_per_category_ranking_title"
-        app:layout_constraintBottom_toTopOf="@id/pc_expense_per_category"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pc_available_now" />
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pc_expense_per_category"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pc_available_now" />
+        app:layout_constraintTop_toBottomOf="@id/tv_categories_chart_title" />
 
-    <LinearLayout
-        android:id="@+id/ll_categories_legend_line_1"
+    <ImageView
+        android:id="@+id/iv_icon_categories_legend_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pc_expense_per_category">
+        android:layout_marginStart="24dp"
+        android:src="@drawable/square_rounded_black"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
+        app:layout_constraintTop_toTopOf="@id/pc_expense_per_category" />
 
-        <ImageView
-            android:id="@+id/iv_icon_categories_legend_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/square_rounded_black"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tv_text_categories_list_1"
-            style="@style/DefaultTextSizeForCategoriesChartLegend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:visibility="gone"
-            tools:text="Saque de Dinheiro" />
-
-        <ImageView
-            android:id="@+id/iv_icon_categories_legend_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/square_rounded_black"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tv_text_categories_list_2"
-            style="@style/DefaultTextSizeForCategoriesChartLegend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:visibility="gone"
-            tools:text="Entretenimento" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_categories_legend_line_2"
+    <TextView
+        android:id="@+id/tv_text_categories_list_1"
+        style="@style/DefaultTextSizeForCategoriesChartLegend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_categories_legend_line_1">
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_1"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_1"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_1"
+        tools:text="Saque de Dinheiro" />
 
-        <ImageView
-            android:id="@+id/iv_icon_categories_legend_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/square_rounded_black"
-            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tv_text_categories_list_3"
-            style="@style/DefaultTextSizeForCategoriesChartLegend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:visibility="gone"
-            tools:text="Entretenimento" />
-
-        <ImageView
-            android:id="@+id/iv_icon_categories_legend_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/square_rounded_black"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tv_text_categories_list_4"
-            style="@style/DefaultTextSizeForCategoriesChartLegend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:visibility="gone"
-            tools:text="Entretenimento" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_categories_legend_line_3"
+    <ImageView
+        android:id="@+id/iv_icon_categories_legend_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_categories_legend_line_2">
+        android:src="@drawable/square_rounded_black"
+        app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
+        app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_1" />
 
-        <ImageView
-            android:id="@+id/iv_icon_categories_legend_5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/square_rounded_black"
-            android:visibility="gone" />
+    <TextView
+        android:id="@+id/tv_text_categories_list_2"
+        style="@style/DefaultTextSizeForCategoriesChartLegend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_2"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_2"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_2"
+        tools:text="Entretenimento" />
 
-        <TextView
-            android:id="@+id/tv_text_categories_list_5"
-            style="@style/DefaultTextSizeForCategoriesChartLegend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:visibility="gone"
-            tools:text="Entretenimento" />
+    <ImageView
+        android:id="@+id/iv_icon_categories_legend_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/square_rounded_black"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
 
-    </LinearLayout>
+        app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
+        app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_2" />
+
+    <TextView
+        android:id="@+id/tv_text_categories_list_3"
+        style="@style/DefaultTextSizeForCategoriesChartLegend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_3"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_3"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_3"
+        tools:text="Entretenimento" />
+
+
+    <ImageView
+        android:id="@+id/iv_icon_categories_legend_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/square_rounded_black"
+
+        app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
+        app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_3" />
+
+    <TextView
+        android:id="@+id/tv_text_categories_list_4"
+        style="@style/DefaultTextSizeForCategoriesChartLegend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_4"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_4"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_4"
+        tools:text="Entretenimento" />
+
+    <ImageView
+        android:id="@+id/iv_icon_categories_legend_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/square_rounded_black"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+
+        app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
+        app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_4" />
+
+    <TextView
+        android:id="@+id/tv_text_categories_list_5"
+        style="@style/DefaultTextSizeForCategoriesChartLegend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_5"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_5"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_5"
+        tools:text="Entretenimento" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
