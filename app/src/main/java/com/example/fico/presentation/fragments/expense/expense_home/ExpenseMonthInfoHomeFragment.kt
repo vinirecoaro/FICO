@@ -85,6 +85,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                 getMonthExpense(formattedDate)
                 initMonthExpenseChart(formattedDate)
                 initAvailableNowChart(formattedDate)
+                viewModel.getCategoriesWithMoreExpense(formattedDate)
             }
         })
 
@@ -100,8 +101,18 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                 1 -> {
                     //Visibility
                     binding.llCategoriesLegendLine1.visibility = View.VISIBLE
+                    binding.llCategoriesLegendLine2.visibility = View.GONE
+                    binding.llCategoriesLegendLine3.visibility = View.GONE
                     binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
                     binding.tvTextCategoriesList1.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend2.visibility = View.GONE
+                    binding.tvTextCategoriesList2.visibility = View.GONE
+                    binding.ivIconCategoriesLegend3.visibility = View.GONE
+                    binding.tvTextCategoriesList3.visibility = View.GONE
+                    binding.ivIconCategoriesLegend4.visibility = View.GONE
+                    binding.tvTextCategoriesList4.visibility = View.GONE
+                    binding.ivIconCategoriesLegend5.visibility = View.GONE
+                    binding.tvTextCategoriesList5.visibility = View.GONE
 
                     //Colors
                     binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
@@ -112,10 +123,18 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                 2 -> {
                     //Visibility
                     binding.llCategoriesLegendLine1.visibility = View.VISIBLE
+                    binding.llCategoriesLegendLine2.visibility = View.GONE
+                    binding.llCategoriesLegendLine3.visibility = View.GONE
                     binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
                     binding.tvTextCategoriesList1.visibility = View.VISIBLE
                     binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
                     binding.tvTextCategoriesList2.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend3.visibility = View.GONE
+                    binding.tvTextCategoriesList3.visibility = View.GONE
+                    binding.ivIconCategoriesLegend4.visibility = View.GONE
+                    binding.tvTextCategoriesList4.visibility = View.GONE
+                    binding.ivIconCategoriesLegend5.visibility = View.GONE
+                    binding.tvTextCategoriesList5.visibility = View.GONE
 
                     //Colors
                     binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
@@ -129,12 +148,17 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     //Visibility
                     binding.llCategoriesLegendLine1.visibility = View.VISIBLE
                     binding.llCategoriesLegendLine2.visibility = View.VISIBLE
+                    binding.llCategoriesLegendLine3.visibility = View.GONE
                     binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
                     binding.tvTextCategoriesList1.visibility = View.VISIBLE
                     binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
                     binding.tvTextCategoriesList2.visibility = View.VISIBLE
                     binding.ivIconCategoriesLegend3.visibility = View.VISIBLE
                     binding.tvTextCategoriesList3.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend4.visibility = View.GONE
+                    binding.tvTextCategoriesList4.visibility = View.GONE
+                    binding.ivIconCategoriesLegend5.visibility = View.GONE
+                    binding.tvTextCategoriesList5.visibility = View.GONE
 
                     //Colors
                     binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
@@ -150,6 +174,7 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     //Visibility
                     binding.llCategoriesLegendLine1.visibility = View.VISIBLE
                     binding.llCategoriesLegendLine2.visibility = View.VISIBLE
+                    binding.llCategoriesLegendLine3.visibility = View.GONE
                     binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
                     binding.tvTextCategoriesList1.visibility = View.VISIBLE
                     binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
@@ -158,6 +183,8 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     binding.tvTextCategoriesList3.visibility = View.VISIBLE
                     binding.ivIconCategoriesLegend4.visibility = View.VISIBLE
                     binding.tvTextCategoriesList4.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend5.visibility = View.GONE
+                    binding.tvTextCategoriesList5.visibility = View.GONE
 
                     //Colors
                     binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
