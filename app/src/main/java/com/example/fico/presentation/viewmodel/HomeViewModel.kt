@@ -45,11 +45,11 @@ class HomeViewModel(
     private val _expensePerCategory = MutableLiveData<List<Pair<String, Double>>>()
     val expensePerCategory : LiveData<List<Pair<String, Double>>> = _expensePerCategory
     private val pieChartPaletteColors = listOf(
-        Color.rgb(150,0,0),
-        Color.rgb(0,0,150),
+        Color.rgb(50, 111, 168),
+        Color.rgb(168, 83, 50),
         Color.rgb(0,150,0),
-        Color.rgb(150,150,0),
-        Color.rgb(150,0,150)
+        Color.rgb(168, 135, 50),
+        Color.rgb(107, 50, 168)
     )
 
     init{
