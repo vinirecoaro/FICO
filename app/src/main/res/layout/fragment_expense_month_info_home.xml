@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/expenses_title"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,8 +97,9 @@
         android:id="@+id/tv_categories_chart_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="40dp"
         android:text="@string/expense_per_category_ranking_title"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pc_available_now" />
@@ -107,7 +109,7 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_categories_chart_title" />
 
@@ -117,7 +119,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:src="@drawable/square_rounded_black"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
         app:layout_constraintTop_toTopOf="@id/pc_expense_per_category" />
 
@@ -138,7 +140,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:src="@drawable/square_rounded_black"
         app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
         app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_1" />
@@ -160,7 +162,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/square_rounded_black"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
 
         app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
         app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_2" />
@@ -171,7 +173,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_3"
         app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_3"
         app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_3"
@@ -183,9 +184,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:src="@drawable/square_rounded_black"
-
         app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
         app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_3" />
 
@@ -195,7 +195,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_4"
         app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_4"
         app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_4"
@@ -207,8 +206,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/square_rounded_black"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
         app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_4" />
 
