@@ -26,6 +26,7 @@
                 android:name="com.example.fico.presentation.fragments.expense.expense_home.ExpenseMonthInfoHomeFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

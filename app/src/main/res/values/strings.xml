@@ -141,5 +141,6 @@
     <string name="personal_data">Dados pessoais</string>
     <string name="expenses_title">Despesas</string>
     <string name="categories">Categorias</string>
+    <string name="expense_per_category_ranking_title">Ranking de despesas por categoria</string>
 
 </resources>

@@ -94,6 +94,117 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
 
         viewModel.expensePerCategory.observe(viewLifecycleOwner){ expensePerCategoryList ->
             initExpensePerCategoryChart(expensePerCategoryList)
+            val nOfCategories = expensePerCategoryList.size
+            val colors = viewModel.getPieChartCategoriesColors()
+            when (nOfCategories) {
+                1 -> {
+                    //Visibility
+                    binding.llCategoriesLegendLine1.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
+
+                    //Colors
+                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
+
+                    //Text
+                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
+                }
+                2 -> {
+                    //Visibility
+                    binding.llCategoriesLegendLine1.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList2.visibility = View.VISIBLE
+
+                    //Colors
+                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
+                    binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
+
+                    //Text
+                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
+                    binding.tvTextCategoriesList2.text = expensePerCategoryList[1].first
+                }
+                3 -> {
+                    //Visibility
+                    binding.llCategoriesLegendLine1.visibility = View.VISIBLE
+                    binding.llCategoriesLegendLine2.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList2.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend3.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList3.visibility = View.VISIBLE
+
+                    //Colors
+                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
+                    binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
+                    binding.ivIconCategoriesLegend3.setColorFilter(colors[2])
+
+                    //Text
+                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
+                    binding.tvTextCategoriesList2.text = expensePerCategoryList[1].first
+                    binding.tvTextCategoriesList3.text = expensePerCategoryList[2].first
+                }
+                4 -> {
+                    //Visibility
+                    binding.llCategoriesLegendLine1.visibility = View.VISIBLE
+                    binding.llCategoriesLegendLine2.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList2.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend3.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList3.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend4.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList4.visibility = View.VISIBLE
+
+                    //Colors
+                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
+                    binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
+                    binding.ivIconCategoriesLegend3.setColorFilter(colors[2])
+                    binding.ivIconCategoriesLegend4.setColorFilter(colors[3])
+
+                    //Text
+                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
+                    binding.tvTextCategoriesList2.text = expensePerCategoryList[1].first
+                    binding.tvTextCategoriesList3.text = expensePerCategoryList[2].first
+                    binding.tvTextCategoriesList4.text = expensePerCategoryList[3].first
+                }
+                5 -> {
+                    //Visibility
+                    binding.llCategoriesLegendLine1.visibility = View.VISIBLE
+                    binding.llCategoriesLegendLine2.visibility = View.VISIBLE
+                    binding.llCategoriesLegendLine3.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList2.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend3.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList3.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend4.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList4.visibility = View.VISIBLE
+                    binding.ivIconCategoriesLegend5.visibility = View.VISIBLE
+                    binding.tvTextCategoriesList5.visibility = View.VISIBLE
+
+                    //Colors
+                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
+                    binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
+                    binding.ivIconCategoriesLegend3.setColorFilter(colors[2])
+                    binding.ivIconCategoriesLegend4.setColorFilter(colors[3])
+                    binding.ivIconCategoriesLegend5.setColorFilter(colors[4])
+
+                    //Text
+                    binding.tvTextCategoriesList1.text = expensePerCategoryList[0].first
+                    binding.tvTextCategoriesList2.text = expensePerCategoryList[1].first
+                    binding.tvTextCategoriesList3.text = expensePerCategoryList[2].first
+                    binding.tvTextCategoriesList4.text = expensePerCategoryList[3].first
+                    binding.tvTextCategoriesList5.text = expensePerCategoryList[4].first
+                }
+            }
+
+
+
         }
 
     }

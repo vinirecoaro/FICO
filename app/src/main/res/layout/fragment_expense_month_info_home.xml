@@ -92,11 +92,21 @@
         app:layout_constraintTop_toBottomOf="@id/tv_available_this_month"
         tools:text="R$500,00" />
 
+    <TextView
+        android:id="@+id/tv_categories_chart_title"
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/pc_expense_per_category"
+        android:text="@string/expense_per_category_ranking_title"
+        android:layout_marginBottom="8dp"/>
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pc_expense_per_category"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pc_available_now" />
@@ -108,6 +118,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pc_expense_per_category">
@@ -116,12 +127,15 @@
             android:id="@+id/iv_icon_categories_legend_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_person_24_black" />
+            android:src="@drawable/square_rounded_black"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_text_categories_list_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
             tools:text="Saque de Dinheiro" />
 
         <ImageView
@@ -129,12 +143,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:src="@drawable/baseline_person_24_black" />
+            android:src="@drawable/square_rounded_black"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_text_categories_list_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
             tools:text="Entretenimento" />
 
     </LinearLayout>
@@ -146,6 +163,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_categories_legend_line_1">
@@ -154,12 +172,15 @@
             android:id="@+id/iv_icon_categories_legend_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_person_24_black" />
+            android:src="@drawable/square_rounded_black"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_text_categories_list_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
             tools:text="Entretenimento" />
 
         <ImageView
@@ -167,12 +188,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:src="@drawable/baseline_person_24_black" />
+            android:src="@drawable/square_rounded_black"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_text_categories_list_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
             tools:text="Entretenimento" />
 
     </LinearLayout>
@@ -184,6 +208,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_categories_legend_line_2">
@@ -192,12 +217,15 @@
             android:id="@+id/iv_icon_categories_legend_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_person_24_black" />
+            android:src="@drawable/square_rounded_black"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_text_categories_list_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
             tools:text="Entretenimento" />
 
     </LinearLayout>
