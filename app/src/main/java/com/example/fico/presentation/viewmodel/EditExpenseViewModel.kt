@@ -97,7 +97,7 @@ class EditExpenseViewModel(
                 onSuccess = {
 
                     //Update Total Expense on DataStore
-                    val oldExpensePriceFullPrice = BigDecimal(oldExpense.price)
+                    val oldExpensePriceFullPrice = BigDecimal(oldExpense.price).multiply(BigDecimal(oldExpenseNOfInstallment))
                     val newExpensePriceFullPrice = BigDecimal(FormatValuesToDatabase().expensePrice(price,1))
                     val currentTotalExpenseDataStore = BigDecimal(dataStore.getTotalExpense())
                     val updatedTotalExpenseDataStore = currentTotalExpenseDataStore.subtract(oldExpensePriceFullPrice).add(newExpensePriceFullPrice).setScale(8, RoundingMode.HALF_UP)
@@ -106,6 +106,7 @@ class EditExpenseViewModel(
                     //Update expenseList and infoPerMonth on dataStore
                     val updatedExpenseListDataStore = dataStore.getExpenseList().toMutableList()
                     val updatedInfoPerMonthDataStore = dataStore.getExpenseInfoPerMonth().toMutableSet()
+                    //TODO analyse this part, it is with error when generate inforpermonth updated list
                         //Remove old expenses
                     removeFromExpenseList.forEach { expenseId ->
                         //Remove expenses from expense list
@@ -168,7 +169,7 @@ class EditExpenseViewModel(
                                 DateFunctions().YYYYmmDDtoYYYYmm(newExpenseDataStore.paymentDate),
                                 updatedAvailableNowNewExpense.toString(),
                                 defaultBudget.toString(),
-                                newExpenseDataStore.paymentDate
+                                newExpenseDataStore.price
                             )
                             updatedInfoPerMonthDataStore.removeAll{it.date == updatedInfoOfMonth.date}
                             updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)

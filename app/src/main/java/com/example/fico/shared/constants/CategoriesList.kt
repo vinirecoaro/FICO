@@ -33,11 +33,6 @@ class CategoriesList(private val context : Context) {
                     false
                 ),
                 TransactionCategory(
-                    context.getString(R.string.category_list_description_education_2),
-                    StringConstants.CATEGORY_LIST.ICON_NAME.EDUCATION,
-                    false
-                ),
-                TransactionCategory(
                     context.getString(R.string.category_list_description_gift),
                     StringConstants.CATEGORY_LIST.ICON_NAME.GIFT,
                     false
