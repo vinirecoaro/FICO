@@ -106,7 +106,6 @@ class EditExpenseViewModel(
                     //Update expenseList and infoPerMonth on dataStore
                     val updatedExpenseListDataStore = dataStore.getExpenseList().toMutableList()
                     val updatedInfoPerMonthDataStore = dataStore.getExpenseInfoPerMonth().toMutableSet()
-                    //TODO analyse this part, it is with error when generate inforpermonth updated list
                         //Remove old expenses
                     removeFromExpenseList.forEach { expenseId ->
                         //Remove expenses from expense list
@@ -200,6 +199,7 @@ class EditExpenseViewModel(
     }
 
     fun deleteInstallmentExpense(expense : Expense){
+        //TODO analyse and test
         viewModelScope.async(Dispatchers.IO){
             var expensePaymentDate = FormatValuesToDatabase().expenseDate(FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id,expense.paymentDate))
             var expensePurchaseDate = FormatValuesToDatabase().expenseDate(expense.purchaseDate)

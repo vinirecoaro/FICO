@@ -26,7 +26,7 @@ class ExpenseConfigurationFragment : Fragment(),
 
     private var _binding : FragmentConfigurationBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<ExpenseConfigurationViewModel>()
+    private val viewModel : ExpenseConfigurationViewModel by inject()
     private lateinit var configuratonListAdapter: ExpenseConfigurationListAdapter
 
 
@@ -59,6 +59,8 @@ class ExpenseConfigurationFragment : Fragment(),
             startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
         }else if(item == StringConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE){
             startActivity(Intent(requireContext(), DefaultPaymentDateConfigurationActivity::class.java))
+        }else if (item == StringConstants.EXPENSE_CONFIGURATION_LIST.UPDATE_DATABASE_DATA){
+            viewModel.sumExpenses()
         }
     }
 

@@ -90,6 +90,13 @@ val appModule = module {
         )
     }
 
+    factory<ExpenseConfigurationViewModel> {
+        ExpenseConfigurationViewModel(
+            firebaseAPI = get(),
+            dataStore = get()
+        )
+    }
+
     factory<BudgetPerMonthViewModel> {
         BudgetPerMonthViewModel(
             firebaseAPI = get(),
