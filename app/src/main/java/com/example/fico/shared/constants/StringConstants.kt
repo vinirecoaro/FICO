@@ -25,17 +25,6 @@ class StringConstants private constructor() {
         const val NAME = "name"
     }
 
-    object EXPENSE_CONFIGURATION_LIST {
-        const val BUDGET = "Orçamento"
-        const val DEFAULT_PAYMENT_DATE = "Data de Pagamento Padrão"
-        const val UPDATE_DATABASE_DATA = "Atualizar Dados do Banco de Dados"
-
-        object BUDGET_LIST {
-            const val DEFAULT_BUDGET = "Orçamento padrão"
-            const val BUDGET_PER_MONTH = "Orçamento por mês"
-        }
-    }
-
     object GENERAL_CONFIGURATION_LIST {
         const val PERSONAL_DATA = "Dados pessoais"
         const val LOGOUT = "Sair"

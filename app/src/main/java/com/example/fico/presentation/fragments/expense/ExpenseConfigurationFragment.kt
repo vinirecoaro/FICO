@@ -67,11 +67,11 @@ class ExpenseConfigurationFragment : Fragment(),
 
     override fun onListItemClick(position: Int) {
         val item = viewModel.configurationList[position]
-        if(item == StringConstants.EXPENSE_CONFIGURATION_LIST.BUDGET){
+        if(item == getString(R.string.budget_configuration_list)){
             startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
-        }else if(item == StringConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE){
+        }else if(item == getString(R.string.default_payment_date)){
             startActivity(Intent(requireContext(), DefaultPaymentDateConfigurationActivity::class.java))
-        }else if (item == StringConstants.EXPENSE_CONFIGURATION_LIST.UPDATE_DATABASE_DATA){
+        }else if (item == getString(R.string.update_database_info_per_month_and_total_expense)){
             viewModel.updateInfoPerMonthAndTotalExpense()
         }
     }

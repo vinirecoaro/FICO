@@ -1,11 +1,13 @@
 package com.example.fico.presentation.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
+import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.InformationPerMonthExpense
@@ -16,6 +18,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 class ExpenseConfigurationViewModel(
+    context : Context,
     private val firebaseAPI: FirebaseAPI,
     private val dataStore: DataStoreManager
 ) : ViewModel() {
@@ -24,11 +27,12 @@ class ExpenseConfigurationViewModel(
     val updateDatabaseResult : LiveData<Boolean> = _updateDatabaseResult
 
     val configurationList: MutableList<String> = mutableListOf(
-        StringConstants.EXPENSE_CONFIGURATION_LIST.BUDGET,
-        StringConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE,
-        //StringConstants.EXPENSE_CONFIGURATION_LIST.UPDATE_DATABASE_DATA
+        context.getString(R.string.budget_configuration_list),
+        context.getString(R.string.default_payment_date),
+        //context.getString(R.string.update_database_info_per_month_and_total_expense)
     )
 
+    //Update Info per Month and Total Expense based on dataStore expense list
     fun updateInfoPerMonthAndTotalExpense(){
         viewModelScope.async {
             val expenseList = dataStore.getExpenseList()

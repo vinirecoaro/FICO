@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.viewmodel.AddExpenseViewModel
+import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
 import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
 import com.example.fico.presentation.viewmodel.EditExpenseViewModel
@@ -92,6 +93,7 @@ val appModule = module {
 
     factory<ExpenseConfigurationViewModel> {
         ExpenseConfigurationViewModel(
+            androidContext(),
             firebaseAPI = get(),
             dataStore = get()
         )
@@ -107,6 +109,12 @@ val appModule = module {
     factory<ResetPasswordViewModel> {
         ResetPasswordViewModel(
             firebaseAPI = get()
+        )
+    }
+
+    factory<BudgetConfigurationListViewModel> {
+        BudgetConfigurationListViewModel(
+            androidContext()
         )
     }
 

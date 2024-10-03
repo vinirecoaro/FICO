@@ -6,17 +6,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fico.R
 import com.example.fico.databinding.ActivityBudgetConfigurationListBinding
 import com.example.fico.shared.constants.StringConstants
 import com.example.fico.presentation.adapters.BudgetConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
+import org.koin.android.ext.android.inject
 
 class BudgetConfigurationListActivity : AppCompatActivity(),
     OnListItemClick {
 
     private val binding by lazy { ActivityBudgetConfigurationListBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<BudgetConfigurationListViewModel>()
+    private val viewModel : BudgetConfigurationListViewModel by inject()
     private lateinit var budgetConfiguratonListAdapter: BudgetConfigurationListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,9 +43,9 @@ class BudgetConfigurationListActivity : AppCompatActivity(),
 
     override fun onListItemClick(position: Int) {
         val item = viewModel.budgetConfigurationList[position]
-        if(item == StringConstants.EXPENSE_CONFIGURATION_LIST.BUDGET_LIST.DEFAULT_BUDGET){
+        if(item == getString(R.string.default_budget_activity_title)){
             startActivity(Intent(this, SetDefaultBudgetActivity::class.java))
-        }else if(item == StringConstants.EXPENSE_CONFIGURATION_LIST.BUDGET_LIST.BUDGET_PER_MONTH){
+        }else if(item == getString(R.string.budget_per_month_item_list)){
             startActivity(Intent(this, BudgetPerMonthActivity::class.java))
         }
     }

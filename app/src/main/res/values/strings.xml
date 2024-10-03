@@ -85,11 +85,13 @@
     <string name="change_default_budget_success_message">Orçamento padrão definido com sucesso</string>
     <string name="change_default_budget_failure_message">Falha ao definir o orçamento padrão</string>
     <string name="budget_per_month_activity_title">Orçamento por Mês</string>
+    <string name="budget_per_month_item_list">Orçamento por mês</string>
     <string name="edit_budget">Editar Orçamento</string>
     <string name="type_new_budget">Digite o novo orçamento</string>
     <string name="define_default_budget_title">Definir orçamento padrão</string>
     <string name="redefine_month_budget_success_message">Orçamento redefinido com sucesso</string>
     <string name="redefine_month_budget_failure_message">Falha ao redefinir o orçamento</string>
+    <string name="budget_configuration_list">Orçamento</string>
     <string name="cancel">Cancelar</string>
     <string name="transactions">Transações</string>
     <string name="overview">Visão Geral</string>
@@ -144,5 +146,6 @@
     <string name="expense_per_category_ranking_title">Ranking de despesas por categoria</string>
     <string name="update_info_per_month_and_total_expense_success_message">Dados atualizados com sucesso</string>
     <string name="update_info_per_month_and_total_expense_failure_message">Falha ao atualizar dados</string>
+    <string name="update_database_info_per_month_and_total_expense">Atualizar Dados do Banco de Dados</string>
 
 </resources>
