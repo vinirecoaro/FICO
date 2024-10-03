@@ -142,5 +142,7 @@
     <string name="expenses_title">Despesas</string>
     <string name="categories">Categorias</string>
     <string name="expense_per_category_ranking_title">Ranking de despesas por categoria</string>
+    <string name="update_info_per_month_and_total_expense_success_message">Dados atualizados com sucesso</string>
+    <string name="update_info_per_month_and_total_expense_failure_message">Falha ao atualizar dados</string>
 
 </resources>

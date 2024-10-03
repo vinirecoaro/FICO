@@ -1,6 +1,8 @@
 package com.example.fico.presentation.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
@@ -18,13 +20,16 @@ class ExpenseConfigurationViewModel(
     private val dataStore: DataStoreManager
 ) : ViewModel() {
 
+    private val _updateDatabaseResult = MutableLiveData<Boolean>()
+    val updateDatabaseResult : LiveData<Boolean> = _updateDatabaseResult
+
     val configurationList: MutableList<String> = mutableListOf(
         StringConstants.EXPENSE_CONFIGURATION_LIST.BUDGET,
         StringConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE,
         StringConstants.EXPENSE_CONFIGURATION_LIST.UPDATE_DATABASE_DATA
     )
 
-    fun sumExpenses(){
+    fun updateInfoPerMonthAndTotalExpense(){
         viewModelScope.async {
             val expenseList = dataStore.getExpenseList()
             var totalExpense = BigDecimal(0)
@@ -94,6 +99,15 @@ class ExpenseConfigurationViewModel(
                          "available now - ${monthInfo.availableNow}\n" +
                          "budget - ${monthInfo.budget}")
             }
+            firebaseAPI.updateInfoPerMonthAndTotalExpense(totalExpense.toString(), infoPerMonthUpdated)
+                .fold(
+                    onSuccess = {
+                        _updateDatabaseResult.postValue(true)
+                    },
+                    onFailure = {
+                        _updateDatabaseResult.postValue(false)
+                    }
+                )
         }
     }
 

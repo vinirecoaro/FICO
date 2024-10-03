@@ -180,35 +180,6 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun getBudgetPerMonth(): List<Budget> = suspendCoroutine { continuation ->
-        var isCompleted = false
-        expenses_information_per_month.addValueEventListener(object : ValueEventListener {
-            val budgetPerMonth = mutableListOf<Budget>()
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (month in snapshot.children) {
-                    val date = month.key.toString()
-                    val budget =
-                        month.child(StringConstants.DATABASE.BUDGET).value.toString().toFloat()
-                    val formattedBudget = "R$ %.2f".format(budget).replace(".", ",")
-                    val budgetItem = Budget(formattedBudget, date)
-                    budgetPerMonth.add(budgetItem)
-                }
-                if (!isCompleted) { // Verifica se já foi retomado
-                    isCompleted = true
-                    continuation.resume(budgetPerMonth)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                if (!isCompleted) { // Verifica se já foi retomado
-                    isCompleted = true
-                    continuation.resume(emptyList())
-                }
-            }
-
-        })
-    }
-
     suspend fun editBudget(date: String, newBudget: String, newAvailableNow: String): Result<Unit> =
         withContext(Dispatchers.IO) {
             try {
@@ -357,6 +328,27 @@ class FirebaseAPI(
             // Add Expense List
             updates.putAll(generateMapToUpdateUserExpenses(expenseList))
 
+            // Add Updated Total Expense
+            updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
+
+            // Add Information per Month
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
+
+            expenses.updateChildren(updates)
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateInfoPerMonthAndTotalExpense(
+        updatedTotalExpense: String,
+        updatedInformationPerMonth: MutableList<InformationPerMonthExpense>
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        val updates = mutableMapOf<String, Any>()
+
+        return@withContext try {
             // Add Updated Total Expense
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
 
