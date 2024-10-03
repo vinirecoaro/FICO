@@ -26,7 +26,7 @@ class ExpenseConfigurationViewModel(
     val configurationList: MutableList<String> = mutableListOf(
         StringConstants.EXPENSE_CONFIGURATION_LIST.BUDGET,
         StringConstants.EXPENSE_CONFIGURATION_LIST.DEFAULT_PAYMENT_DATE,
-        StringConstants.EXPENSE_CONFIGURATION_LIST.UPDATE_DATABASE_DATA
+        //StringConstants.EXPENSE_CONFIGURATION_LIST.UPDATE_DATABASE_DATA
     )
 
     fun updateInfoPerMonthAndTotalExpense(){
