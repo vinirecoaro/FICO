@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.presentation.viewmodel.HomeViewModel
@@ -21,6 +22,9 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.text.NumberFormat
 
@@ -66,6 +70,39 @@ class HomeFragment : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                when(state){
+                    is HomeFragmentState.Loading -> {
+                        binding.clExpensePerMonth.visibility = View.GONE
+                        binding.tvTotalExpenses.visibility = View.GONE
+                        binding.tvTotalExpensesValue.visibility = View.GONE
+                        binding.viewSpace.visibility = View.GONE
+                        binding.pbExpensePerMonth.visibility = View.VISIBLE
+                    }
+                    is HomeFragmentState.Empty ->{
+                        binding.clExpensePerMonth.visibility = View.GONE
+                        binding.tvTotalExpenses.visibility = View.GONE
+                        binding.tvTotalExpensesValue.visibility = View.GONE
+                        binding.viewSpace.visibility = View.GONE
+                        binding.pbExpensePerMonth.visibility = View.GONE
+                    }
+                    is HomeFragmentState.Error -> {
+
+                    }
+                    is HomeFragmentState.Success -> {
+                        binding.clExpensePerMonth.visibility = View.VISIBLE
+                        binding.tvTotalExpenses.visibility = View.VISIBLE
+                        binding.tvTotalExpensesValue.visibility = View.VISIBLE
+                        binding.viewSpace.visibility = View.VISIBLE
+                        binding.pbExpensePerMonth.visibility = View.GONE
+                    }
+                }
+            }
+
+        }
+
         binding.tvTotalExpensesValue.setOnClickListener {
             viewModel.ShowHideValue(binding.tvTotalExpensesValue)
         }

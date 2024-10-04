@@ -33,6 +33,14 @@
 
         </androidx.cardview.widget.CardView>
 
+        <ProgressBar
+            app:layout_constraintTop_toBottomOf="@id/cv_info_per_month"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/pb_expense_per_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_expense_each_month"
@@ -46,6 +54,7 @@
             app:layout_constraintTop_toBottomOf="@id/cv_info_per_month">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_expense_per_month"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp">
@@ -55,8 +64,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textSize="18sp"
                     android:text="@string/expense_per_month"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

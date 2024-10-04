@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!--<item
         android:id="@+id/expense_list_menu_generate_excel_file"
         android:icon="@drawable/config_image_dark"
         android:title="@string/generate_spreadsheet"
         />-->
+    <item
+        android:id="@+id/expense_list_menu_filter"
+        android:title="@string/filter"
+        android:icon="@drawable/filter_24"
+        app:showAsAction="always"
+    />
 
 </menu>

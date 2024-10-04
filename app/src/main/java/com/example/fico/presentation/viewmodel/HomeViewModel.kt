@@ -18,10 +18,14 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.presentation.fragments.expense.expense_home.HomeFragmentState
 import com.example.fico.shared.DateFunctions
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
@@ -51,6 +55,8 @@ class HomeViewModel(
         Color.rgb(168, 135, 50),
         Color.rgb(107, 50, 168)
     )
+    private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(HomeFragmentState.Loading)
+    val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
 
     init{
         getInfoPerMonth()
@@ -140,31 +146,49 @@ class HomeViewModel(
     }
 
     fun getInfoPerMonth(){
-       viewModelScope.async(Dispatchers.IO){
-           val infoPerMonthList = dataStore.getExpenseInfoPerMonth()
-           val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
-           for(infoPerMonth in infoPerMonthList){
-               if (BigDecimal(infoPerMonth.monthExpense).setScale(2,RoundingMode.HALF_UP) != BigDecimal("0").setScale(2,RoundingMode.HALF_UP)){
-                   monthWithExpenses.add(infoPerMonth)
-               }
-           }
-           _infoPerMonth.postValue(monthWithExpenses)
+
+        _uiState.value = HomeFragmentState.Loading
+
+        viewModelScope.async(Dispatchers.IO){
+            try {
+                val infoPerMonthList = dataStore.getExpenseInfoPerMonth()
+                val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
+                for(infoPerMonth in infoPerMonthList){
+                    if (BigDecimal(infoPerMonth.monthExpense).setScale(2,RoundingMode.HALF_UP) != BigDecimal("0").setScale(2,RoundingMode.HALF_UP)){
+                        monthWithExpenses.add(infoPerMonth)
+                    }
+                }
+                if(monthWithExpenses.isNotEmpty()){
+                    _infoPerMonth.postValue(monthWithExpenses)
+                }else{
+                    _uiState.value = HomeFragmentState.Empty
+                }
+
+            }catch (error : Exception){
+                _uiState.value = HomeFragmentState.Error(error.message.toString())
+            }
        }
     }
 
     fun formatInfoPerMonthToLabel(){
-        val formattedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
-        for(infoPerMonth in _infoPerMonth.value!!){
-            formattedInfoPerMonth.add(
-                InformationPerMonthExpense(
-                    FormatValuesFromDatabase().formatDateAbbreviated(infoPerMonth.date),
-                    infoPerMonth.availableNow,
-                    infoPerMonth.budget,
-                    FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
+        try {
+            val formattedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
+            for(infoPerMonth in _infoPerMonth.value!!){
+                formattedInfoPerMonth.add(
+                    InformationPerMonthExpense(
+                        FormatValuesFromDatabase().formatDateAbbreviated(infoPerMonth.date),
+                        infoPerMonth.availableNow,
+                        infoPerMonth.budget,
+                        FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
+                    )
                 )
-            )
+            }
+            _infoPerMonthLabel.value = formattedInfoPerMonth
+            _uiState.value = HomeFragmentState.Success(Pair(formattedInfoPerMonth, formattedInfoPerMonth))
+        }catch (error : Exception){
+            _uiState.value = HomeFragmentState.Error(error.message.toString())
         }
-        _infoPerMonthLabel.value = formattedInfoPerMonth
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
