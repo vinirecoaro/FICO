@@ -48,7 +48,6 @@ class HomeFragment : Fragment(){
 
         initExpenseEachMonthChartEmpty()
         setUpListeners()
-        viewModel.getInfoPerMonth()
 
         if(barChartEntries.isNotEmpty()){
             initExpenseEachMonthChart()
@@ -60,6 +59,7 @@ class HomeFragment : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+        viewModel.getInfoPerMonth()
         viewModel.getTotalExpense()
     }
 
@@ -79,6 +79,7 @@ class HomeFragment : Fragment(){
                         binding.tvTotalExpenses.visibility = View.GONE
                         binding.tvTotalExpensesValue.visibility = View.GONE
                         binding.viewSpace.visibility = View.GONE
+                        binding.cvInfoPerMonth.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.VISIBLE
                     }
                     is HomeFragmentState.Empty ->{
@@ -86,6 +87,7 @@ class HomeFragment : Fragment(){
                         binding.tvTotalExpenses.visibility = View.GONE
                         binding.tvTotalExpensesValue.visibility = View.GONE
                         binding.viewSpace.visibility = View.GONE
+                        binding.cvInfoPerMonth.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.GONE
                     }
                     is HomeFragmentState.Error -> {
@@ -96,6 +98,7 @@ class HomeFragment : Fragment(){
                         binding.tvTotalExpenses.visibility = View.VISIBLE
                         binding.tvTotalExpensesValue.visibility = View.VISIBLE
                         binding.viewSpace.visibility = View.VISIBLE
+                        binding.cvInfoPerMonth.visibility = View.VISIBLE
                         binding.pbExpensePerMonth.visibility = View.GONE
                     }
                 }
