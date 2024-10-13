@@ -80,6 +80,8 @@ class HomeFragment : Fragment(){
                         binding.tvTotalExpensesValue.visibility = View.GONE
                         binding.viewSpace.visibility = View.GONE
                         binding.cvInfoPerMonth.visibility = View.GONE
+                        binding.ivNoInfoAvailable.visibility = View.GONE
+                        binding.tvNoInfoAvailable.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.VISIBLE
                     }
                     is HomeFragmentState.Empty ->{
@@ -88,6 +90,8 @@ class HomeFragment : Fragment(){
                         binding.tvTotalExpensesValue.visibility = View.GONE
                         binding.viewSpace.visibility = View.GONE
                         binding.cvInfoPerMonth.visibility = View.GONE
+                        binding.ivNoInfoAvailable.visibility = View.VISIBLE
+                        binding.tvNoInfoAvailable.visibility = View.VISIBLE
                         binding.pbExpensePerMonth.visibility = View.GONE
                     }
                     is HomeFragmentState.Error -> {
@@ -99,6 +103,8 @@ class HomeFragment : Fragment(){
                         binding.tvTotalExpensesValue.visibility = View.VISIBLE
                         binding.viewSpace.visibility = View.VISIBLE
                         binding.cvInfoPerMonth.visibility = View.VISIBLE
+                        binding.ivNoInfoAvailable.visibility = View.GONE
+                        binding.tvNoInfoAvailable.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.GONE
                     }
                 }

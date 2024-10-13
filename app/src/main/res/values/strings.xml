@@ -147,5 +147,6 @@
     <string name="update_info_per_month_and_total_expense_success_message">Dados atualizados com sucesso</string>
     <string name="update_info_per_month_and_total_expense_failure_message">Falha ao atualizar dados</string>
     <string name="update_database_info_per_month_and_total_expense">Atualizar Dados do Banco de Dados</string>
+    <string name="no_info_to_show_add_info">Sem informações para exibir. Adicione despesas e ganhos.</string>
 
 </resources>
