@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.expense
+package com.example.fico.presentation.fragments.expense.transaction_list
 
 import SwipeToDeleteCallback
 import android.Manifest
@@ -30,14 +30,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.databinding.FragmentExpenseListBinding
+import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Expense
 import com.example.fico.shared.constants.StringConstants
 import com.example.fico.presentation.activities.expense.EditExpenseActivity
 import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.interfaces.XLSInterface
-import com.example.fico.presentation.viewmodel.ExpenseListViewModel
+import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.shared.DateFunctions
 import com.example.fico.shared.constants.CategoriesList
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -48,11 +48,11 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.File
 
-class ExpenseListFragment : Fragment(), XLSInterface {
+class TransactionListFragment : Fragment(), XLSInterface {
 
-    private var _binding: FragmentExpenseListBinding? = null
+    private var _binding: FragmentTransactionListBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ExpenseListViewModel by inject()
+    private val viewModel: TransactionListViewModel by inject()
     private lateinit var expenseListAdapter : ExpenseListAdapter
     private var expenseMonthsList = arrayOf<String>()
     private val permissionRequestCode = 123
@@ -73,7 +73,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentExpenseListBinding.inflate(inflater, container, false)
+        _binding = FragmentTransactionListBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
@@ -102,7 +102,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
     override fun onResume() {
         super.onResume()
         viewModel.getExpenseList(binding.actvDate.text.toString())
-        viewModel.getExpenseMonths()
+
     }
 
     override fun onDestroyView() {
@@ -175,6 +175,7 @@ class ExpenseListFragment : Fragment(), XLSInterface {
                     editExpense(selectItem)
                 }
             })
+            viewModel.getExpenseMonths()
         })
 
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->

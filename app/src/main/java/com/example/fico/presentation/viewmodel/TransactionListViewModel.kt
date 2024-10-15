@@ -13,13 +13,18 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.presentation.fragments.expense.expense_home.HomeFragmentState
+import com.example.fico.presentation.fragments.expense.transaction_list.TransactionFragmentState
 import com.example.fico.shared.DateFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class ExpenseListViewModel(
+class TransactionListViewModel(
     private val firebaseAPI: FirebaseAPI,
     private val dataStore: DataStoreManager
 ) : ViewModel() {
@@ -40,12 +45,16 @@ class ExpenseListViewModel(
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     val filterLiveData: LiveData<String>
         get() = _filterLiveData
+    private val _uiState = MutableStateFlow<TransactionFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(
+        TransactionFragmentState.Loading)
+    val uiState : StateFlow<TransactionFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
 
     fun updateFilter(filter: String) {
         _filterLiveData.value = filter
     }
 
     fun getExpenseList(filter: String) {
+
         viewModelScope.async {
             val expenses = dataStore.getExpenseList()
             var sortedExpenses = listOf<Expense>()
