@@ -1,8 +1,8 @@
 package com.example.fico.presentation.fragments.expense.transaction_list
 
-sealed interface TransactionFragmentState<out T> {
+sealed interface TransactionFragmentState<Nothing> {
     object Loading : TransactionFragmentState<Nothing>
     object Empty : TransactionFragmentState<Nothing>
-    data class Success<out T>(val infoPerMonthLists : T) : TransactionFragmentState<T>
+    object Success : TransactionFragmentState<Nothing>
     data class Error(val message : String) : TransactionFragmentState<Nothing>
 }

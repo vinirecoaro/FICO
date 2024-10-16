@@ -44,6 +44,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.File
@@ -233,6 +234,45 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         viewModel.getExpenseList(viewModel.filterLiveData.value.toString())
                     }
                     .show()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch{
+            viewModel.uiState.collectLatest{state ->
+                when(state){
+                    TransactionFragmentState.Empty -> {
+                        binding.ivNoInfoAvailable.visibility = View.VISIBLE
+                        binding.tvNoInfoAvailable.visibility = View.VISIBLE
+                        binding.pbTransactionList.visibility = View.GONE
+                        binding.actvDate.visibility = View.GONE
+                        binding.ivClearFilter.visibility = View.GONE
+                        binding.rvExpenseList.visibility = View.GONE
+                    }
+                    is TransactionFragmentState.Error -> {
+                        binding.ivNoInfoAvailable.visibility = View.VISIBLE
+                        binding.tvNoInfoAvailable.visibility = View.VISIBLE
+                        binding.pbTransactionList.visibility = View.GONE
+                        binding.actvDate.visibility = View.GONE
+                        binding.ivClearFilter.visibility = View.GONE
+                        binding.rvExpenseList.visibility = View.GONE
+                    }
+                    TransactionFragmentState.Loading -> {
+                        binding.ivNoInfoAvailable.visibility = View.GONE
+                        binding.tvNoInfoAvailable.visibility = View.GONE
+                        binding.pbTransactionList.visibility = View.VISIBLE
+                        binding.actvDate.visibility = View.GONE
+                        binding.ivClearFilter.visibility = View.GONE
+                        binding.rvExpenseList.visibility = View.GONE
+                    }
+                    TransactionFragmentState.Success -> {
+                        binding.ivNoInfoAvailable.visibility = View.GONE
+                        binding.tvNoInfoAvailable.visibility = View.GONE
+                        binding.pbTransactionList.visibility = View.GONE
+                        binding.actvDate.visibility = View.VISIBLE
+                        binding.ivClearFilter.visibility = View.VISIBLE
+                        binding.rvExpenseList.visibility = View.VISIBLE
+                    }
+                }
             }
         }
 

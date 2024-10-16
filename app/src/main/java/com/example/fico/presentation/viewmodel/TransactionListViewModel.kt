@@ -45,42 +45,60 @@ class TransactionListViewModel(
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     val filterLiveData: LiveData<String>
         get() = _filterLiveData
-    private val _uiState = MutableStateFlow<TransactionFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(
-        TransactionFragmentState.Loading)
-    val uiState : StateFlow<TransactionFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<TransactionFragmentState<Nothing>>(TransactionFragmentState.Loading)
+    val uiState : StateFlow<TransactionFragmentState<Nothing>> = _uiState.asStateFlow()
 
     fun updateFilter(filter: String) {
         _filterLiveData.value = filter
     }
 
     fun getExpenseList(filter: String) {
+        _uiState.value = TransactionFragmentState.Loading
 
         viewModelScope.async {
-            val expenses = dataStore.getExpenseList()
-            var sortedExpenses = listOf<Expense>()
-            if (filter != "") {
-                val filteredExpenses = expenses.filter {
-                    FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate) == FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(
-                        filter
-                    )
+            try {
+                val expenses = dataStore.getExpenseList()
+                if(expenses.isNotEmpty()){
+                    var sortedExpenses = listOf<Expense>()
+                    if (filter != "") {
+                        val filteredExpenses = expenses.filter {
+                            FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate) == FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(
+                                filter
+                            )
+                        }
+                        sortedExpenses = filteredExpenses.sortedByDescending { it.paymentDate }
+                    } else {
+                        sortedExpenses =
+                            expenses.sortedByDescending { FormatValuesToDatabase().expenseDate(it.paymentDate) }
+                    }
+                    _expensesLiveData.value = sortedExpenses
+                }else{
+                    _uiState.value = TransactionFragmentState.Empty
                 }
-                sortedExpenses = filteredExpenses.sortedByDescending { it.paymentDate }
-            } else {
-                sortedExpenses =
-                    expenses.sortedByDescending { FormatValuesToDatabase().expenseDate(it.paymentDate) }
+            }catch (error: Exception){
+                _uiState.value = TransactionFragmentState.Error(error.message.toString())
             }
-            _expensesLiveData.value = sortedExpenses
+
         }
     }
 
     fun getExpenseMonths() {
         viewModelScope.async {
-            val expenseMonths = dataStore.getExpenseMonths().sortedByDescending {it}
-            val expenseMonthsFormatted = mutableListOf<String>()
-            expenseMonths.forEach {
-                expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(it))
+            try {
+                val expenseMonths = dataStore.getExpenseMonths().sortedByDescending {it}
+                if(expenseMonths.isNotEmpty()){
+                    val expenseMonthsFormatted = mutableListOf<String>()
+                    expenseMonths.forEach {
+                        expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(it))
+                    }
+                    _expenseMonthsLiveData.value = expenseMonthsFormatted
+                    _uiState.value = TransactionFragmentState.Success
+                }else{
+                    _uiState.value = TransactionFragmentState.Empty
+                }
+            }catch (error: Exception){
+                _uiState.value = TransactionFragmentState.Error(error.message.toString())
             }
-            _expenseMonthsLiveData.value = expenseMonthsFormatted
         }
     }
 
