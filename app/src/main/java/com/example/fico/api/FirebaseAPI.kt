@@ -37,6 +37,7 @@ class FirebaseAPI(
     private lateinit var expenses_information_per_month : DatabaseReference
     private lateinit var expense_list : DatabaseReference
     private lateinit var default_expense_values : DatabaseReference
+    private lateinit var earnings : DatabaseReference
 
     fun updateReferences() {
         user_root = rootRef.child(auth.currentUser?.uid.toString())
@@ -46,6 +47,7 @@ class FirebaseAPI(
         expenses_information_per_month = expenses.child(StringConstants.DATABASE.INFORMATION_PER_MONTH)
         expense_list = expenses.child(StringConstants.DATABASE.EXPENSES_LIST)
         default_expense_values = expenses.child(StringConstants.DATABASE.DEFAULT_VALUES)
+        earnings = user_root.child(StringConstants.DATABASE.EARNINGS)
     }
 
     suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO) {
@@ -284,6 +286,31 @@ class FirebaseAPI(
         }
 
     suspend fun addExpense(
+        expenseList: MutableList<Expense>,
+        updatedTotalExpense: String,
+        updatedInformationPerMonth: MutableList<InformationPerMonthExpense>
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        val updates = mutableMapOf<String, Any>()
+
+        return@withContext try {
+            // Add Expense List
+            updates.putAll(generateMapToUpdateUserExpenses(expenseList))
+
+            // Add Updated Total Expense
+            updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
+
+            // Add Information per Month
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
+
+            expenses.updateChildren(updates)
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun addEarning(
         expenseList: MutableList<Expense>,
         updatedTotalExpense: String,
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>

@@ -23,6 +23,7 @@ class StringConstants private constructor() {
         const val DEFAULT_VALUES = "DefaultValues"
         const val USER_INFO = "userInfo"
         const val NAME = "name"
+        const val EARNINGS = "earnings"
     }
 
     object GENERAL_CONFIGURATION_LIST {
