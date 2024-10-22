@@ -2,7 +2,7 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.fico.model.Budget
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateFromFileExpenseList
@@ -311,21 +311,13 @@ class FirebaseAPI(
     }
 
     suspend fun addEarning(
-        expenseList: MutableList<Expense>,
-        updatedTotalExpense: String,
-        updatedInformationPerMonth: MutableList<InformationPerMonthExpense>
+        earningList: MutableList<Earning>,
     ): Result<Unit> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any>()
 
         return@withContext try {
             // Add Expense List
-            updates.putAll(generateMapToUpdateUserExpenses(expenseList))
-
-            // Add Updated Total Expense
-            updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
-
-            // Add Information per Month
-            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
+            updates.putAll(generateMapToUpdateUserEarnings(earningList))
 
             expenses.updateChildren(updates)
 
@@ -409,6 +401,26 @@ class FirebaseAPI(
         }
 
         return updatesOfExpenseList
+    }
+
+    private fun generateMapToUpdateUserEarnings(earningList: MutableList<Earning>): MutableMap<String, Any> {
+        val updatesOfEarningList = mutableMapOf<String, Any>()
+
+        for (earning in earningList) {
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.VALUE}"] =
+                earning.value
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
+                earning.description
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.CATEGORY}"] =
+                earning.category
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DATE}"] =
+                earning.date
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
+                earning.inputDateTime
+
+        }
+
+        return updatesOfEarningList
     }
 
     private fun generateMapToRemoveUserExpenses(
