@@ -311,15 +311,15 @@ class FirebaseAPI(
     }
 
     suspend fun addEarning(
-        earningList: MutableList<Earning>,
+        earning : Earning,
     ): Result<Unit> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any>()
 
         return@withContext try {
             // Add Expense List
-            updates.putAll(generateMapToUpdateUserEarnings(earningList))
+            updates.putAll(generateMapToUpdateUserEarnings(earning))
 
-            expenses.updateChildren(updates)
+            earnings.updateChildren(updates)
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -403,22 +403,19 @@ class FirebaseAPI(
         return updatesOfExpenseList
     }
 
-    private fun generateMapToUpdateUserEarnings(earningList: MutableList<Earning>): MutableMap<String, Any> {
+    private fun generateMapToUpdateUserEarnings(earning : Earning): MutableMap<String, Any> {
         val updatesOfEarningList = mutableMapOf<String, Any>()
 
-        for (earning in earningList) {
-            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.VALUE}"] =
-                earning.value
-            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
-                earning.description
-            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.CATEGORY}"] =
-                earning.category
-            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DATE}"] =
-                earning.date
-            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
-                earning.inputDateTime
-
-        }
+        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.VALUE}"] =
+            earning.value
+        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
+            earning.description
+        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.CATEGORY}"] =
+            earning.category
+        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DATE}"] =
+            earning.date
+        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
+            earning.inputDateTime
 
         return updatesOfEarningList
     }

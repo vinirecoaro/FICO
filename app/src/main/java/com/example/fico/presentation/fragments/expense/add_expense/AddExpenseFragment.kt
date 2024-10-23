@@ -92,7 +92,6 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     }
     private val firebaseAPI : FirebaseAPI by inject()
     private val dataStore : DataStoreManager by inject()
-
     private companion object {
         private const val STORAGE_PERMISSION_CODE = 100
         private const val TAG = "PERMISSION_TAG"
@@ -394,6 +393,22 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                                 }
                             }
                         }
+                    }
+                }
+                else if(viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_EARNING){
+                    if (verifyFields(
+                            binding.etPrice,
+                            binding.etDescription,
+                            binding.actvCategory,
+                            binding.etReceivedDate
+                        )
+                    ){
+                        viewModel.addEarning(
+                            binding.etPrice.text.toString(),
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            binding.etReceivedDate.text.toString()
+                        )
                     }
                 }
             }

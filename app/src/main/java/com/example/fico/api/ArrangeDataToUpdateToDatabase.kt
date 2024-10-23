@@ -163,7 +163,7 @@ class ArrangeDataToUpdateToDatabase() {
         return newExpense
     }
 
-    private fun generateRandomAddress(size: Int): String {
+    fun generateRandomAddress(size: Int): String {
         val allowedCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
         val random = Random(System.currentTimeMillis())
         val randomSequence = StringBuilder(size)

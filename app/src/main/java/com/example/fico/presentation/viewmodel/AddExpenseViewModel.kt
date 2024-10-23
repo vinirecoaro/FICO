@@ -12,6 +12,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.shared.DateFunctions
 import com.example.fico.shared.constants.StringConstants
@@ -34,6 +35,8 @@ class AddExpenseViewModel(
     private var operation : String = StringConstants.ADD_TRANSACTION.ADD_EXPENSE
     private val _paymentDateSwitchInitialState = MutableLiveData<Boolean>()
     val paymentDateSwitchInitialStateLiveData: LiveData<Boolean> = _paymentDateSwitchInitialState
+    private val _addEarningResult = MutableLiveData<Boolean>()
+    val addEarningResult: LiveData<Boolean> = _addEarningResult
 
     init {
         getPaymentDateSwitchState()
@@ -166,6 +169,43 @@ class AddExpenseViewModel(
                 onFailure = {
                     _addExpenseResult.postValue(false)
                 }
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun addEarning(
+        value: String,
+        description: String,
+        category: String,
+        date: String,
+    ){
+        viewModelScope.async(Dispatchers.IO){
+            val formattedDate = FormatValuesToDatabase().expenseDate(date)
+
+            val formattedInputDate =
+                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+
+            val formattedValue = FormatValuesToDatabase().expensePrice(value, 1)
+
+            val randonNum = arrangeDataToUpdateToDatabase.generateRandomAddress(5)
+
+            val inputTime = FormatValuesToDatabase().timeNow()
+
+            val earningId = "${formattedDate}-${inputTime}-${randonNum}"
+
+            val earning = Earning(
+                earningId,
+                formattedValue,
+                description,
+                category,
+                formattedDate,
+                formattedInputDate
+            )
+
+            firebaseAPI.addEarning(earning).fold(
+                onSuccess = {},
+                onFailure = {}
             )
         }
     }
