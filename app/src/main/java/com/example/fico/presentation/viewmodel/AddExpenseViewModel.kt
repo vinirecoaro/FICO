@@ -204,8 +204,12 @@ class AddExpenseViewModel(
             )
 
             firebaseAPI.addEarning(earning).fold(
-                onSuccess = {},
-                onFailure = {}
+                onSuccess = {
+                    _addEarningResult.postValue(true)
+                },
+                onFailure = {
+                    _addEarningResult.postValue(false)
+                }
             )
         }
     }

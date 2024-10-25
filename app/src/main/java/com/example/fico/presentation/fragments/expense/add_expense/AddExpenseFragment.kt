@@ -133,6 +133,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
         super.onResume()
 
         binding.etPurchaseDate.setText(currentDate)
+        binding.etReceivedDate.setText(currentDate)
 
         val filter = IntentFilter().apply {
             addAction(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
@@ -530,11 +531,14 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
             if (result) {
                 Snackbar.make(
                     binding.rvCategory,
-                    "Gasto adicionado com sucesso",
+                    getString(R.string.add_expense_success_message),
                     Snackbar.LENGTH_LONG
                 ).show()
             } else {
-                Snackbar.make(binding.rvCategory, "Falha ao adicionar gasto", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.rvCategory,
+                    getString(R.string.add_expense_failure_message),
+                    Snackbar.LENGTH_LONG)
                     .show()
             }
         }
@@ -562,6 +566,24 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
         viewModel.paymentDateSwitchInitialStateLiveData.observe(requireActivity()){ state ->
             binding.swtPaymentDay.isChecked = state
+        }
+
+        viewModel.addEarningResult.observe(viewLifecycleOwner){ result ->
+            hideKeyboard(requireContext(), binding.btSave)
+            clearUserInputs()
+            if (result) {
+                Snackbar.make(
+                    binding.rvCategory,
+                    getString(R.string.add_earning_success_message),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } else {
+                Snackbar.make(
+                    binding.rvCategory,
+                    getString(R.string.add_earning_failure_message),
+                    Snackbar.LENGTH_LONG)
+                    .show()
+            }
         }
 
     }
