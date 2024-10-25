@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragments.expense.transaction_list.TransactionListFragment">
+    tools:context=".presentation.fragments.transaction_list.TransactionListFragment">
 
     <TextView
         android:id="@+id/tv_no_info_available"

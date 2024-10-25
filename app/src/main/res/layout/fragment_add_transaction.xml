@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        tools:context=".presentation.fragments.expense.add_expense.AddExpenseFragment">
+        tools:context=".presentation.fragments.add_transaction.AddTransactionFragment">
 
 
         <com.google.android.material.textfield.TextInputLayout

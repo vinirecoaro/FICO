@@ -16,9 +16,8 @@ import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
-import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.presentation.fragments.expense.expense_home.HomeFragmentState
+import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.shared.DateFunctions
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +54,8 @@ class HomeViewModel(
         Color.rgb(168, 135, 50),
         Color.rgb(107, 50, 168)
     )
-    private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(HomeFragmentState.Loading)
+    private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(
+        HomeFragmentState.Loading)
     val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
 
     init{

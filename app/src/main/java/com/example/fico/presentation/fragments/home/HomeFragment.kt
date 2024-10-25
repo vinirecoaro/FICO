@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.expense.expense_home
+package com.example.fico.presentation.fragments.home
 
 import android.content.res.Configuration
 import android.graphics.Color
@@ -22,7 +22,6 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject

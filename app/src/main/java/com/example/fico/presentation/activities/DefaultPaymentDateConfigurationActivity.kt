@@ -1,4 +1,4 @@
-package com.example.fico.presentation.activities.expense
+package com.example.fico.presentation.activities
 
 import android.app.Dialog
 import android.content.SharedPreferences
@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.fico.R

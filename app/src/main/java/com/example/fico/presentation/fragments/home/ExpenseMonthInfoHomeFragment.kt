@@ -1,11 +1,9 @@
-package com.example.fico.presentation.fragments.expense.expense_home
+package com.example.fico.presentation.fragments.home
 
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +22,6 @@ import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.shared.DateFunctions
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry

@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.expense
+package com.example.fico.presentation.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.example.fico.presentation.activities.expense
+package com.example.fico.presentation.activities
 
 import android.app.AlertDialog
 import android.app.Dialog

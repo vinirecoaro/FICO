@@ -5,11 +5,11 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
-import com.example.fico.presentation.viewmodel.AddExpenseViewModel
+import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
 import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
-import com.example.fico.presentation.viewmodel.EditExpenseViewModel
+import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
@@ -77,8 +77,8 @@ val appModule = module {
         )
     }
 
-    factory<EditExpenseViewModel> {
-        EditExpenseViewModel(
+    factory<EditTransactionViewModel> {
+        EditTransactionViewModel(
             firebaseAPI = get(),
             dataStore = get()
         )
@@ -163,8 +163,8 @@ val appModule = module {
         )
     }
 
-    factory<AddExpenseViewModel> {
-        AddExpenseViewModel(
+    factory<AddTransactionViewModel> {
+        AddTransactionViewModel(
             firebaseAPI = get(),
             dataStore = get(),
         )

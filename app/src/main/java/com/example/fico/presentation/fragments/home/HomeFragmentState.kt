@@ -1,6 +1,4 @@
-package com.example.fico.presentation.fragments.expense.expense_home
-
-import com.example.fico.model.InformationPerMonthExpense
+package com.example.fico.presentation.fragments.home
 
 sealed interface HomeFragmentState<out T> {
     object Loading : HomeFragmentState<Nothing>

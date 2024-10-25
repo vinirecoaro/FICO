@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.expense.transaction_list
+package com.example.fico.presentation.fragments.transaction_list
 
 import SwipeToDeleteCallback
 import android.Manifest
@@ -33,7 +33,7 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Expense
 import com.example.fico.shared.constants.StringConstants
-import com.example.fico.presentation.activities.expense.EditExpenseActivity
+import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.interfaces.XLSInterface
@@ -288,7 +288,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
     }
 
     fun editExpense(expense: Expense) {
-        val intent = Intent(requireContext(), EditExpenseActivity::class.java)
+        val intent = Intent(requireContext(), EditTransactionActivity::class.java)
         val sureExpense = Expense(
             id = expense.id,
             price = expense.price,

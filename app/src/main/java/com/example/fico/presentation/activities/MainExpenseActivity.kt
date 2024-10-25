@@ -1,4 +1,4 @@
-package com.example.fico.presentation.activities.expense
+package com.example.fico.presentation.activities
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -8,9 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -18,9 +16,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
-import com.example.fico.presentation.activities.GeneralConfigurationActivity
-import com.example.fico.presentation.activities.UserDataActivity
-import com.example.fico.presentation.activities.earning.ConstructionActivity
 import com.example.fico.presentation.viewmodel.MainViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView

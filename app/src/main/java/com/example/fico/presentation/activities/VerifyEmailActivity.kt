@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityVerifyEmailBinding
-import com.example.fico.presentation.activities.expense.MainExpenseActivity
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch

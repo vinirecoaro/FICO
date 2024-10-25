@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.fico.presentation.fragments.expense.expense_home.HomeFragment"
+        android:name="com.example.fico.presentation.fragments.home.HomeFragment"
         android:label="@string/overview"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_add_expense"
-        android:name="com.example.fico.presentation.fragments.expense.add_expense.AddExpenseFragment"
+        android:name="com.example.fico.presentation.fragments.add_transaction.AddTransactionFragment"
         android:label="@string/add_expense_title"
-        tools:layout="@layout/fragment_add_expense" />
+        tools:layout="@layout/fragment_add_transaction" />
 
     <fragment
         android:id="@+id/navigation_expense_list"
-        android:name="com.example.fico.presentation.fragments.expense.transaction_list.TransactionListFragment"
+        android:name="com.example.fico.presentation.fragments.transaction_list.TransactionListFragment"
         android:label="@string/transactions"
         tools:layout="@layout/fragment_transaction_list" />
 
     <fragment
         android:id="@+id/navigation_config"
-        android:name="com.example.fico.presentation.fragments.expense.ExpenseConfigurationFragment"
+        android:name="com.example.fico.presentation.fragments.ExpenseConfigurationFragment"
         android:label="@string/configurations"
         tools:layout="@layout/fragment_configuration" />
 </navigation>

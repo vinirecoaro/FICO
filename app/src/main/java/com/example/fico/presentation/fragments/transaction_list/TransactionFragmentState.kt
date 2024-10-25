@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.expense.transaction_list
+package com.example.fico.presentation.fragments.transaction_list
 
 sealed interface TransactionFragmentState<Nothing> {
     object Loading : TransactionFragmentState<Nothing>

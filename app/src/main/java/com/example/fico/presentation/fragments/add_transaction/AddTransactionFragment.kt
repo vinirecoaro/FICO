@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.expense.add_expense
+package com.example.fico.presentation.fragments.add_transaction
 
 import android.Manifest
 import android.app.Activity
@@ -29,12 +29,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
-import com.example.fico.databinding.FragmentAddExpenseBinding
 import com.example.fico.service.UploadFile
 import com.example.fico.shared.constants.StringConstants
-import com.example.fico.presentation.activities.expense.ComonExpenseImportFileInstructionsActivity
-import com.example.fico.presentation.activities.expense.InstallmentExpenseImportFileInstructionsActivity
-import com.example.fico.presentation.viewmodel.AddExpenseViewModel
+import com.example.fico.presentation.activities.ComonExpenseImportFileInstructionsActivity
+import com.example.fico.presentation.activities.InstallmentExpenseImportFileInstructionsActivity
+import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CompletableDeferred
@@ -47,10 +46,9 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginTop
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.databinding.FragmentAddTransactionBinding
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.shared.ConnectionFunctions
@@ -63,14 +61,14 @@ import com.example.fico.shared.constants.CategoriesList
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
+class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
 
     private val READ_COMON_EXPENSE_REQUEST_CODE: Int = 43
     private val READ_INSTALLMENT_EXPENSE_REQUEST_CODE: Int = 44
-    private var _binding: FragmentAddExpenseBinding? = null
+    private var _binding: FragmentAddTransactionBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AddExpenseViewModel by inject()
+    private val viewModel: AddTransactionViewModel by inject()
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -104,7 +102,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddExpenseBinding.inflate(
+        _binding = FragmentAddTransactionBinding.inflate(
             inflater, container, false
         )
         var rootView = binding.root
@@ -731,7 +729,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
                 if (inputStream != null) {
                     val outputStream =
-                        FileOutputStream(AddExpenseImportDataFromFile().getNewFileUri().path)
+                        FileOutputStream(AddTransactionImportDataFromFile().getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -739,8 +737,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                         }
                     }
                     // Work with a copy of file
-                    val newPath = AddExpenseImportDataFromFile().getNewFileUri().path.toString()
-                    var readFileResult = AddExpenseImportDataFromFile().readFromExcelFile(newPath)
+                    val newPath = AddTransactionImportDataFromFile().getNewFileUri().path.toString()
+                    var readFileResult = AddTransactionImportDataFromFile().readFromExcelFile(newPath)
                     if (readFileResult.second) {
                         lifecycleScope.launch(Dispatchers.Main) {
 
@@ -774,7 +772,7 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
 
                 if (inputStream != null) {
                     val outputStream =
-                        FileOutputStream(AddExpenseImportDataFromFile().getNewFileUri().path)
+                        FileOutputStream(AddTransactionImportDataFromFile().getNewFileUri().path)
 
                     inputStream.use { input ->
                         outputStream.use { output ->
@@ -782,8 +780,8 @@ class AddExpenseFragment : Fragment(), OnCategorySelectedListener {
                         }
                     }
                     // Work with a copy of file
-                    val newPath = AddExpenseImportDataFromFile().getNewFileUri().path.toString()
-                    var readFileResult = AddExpenseImportDataFromFile().readFromExcelFile(newPath)
+                    val newPath = AddTransactionImportDataFromFile().getNewFileUri().path.toString()
+                    var readFileResult = AddTransactionImportDataFromFile().readFromExcelFile(newPath)
                     if (readFileResult.second) {
                         lifecycleScope.launch(Dispatchers.Main) {
 

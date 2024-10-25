@@ -19,7 +19,7 @@ import kotlinx.coroutines.async
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class EditExpenseViewModel(
+class EditTransactionViewModel(
     private val firebaseAPI : FirebaseAPI,
     private val dataStore: DataStoreManager
 ) : ViewModel() {

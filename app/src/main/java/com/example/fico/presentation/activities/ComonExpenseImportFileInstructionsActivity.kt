@@ -1,17 +1,17 @@
-package com.example.fico.presentation.activities.expense
+package com.example.fico.presentation.activities
 
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
 import com.example.fico.R
-import com.example.fico.databinding.ActivityInstallmentExpenseImportFileInstructionsBinding
+import com.example.fico.databinding.ActivityComonExpenseImportFileInstructionsBinding
 import com.example.fico.model.ImportFileInstructionsComponents
 import com.example.fico.presentation.adapters.ImportFileInstructionsAdapter
 
-class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
+class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
 
-    private val binding by lazy{ActivityInstallmentExpenseImportFileInstructionsBinding.inflate(layoutInflater)}
+    private val binding by lazy{ActivityComonExpenseImportFileInstructionsBinding.inflate(layoutInflater)}
     private lateinit var importFileInstructionsAdapter: ImportFileInstructionsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,17 +31,17 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
             ImportFileInstructionsComponents(
                 "Extensão do arquivo",
                 setImageBasedOnTheme(
-                    R.drawable.installment_expense_import_file_instructions_table_xls_light,
-                    R.drawable.installment_expense_import_file_instructions_table_xls_black
-                ),
+                    R.drawable.import_file_instructions_table_xls_light,
+                    R.drawable.import_file_instructions_table_xls_black
+                    ),
                 "O arquivo deve ser com extensão xls.",
                 false
             ),
             ImportFileInstructionsComponents(
                 "Cebeçalho",
-                R.drawable.installment_expense_import_file_instructions_complete_table,
+                R.drawable.import_file_instructions_complete_table,
                 "O cabeçalho deve ser conforme ilustrado na imagem acima. " +
-                        "Deve ter as colunas Preço, Descrição, Categoria, Data e Parcelas nessa ordem.",
+                        "Deve ter as colunas Preço, Descrição, Categoria e Data nessa ordem.",
                 false
             ),
             ImportFileInstructionsComponents(
@@ -62,6 +62,15 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
                 R.drawable.import_file_instructions_final_line_identificator,
                 "Para identificar a última linha a ser lida use\no identificador abaixo na linha posterior:\n\n" +
                         "xxx",
+                false
+            ),
+            ImportFileInstructionsComponents(
+                "Gastos Parcelados",
+                setImageBasedOnTheme(
+                    R.drawable.import_file_instructions_warning_light,
+                    R.drawable.import_file_instructions_warning_black
+                ),
+                "Não inserir gastos parcelados através\ndesta opção.",
                 true
             ),
         )
@@ -76,6 +85,7 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
                 binding.dot3.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot4.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot5.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot6.setImageResource(R.drawable.ic_dot_unselected_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -83,6 +93,7 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
                 binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
@@ -117,6 +128,7 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 1){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -124,6 +136,7 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 2){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -131,6 +144,7 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot3.setImageResource(R.drawable.ic_dot_selected)
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 3){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -138,6 +152,7 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot4.setImageResource(R.drawable.ic_dot_selected)
             binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
         }
         else if(currentPosition == 4){
             binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -145,6 +160,15 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
             binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
             binding.dot5.setImageResource(R.drawable.ic_dot_selected)
+            binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
+        }
+        else if(currentPosition == 5){
+            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+            binding.dot6.setImageResource(R.drawable.ic_dot_selected)
         }
     }
 

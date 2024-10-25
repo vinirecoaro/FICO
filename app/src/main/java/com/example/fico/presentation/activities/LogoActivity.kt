@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityLogoBinding
-import com.example.fico.presentation.activities.expense.MainExpenseActivity
 import com.example.fico.presentation.viewmodel.LogoViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers

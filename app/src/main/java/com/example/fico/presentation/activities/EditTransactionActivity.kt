@@ -1,4 +1,4 @@
-package com.example.fico.presentation.activities.expense
+package com.example.fico.presentation.activities
 
 import android.app.Activity
 import android.content.Context
@@ -22,7 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
-import com.example.fico.presentation.viewmodel.EditExpenseViewModel
+import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
@@ -38,10 +38,10 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
+class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener {
 
     val binding by lazy { ActivityEditExpenseBinding.inflate(layoutInflater) }
-    private val viewModel : EditExpenseViewModel by inject()
+    private val viewModel : EditTransactionViewModel by inject()
     private lateinit var adapter: CategoryListAdapter
     private var expenseIdLength = 0
     lateinit var editingExpense : Expense
@@ -167,7 +167,7 @@ class EditExpenseActivity : AppCompatActivity(), OnCategorySelectedListener {
                             )
                         } else {
                             Toast.makeText(
-                                this@EditExpenseActivity,
+                                this@EditTransactionActivity,
                                 "O número de parcelas não pode ser 0",
                                 Toast.LENGTH_LONG
                             ).show()

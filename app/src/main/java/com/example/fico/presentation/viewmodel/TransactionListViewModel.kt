@@ -13,8 +13,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.presentation.fragments.expense.expense_home.HomeFragmentState
-import com.example.fico.presentation.fragments.expense.transaction_list.TransactionFragmentState
+import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
 import com.example.fico.shared.DateFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -45,7 +44,8 @@ class TransactionListViewModel(
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     val filterLiveData: LiveData<String>
         get() = _filterLiveData
-    private val _uiState = MutableStateFlow<TransactionFragmentState<Nothing>>(TransactionFragmentState.Loading)
+    private val _uiState = MutableStateFlow<TransactionFragmentState<Nothing>>(
+        TransactionFragmentState.Loading)
     val uiState : StateFlow<TransactionFragmentState<Nothing>> = _uiState.asStateFlow()
 
     fun updateFilter(filter: String) {

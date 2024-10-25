@@ -20,7 +20,7 @@
         android:theme="@style/Theme.FICO"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.activities.expense.DefaultPaymentDateConfigurationActivity"
+            android:name=".presentation.activities.DefaultPaymentDateConfigurationActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.activities.earning.ConstructionActivity"
@@ -35,13 +35,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.activities.expense.InstallmentExpenseImportFileInstructionsActivity"
+            android:name=".presentation.activities.InstallmentExpenseImportFileInstructionsActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.activities.GeneralConfigurationActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.activities.expense.ComonExpenseImportFileInstructionsActivity"
+            android:name=".presentation.activities.ComonExpenseImportFileInstructionsActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.activities.UserDataActivity"
@@ -50,19 +50,19 @@
             android:name=".presentation.activities.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.activities.expense.BudgetPerMonthActivity"
+            android:name=".presentation.activities.BudgetPerMonthActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".presentation.activities.expense.EditExpenseActivity"
+            android:name=".presentation.activities.EditTransactionActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".presentation.activities.expense.BudgetConfigurationListActivity"
+            android:name=".presentation.activities.BudgetConfigurationListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".presentation.activities.expense.SetDefaultBudgetActivity"
+            android:name=".presentation.activities.SetDefaultBudgetActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -70,7 +70,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".presentation.activities.expense.MainExpenseActivity"
+            android:name=".presentation.activities.MainExpenseActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

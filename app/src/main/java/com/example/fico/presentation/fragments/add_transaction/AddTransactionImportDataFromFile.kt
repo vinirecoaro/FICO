@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.expense.add_expense
+package com.example.fico.presentation.fragments.add_transaction
 
 import android.net.Uri
 import android.os.Environment
@@ -11,7 +11,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
 
-class AddExpenseImportDataFromFile(){
+class AddTransactionImportDataFromFile(){
 
     fun readFromExcelFile(filepath: String): Pair<MutableList<Expense>, Boolean> {
         val inputStream = FileInputStream(filepath)

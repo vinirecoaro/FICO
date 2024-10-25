@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.expense
+package com.example.fico.presentation.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.databinding.FragmentConfigurationBinding
-import com.example.fico.shared.constants.StringConstants
-import com.example.fico.presentation.activities.expense.BudgetConfigurationListActivity
-import com.example.fico.presentation.activities.expense.DefaultPaymentDateConfigurationActivity
+import com.example.fico.presentation.activities.BudgetConfigurationListActivity
+import com.example.fico.presentation.activities.DefaultPaymentDateConfigurationActivity
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel

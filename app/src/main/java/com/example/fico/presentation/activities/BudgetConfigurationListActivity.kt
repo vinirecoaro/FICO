@@ -1,14 +1,12 @@
-package com.example.fico.presentation.activities.expense
+package com.example.fico.presentation.activities
 
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.databinding.ActivityBudgetConfigurationListBinding
-import com.example.fico.shared.constants.StringConstants
 import com.example.fico.presentation.adapters.BudgetConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
