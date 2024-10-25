@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.shared.constants.StringConstants
@@ -26,6 +27,7 @@ class DataStoreManager (context: Context) {
         val defaultBudgetKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_BUDGET_KEY)
         val defaultPaymentDayKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_PAYMENT_DAY_KEY)
         val paymentDateSwitchKey = stringPreferencesKey(StringConstants.DATA_STORE.PAYMENT_DATE_SWITCH)
+        val earningsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNINGS_LIST_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -158,6 +160,23 @@ class DataStoreManager (context: Context) {
             preferences[paymentDateSwitchKey]
         }.first().toBoolean()
         return paymentDateSwitch
+    }
+
+    suspend fun updateEarningList(expenseList : List<Earning>){
+        dataStore.edit { preferences ->
+            val existingEarningsListString = preferences[earningsListKey] ?: "[]"
+            val existingEarningList = Gson().fromJson(existingEarningsListString, Array<Earning>::class.java).toMutableList()
+            existingEarningList.addAll(expenseList)
+            val expenseListString = Gson().toJson(existingEarningList)
+            preferences[earningsListKey] = expenseListString
+        }
+    }
+
+    suspend fun getEarningsList() : List<Earning>{
+        val earningsListString = dataStore.data.map { preferences ->
+            preferences[earningsListKey]
+        }.first() ?: return emptyList()
+        return Gson().fromJson(earningsListString, object : TypeToken<List<Earning>>() {}.type)
     }
 
 }
