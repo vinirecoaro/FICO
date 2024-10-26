@@ -779,6 +779,11 @@ class FirebaseAPI(
             return@withContext expensesList
         }
 
+    suspend fun getEarningList(): Deferred<List<Earning>> = withContext(Dispatchers.IO){
+        val earningList = CompletableDeferred<MutableList<Earning>>()
+        return@withContext earningList
+    }
+
     suspend fun getExpenseMonths(): List<String> =
         suspendCoroutine { continuation ->
             var isCompleted = false

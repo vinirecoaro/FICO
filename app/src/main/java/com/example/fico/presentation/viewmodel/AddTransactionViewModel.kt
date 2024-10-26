@@ -205,6 +205,9 @@ class AddTransactionViewModel(
 
             firebaseAPI.addEarning(earning).fold(
                 onSuccess = {
+                    val earningList = mutableListOf<Earning>()
+                    earningList.add(earning)
+                    dataStore.updateEarningList(earningList)
                     _addEarningResult.postValue(true)
                 },
                 onFailure = {

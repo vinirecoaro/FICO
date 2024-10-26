@@ -162,6 +162,13 @@ class DataStoreManager (context: Context) {
         return paymentDateSwitch
     }
 
+    suspend fun updateAndResetEarningList(earningList : List<Earning>){
+        val earningListString = Gson().toJson(earningList)
+        dataStore.edit { preferences ->
+            preferences[earningsListKey] = earningListString
+        }
+    }
+
     suspend fun updateEarningList(expenseList : List<Earning>){
         dataStore.edit { preferences ->
             val existingEarningsListString = preferences[earningsListKey] ?: "[]"
