@@ -1,5 +1,6 @@
 package com.example.fico.presentation.viewmodel.shared
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
@@ -54,6 +55,13 @@ class ExpensesViewModel(
             if(paymentDay != StringConstants.DEFAULT_MESSAGES.FAIL){
                 dataStore.setDefaultPaymentDay(paymentDay)
             }
+        }
+    }
+
+    fun getEarningsList(){
+        viewModelScope.async {
+            val earningList = firebaseAPI.getEarningList().await()
+            Log.e("EarningList", earningList.toString())
         }
     }
 

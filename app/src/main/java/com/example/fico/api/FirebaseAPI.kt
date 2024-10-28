@@ -38,6 +38,7 @@ class FirebaseAPI(
     private lateinit var expense_list : DatabaseReference
     private lateinit var default_expense_values : DatabaseReference
     private lateinit var earnings : DatabaseReference
+    private lateinit var earningsList : DatabaseReference
 
     fun updateReferences() {
         user_root = rootRef.child(auth.currentUser?.uid.toString())
@@ -48,6 +49,7 @@ class FirebaseAPI(
         expense_list = expenses.child(StringConstants.DATABASE.EXPENSES_LIST)
         default_expense_values = expenses.child(StringConstants.DATABASE.DEFAULT_VALUES)
         earnings = user_root.child(StringConstants.DATABASE.EARNINGS)
+        earningsList = earnings.child(StringConstants.DATABASE.EARNINGS_LIST)
     }
 
     suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO) {
@@ -779,8 +781,20 @@ class FirebaseAPI(
             return@withContext expensesList
         }
 
-    suspend fun getEarningList(): Deferred<List<Earning>> = withContext(Dispatchers.IO){
-        val earningList = CompletableDeferred<MutableList<Earning>>()
+    suspend fun getEarningList(): Deferred<DataSnapshot> = withContext(Dispatchers.IO){
+        val earningList = CompletableDeferred<DataSnapshot>()
+        earningsList.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    earningList.complete(snapshot)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+
         return@withContext earningList
     }
 
