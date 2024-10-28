@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.model.Earning
 import com.example.fico.shared.constants.StringConstants
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -60,8 +61,22 @@ class ExpensesViewModel(
 
     fun getEarningsList(){
         viewModelScope.async {
-            val earningList = firebaseAPI.getEarningList().await()
-            Log.e("EarningList", earningList.toString())
+            val earningList = mutableListOf<Earning>()
+            val earningListSnapShot = firebaseAPI.getEarningList().await().children
+            for(earning in earningListSnapShot){
+                earningList.add(
+                    Earning(
+                        id = earning.key.toString(),
+                        value = earning.child(StringConstants.DATABASE.VALUE).value.toString(),
+                        description = earning.child(StringConstants.DATABASE.DESCRIPTION).value.toString(),
+                        category = earning.child(StringConstants.DATABASE.CATEGORY).value.toString(),
+                        date = earning.child(StringConstants.DATABASE.DATE).value.toString(),
+                        inputDateTime = earning.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+                    )
+                )
+
+            }
+            dataStore.updateAndResetEarningList(earningList)
         }
     }
 
