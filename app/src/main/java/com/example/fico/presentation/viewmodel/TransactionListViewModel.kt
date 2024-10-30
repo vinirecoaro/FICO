@@ -302,13 +302,13 @@ class TransactionListViewModel(
                     _addExpenseResult.postValue(false)
                 }
             )
-
         }
-
     }
 
     fun onInstallmentExpenseSwiped(){
         _installmentExpenseSwiped.postValue(true)
     }
+
+
 
 }
