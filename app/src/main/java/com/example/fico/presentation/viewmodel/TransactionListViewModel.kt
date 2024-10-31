@@ -12,6 +12,7 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
 import com.example.fico.shared.DateFunctions
@@ -20,6 +21,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -31,6 +33,8 @@ class TransactionListViewModel(
 
     private val _expensesLiveData = MutableLiveData<List<Expense>>()
     val expensesLiveData: LiveData<List<Expense>> = _expensesLiveData
+    private val _earningsListLiveData = MutableLiveData<List<Earning>>()
+    val earningsListLiveData: LiveData<List<Earning>> = _earningsListLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _filterLiveData = MutableLiveData<String>()
@@ -99,6 +103,40 @@ class TransactionListViewModel(
             }catch (error: Exception){
                 _uiState.value = TransactionFragmentState.Error(error.message.toString())
             }
+        }
+    }
+
+    fun getEarningList(filter: String){
+        viewModelScope.launch {
+            val earningListDataStore = dataStore.getEarningsList()
+            if(earningListDataStore.isNotEmpty()){
+                var filteredList = listOf<Earning>()
+                if (filter != ""){
+                    filteredList = earningListDataStore.filter {
+                        DateFunctions().YYYYmmDDtoYYYYmm(it.date) ==
+                        FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(filter)
+                    }.sortedByDescending { it.date }
+                }else{
+                    filteredList = earningListDataStore.sortedByDescending { it.date }
+                }
+                val earningList = mutableListOf<Earning>()
+
+                for(earning in filteredList){
+                    val valueFormatted = FormatValuesFromDatabase().price(earning.value)
+                    val dateFormatted = FormatValuesFromDatabase().date(earning.date)
+                    earningList.add(
+                        Earning(
+                            earning.id,
+                            valueFormatted,
+                            earning.description,
+                            earning.category,
+                            dateFormatted,
+                            earning.inputDateTime
+                        )
+                    )
+                }
+            }
+
         }
     }
 
