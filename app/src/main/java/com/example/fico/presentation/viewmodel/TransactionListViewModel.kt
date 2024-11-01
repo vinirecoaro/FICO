@@ -113,8 +113,9 @@ class TransactionListViewModel(
                 var filteredList = listOf<Earning>()
                 if (filter != ""){
                     filteredList = earningListDataStore.filter {
-                        DateFunctions().YYYYmmDDtoYYYYmm(it.date) ==
-                        FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(filter)
+                        val earningDate = DateFunctions().YYYYmmDDtoYYYYmm(it.date)
+                        var filterDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(filter)
+                        earningDate == filterDate
                     }.sortedByDescending { it.date }
                 }else{
                     filteredList = earningListDataStore.sortedByDescending { it.date }
@@ -122,12 +123,11 @@ class TransactionListViewModel(
                 val earningList = mutableListOf<Earning>()
 
                 for(earning in filteredList){
-                    val valueFormatted = FormatValuesFromDatabase().price(earning.value)
                     val dateFormatted = FormatValuesFromDatabase().date(earning.date)
                     earningList.add(
                         Earning(
                             earning.id,
-                            valueFormatted,
+                            earning.value,
                             earning.description,
                             earning.category,
                             dateFormatted,
@@ -135,6 +135,7 @@ class TransactionListViewModel(
                         )
                     )
                 }
+                _earningsListLiveData.postValue(earningList)
             }
 
         }

@@ -12,12 +12,11 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.TransactionCategory
 import com.example.fico.presentation.interfaces.OnListItemClick
-import org.apache.poi.ss.formula.functions.T
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class ExpenseListAdapter(private var expenseList: List<Expense>, private var earningList : List<Earning>, private val categories : List<TransactionCategory>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
+class ExpenseListAdapter(private var expenseList: List<Expense>, private var earningList : List<Earning>, private val expenseCategory : List<TransactionCategory>, private val earningCategory : List<TransactionCategory>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
 
     private var listener: OnListItemClick? = null
 
@@ -53,7 +52,7 @@ class ExpenseListAdapter(private var expenseList: List<Expense>, private var ear
             holder.date.text = item.paymentDate
 
             val itemCategory = item.category
-            val categoryPathName = categories.find{ it.description == itemCategory }
+            val categoryPathName = expenseCategory.find{ it.description == itemCategory }
             if(categoryPathName != null){
                 val iconName = categoryPathName.iconName
                 val iconPath = holder.itemView.context.resources.getIdentifier(iconName, "drawable", holder.itemView.context.packageName)
@@ -79,12 +78,12 @@ class ExpenseListAdapter(private var expenseList: List<Expense>, private var ear
             val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
             val formattedPrice = currencyFormat.format(formattedNum)
             holder.price.text = formattedPrice
-            holder.price.setTextColor(Color.RED)
+            holder.price.setTextColor(Color.GREEN)
 
             holder.date.text = item.date
 
             val itemCategory = item.category
-            val categoryPathName = categories.find{ it.description == itemCategory }
+            val categoryPathName = earningCategory.find{ it.description == itemCategory }
             if(categoryPathName != null){
                 val iconName = categoryPathName.iconName
                 val iconPath = holder.itemView.context.resources.getIdentifier(iconName, "drawable", holder.itemView.context.packageName)
