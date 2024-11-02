@@ -1,4 +1,4 @@
-package com.example.fico.shared.constants
+package com.example.fico.utils.constants
 import android.content.Context
 import com.example.fico.R
 import com.example.fico.model.TransactionCategory

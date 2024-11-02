@@ -30,7 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.service.UploadFile
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.StringConstants
 import com.example.fico.presentation.activities.ComonExpenseImportFileInstructionsActivity
 import com.example.fico.presentation.activities.InstallmentExpenseImportFileInstructionsActivity
 import com.example.fico.presentation.viewmodel.AddTransactionViewModel
@@ -51,13 +51,13 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.databinding.FragmentAddTransactionBinding
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
-import com.example.fico.shared.ConnectionFunctions
+import com.example.fico.utils.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
-import com.example.fico.shared.DateFunctions
-import com.example.fico.shared.constants.CategoriesList
+import com.example.fico.utils.DateFunctions
+import com.example.fico.utils.constants.CategoriesList
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 

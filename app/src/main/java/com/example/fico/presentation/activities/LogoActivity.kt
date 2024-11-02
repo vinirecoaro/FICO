@@ -1,24 +1,38 @@
 package com.example.fico.presentation.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.biometric.BiometricManager
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityLogoBinding
 import com.example.fico.presentation.viewmodel.LogoViewModel
+import com.example.fico.utils.BiometricPromptManager
+import com.example.fico.utils.BiometricPromptManager.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import com.example.fico.R
 
 class LogoActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityLogoBinding.inflate(layoutInflater) }
     private val viewModel: LogoViewModel by inject()
+    private val promptManager by lazy{
+        BiometricPromptManager(this)
+    }
+    private lateinit var enrollLauncher: ActivityResultLauncher<Intent>
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,13 +43,15 @@ class LogoActivity : AppCompatActivity() {
         setUpListeners()
 
         lifecycleScope.launch(Dispatchers.Main) {
-            if (!viewModel.isLogged().await()) {
+            if (viewModel.isLogged().await()) {
+                promptManager.showBiometricPrompt(
+                    title = getString(R.string.biometric_prompt_title),
+                    description = getString(R.string.biometric_prompt_description)
+                )
+            }else{
                 startActivity(Intent(this@LogoActivity, LoginActivity::class.java))
-            } else {
-                finish()
             }
         }
-
     }
 
     private fun formatLogoImage() {
@@ -55,12 +71,55 @@ class LogoActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners() {
-        viewModel.onUserLogged = {
+        /*viewModel.onUserLogged = {
             startActivity(Intent(this@LogoActivity, MainExpenseActivity::class.java))
-        }
+            finish()
+        }*/
 
         viewModel.onError = { message ->
             Snackbar.make(binding.ivLogo, message, Snackbar.LENGTH_LONG).show()
+        }
+
+        lifecycleScope.launch {
+            promptManager.promptResults.collect{biometricResult ->
+                when(biometricResult){
+                    is BiometricResult.AuthenticationError -> {
+
+                    }
+                    BiometricResult.AuthenticationFailed -> {
+
+                    }
+                    BiometricResult.AuthenticationNotSet -> {
+                        if(Build.VERSION.SDK_INT >= 30){
+                            val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                                putExtra(
+                                    Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                                    BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+                                )
+                            }
+                            enrollLauncher.launch(enrollIntent)
+                        }
+                    }
+                    BiometricResult.AuthenticationSuccess -> {
+                        startActivity(Intent(this@LogoActivity, MainExpenseActivity::class.java))
+                        finish()
+                    }
+                    BiometricResult.FeatureUnavailable -> {
+
+                    }
+                    BiometricResult.HardwareUnavailable -> {
+
+                    }
+                }
+            }
+        }
+        enrollLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                startActivity(Intent(this@LogoActivity, MainExpenseActivity::class.java))
+                finish()
+            }
         }
     }
 

@@ -14,8 +14,8 @@ import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.shared.DateFunctions
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.DateFunctions
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode

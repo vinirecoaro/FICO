@@ -1,4 +1,4 @@
-package com.example.fico.shared
+package com.example.fico.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

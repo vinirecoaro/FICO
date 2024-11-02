@@ -1,4 +1,4 @@
-package com.example.fico.shared.constants
+package com.example.fico.utils.constants
 
 class StringConstants private constructor() {
 

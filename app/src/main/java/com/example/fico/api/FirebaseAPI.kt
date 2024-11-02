@@ -7,7 +7,7 @@ import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.model.User
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.StringConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth

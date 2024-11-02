@@ -3,7 +3,7 @@ package com.example.fico.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.api.FirebaseAPI
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.async
 
 class GeneralConfigurationViewModel(

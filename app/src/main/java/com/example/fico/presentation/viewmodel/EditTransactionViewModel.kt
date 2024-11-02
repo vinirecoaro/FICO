@@ -13,7 +13,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.shared.DateFunctions
+import com.example.fico.utils.DateFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.math.BigDecimal

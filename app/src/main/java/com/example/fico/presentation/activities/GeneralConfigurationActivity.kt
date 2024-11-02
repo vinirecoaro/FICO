@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.databinding.ActivityGeneralConfigurationBinding
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.StringConstants
 import com.example.fico.presentation.adapters.GeneralConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel

@@ -15,7 +15,7 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
-import com.example.fico.shared.DateFunctions
+import com.example.fico.utils.DateFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow

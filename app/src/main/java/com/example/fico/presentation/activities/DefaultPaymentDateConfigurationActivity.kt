@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.fico.R
 import com.example.fico.databinding.ActivityDefaultPaymentDateConfigurationBinding
 import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText

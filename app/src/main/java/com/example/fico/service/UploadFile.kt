@@ -10,7 +10,7 @@ import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Expense
 import com.example.fico.model.UpdateFromFileExpenseList
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import java.math.BigDecimal

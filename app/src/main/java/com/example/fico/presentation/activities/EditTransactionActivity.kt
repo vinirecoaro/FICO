@@ -26,8 +26,8 @@ import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
-import com.example.fico.shared.constants.CategoriesList
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.CategoriesList
+import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar

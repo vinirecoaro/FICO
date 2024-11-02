@@ -19,7 +19,7 @@ import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
 import com.example.fico.presentation.adapters.ExpenseMonthsListAdapter
 import com.example.fico.presentation.interfaces.OnExpenseMonthSelectedListener
 import com.example.fico.presentation.viewmodel.HomeViewModel
-import com.example.fico.shared.DateFunctions
+import com.example.fico.utils.DateFunctions
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData

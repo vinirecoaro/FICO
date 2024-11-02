@@ -152,5 +152,7 @@
     <string name="add_expense_failure_message">Falha ao adicionar gasto</string>
     <string name="add_earning_success_message">Receita adicionada com sucesso</string>
     <string name="add_earning_failure_message">Falha ao adicionar receita</string>
+    <string name="biometric_prompt_title">FICO</string>
+    <string name="biometric_prompt_description">Desbloqueie seu celular</string>
 
 </resources>

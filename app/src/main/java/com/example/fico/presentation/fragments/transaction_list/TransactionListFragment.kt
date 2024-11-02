@@ -32,14 +32,14 @@ import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Expense
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.StringConstants
 import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.ExpenseListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
-import com.example.fico.shared.DateFunctions
-import com.example.fico.shared.constants.CategoriesList
+import com.example.fico.utils.DateFunctions
+import com.example.fico.utils.constants.CategoriesList
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson

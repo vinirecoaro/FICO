@@ -1,12 +1,11 @@
 package com.example.fico.presentation.viewmodel.shared
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Earning
-import com.example.fico.shared.constants.StringConstants
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
