@@ -70,10 +70,10 @@ class TransactionListViewModel(
                                 filter
                             )
                         }
-                        sortedExpenses = filteredExpenses.sortedByDescending { it.paymentDate }
+                        sortedExpenses = filteredExpenses.sortedByDescending { it.purchaseDate }
                     } else {
                         sortedExpenses =
-                            expenses.sortedByDescending { FormatValuesToDatabase().expenseDate(it.paymentDate) }
+                            expenses.sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
                     }
                     _expensesLiveData.value = sortedExpenses
                 }else{

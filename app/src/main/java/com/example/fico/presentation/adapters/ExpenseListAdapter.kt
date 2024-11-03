@@ -49,7 +49,7 @@ class ExpenseListAdapter(private var expenseList: List<Expense>, private var ear
             holder.price.text = formattedPrice
             holder.price.setTextColor(Color.RED)
 
-            holder.date.text = item.paymentDate
+            holder.date.text = item.purchaseDate
 
             val itemCategory = item.category
             val categoryPathName = expenseCategory.find{ it.description == itemCategory }
