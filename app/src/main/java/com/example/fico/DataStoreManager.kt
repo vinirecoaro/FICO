@@ -28,6 +28,7 @@ class DataStoreManager (context: Context) {
         val defaultPaymentDayKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_PAYMENT_DAY_KEY)
         val paymentDateSwitchKey = stringPreferencesKey(StringConstants.DATA_STORE.PAYMENT_DATE_SWITCH)
         val earningsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNINGS_LIST_KEY)
+        val earningMonthsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNING_MONTHS_LIST_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -185,5 +186,21 @@ class DataStoreManager (context: Context) {
         }.first() ?: return emptyList()
         return Gson().fromJson(earningsListString, object : TypeToken<List<Earning>>() {}.type)
     }
+
+    suspend fun updateAndResetEarningMonths(earningsMonths : List<String>){
+        val earningMonthsListString = Gson().toJson(earningsMonths)
+        dataStore.edit { preferences ->
+            preferences[earningMonthsListKey] = earningMonthsListString
+        }
+    }
+
+    suspend fun getEarningMonths() : List<String>{
+        val earningMonthsString = dataStore.data.map { preferences ->
+            preferences[earningMonthsListKey]
+        }.first() ?: return emptyList()
+        return Gson().fromJson(earningMonthsString, object : TypeToken<List<String>>() {}.type)
+    }
+
+
 
 }

@@ -16,6 +16,8 @@ import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
 import com.example.fico.utils.DateFunctions
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +31,6 @@ class TransactionListViewModel(
     private val firebaseAPI: FirebaseAPI,
     private val dataStore: DataStoreManager
 ) : ViewModel() {
-
 
     private val _expensesLiveData = MutableLiveData<List<Expense>>()
     val expensesLiveData: LiveData<List<Expense>> = _expensesLiveData
@@ -51,6 +52,8 @@ class TransactionListViewModel(
     private val _uiState = MutableStateFlow<TransactionFragmentState<Nothing>>(
         TransactionFragmentState.Loading)
     val uiState : StateFlow<TransactionFragmentState<Nothing>> = _uiState.asStateFlow()
+    private val _earningMonthsLiveData = MutableLiveData<List<String>>()
+    val earningMonthsLiveData: LiveData<List<String>> = _earningMonthsLiveData
 
     fun updateFilter(filter: String) {
         _filterLiveData.value = filter
@@ -89,13 +92,18 @@ class TransactionListViewModel(
     fun getExpenseMonths() {
         viewModelScope.async {
             try {
-                val expenseMonths = dataStore.getExpenseMonths().sortedByDescending {it}
-                if(expenseMonths.isNotEmpty()){
-                    val expenseMonthsFormatted = mutableListOf<String>()
-                    expenseMonths.forEach {
-                        expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(it))
+                val transactionMonthsList = mutableSetOf<String>()
+                val expenseMonths = dataStore.getExpenseMonths()
+                val earningMonths = dataStore.getEarningMonths()
+                transactionMonthsList.addAll(expenseMonths)
+                transactionMonthsList.addAll(earningMonths)
+                val sortedTransactionMonthsList = transactionMonthsList.sortedByDescending{it}
+                if(sortedTransactionMonthsList.isNotEmpty()){
+                    val transactionMonthsListFormatted = mutableListOf<String>()
+                    sortedTransactionMonthsList.forEach {
+                        transactionMonthsListFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(it))
                     }
-                    _expenseMonthsLiveData.value = expenseMonthsFormatted
+                    _expenseMonthsLiveData.value = transactionMonthsListFormatted
                     _uiState.value = TransactionFragmentState.Success
                 }else{
                     _uiState.value = TransactionFragmentState.Empty
