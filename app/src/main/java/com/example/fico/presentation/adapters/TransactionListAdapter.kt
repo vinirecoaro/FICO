@@ -106,39 +106,8 @@ class TransactionListAdapter(private var expenseList: List<Expense>, private var
         return transactionList[position]
     }
 
-    fun updateTransactions(expenseList : List<Expense>, earningList : List<Earning>){
-        val transactionListTemp = mutableListOf<Transaction>()
-        expenseList.forEach { expense ->
-            transactionListTemp.add(
-                Transaction(
-                    id = expense.id,
-                    price = expense.price,
-                    description = expense.description,
-                    category = expense.category,
-                    paymentDate = expense.paymentDate,
-                    purchaseDate = expense.purchaseDate,
-                    inputDateTime = expense.inputDateTime,
-                    nOfInstallment = expense.nOfInstallment,
-                    type = StringConstants.DATABASE.EXPENSE
-                )
-            )
-        }
-        earningList.forEach { earning ->
-            transactionListTemp.add(
-                Transaction(
-                    id = earning.id,
-                    price = earning.value,
-                    description = earning.description,
-                    category = earning.category,
-                    paymentDate = earning.date,
-                    purchaseDate = earning.date,
-                    inputDateTime = earning.inputDateTime,
-                    nOfInstallment = "1",
-                    type = StringConstants.DATABASE.EARNING
-                )
-            )
-        }
-        transactionList = transactionListTemp.toList().sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
+    fun updateTransactions(transactionsList : List<Transaction>){
+        transactionList = transactionsList
         notifyDataSetChanged()
     }
 

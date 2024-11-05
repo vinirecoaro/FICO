@@ -54,6 +54,7 @@ class SwipeToDeleteCallback(
                 viewModel.deleteExpense(deleteItemFormatted)
             }else if(deleteItem.type == StringConstants.DATABASE.EARNING){
                 //TODO delete earning
+                viewModel.getEarningList(viewModel.filterLiveData.value.toString())
             }
 
         }else{

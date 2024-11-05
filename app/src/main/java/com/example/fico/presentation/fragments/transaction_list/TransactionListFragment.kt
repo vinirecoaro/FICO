@@ -32,6 +32,7 @@ import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Expense
+import com.example.fico.model.Transaction
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.TransactionListAdapter
@@ -170,19 +171,23 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
 
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
-            transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
-                override fun onListItemClick(position: Int) {
-                    val selectItem = expenses[position]
-                    editExpense(selectItem)
-                }
-            })
             viewModel.getExpenseMonths()
             viewModel.getEarningList(binding.actvDate.text.toString())
         })
 
         viewModel.earningsListLiveData.observe(viewLifecycleOwner){ earningList ->
             val expenseList = viewModel.expensesLiveData.value!!.toList()
-            transactionListAdapter.updateTransactions(expenseList,earningList)
+            viewModel.updateTransactionsList(expenseList,earningList)
+        }
+
+        viewModel.transactionsListLiveData.observe(viewLifecycleOwner){ transactionsList ->
+            transactionListAdapter.updateTransactions(transactionsList)
+            transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
+                override fun onListItemClick(position: Int) {
+                    val selectItem = transactionsList[position]
+                    editExpense(selectItem)
+                }
+            })
         }
 
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
@@ -293,20 +298,25 @@ class TransactionListFragment : Fragment(), XLSInterface {
         binding.actvDate.setAdapter(adapter)
     }
 
-    fun editExpense(expense: Expense) {
+    fun editExpense(transaction: Transaction) {
         val intent = Intent(requireContext(), EditTransactionActivity::class.java)
-        val sureExpense = Expense(
-            id = expense.id,
-            price = expense.price,
-            description = expense.description,
-            category = expense.category,
-            paymentDate = expense.paymentDate,
-            purchaseDate = expense.purchaseDate,
-            inputDateTime = expense.inputDateTime,
-            nOfInstallment = expense.nOfInstallment
-        )
-        intent.putExtra("expense", sureExpense)
-        startActivityForResult(intent, StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)
+        if(transaction.type == StringConstants.DATABASE.EXPENSE){
+            val sureExpense = Expense(
+                id = transaction.id,
+                price = transaction.price,
+                description = transaction.description,
+                category = transaction.category,
+                paymentDate = transaction.paymentDate,
+                purchaseDate = transaction.purchaseDate,
+                inputDateTime = transaction.inputDateTime,
+                nOfInstallment = transaction.nOfInstallment
+            )
+            intent.putExtra("expense", sureExpense)
+            startActivityForResult(intent, StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)
+        }else{
+            //TODO edit earning
+            Toast.makeText(requireContext(),"Em construção, aguarde !!", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

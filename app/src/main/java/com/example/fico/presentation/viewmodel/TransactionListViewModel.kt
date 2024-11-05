@@ -14,8 +14,10 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.Transaction
 import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
 import com.example.fico.utils.DateFunctions
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,8 @@ class TransactionListViewModel(
     val expensesLiveData: LiveData<List<Expense>> = _expensesLiveData
     private val _earningsListLiveData = MutableLiveData<List<Earning>>()
     val earningsListLiveData: LiveData<List<Earning>> = _earningsListLiveData
+    private val _transactionsListLiveData = MutableLiveData<List<Transaction>>()
+    val transactionsListLiveData: LiveData<List<Transaction>> = _transactionsListLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _filterLiveData = MutableLiveData<String>()
@@ -357,6 +361,42 @@ class TransactionListViewModel(
 
     fun onInstallmentExpenseSwiped(){
         _installmentExpenseSwiped.postValue(true)
+    }
+
+    fun updateTransactionsList(expenseList : List<Expense>, earningList : List<Earning>){
+        val transactionListTemp = mutableListOf<Transaction>()
+        expenseList.forEach { expense ->
+            transactionListTemp.add(
+                Transaction(
+                    id = expense.id,
+                    price = expense.price,
+                    description = expense.description,
+                    category = expense.category,
+                    paymentDate = expense.paymentDate,
+                    purchaseDate = expense.purchaseDate,
+                    inputDateTime = expense.inputDateTime,
+                    nOfInstallment = expense.nOfInstallment,
+                    type = StringConstants.DATABASE.EXPENSE
+                )
+            )
+        }
+        earningList.forEach { earning ->
+            transactionListTemp.add(
+                Transaction(
+                    id = earning.id,
+                    price = earning.value,
+                    description = earning.description,
+                    category = earning.category,
+                    paymentDate = earning.date,
+                    purchaseDate = earning.date,
+                    inputDateTime = earning.inputDateTime,
+                    nOfInstallment = "1",
+                    type = StringConstants.DATABASE.EARNING
+                )
+            )
+        }
+        val transactionListSorted = transactionListTemp.toList().sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
+        _transactionsListLiveData.postValue(transactionListSorted)
     }
 
 
