@@ -150,9 +150,13 @@ class TransactionListViewModel(
                 }
                 _earningsListLiveData.postValue(earningList)
             }else{
-                _uiState.value = TransactionFragmentState.Empty
+                _earningsListLiveData.postValue(emptyList())
+                if(_expensesLiveData.value != null ){
+                    if (_expensesLiveData.value!!.isEmpty()){
+                        _uiState.value = TransactionFragmentState.Empty
+                    }
+                }
             }
-
         }
     }
 

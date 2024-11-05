@@ -49,7 +49,7 @@ class GeneralConfigurationActivity : AppCompatActivity(),OnListItemClick {
             finish()
             val intent = Intent(this, LoginActivity::class.java)
 
-            // Create a new task to restart thr app and clear the old activities stack
+            // Create a new task to restart the app and clear the old activities stack
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_CLEAR_TASK
 
