@@ -34,7 +34,7 @@ import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Expense
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.presentation.activities.EditTransactionActivity
-import com.example.fico.presentation.adapters.ExpenseListAdapter
+import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
@@ -54,7 +54,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
     private var _binding: FragmentTransactionListBinding? = null
     private val binding get() = _binding!!
     private val viewModel: TransactionListViewModel by inject()
-    private lateinit var expenseListAdapter : ExpenseListAdapter
+    private lateinit var transactionListAdapter : TransactionListAdapter
     private var expenseMonthsList = arrayOf<String>()
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
@@ -78,11 +78,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val rootView = binding.root
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
-        expenseListAdapter = ExpenseListAdapter(emptyList(), emptyList(),categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
-        binding.rvExpenseList.adapter = expenseListAdapter
+        transactionListAdapter = TransactionListAdapter(emptyList(), emptyList(),categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
+        binding.rvExpenseList.adapter = transactionListAdapter
 
         val swipeToDeleteCallback =
-            SwipeToDeleteCallback(binding.rvExpenseList, viewModel, expenseListAdapter, viewLifecycleOwner)
+            SwipeToDeleteCallback(binding.rvExpenseList, viewModel, transactionListAdapter, viewLifecycleOwner)
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 
@@ -103,7 +103,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
     override fun onResume() {
         super.onResume()
         viewModel.getExpenseList(binding.actvDate.text.toString())
-        viewModel.getEarningList(binding.actvDate.text.toString())
     }
 
     override fun onDestroyView() {
@@ -171,15 +170,20 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
 
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
-            expenseListAdapter.updateExpenses(expenses)
-            expenseListAdapter.setOnItemClickListener(object : OnListItemClick {
+            transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
                 override fun onListItemClick(position: Int) {
                     val selectItem = expenses[position]
                     editExpense(selectItem)
                 }
             })
             viewModel.getExpenseMonths()
+            viewModel.getEarningList(binding.actvDate.text.toString())
         })
+
+        viewModel.earningsListLiveData.observe(viewLifecycleOwner){ earningList ->
+            val expenseList = viewModel.expensesLiveData.value!!.toList()
+            transactionListAdapter.updateTransactions(expenseList,earningList)
+        }
 
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
             expenseMonthsList = expenseMonths.toTypedArray()
@@ -237,10 +241,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     }
                     .show()
             }
-        }
-
-        viewModel.earningsListLiveData.observe(viewLifecycleOwner){ earningList ->
-            expenseListAdapter.updateEarnings(earningList)
         }
 
         viewLifecycleOwner.lifecycleScope.launch{

@@ -24,6 +24,7 @@ class StringConstants private constructor() {
         const val USER_INFO = "userInfo"
         const val NAME = "name"
         const val EARNINGS = "earnings"
+        const val EARNING = "earning"
         const val EARNINGS_LIST = "earningsList"
         const val VALUE = "value"
     }

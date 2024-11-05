@@ -73,14 +73,15 @@ class TransactionListViewModel(
                                 filter
                             )
                         }
-                        sortedExpenses = filteredExpenses.sortedByDescending { it.purchaseDate }
+                        sortedExpenses = filteredExpenses.sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
                     } else {
                         sortedExpenses =
                             expenses.sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
                     }
                     _expensesLiveData.value = sortedExpenses
                 }else{
-                    _uiState.value = TransactionFragmentState.Empty
+                    _expensesLiveData.value = emptyList()
+
                 }
             }catch (error: Exception){
                 _uiState.value = TransactionFragmentState.Error(error.message.toString())
@@ -144,6 +145,8 @@ class TransactionListViewModel(
                     )
                 }
                 _earningsListLiveData.postValue(earningList)
+            }else{
+                _uiState.value = TransactionFragmentState.Empty
             }
 
         }

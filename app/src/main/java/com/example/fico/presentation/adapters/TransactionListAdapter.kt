@@ -8,17 +8,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
+import com.example.fico.model.Transaction
 import com.example.fico.model.TransactionCategory
 import com.example.fico.presentation.interfaces.OnListItemClick
+import com.example.fico.utils.constants.StringConstants
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class ExpenseListAdapter(private var expenseList: List<Expense>, private var earningList : List<Earning>, private val expenseCategory : List<TransactionCategory>, private val earningCategory : List<TransactionCategory>) : RecyclerView.Adapter<ExpenseListAdapter.ViewHolder>(){
+class TransactionListAdapter(private var expenseList: List<Expense>, private var earningList : List<Earning>, private val expenseCategory : List<TransactionCategory>, private val earningCategory : List<TransactionCategory>) : RecyclerView.Adapter<TransactionListAdapter.ViewHolder>(){
 
     private var listener: OnListItemClick? = null
+    private var transactionList = listOf<Transaction>()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val description: TextView = itemView.findViewById(R.id.tv_description)
@@ -34,24 +38,27 @@ class ExpenseListAdapter(private var expenseList: List<Expense>, private var ear
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if(position < expenseList.size){
-            val item = expenseList[position]
+        val item = transactionList[position]
 
-            holder.description.text = item.description
+        holder.description.text = item.description
 
-            val regex = Regex("[\\d,.]+")
-            val justNumber = regex.find(item.price)
-            val formatNum = DecimalFormat("#.##")
-            val justNumberValue = justNumber!!.value.replace(",",".").toFloat()
-            val formattedNum = formatNum.format(justNumberValue).replace(",",".").toFloat()
-            val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
-            val formattedPrice = currencyFormat.format(formattedNum)
-            holder.price.text = formattedPrice
+        val regex = Regex("[\\d,.]+")
+        val justNumber = regex.find(item.price)
+        val formatNum = DecimalFormat("#.##")
+        val justNumberValue = justNumber!!.value.replace(",",".").toFloat()
+        val formattedNum = formatNum.format(justNumberValue).replace(",",".").toFloat()
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
+        val formattedPrice = currencyFormat.format(formattedNum)
+        holder.price.text = formattedPrice
+
+        holder.date.text = item.purchaseDate
+
+        val itemCategory = item.category
+
+        if(item.type == StringConstants.DATABASE.EXPENSE){
+
             holder.price.setTextColor(Color.RED)
 
-            holder.date.text = item.purchaseDate
-
-            val itemCategory = item.category
             val categoryPathName = expenseCategory.find{ it.description == itemCategory }
             if(categoryPathName != null){
                 val iconName = categoryPathName.iconName
@@ -66,23 +73,9 @@ class ExpenseListAdapter(private var expenseList: List<Expense>, private var ear
                 listener?.onListItemClick(position)
             }
         }else{
-            val item = earningList[position-expenseList.size]
 
-            holder.description.text = item.description
-
-            val regex = Regex("[\\d,.]+")
-            val justNumber = regex.find(item.value)
-            val formatNum = DecimalFormat("#.##")
-            val justNumberValue = justNumber!!.value.replace(",",".").toFloat()
-            val formattedNum = formatNum.format(justNumberValue).replace(",",".").toFloat()
-            val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
-            val formattedPrice = currencyFormat.format(formattedNum)
-            holder.price.text = formattedPrice
             holder.price.setTextColor(Color.GREEN)
 
-            holder.date.text = item.date
-
-            val itemCategory = item.category
             val categoryPathName = earningCategory.find{ it.description == itemCategory }
             if(categoryPathName != null){
                 val iconName = categoryPathName.iconName
@@ -102,26 +95,51 @@ class ExpenseListAdapter(private var expenseList: List<Expense>, private var ear
     }
 
     override fun getItemCount(): Int {
-        val fullSize = expenseList.size + earningList.size
-        return fullSize
-    }
-
-    fun updateExpenses(newExpenses: List<Expense>){
-        expenseList = newExpenses
-        notifyDataSetChanged()
-    }
-
-    fun updateEarnings(newEarnings: List<Earning>){
-        earningList = newEarnings
-        notifyDataSetChanged()
+        return transactionList.size
     }
 
     fun setOnItemClickListener(listener: OnListItemClick) {
         this.listener = listener
     }
 
-    fun getDataAtPosition(position: Int): Expense {
-        return expenseList[position]
+    fun getDataAtPosition(position: Int): Transaction {
+        return transactionList[position]
+    }
+
+    fun updateTransactions(expenseList : List<Expense>, earningList : List<Earning>){
+        val transactionListTemp = mutableListOf<Transaction>()
+        expenseList.forEach { expense ->
+            transactionListTemp.add(
+                Transaction(
+                    id = expense.id,
+                    price = expense.price,
+                    description = expense.description,
+                    category = expense.category,
+                    paymentDate = expense.paymentDate,
+                    purchaseDate = expense.purchaseDate,
+                    inputDateTime = expense.inputDateTime,
+                    nOfInstallment = expense.nOfInstallment,
+                    type = StringConstants.DATABASE.EXPENSE
+                )
+            )
+        }
+        earningList.forEach { earning ->
+            transactionListTemp.add(
+                Transaction(
+                    id = earning.id,
+                    price = earning.value,
+                    description = earning.description,
+                    category = earning.category,
+                    paymentDate = earning.date,
+                    purchaseDate = earning.date,
+                    inputDateTime = earning.inputDateTime,
+                    nOfInstallment = "1",
+                    type = StringConstants.DATABASE.EARNING
+                )
+            )
+        }
+        transactionList = transactionListTemp.toList().sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
+        notifyDataSetChanged()
     }
 
 }
