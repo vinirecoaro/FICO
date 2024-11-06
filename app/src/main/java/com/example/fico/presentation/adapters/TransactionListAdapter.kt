@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
@@ -29,6 +30,7 @@ class TransactionListAdapter(private var expenseList: List<Expense>, private var
         val price: TextView = itemView.findViewById(R.id.tv_price)
         val date: TextView = itemView.findViewById(R.id.tv_date)
         val categoryImg: ImageView = itemView.findViewById(R.id.iv_category_expense_item_list)
+        val installmentField: TextView = itemView.findViewById(R.id.tv_installment)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,6 +41,13 @@ class TransactionListAdapter(private var expenseList: List<Expense>, private var
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val item = transactionList[position]
+
+        /*if(item.description.length >= 33){
+            val descriptionFormatted = "${item.description.substring(0, 30)} ..."
+            holder.description.text = descriptionFormatted
+        }else{
+            holder.description.text = item.description
+        }*/
 
         holder.description.text = item.description
 
@@ -56,6 +65,18 @@ class TransactionListAdapter(private var expenseList: List<Expense>, private var
         val itemCategory = item.category
 
         if(item.type == StringConstants.DATABASE.EXPENSE){
+
+            if(item.description.contains("Parcela") || item.description.contains("parcela")){
+
+                val numOfInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(item.id).replace("0","")
+                holder.installmentField.visibility = View.VISIBLE
+                val installmentText = "Parcela $numOfInstallment"
+                holder.installmentField.text = installmentText
+
+                val descriptionFormatted = FormatValuesFromDatabase().installmentExpenseDescription(item.description)
+                holder.description.text = descriptionFormatted
+
+            }
 
             holder.price.setTextColor(Color.RED)
 

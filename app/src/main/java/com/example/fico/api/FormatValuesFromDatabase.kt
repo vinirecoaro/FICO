@@ -38,6 +38,10 @@ class FormatValuesFromDatabase {
         return expenseId.substring(38,41).toInt().toString()
     }
 
+    fun installmentExpenseCurrentInstallment(expenseId : String) : String{
+        return expenseId.split("-")[8]
+    }
+
     fun installmentExpenseInitialDate(id: String, date: String) : String{
         val currentInstallment = id.substring(35,37).toInt().toString()
         var day = date.substring(0, 2)
