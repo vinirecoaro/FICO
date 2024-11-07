@@ -58,6 +58,11 @@ class TransactionListViewModel(
     val uiState : StateFlow<TransactionFragmentState<Nothing>> = _uiState.asStateFlow()
     private val _earningMonthsLiveData = MutableLiveData<List<String>>()
     val earningMonthsLiveData: LiveData<List<String>> = _earningMonthsLiveData
+    private val _filteredTransactionsListLiveData = MutableLiveData<List<Transaction>>()
+    val filteredTransactionsListLiveData: LiveData<List<Transaction>> = _filteredTransactionsListLiveData
+    //TODO Clear just textFilter
+    private val _textFilterState = MutableLiveData<Boolean>()
+    val textFilterState : LiveData<Boolean> = _textFilterState
 
     fun updateFilter(filter: String) {
         _filterLiveData.value = filter
@@ -403,6 +408,11 @@ class TransactionListViewModel(
         _transactionsListLiveData.postValue(transactionListSorted)
     }
 
-
+    fun filterCurrentList (filter : String){
+        val currentList = transactionsListLiveData.value!!.toMutableList()
+        val filteredList = mutableListOf<Transaction>()
+        filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
+        _filteredTransactionsListLiveData.postValue(filteredList)
+    }
 
 }

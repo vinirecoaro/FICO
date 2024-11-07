@@ -155,5 +155,9 @@
     <string name="biometric_prompt_title">FICO</string>
     <string name="biometric_prompt_description">Desbloqueie seu celular</string>
     <string name="text_filter">Filtro de texto</string>
+    <string name="to_filter">Filtrar</string>
+    <string name="select_filter">Selecionar filtro</string>
+    <string name="clear_all_filters">Limpar todos os filtros</string>
+
 
 </resources>

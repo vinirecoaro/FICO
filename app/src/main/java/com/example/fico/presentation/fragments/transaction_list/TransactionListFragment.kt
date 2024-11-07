@@ -3,7 +3,6 @@ package com.example.fico.presentation.fragments.transaction_list
 import SwipeToDeleteCallback
 import android.Manifest
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
@@ -51,7 +50,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.w3c.dom.Text
 import java.io.File
 
 class TransactionListFragment : Fragment(), XLSInterface {
@@ -296,6 +294,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
             }
         }
 
+        viewModel.filteredTransactionsListLiveData.observe(viewLifecycleOwner){ filteredTransactionList ->
+            transactionListAdapter.updateTransactions(filteredTransactionList)
+        }
+
     }
 
     private fun actvConfig() {
@@ -509,18 +511,56 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     private fun filterDialog(){
         val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle("Selecionar filtro")
+        builder.setTitle(getString(R.string.select_filter))
 
         val inflater = LayoutInflater.from(requireContext())
         val dialogView = inflater.inflate(R.layout.dialog_transaction_fragment_filter, null)
 
         val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_text_filter)
+        val tvClearAllFilter = dialogView.findViewById<TextView>(R.id.tv_clear_all_filters)
 
         builder.setView(dialogView)
 
         builder.setNegativeButton(getString(R.string.cancel)){dialog, which ->
 
         }
+
+        val dialog = builder.create()
+
+        dialog.show()
+
+        tvTextFilter.setOnClickListener {
+            textFilter()
+            dialog.cancel()
+        }
+
+        tvClearAllFilter.setOnClickListener {
+            val transactionList = viewModel.transactionsListLiveData.value?.toList()
+            if(!transactionList.isNullOrEmpty()){
+                transactionListAdapter.updateTransactions(transactionList)
+            }
+            dialog.cancel()
+        }
+    }
+
+    private fun textFilter(){
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(getString(R.string.text_filter))
+
+        val inflater = LayoutInflater.from(requireContext())
+        val dialogView = inflater.inflate(R.layout.dialog_transaction_fragment_text_filter, null)
+
+        val etTextFilter = dialogView.findViewById<TextInputEditText>(R.id.et_text_filter)
+
+        builder.setView(dialogView)
+
+        builder.setPositiveButton(getString(R.string.to_filter)){dialog, which ->
+            if(!etTextFilter.text.isNullOrEmpty()){
+                val filter = etTextFilter.text.toString()
+                viewModel.filterCurrentList(filter)
+            }
+        }
+
         val dialog = builder.create()
 
         dialog.show()
