@@ -20,7 +20,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class TransactionListAdapter(private var expenseList: List<Expense>, private var earningList : List<Earning>, private val expenseCategory : List<TransactionCategory>, private val earningCategory : List<TransactionCategory>) : RecyclerView.Adapter<TransactionListAdapter.ViewHolder>(){
+class TransactionListAdapter(private val expenseCategory : List<TransactionCategory>, private val earningCategory : List<TransactionCategory>) : RecyclerView.Adapter<TransactionListAdapter.ViewHolder>(){
 
     private var listener: OnListItemClick? = null
     private var transactionList = listOf<Transaction>()
@@ -42,14 +42,8 @@ class TransactionListAdapter(private var expenseList: List<Expense>, private var
 
         val item = transactionList[position]
 
-        /*if(item.description.length >= 33){
-            val descriptionFormatted = "${item.description.substring(0, 30)} ..."
-            holder.description.text = descriptionFormatted
-        }else{
-            holder.description.text = item.description
-        }*/
-
         holder.description.text = item.description
+        holder.installmentField.visibility = View.GONE
 
         val regex = Regex("[\\d,.]+")
         val justNumber = regex.find(item.price)

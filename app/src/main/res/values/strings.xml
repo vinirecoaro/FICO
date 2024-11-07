@@ -154,5 +154,6 @@
     <string name="add_earning_failure_message">Falha ao adicionar receita</string>
     <string name="biometric_prompt_title">FICO</string>
     <string name="biometric_prompt_description">Desbloqueie seu celular</string>
+    <string name="text_filter">Filtro de texto</string>
 
 </resources>

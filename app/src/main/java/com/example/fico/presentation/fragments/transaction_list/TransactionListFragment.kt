@@ -3,6 +3,7 @@ package com.example.fico.presentation.fragments.transaction_list
 import SwipeToDeleteCallback
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
@@ -17,6 +18,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -43,11 +45,13 @@ import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.w3c.dom.Text
 import java.io.File
 
 class TransactionListFragment : Fragment(), XLSInterface {
@@ -79,7 +83,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val rootView = binding.root
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
-        transactionListAdapter = TransactionListAdapter(emptyList(), emptyList(),categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
+        transactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
         binding.rvExpenseList.adapter = transactionListAdapter
 
         val swipeToDeleteCallback =
@@ -130,6 +134,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 }
                 return true
             }*/
+
+            R.id.expense_list_menu_filter -> {
+                filterDialog()
+                return true
+            }
 
             else -> return super.onOptionsItemSelected(item)
         }
@@ -496,6 +505,25 @@ class TransactionListFragment : Fragment(), XLSInterface {
         if (file != null) {
             shareFile(file)
         }
+    }
+
+    private fun filterDialog(){
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle("Selecionar filtro")
+
+        val inflater = LayoutInflater.from(requireContext())
+        val dialogView = inflater.inflate(R.layout.dialog_transaction_fragment_filter, null)
+
+        val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_text_filter)
+
+        builder.setView(dialogView)
+
+        builder.setNegativeButton(getString(R.string.cancel)){dialog, which ->
+
+        }
+        val dialog = builder.create()
+
+        dialog.show()
     }
 
 
