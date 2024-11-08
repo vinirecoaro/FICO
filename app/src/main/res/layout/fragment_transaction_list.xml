@@ -10,16 +10,15 @@
         android:id="@+id/tv_no_info_available"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/no_info_to_show_add_info"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:text="@string/no_info_to_show_add_info"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_no_info_available"
@@ -45,25 +44,51 @@
     <AutoCompleteTextView
         android:id="@+id/actv_date"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="8dp"
         android:cursorVisible="false"
         android:focusable="false"
-        android:hint="@string/filter"
         android:gravity="center"
-        tools:text="Abril - 2023"/>
+        android:hint="@string/filter"
+        app:layout_constraintEnd_toStartOf="@id/iv_clear_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Abril - 2023" />
+
 
     <ImageView
         android:id="@+id/iv_clear_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_cancel_light"
-        app:layout_constraintStart_toEndOf="@id/actv_date"
-        app:layout_constraintTop_toTopOf="@id/actv_date"
         app:layout_constraintBottom_toBottomOf="@id/actv_date"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toStartOf="@id/til_price"
+        app:layout_constraintStart_toEndOf="@id/actv_date"
+        app:layout_constraintTop_toTopOf="@id/actv_date" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_price"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/total_expenses"
+        app:boxBackgroundMode="outline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_clear_filter"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="R$50500,00" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_expense_list"
