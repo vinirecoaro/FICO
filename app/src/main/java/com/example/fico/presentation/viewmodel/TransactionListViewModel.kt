@@ -415,4 +415,16 @@ class TransactionListViewModel(
         _filteredTransactionsListLiveData.postValue(filteredList)
     }
 
+    fun calculateFilteredTotalValue(filteredTransactionList : List<Transaction>) : BigDecimal{
+        var total = BigDecimal(0)
+        filteredTransactionList.forEach { transaction ->
+            if(transaction.type == StringConstants.DATABASE.EXPENSE){
+                total = total.subtract(BigDecimal(transaction.price))
+            }else if(transaction.type == StringConstants.DATABASE.EARNING){
+                total = total.add(BigDecimal(transaction.price))
+            }
+        }
+        return total
+    }
+
 }

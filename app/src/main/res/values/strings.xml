@@ -158,6 +158,7 @@
     <string name="to_filter">Filtrar</string>
     <string name="select_filter">Selecionar filtro</string>
     <string name="clear_all_filters">Limpar todos os filtros</string>
+    <string name="total">Total</string>
 
 
 </resources>

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.res.Configuration
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -51,6 +52,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.File
+import java.math.BigDecimal
+import kotlin.math.abs
 
 class TransactionListFragment : Fragment(), XLSInterface {
 
@@ -172,6 +175,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             viewModel.getEarningList(selectedOption)
         }
         binding.ivClearFilter.setOnClickListener {
+            binding.tilTotalPrice.visibility = View.GONE
             binding.actvDate.setText("")
             viewModel.getEarningList("")
             viewModel.getExpenseList("")
@@ -296,6 +300,15 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         viewModel.filteredTransactionsListLiveData.observe(viewLifecycleOwner){ filteredTransactionList ->
             transactionListAdapter.updateTransactions(filteredTransactionList)
+            val total = viewModel.calculateFilteredTotalValue(filteredTransactionList)
+            val totalAbsolute = total.abs()
+            if(total < BigDecimal(0)){
+                binding.etTotalPrice.setTextColor(Color.RED)
+            }else{
+                binding.etTotalPrice.setTextColor(Color.GREEN)
+            }
+            binding.etTotalPrice.setText(FormatValuesFromDatabase().price(totalAbsolute.toString()))
+            binding.tilTotalPrice.visibility = View.VISIBLE
         }
 
     }
@@ -537,6 +550,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         tvClearAllFilter.setOnClickListener {
             val transactionList = viewModel.transactionsListLiveData.value?.toList()
             if(!transactionList.isNullOrEmpty()){
+                binding.tilTotalPrice.visibility = View.GONE
                 transactionListAdapter.updateTransactions(transactionList)
             }
             dialog.cancel()

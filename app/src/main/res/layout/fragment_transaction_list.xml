@@ -45,7 +45,6 @@
         android:id="@+id/actv_date"
         android:layout_width="200dp"
         android:layout_height="70dp"
-        android:layout_marginTop="8dp"
         android:cursorVisible="false"
         android:focusable="false"
         android:gravity="center"
@@ -62,17 +61,17 @@
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_cancel_light"
         app:layout_constraintBottom_toBottomOf="@id/actv_date"
-        app:layout_constraintEnd_toStartOf="@id/til_price"
+        app:layout_constraintEnd_toStartOf="@id/til_total_price"
         app:layout_constraintStart_toEndOf="@id/actv_date"
         app:layout_constraintTop_toTopOf="@id/actv_date" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_price"
+        android:id="@+id/til_total_price"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
         android:layout_marginTop="8dp"
-        android:hint="@string/total_expenses"
+        android:hint="@string/total"
         app:boxBackgroundMode="outline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_clear_filter"
@@ -81,7 +80,7 @@
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_price"
+            android:id="@+id/et_total_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"

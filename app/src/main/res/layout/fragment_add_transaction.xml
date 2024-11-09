@@ -43,7 +43,7 @@
             app:boxBackgroundMode="outline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_price">
+            app:layout_constraintTop_toBottomOf="@id/til_total_price">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_description"
