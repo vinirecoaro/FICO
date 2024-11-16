@@ -22,11 +22,20 @@
         app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="24sp"
-        android:text="@string/text_filter"
+        android:textSize="20sp"
+        android:text="@string/text"
         android:textAlignment="center"
         android:gravity="center"
         />
+
+    <RadioButton
+        android:id="@+id/rb_text_filter"
+        app:layout_constraintTop_toTopOf="@id/tv_text_filter"
+        app:layout_constraintBottom_toBottomOf="@id/tv_text_filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:clickable="false"
+        android:layout_height="wrap_content"/>
 
     <View
         android:id="@+id/v_dialog_transaction_fragment_separator_line_2"
@@ -42,7 +51,7 @@
         app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:text="@string/clear_all_filters"
         android:textAlignment="center"
         android:gravity="center"

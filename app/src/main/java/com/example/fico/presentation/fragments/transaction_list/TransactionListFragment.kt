@@ -18,6 +18,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,6 +33,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.databinding.DialogTransactionFragmentFilterBinding
 import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Expense
 import com.example.fico.model.Transaction
@@ -59,6 +61,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     private var _binding: FragmentTransactionListBinding? = null
     private val binding get() = _binding!!
+    private var _bindingFilterDialog: DialogTransactionFragmentFilterBinding? = null
+    private val bindingFilterDialog get() = _bindingFilterDialog!!
     private val viewModel: TransactionListViewModel by inject()
     private lateinit var transactionListAdapter : TransactionListAdapter
     private var expenseMonthsList = arrayOf<String>()
@@ -81,6 +85,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTransactionListBinding.inflate(inflater, container, false)
+        _bindingFilterDialog = DialogTransactionFragmentFilterBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
@@ -114,6 +119,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        _bindingFilterDialog = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -179,6 +185,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             binding.actvDate.setText("")
             viewModel.getEarningList("")
             viewModel.getExpenseList("")
+            viewModel.setTextFilterState(false)
         }
 
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
@@ -531,6 +538,13 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_text_filter)
         val tvClearAllFilter = dialogView.findViewById<TextView>(R.id.tv_clear_all_filters)
+        val radioButton = dialogView.findViewById<RadioButton>(R.id.rb_text_filter)
+
+        //verify radio state and set value
+        val radioButtonState = viewModel.textFilterState.value
+        if(radioButtonState != null){
+            radioButton.isChecked = radioButtonState
+        }
 
         builder.setView(dialogView)
 
@@ -551,6 +565,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             val transactionList = viewModel.transactionsListLiveData.value?.toList()
             if(!transactionList.isNullOrEmpty()){
                 binding.tilTotalPrice.visibility = View.GONE
+                viewModel.setTextFilterState(false)
                 transactionListAdapter.updateTransactions(transactionList)
             }
             dialog.cancel()
