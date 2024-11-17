@@ -33,7 +33,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.databinding.DialogTransactionFragmentFilterBinding
 import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Expense
 import com.example.fico.model.Transaction
@@ -55,14 +54,11 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.math.BigDecimal
-import kotlin.math.abs
 
 class TransactionListFragment : Fragment(), XLSInterface {
 
     private var _binding: FragmentTransactionListBinding? = null
     private val binding get() = _binding!!
-    private var _bindingFilterDialog: DialogTransactionFragmentFilterBinding? = null
-    private val bindingFilterDialog get() = _bindingFilterDialog!!
     private val viewModel: TransactionListViewModel by inject()
     private lateinit var transactionListAdapter : TransactionListAdapter
     private var expenseMonthsList = arrayOf<String>()
@@ -85,7 +81,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTransactionListBinding.inflate(inflater, container, false)
-        _bindingFilterDialog = DialogTransactionFragmentFilterBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
@@ -119,12 +114,18 @@ class TransactionListFragment : Fragment(), XLSInterface {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        _bindingFilterDialog = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.expense_list_menu, menu)
+        inflater.inflate(R.menu.transaction_list_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    // check isFiltered state to show or not clear option
+    override fun onPrepareOptionsMenu(menu: Menu){
+        val clearFilterItem = menu.findItem(R.id.transaction_list_menu_clear_filter)
+        clearFilterItem.isVisible = viewModel.isFiltered.value == true
+        return super.onPrepareOptionsMenu(menu)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -142,8 +143,19 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 return true
             }*/
 
-            R.id.expense_list_menu_filter -> {
+            R.id.transaction_list_menu_filter -> {
                 filterDialog()
+                return true
+            }
+
+            R.id.transaction_list_menu_clear_filter -> {
+                val transactionList = viewModel.transactionsListLiveData.value?.toList()
+                if(!transactionList.isNullOrEmpty()){
+                    binding.tilTotalPrice.visibility = View.GONE
+                    viewModel.setTextFilterState(false)
+                    viewModel.setIsFilteredState(false)
+                    transactionListAdapter.updateTransactions(transactionList)
+                }
                 return true
             }
 
@@ -186,6 +198,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             viewModel.getEarningList("")
             viewModel.getExpenseList("")
             viewModel.setTextFilterState(false)
+            viewModel.setIsFilteredState(false)
         }
 
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
@@ -316,6 +329,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
             }
             binding.etTotalPrice.setText(FormatValuesFromDatabase().price(totalAbsolute.toString()))
             binding.tilTotalPrice.visibility = View.VISIBLE
+        }
+
+        viewModel.isFiltered.observe(viewLifecycleOwner){ state ->
+            requireActivity().invalidateOptionsMenu()
         }
 
     }
@@ -537,7 +554,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val dialogView = inflater.inflate(R.layout.dialog_transaction_fragment_filter, null)
 
         val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_text_filter)
-        val tvClearAllFilter = dialogView.findViewById<TextView>(R.id.tv_clear_all_filters)
         val radioButton = dialogView.findViewById<RadioButton>(R.id.rb_text_filter)
 
         //verify radio state and set value
@@ -561,15 +577,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
             dialog.cancel()
         }
 
-        tvClearAllFilter.setOnClickListener {
-            val transactionList = viewModel.transactionsListLiveData.value?.toList()
-            if(!transactionList.isNullOrEmpty()){
-                binding.tilTotalPrice.visibility = View.GONE
-                viewModel.setTextFilterState(false)
-                transactionListAdapter.updateTransactions(transactionList)
-            }
-            dialog.cancel()
-        }
     }
 
     private fun textFilter(){
@@ -594,6 +601,5 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         dialog.show()
     }
-
 
 }

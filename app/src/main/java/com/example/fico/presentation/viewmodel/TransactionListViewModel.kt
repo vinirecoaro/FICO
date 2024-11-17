@@ -62,6 +62,8 @@ class TransactionListViewModel(
     val filteredTransactionsListLiveData: LiveData<List<Transaction>> = _filteredTransactionsListLiveData
     private val _textFilterState = MutableLiveData<Boolean>()
     val textFilterState : LiveData<Boolean> = _textFilterState
+    private val _isFiltered = MutableLiveData<Boolean>()
+    val isFiltered : LiveData<Boolean> = _isFiltered
 
     fun updateFilter(filter: String) {
         _filterLiveData.value = filter
@@ -413,6 +415,7 @@ class TransactionListViewModel(
         filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
         _filteredTransactionsListLiveData.postValue(filteredList)
         _textFilterState.value = true
+        _isFiltered.postValue(true)
     }
 
     fun calculateFilteredTotalValue(filteredTransactionList : List<Transaction>) : BigDecimal{
@@ -429,6 +432,10 @@ class TransactionListViewModel(
 
     fun setTextFilterState(state : Boolean){
         _textFilterState.value = state
+    }
+
+    fun setIsFilteredState(state : Boolean) {
+        _isFiltered.postValue(state)
     }
 
 }

@@ -7,10 +7,18 @@
         android:title="@string/generate_spreadsheet"
         />-->
     <item
-        android:id="@+id/expense_list_menu_filter"
+        android:id="@+id/transaction_list_menu_filter"
         android:title="@string/filter"
         android:icon="@drawable/filter_24"
         app:showAsAction="always"
     />
+
+    <item
+        android:id="@+id/transaction_list_menu_clear_filter"
+        android:title="@string/filter"
+        android:icon="@drawable/clear_filter"
+        app:showAsAction="always"
+        android:visible="false"
+        />
 
 </menu>
