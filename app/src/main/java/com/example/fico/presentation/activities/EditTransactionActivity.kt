@@ -20,10 +20,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
-import com.example.fico.databinding.ActivityEditExpenseBinding
 import com.example.fico.model.Expense
 import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.databinding.ActivityEditTransactionBinding
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.utils.constants.CategoriesList
@@ -40,7 +40,7 @@ import java.util.*
 
 class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener {
 
-    val binding by lazy { ActivityEditExpenseBinding.inflate(layoutInflater) }
+    val binding by lazy { ActivityEditTransactionBinding.inflate(layoutInflater) }
     private val viewModel : EditTransactionViewModel by inject()
     private lateinit var adapter: CategoryListAdapter
     private var expenseIdLength = 0

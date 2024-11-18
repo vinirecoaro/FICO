@@ -69,21 +69,23 @@
         android:id="@+id/til_total_price"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:hint="@string/total"
+        android:visibility="gone"
         app:boxBackgroundMode="outline"
+        app:layout_constraintBottom_toTopOf="@id/rv_expense_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_clear_filter"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_total_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
+            android:textSize="14sp"
             android:focusable="false"
             android:text="R$50500,00" />
 
