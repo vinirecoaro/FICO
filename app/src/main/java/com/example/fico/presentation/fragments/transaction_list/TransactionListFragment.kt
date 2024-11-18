@@ -44,6 +44,7 @@ import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -54,6 +55,9 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class TransactionListFragment : Fragment(), XLSInterface {
 
@@ -554,12 +558,14 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val dialogView = inflater.inflate(R.layout.dialog_transaction_fragment_filter, null)
 
         val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_text_filter)
-        val radioButton = dialogView.findViewById<RadioButton>(R.id.rb_text_filter)
+        val rdTextFilter = dialogView.findViewById<RadioButton>(R.id.rb_text_filter)
+        val tvDateFilter = dialogView.findViewById<TextView>(R.id.tv_date_filter)
+        val rdDateFilter = dialogView.findViewById<RadioButton>(R.id.rb_date_filter)
 
         //verify radio state and set value
         val radioButtonState = viewModel.textFilterState.value
         if(radioButtonState != null){
-            radioButton.isChecked = radioButtonState
+            rdTextFilter.isChecked = radioButtonState
         }
 
         builder.setView(dialogView)
@@ -577,6 +583,32 @@ class TransactionListFragment : Fragment(), XLSInterface {
             dialog.cancel()
         }
 
+        tvDateFilter.setOnClickListener {
+            dateRangePicker()
+            dialog.cancel()
+        }
+
+
+    }
+
+    private fun dateRangePicker(){
+        val dateRangePicker =
+            MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText("Select dates")
+                .build()
+
+        dateRangePicker.addOnPositiveButtonClickListener {
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+            // Converte os milissegundos para o formato de data desejado
+            val startDate = dateFormat.format(Date(it.first ?: 0))
+            val endDate = dateFormat.format(Date(it.second ?: 0))
+
+            val message = "Start Date: $startDate\nEnd Date: $endDate"
+            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        }
+
+        dateRangePicker.show(requireActivity().supportFragmentManager, "dataRangePicker")
     }
 
     private fun textFilter(){
