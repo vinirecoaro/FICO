@@ -600,7 +600,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         dateRangePicker.addOnPositiveButtonClickListener {
             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-            // Converte os milissegundos para o formato de data desejado
+            // Convert milliseconds to the desired format
             val startDate = dateFormat.format(Date(it.first ?: 0))
             val endDate = dateFormat.format(Date(it.second ?: 0))
 
@@ -625,7 +625,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         builder.setPositiveButton(getString(R.string.to_filter)){dialog, which ->
             if(!etTextFilter.text.isNullOrEmpty()){
                 val filter = etTextFilter.text.toString()
-                viewModel.filterCurrentList(filter)
+                viewModel.textFilterCurrentList(filter)
             }
         }
 

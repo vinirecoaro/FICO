@@ -18,8 +18,6 @@ import com.example.fico.model.Transaction
 import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -409,13 +407,22 @@ class TransactionListViewModel(
         _transactionsListLiveData.postValue(transactionListSorted)
     }
 
-    fun filterCurrentList (filter : String){
-        val currentList = transactionsListLiveData.value!!.toMutableList()
-        val filteredList = mutableListOf<Transaction>()
-        filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
-        _filteredTransactionsListLiveData.postValue(filteredList)
-        _textFilterState.value = true
-        _isFiltered.postValue(true)
+    fun textFilterCurrentList (filter : String){
+        if(_isFiltered.value == false){
+            val currentList = transactionsListLiveData.value!!.toMutableList()
+            val filteredList = mutableListOf<Transaction>()
+            filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
+            _filteredTransactionsListLiveData.postValue(filteredList)
+            _textFilterState.value = true
+            _isFiltered.postValue(true)
+        }else if(_isFiltered.value == true){
+            val currentList = _filteredTransactionsListLiveData.value!!.toMutableList()
+            val filteredList = mutableListOf<Transaction>()
+            filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
+            _filteredTransactionsListLiveData.postValue(filteredList)
+            _textFilterState.value = true
+        }
+
     }
 
     fun calculateFilteredTotalValue(filteredTransactionList : List<Transaction>) : BigDecimal{
@@ -437,5 +444,7 @@ class TransactionListViewModel(
     fun setIsFilteredState(state : Boolean) {
         _isFiltered.postValue(state)
     }
+
+
 
 }
