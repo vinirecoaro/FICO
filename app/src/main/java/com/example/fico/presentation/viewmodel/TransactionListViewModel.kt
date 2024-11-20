@@ -40,7 +40,7 @@ class TransactionListViewModel(
     val transactionsListLiveData: LiveData<List<Transaction>> = _transactionsListLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
-    private val _filterLiveData = MutableLiveData<String>()
+    private val _monthFilterLiveData = MutableLiveData<String>()
     private val _deleteExpenseResult = MutableLiveData<Boolean>()
     val deleteExpenseResult: LiveData<Boolean> = _deleteExpenseResult
     var deletedItem: Expense? = null
@@ -50,7 +50,7 @@ class TransactionListViewModel(
     val installmentExpenseSwiped: LiveData<Boolean> = _installmentExpenseSwiped
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     val filterLiveData: LiveData<String>
-        get() = _filterLiveData
+        get() = _monthFilterLiveData
     private val _uiState = MutableStateFlow<TransactionFragmentState<Nothing>>(
         TransactionFragmentState.Loading)
     val uiState : StateFlow<TransactionFragmentState<Nothing>> = _uiState.asStateFlow()
@@ -64,7 +64,7 @@ class TransactionListViewModel(
     val isFiltered : LiveData<Boolean> = _isFiltered
 
     fun updateFilter(filter: String) {
-        _filterLiveData.value = filter
+        _monthFilterLiveData.value = filter
     }
 
     fun getExpenseList(filter: String) {
@@ -179,7 +179,7 @@ class TransactionListViewModel(
                     dataStore.updateAndResetExpenseList(currentList.toList())
 
                     //Update expenseList on screen
-                    getExpenseList(_filterLiveData.value.toString())
+                    getExpenseList(_monthFilterLiveData.value.toString())
 
                     //Remove from dataStore expense Months List
                     val removedExpenseMonth = DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate)
@@ -341,7 +341,7 @@ class TransactionListViewModel(
 
                     // Update dataStore expenseList and InfoPerMonth
                     dataStore.updateExpenseList(updatedExpenseList)
-                    getExpenseList(_filterLiveData.value.toString())
+                    getExpenseList(_monthFilterLiveData.value.toString())
                     dataStore.updateInfoPerMonthExpense(updatedInfoPerMonth)
 
                     // Update dataStore expenseMonths
@@ -407,8 +407,8 @@ class TransactionListViewModel(
         _transactionsListLiveData.postValue(transactionListSorted)
     }
 
-    fun textFilterCurrentList (filter : String){
-        if(_isFiltered.value == false){
+    fun applyTextFilter (filter : String){
+        if(_isFiltered.value == false || _isFiltered.value == null){
             val currentList = transactionsListLiveData.value!!.toMutableList()
             val filteredList = mutableListOf<Transaction>()
             filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
@@ -444,7 +444,5 @@ class TransactionListViewModel(
     fun setIsFilteredState(state : Boolean) {
         _isFiltered.postValue(state)
     }
-
-
 
 }

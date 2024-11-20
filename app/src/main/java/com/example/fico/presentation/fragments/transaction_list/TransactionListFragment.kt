@@ -195,14 +195,19 @@ class TransactionListFragment : Fragment(), XLSInterface {
             val selectedOption = parent.getItemAtPosition(position).toString()
             viewModel.getExpenseList(selectedOption)
             viewModel.getEarningList(selectedOption)
+            if(viewModel.isFiltered.value == true){
+                viewModel.setTextFilterState(false)
+                viewModel.setIsFilteredState(false)
+                binding.tilTotalPrice.visibility = View.GONE
+            }
         }
         binding.ivClearFilter.setOnClickListener {
-            binding.tilTotalPrice.visibility = View.GONE
             binding.actvDate.setText("")
             viewModel.getEarningList("")
             viewModel.getExpenseList("")
             viewModel.setTextFilterState(false)
             viewModel.setIsFilteredState(false)
+            binding.tilTotalPrice.visibility = View.GONE
         }
 
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
@@ -625,7 +630,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         builder.setPositiveButton(getString(R.string.to_filter)){dialog, which ->
             if(!etTextFilter.text.isNullOrEmpty()){
                 val filter = etTextFilter.text.toString()
-                viewModel.textFilterCurrentList(filter)
+                viewModel.applyTextFilter(filter)
             }
         }
 
