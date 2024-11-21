@@ -156,8 +156,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 val transactionList = viewModel.transactionsListLiveData.value?.toList()
                 if(!transactionList.isNullOrEmpty()){
                     binding.tilTotalPrice.visibility = View.GONE
-                    viewModel.setTextFilterState(false)
                     viewModel.setIsFilteredState(false)
+                    clearTextFilter()
                     transactionListAdapter.updateTransactions(transactionList)
                 }
                 return true
@@ -196,18 +196,18 @@ class TransactionListFragment : Fragment(), XLSInterface {
             viewModel.getExpenseList(selectedOption)
             viewModel.getEarningList(selectedOption)
             if(viewModel.isFiltered.value == true){
-                viewModel.setTextFilterState(false)
                 viewModel.setIsFilteredState(false)
                 binding.tilTotalPrice.visibility = View.GONE
+                clearTextFilter()
             }
         }
         binding.ivClearFilter.setOnClickListener {
             binding.actvDate.setText("")
             viewModel.getEarningList("")
             viewModel.getExpenseList("")
-            viewModel.setTextFilterState(false)
             viewModel.setIsFilteredState(false)
             binding.tilTotalPrice.visibility = View.GONE
+            clearTextFilter()
         }
 
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
@@ -282,7 +282,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     .setTitle("Apagar gasto")
                     .setMessage("Para apagar um gasto parcelado clique no item desejado e faça a exclusão na janela de edição")
                     .setPositiveButton("Ok") { dialog, which ->
-                        viewModel.getExpenseList(viewModel.filterLiveData.value.toString())
+                        viewModel.getExpenseList(viewModel.monthFilterLiveData.value.toString())
                     }
                     .show()
             }
@@ -563,14 +563,30 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val dialogView = inflater.inflate(R.layout.dialog_transaction_fragment_filter, null)
 
         val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_text_filter)
+        val tvTextFilterValues = dialogView.findViewById<TextView>(R.id.tv_text_filter_values)
+        val vSeparatorFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_2)
         val rdTextFilter = dialogView.findViewById<RadioButton>(R.id.rb_text_filter)
         val tvDateFilter = dialogView.findViewById<TextView>(R.id.tv_date_filter)
         val rdDateFilter = dialogView.findViewById<RadioButton>(R.id.rb_date_filter)
 
         //verify radio state and set value
         val radioButtonState = viewModel.textFilterState.value
-        if(radioButtonState != null){
+        if(radioButtonState != null && radioButtonState != false){
             rdTextFilter.isChecked = radioButtonState
+            var filterTextValuesString = ""
+            viewModel.textFilterValues.value!!.forEachIndexed { index, filter ->
+                if (index == 0){
+                    filterTextValuesString = getString(R.string.filterValues) + " $filter"
+                }else{
+                    filterTextValuesString += " - $filter"
+                }
+            }
+            tvTextFilterValues.text = filterTextValuesString
+            tvTextFilterValues.visibility = View.VISIBLE
+            vSeparatorFilterValues.visibility = View.VISIBLE
+        }else{
+            tvTextFilterValues.visibility = View.GONE
+            vSeparatorFilterValues.visibility = View.GONE
         }
 
         builder.setView(dialogView)
@@ -637,6 +653,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val dialog = builder.create()
 
         dialog.show()
+    }
+
+    private fun clearTextFilter(){
+        viewModel.setTextFilterState(false)
+        viewModel.clearTextFilterValues()
     }
 
 }
