@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class TransactionListViewModel(
     private val firebaseAPI: FirebaseAPI,
@@ -64,6 +66,8 @@ class TransactionListViewModel(
     val textFilterValues : LiveData<MutableList<String>> = _textFilterValues
     private val _isFiltered = MutableLiveData<Boolean>()
     val isFiltered : LiveData<Boolean> = _isFiltered
+    private val _dateFilterState = MutableLiveData<Boolean>()
+    val dateFilterState : LiveData<Boolean> = _dateFilterState
 
 
     fun updateFilter(filter: String) {
@@ -449,6 +453,36 @@ class TransactionListViewModel(
 
     fun clearTextFilterValues(){
         _textFilterValues.value = mutableListOf()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun applyDateFilter(dates : Pair<String,String>){
+        var currentList = mutableListOf<Transaction>()
+        if(_isFiltered.value == false || _isFiltered.value == null){
+            currentList = transactionsListLiveData.value!!.toMutableList()
+            _dateFilterState.value = true
+            _isFiltered.postValue(true)
+        }else if(_isFiltered.value == true){
+            currentList = _filteredTransactionsListLiveData.value!!.toMutableList()
+        }
+        val filteredList = mutableListOf<Transaction>()
+        filteredList.addAll(currentList.filter { isDateInRange(it.paymentDate, dates.first, dates.second) })
+        _filteredTransactionsListLiveData.postValue(filteredList)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun isDateInRange(date: String, startDate: String, endDate: String): Boolean {
+        // Defina o formato do parse
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+        // Converta as Strings para LocalDate
+        val targetDate = LocalDate.parse(date, formatter)
+        val start = LocalDate.parse(startDate, formatter)
+        val end = LocalDate.parse(endDate, formatter)
+
+        // Verifique se está dentro do intervalo (inclusivo)
+        return (targetDate.isEqual(start) || targetDate.isAfter(start)) &&
+                (targetDate.isEqual(end) || targetDate.isBefore(end))
     }
 
 }

@@ -625,8 +625,9 @@ class TransactionListFragment : Fragment(), XLSInterface {
             val startDate = dateFormat.format(Date(it.first ?: 0))
             val endDate = dateFormat.format(Date(it.second ?: 0))
 
-            val message = "Start Date: $startDate\nEnd Date: $endDate"
-            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+            val dates = Pair(startDate,endDate)
+
+            viewModel.applyDateFilter(dates)
         }
 
         dateRangePicker.show(requireActivity().supportFragmentManager, "dataRangePicker")
