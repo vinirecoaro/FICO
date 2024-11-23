@@ -155,9 +155,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             R.id.transaction_list_menu_clear_filter -> {
                 val transactionList = viewModel.transactionsListLiveData.value?.toList()
                 if(!transactionList.isNullOrEmpty()){
-                    binding.tilTotalPrice.visibility = View.GONE
-                    viewModel.setIsFilteredState(false)
-                    clearTextFilter()
+                    clearAllFilter()
                     transactionListAdapter.updateTransactions(transactionList)
                 }
                 return true
@@ -196,18 +194,14 @@ class TransactionListFragment : Fragment(), XLSInterface {
             viewModel.getExpenseList(selectedOption)
             viewModel.getEarningList(selectedOption)
             if(viewModel.isFiltered.value == true){
-                viewModel.setIsFilteredState(false)
-                binding.tilTotalPrice.visibility = View.GONE
-                clearTextFilter()
+                clearAllFilter()
             }
         }
         binding.ivClearFilter.setOnClickListener {
             binding.actvDate.setText("")
             viewModel.getEarningList("")
             viewModel.getExpenseList("")
-            viewModel.setIsFilteredState(false)
-            binding.tilTotalPrice.visibility = View.GONE
-            clearTextFilter()
+            clearAllFilter()
         }
 
         viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
@@ -555,6 +549,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun filterDialog(){
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.select_filter))
@@ -570,9 +565,9 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val rdDateFilter = dialogView.findViewById<RadioButton>(R.id.rb_date_filter)
 
         //verify radio state and set value
-        val radioButtonState = viewModel.textFilterState.value
-        if(radioButtonState != null && radioButtonState != false){
-            rdTextFilter.isChecked = radioButtonState
+        val textFilterState = viewModel.textFilterState.value
+        if(textFilterState != null && textFilterState != false){
+            rdTextFilter.isChecked = textFilterState
             var filterTextValuesString = ""
             viewModel.textFilterValues.value!!.forEachIndexed { index, filter ->
                 if (index == 0){
@@ -587,6 +582,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }else{
             tvTextFilterValues.visibility = View.GONE
             vSeparatorFilterValues.visibility = View.GONE
+        }
+        val dateFilterState = viewModel.dateFilterState.value
+        if(dateFilterState != null && dateFilterState != false){
+            rdDateFilter.isChecked = dateFilterState
         }
 
         builder.setView(dialogView)
@@ -612,6 +611,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun dateRangePicker(){
         val dateRangePicker =
             MaterialDatePicker.Builder.dateRangePicker()
@@ -656,9 +656,21 @@ class TransactionListFragment : Fragment(), XLSInterface {
         dialog.show()
     }
 
+    private fun clearAllFilter(){
+        viewModel.setIsFilteredState(false)
+        binding.tilTotalPrice.visibility = View.GONE
+        clearTextFilter()
+        clearDateFilter()
+    }
+
     private fun clearTextFilter(){
         viewModel.setTextFilterState(false)
         viewModel.clearTextFilterValues()
+    }
+
+    private fun clearDateFilter(){
+        viewModel.setDateFilterState(false)
+        viewModel.clearDateFilterValues()
     }
 
 }

@@ -68,6 +68,8 @@ class TransactionListViewModel(
     val isFiltered : LiveData<Boolean> = _isFiltered
     private val _dateFilterState = MutableLiveData<Boolean>()
     val dateFilterState : LiveData<Boolean> = _dateFilterState
+    private val _dateFilterValue = MutableLiveData<Pair<String,String>>()
+    val dateFilterValue : LiveData<Pair<String,String>> = _dateFilterValue
 
 
     fun updateFilter(filter: String) {
@@ -421,6 +423,7 @@ class TransactionListViewModel(
             _textFilterState.value = true
             _isFiltered.postValue(true)
         }else if(_isFiltered.value == true){
+            _textFilterState.value = true
             currentList = _filteredTransactionsListLiveData.value!!.toMutableList()
         }
         val filteredList = mutableListOf<Transaction>()
@@ -455,6 +458,14 @@ class TransactionListViewModel(
         _textFilterValues.value = mutableListOf()
     }
 
+    fun setDateFilterState(state : Boolean){
+        _dateFilterState.value = state
+    }
+
+    fun clearDateFilterValues(){
+        _dateFilterValue.value = Pair("","")
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun applyDateFilter(dates : Pair<String,String>){
         var currentList = mutableListOf<Transaction>()
@@ -463,9 +474,11 @@ class TransactionListViewModel(
             _dateFilterState.value = true
             _isFiltered.postValue(true)
         }else if(_isFiltered.value == true){
+            _dateFilterState.value = true
             currentList = _filteredTransactionsListLiveData.value!!.toMutableList()
         }
         val filteredList = mutableListOf<Transaction>()
+        _dateFilterValue.value = dates
         filteredList.addAll(currentList.filter { isDateInRange(it.paymentDate, dates.first, dates.second) })
         _filteredTransactionsListLiveData.postValue(filteredList)
     }
