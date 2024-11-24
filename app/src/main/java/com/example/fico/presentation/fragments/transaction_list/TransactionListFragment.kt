@@ -626,7 +626,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun dateRangePicker(){
         val dateRangePickerBuilder = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText("Select dates")
+            .setTitleText(getString(R.string.select_dates))
 
         if(viewModel.monthFilterLiveData.value != null && viewModel.monthFilterLiveData.value != ""){
 
