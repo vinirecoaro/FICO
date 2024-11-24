@@ -559,9 +559,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_text_filter)
         val tvTextFilterValues = dialogView.findViewById<TextView>(R.id.tv_text_filter_values)
-        val vSeparatorFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_2)
+        val vSeparatorTextFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_2)
         val rdTextFilter = dialogView.findViewById<RadioButton>(R.id.rb_text_filter)
         val tvDateFilter = dialogView.findViewById<TextView>(R.id.tv_date_filter)
+        val tvDateFilterValues = dialogView.findViewById<TextView>(R.id.tv_date_filter_values)
+        val vSeparatorDateFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_5)
         val rdDateFilter = dialogView.findViewById<RadioButton>(R.id.rb_date_filter)
 
         //verify radio state and set value
@@ -578,14 +580,22 @@ class TransactionListFragment : Fragment(), XLSInterface {
             }
             tvTextFilterValues.text = filterTextValuesString
             tvTextFilterValues.visibility = View.VISIBLE
-            vSeparatorFilterValues.visibility = View.VISIBLE
+            vSeparatorTextFilterValues.visibility = View.VISIBLE
         }else{
             tvTextFilterValues.visibility = View.GONE
-            vSeparatorFilterValues.visibility = View.GONE
+            vSeparatorTextFilterValues.visibility = View.GONE
         }
         val dateFilterState = viewModel.dateFilterState.value
         if(dateFilterState != null && dateFilterState != false){
             rdDateFilter.isChecked = dateFilterState
+            val dateFilterValues = viewModel.dateFilterValue.value!!
+            val dateFilterValuesString = "${dateFilterValues.first}  -  ${dateFilterValues.second}"
+            tvDateFilterValues.text = dateFilterValuesString
+            tvDateFilterValues.visibility = View.VISIBLE
+            vSeparatorDateFilterValues.visibility = View.VISIBLE
+        }else{
+            tvDateFilterValues.visibility = View.GONE
+            vSeparatorDateFilterValues.visibility = View.GONE
         }
 
         builder.setView(dialogView)
