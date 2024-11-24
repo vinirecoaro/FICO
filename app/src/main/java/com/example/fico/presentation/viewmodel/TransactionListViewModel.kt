@@ -42,7 +42,6 @@ class TransactionListViewModel(
     val transactionsListLiveData: LiveData<List<Transaction>> = _transactionsListLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
-    private val _monthFilterLiveData = MutableLiveData<String>()
     private val _deleteExpenseResult = MutableLiveData<Boolean>()
     val deleteExpenseResult: LiveData<Boolean> = _deleteExpenseResult
     var deletedItem: Expense? = null
@@ -51,6 +50,7 @@ class TransactionListViewModel(
     private val _installmentExpenseSwiped = MutableLiveData<Boolean>()
     val installmentExpenseSwiped: LiveData<Boolean> = _installmentExpenseSwiped
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
+    private val _monthFilterLiveData = MutableLiveData<String>()
     val monthFilterLiveData: LiveData<String>
         get() = _monthFilterLiveData
     private val _uiState = MutableStateFlow<TransactionFragmentState<Nothing>>(

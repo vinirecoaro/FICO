@@ -44,6 +44,7 @@ import com.example.fico.presentation.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
+import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -56,6 +57,7 @@ import org.koin.android.ext.android.inject
 import java.io.File
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -623,10 +625,36 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun dateRangePicker(){
-        val dateRangePicker =
-            MaterialDatePicker.Builder.dateRangePicker()
-                .setTitleText("Select dates")
+        val dateRangePickerBuilder = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText("Select dates")
+
+        if(viewModel.monthFilterLiveData.value != null && viewModel.monthFilterLiveData.value != ""){
+
+            val infoPair = DateFunctions().formatMonthValueFromFilterTransactionListToMonthYear(viewModel.monthFilterLiveData.value!!)
+            val month = infoPair.first-1
+            val year = infoPair.second
+
+            val calendarStart = Calendar.getInstance().apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month)
+                set(Calendar.DAY_OF_MONTH, 1)
+            }
+            val calendarEnd = Calendar.getInstance().apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month)
+                set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+            }
+            val constraints = CalendarConstraints.Builder()
+                .setStart(calendarStart.timeInMillis) // Início do mês
+                .setEnd(calendarEnd.timeInMillis) // Fim do mês
                 .build()
+
+            dateRangePickerBuilder.setCalendarConstraints(constraints)
+        }
+
+        val dateRangePicker = dateRangePickerBuilder.build()
+
+        dateRangePicker.show(requireActivity().supportFragmentManager, "dataRangePicker")
 
         dateRangePicker.addOnPositiveButtonClickListener {
             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -639,8 +667,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
             viewModel.applyDateFilter(dates)
         }
-
-        dateRangePicker.show(requireActivity().supportFragmentManager, "dataRangePicker")
     }
 
     private fun textFilter(){

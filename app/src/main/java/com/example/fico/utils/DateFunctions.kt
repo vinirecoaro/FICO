@@ -62,4 +62,13 @@ class DateFunctions {
             LocalDate.of(baseDate.year, baseDate.month, monthLastDay).plusDays(1).format(formatter)
         }
     }
+
+    fun formatMonthValueFromFilterTransactionListToMonthYear(filterValue : String) : Pair<Int, Int>{
+        val date = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(filterValue)
+        val dateInfo = date.split("-")
+        val year = dateInfo[0].toInt()
+        val month = dateInfo[1].toInt()
+        val infoPair = Pair(month,year)
+        return infoPair
+    }
 }
