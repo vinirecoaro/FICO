@@ -18,7 +18,8 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone"/>
 
     <ImageView
         android:id="@+id/iv_no_info_available"
@@ -30,7 +31,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_no_info_available" />
+        app:layout_constraintTop_toBottomOf="@id/tv_no_info_available"
+        tools:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/pb_transaction_list"
@@ -39,7 +41,40 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone"/>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/tb_transac_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true"
+        android:layout_marginTop="5dp">
+
+        <Button
+            android:id="@+id/bt_all_transac_list"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all" />
+
+        <Button
+            android:id="@+id/bt_expenses_transac_list"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/expenses_2" />
+
+        <Button
+            android:id="@+id/bt_earnings_transac_list"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/earnings_2" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <AutoCompleteTextView
         android:id="@+id/actv_date"
@@ -51,9 +86,8 @@
         android:hint="@string/filter"
         app:layout_constraintEnd_toStartOf="@id/iv_clear_filter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tb_transac_list"
         tools:text="Abril - 2023" />
-
 
     <ImageView
         android:id="@+id/iv_clear_filter"
