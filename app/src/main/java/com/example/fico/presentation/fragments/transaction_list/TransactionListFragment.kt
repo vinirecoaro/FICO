@@ -101,6 +101,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
         binding.actvDate.setText(DateFunctions().getCurrentlyDateForFilter())
         viewModel.updateFilter(DateFunctions().getCurrentlyDateForFilter())
 
+        // Initial selected button on toggle group
+        binding.tbTransacList.check(binding.btAllTransacList.id)
+        binding.btAllTransacList.isClickable = false
+
         setUpListeners()
         setColorBasedOnTheme()
 
@@ -338,6 +342,28 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         viewModel.isFiltered.observe(viewLifecycleOwner){ state ->
             requireActivity().invalidateOptionsMenu()
+        }
+
+        binding.tbTransacList.addOnButtonCheckedListener{ group, checkedId, isChecked ->
+            if(isChecked){
+                when(checkedId){
+                    binding.btAllTransacList.id -> {
+                        binding.btAllTransacList.isClickable = false
+                        binding.btExpensesTransacList.isClickable = true
+                        binding.btEarningsTransacList.isClickable = true
+                    }
+                    binding.btExpensesTransacList.id -> {
+                        binding.btAllTransacList.isClickable = true
+                        binding.btExpensesTransacList.isClickable = false
+                        binding.btEarningsTransacList.isClickable = true
+                    }
+                    binding.btEarningsTransacList.id -> {
+                        binding.btAllTransacList.isClickable = true
+                        binding.btExpensesTransacList.isClickable = true
+                        binding.btEarningsTransacList.isClickable = false
+                    }
+                }
+            }
         }
 
     }
