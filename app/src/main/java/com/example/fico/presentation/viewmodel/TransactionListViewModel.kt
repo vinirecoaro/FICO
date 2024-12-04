@@ -498,4 +498,16 @@ class TransactionListViewModel(
                 (targetDate.isEqual(end) || targetDate.isBefore(end))
     }
 
+    fun showAllTransactions(){
+
+    }
+
+    fun showEarningTransactions(){
+
+    }
+
+    fun showExpenseTransaction(){
+
+    }
+
 }
