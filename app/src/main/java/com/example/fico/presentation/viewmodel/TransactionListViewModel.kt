@@ -498,7 +498,21 @@ class TransactionListViewModel(
                 (targetDate.isEqual(end) || targetDate.isBefore(end))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun showAllTransactions(){
+        if(_isFiltered.value == false || _isFiltered.value == null){
+            getExpenseList(_monthFilterLiveData.value!!)
+        }else{
+            getExpenseList(_monthFilterLiveData.value!!)
+            if(textFilterState.value == true){
+                for(text in textFilterValues.value!!){
+                    applyTextFilter(text)
+                }
+            }
+            if(dateFilterState.value == true){
+                applyDateFilter(dateFilterValue.value!!)
+            }
+        }
 
     }
 
