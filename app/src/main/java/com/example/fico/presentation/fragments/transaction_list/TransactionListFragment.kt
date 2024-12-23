@@ -351,6 +351,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.btAllTransacList.isClickable = false
                         binding.btExpensesTransacList.isClickable = true
                         binding.btEarningsTransacList.isClickable = true
+                        viewModel.showAllTransactions()
                     }
                     binding.btExpensesTransacList.id -> {
                         binding.btAllTransacList.isClickable = true
@@ -361,9 +362,14 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.btAllTransacList.isClickable = true
                         binding.btExpensesTransacList.isClickable = true
                         binding.btEarningsTransacList.isClickable = false
+                        viewModel.showEarningTransactions()
                     }
                 }
             }
+        }
+
+        viewModel.typeFilteredListLiveData.observe(viewLifecycleOwner){ transacList ->
+            transactionListAdapter.updateTransactions(transacList)
         }
 
     }

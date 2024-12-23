@@ -40,6 +40,10 @@ class TransactionListViewModel(
     val earningsListLiveData: LiveData<List<Earning>> = _earningsListLiveData
     private val _transactionsListLiveData = MutableLiveData<List<Transaction>>()
     val transactionsListLiveData: LiveData<List<Transaction>> = _transactionsListLiveData
+    private val _filteredTransactionsListLiveData = MutableLiveData<List<Transaction>>()
+    val filteredTransactionsListLiveData: LiveData<List<Transaction>> = _filteredTransactionsListLiveData
+    private val _typeFilteredListLiveData = MutableLiveData<List<Transaction>>()
+    val typeFilteredListLiveData : LiveData<List<Transaction>> = _typeFilteredListLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _deleteExpenseResult = MutableLiveData<Boolean>()
@@ -56,10 +60,6 @@ class TransactionListViewModel(
     private val _uiState = MutableStateFlow<TransactionFragmentState<Nothing>>(
         TransactionFragmentState.Loading)
     val uiState : StateFlow<TransactionFragmentState<Nothing>> = _uiState.asStateFlow()
-    private val _earningMonthsLiveData = MutableLiveData<List<String>>()
-    val earningMonthsLiveData: LiveData<List<String>> = _earningMonthsLiveData
-    private val _filteredTransactionsListLiveData = MutableLiveData<List<Transaction>>()
-    val filteredTransactionsListLiveData: LiveData<List<Transaction>> = _filteredTransactionsListLiveData
     private val _textFilterState = MutableLiveData<Boolean>()
     val textFilterState : LiveData<Boolean> = _textFilterState
     private val _textFilterValues = MutableLiveData<MutableList<String>>()
@@ -517,7 +517,17 @@ class TransactionListViewModel(
     }
 
     fun showEarningTransactions(){
-
+        if(_isFiltered.value == false || _isFiltered.value == null){
+            if(transactionsListLiveData.value != null){
+                val justEarningList = transactionsListLiveData.value!!.filter { it.type == StringConstants.DATABASE.EARNING }
+                _typeFilteredListLiveData.postValue(justEarningList)
+            }
+        }else{
+            if(filteredTransactionsListLiveData.value != null){
+                val justEarningList = _filteredTransactionsListLiveData.value!!.filter { it.type == StringConstants.DATABASE.EARNING }
+                _typeFilteredListLiveData.postValue(justEarningList)
+            }
+        }
     }
 
     fun showExpenseTransaction(){
