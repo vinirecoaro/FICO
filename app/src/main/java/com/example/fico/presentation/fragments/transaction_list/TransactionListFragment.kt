@@ -202,6 +202,12 @@ class TransactionListFragment : Fragment(), XLSInterface {
             if(viewModel.isFiltered.value == true){
                 clearAllFilter()
             }
+            //Verify which button is selected
+            val selectedButtonId = binding.tbTransacList.checkedButtonId
+            if(selectedButtonId != binding.btAllTransacList.id){
+                binding.tbTransacList.check(binding.btAllTransacList.id)
+                binding.btAllTransacList.isClickable = false
+            }
         }
         binding.ivClearFilter.setOnClickListener {
             binding.actvDate.setText("")
@@ -222,6 +228,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         viewModel.transactionsListLiveData.observe(viewLifecycleOwner){ transactionsList ->
             transactionListAdapter.updateTransactions(transactionsList)
+            updateTransactionTotalValue(transactionsList)
             transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
                 override fun onListItemClick(position: Int) {
                     val selectItem = transactionsList[position]
@@ -329,15 +336,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         viewModel.filteredTransactionsListLiveData.observe(viewLifecycleOwner){ filteredTransactionList ->
             transactionListAdapter.updateTransactions(filteredTransactionList)
-            val total = viewModel.calculateFilteredTotalValue(filteredTransactionList)
-            val totalAbsolute = total.abs()
-            if(total < BigDecimal(0)){
-                binding.etTotalPrice.setTextColor(Color.RED)
-            }else{
-                binding.etTotalPrice.setTextColor(Color.GREEN)
-            }
-            binding.etTotalPrice.setText(FormatValuesFromDatabase().price(totalAbsolute.toString()))
-            binding.tilTotalPrice.visibility = View.VISIBLE
+            updateTransactionTotalValue(filteredTransactionList)
         }
 
         viewModel.isFiltered.observe(viewLifecycleOwner){ state ->
@@ -371,6 +370,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         viewModel.typeFilteredListLiveData.observe(viewLifecycleOwner){ transacList ->
             transactionListAdapter.updateTransactions(transacList)
+            updateTransactionTotalValue(transacList)
         }
 
     }
@@ -727,7 +727,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     private fun clearAllFilter(){
         viewModel.setIsFilteredState(false)
-        binding.tilTotalPrice.visibility = View.GONE
         clearTextFilter()
         clearDateFilter()
     }
@@ -740,6 +739,17 @@ class TransactionListFragment : Fragment(), XLSInterface {
     private fun clearDateFilter(){
         viewModel.setDateFilterState(false)
         viewModel.clearDateFilterValues()
+    }
+
+    private fun updateTransactionTotalValue(transactionList : List<Transaction>){
+        val total = viewModel.calculateFilteredTotalValue(transactionList)
+        val totalAbsolute = total.abs()
+        if(total < BigDecimal(0)){
+            binding.etTotalPrice.setTextColor(Color.RED)
+        }else{
+            binding.etTotalPrice.setTextColor(Color.GREEN)
+        }
+        binding.etTotalPrice.setText(FormatValuesFromDatabase().price(totalAbsolute.toString()))
     }
 
 }
