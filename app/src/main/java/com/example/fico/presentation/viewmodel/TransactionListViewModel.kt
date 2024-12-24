@@ -501,17 +501,13 @@ class TransactionListViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     fun showAllTransactions(){
         if(_isFiltered.value == false || _isFiltered.value == null){
-            getExpenseList(_monthFilterLiveData.value!!)
+            if(transactionsListLiveData.value != null){
+                val allTransactionList = _transactionsListLiveData.value!!
+                _typeFilteredListLiveData.postValue(allTransactionList)
+            }
         }else{
-            getExpenseList(_monthFilterLiveData.value!!)
-            if(textFilterState.value == true){
-                for(text in textFilterValues.value!!){
-                    applyTextFilter(text)
-                }
-            }
-            if(dateFilterState.value == true){
-                applyDateFilter(dateFilterValue.value!!)
-            }
+            val allTransactionList = _filteredTransactionsListLiveData.value!!
+            _typeFilteredListLiveData.postValue(allTransactionList)
         }
 
     }
@@ -530,8 +526,18 @@ class TransactionListViewModel(
         }
     }
 
-    fun showExpenseTransaction(){
-
+    fun showExpenseTransactions(){
+        if(_isFiltered.value == false || _isFiltered.value == null){
+            if(transactionsListLiveData.value != null){
+                val justEarningList = transactionsListLiveData.value!!.filter { it.type == StringConstants.DATABASE.EXPENSE }
+                _typeFilteredListLiveData.postValue(justEarningList)
+            }
+        }else{
+            if(filteredTransactionsListLiveData.value != null){
+                val justEarningList = _filteredTransactionsListLiveData.value!!.filter { it.type == StringConstants.DATABASE.EXPENSE }
+                _typeFilteredListLiveData.postValue(justEarningList)
+            }
+        }
     }
 
 }

@@ -357,6 +357,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.btAllTransacList.isClickable = true
                         binding.btExpensesTransacList.isClickable = false
                         binding.btEarningsTransacList.isClickable = true
+                        viewModel.showExpenseTransactions()
                     }
                     binding.btEarningsTransacList.id -> {
                         binding.btAllTransacList.isClickable = true
