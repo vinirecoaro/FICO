@@ -29,7 +29,7 @@ interface XLSInterface {
             var cell : Cell
             var rowIndex = 0
 
-            if(!otherValueMap.isEmpty() && !otherValueMap.keys.isEmpty()){
+            if(otherValueMap.isNotEmpty() && otherValueMap.keys.isNotEmpty()){
                 var keys : Set<String> = otherValueMap.keys
                 var i = 0
                 var limit = 0
@@ -61,8 +61,6 @@ interface XLSInterface {
                 sheet.createRow(rowIndex)
                 ++rowIndex
             }
-
-
 
             val row : Row = sheet.createRow(rowIndex)
 
@@ -142,10 +140,5 @@ interface XLSInterface {
             filePath.createNewFile()
         }
         return filePath
-
-
     }
-
-
-
 }

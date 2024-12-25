@@ -142,7 +142,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             //TODO Change function and instructions to export expenses to file
-            /*R.id.expense_list_menu_generate_excel_file -> {
+            R.id.expense_list_menu_generate_excel_file -> {
                 if (checkPermission()){
                     generateFileAndShare()
                 }else{
@@ -151,7 +151,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     }
                 }
                 return true
-            }*/
+            }
 
             R.id.transaction_list_menu_filter -> {
                 filterDialog()
@@ -644,7 +644,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         dialog.show()
 
         tvTextFilter.setOnClickListener {
-            textFilter()
+            textFilterDialog()
             dialog.cancel()
         }
 
@@ -702,7 +702,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
     }
 
-    private fun textFilter(){
+    private fun textFilterDialog(){
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.text_filter))
 
