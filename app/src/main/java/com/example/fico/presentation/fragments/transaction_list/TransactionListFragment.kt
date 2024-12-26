@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.FragmentTransactionListBinding
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.Transaction
 import com.example.fico.utils.constants.StringConstants
@@ -172,23 +173,40 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
     }
 
-    private fun getExpenseList(): MutableList<Expense> {
-        val expenseList: MutableList<Expense> = ArrayList()
-        viewModel.expensesLiveData.observe(viewLifecycleOwner, Observer { expenses ->
-            for (expense in expenses) {
-                var modifiedExpense = Expense(
-                    "",
-                    FormatValuesFromDatabase().priceToFile(expense.price),
-                    expense.description,
-                    expense.category,
-                    expense.paymentDate,
-                    expense.purchaseDate,
-                    expense.inputDateTime
-                )
-                expenseList.add(modifiedExpense)
+    private fun getTransactionsListForFile(): Pair<MutableList<Expense>,MutableList<Earning>> {
+        val expensesList: MutableList<Expense> = ArrayList()
+        val earningsList: MutableList<Earning> = ArrayList()
+        viewModel.typeFilteredListLiveData.observe(viewLifecycleOwner, Observer { transactions ->
+            for (transation in transactions) {
+                if(transation.type == StringConstants.DATABASE.EXPENSE){
+                    val modifiedExpense = Expense(
+                        transation.id,
+                        FormatValuesFromDatabase().priceToFile(transation.price),
+                        transation.description,
+                        transation.category,
+                        transation.paymentDate,
+                        transation.purchaseDate,
+                        transation.inputDateTime
+                    )
+                    expensesList.add(modifiedExpense)
+                }else if(transation.type == StringConstants.DATABASE.EARNING){
+                    val modifiedEarning = Earning(
+                        transation.id,
+                        FormatValuesFromDatabase().priceToFile(transation.price),
+                        transation.description,
+                        transation.category,
+                        transation.paymentDate,
+                        transation.inputDateTime
+                    )
+                    earningsList.add(modifiedEarning)
+                }
+
             }
         })
-        return expenseList
+
+        val listsPair = Pair(expensesList, earningsList)
+
+        return listsPair
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -574,10 +592,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
     }
 
     private fun generateFileAndShare() {
-        val expenseList = getExpenseList()
+        val transactionsLists = getTransactionsListForFile()
         val gson = Gson()
-        var expensesJsonArray = gson.toJsonTree(expenseList).asJsonArray
-        var earningsJsonArray = gson.toJsonTree(expenseList).asJsonArray
+        var expensesJsonArray = gson.toJsonTree(transactionsLists.first).asJsonArray
+        var earningsJsonArray = gson.toJsonTree(transactionsLists.second).asJsonArray
 
         var file = generateXlsFile(
             requireActivity(), StringConstants.XLS.EXPENSE_TITLES, StringConstants.XLS.EARNINGS_TITLES,

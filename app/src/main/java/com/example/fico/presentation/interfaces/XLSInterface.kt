@@ -26,6 +26,7 @@ interface XLSInterface {
         try{
             val wb : Workbook = HSSFWorkbook()
             val expensesSheet : Sheet = wb.createSheet(expensesSheetName)
+            val earningsSheet : Sheet = wb.createSheet(earningsSheetName)
             var cell : Cell
             var rowIndex = 0
 
@@ -62,15 +63,17 @@ interface XLSInterface {
                 ++rowIndex
             }
 
-            val row : Row = expensesSheet.createRow(rowIndex)
+            //Start to fill expense sheet
+
+            val expensesTitleRow : Row = expensesSheet.createRow(rowIndex)
 
             ++rowIndex
-            var a = 0
+            var columnExpenseIncrement = 0
 
             for (title in expensesTitles){
-                cell = row.createCell(a)
+                cell = expensesTitleRow.createCell(columnExpenseIncrement)
                 cell.setCellValue(title)
-                a++
+                columnExpenseIncrement++
             }
 
             for(j in 0 until 123){
@@ -83,10 +86,54 @@ interface XLSInterface {
 
                 if(jsonObject != null){
                     var b = 0
-                    val row1 : Row = expensesSheet.createRow(i + rowIndex)
+                    val expenseDataRow : Row = expensesSheet.createRow(i + rowIndex)
 
                     for( index in expensesIndexName){
-                        val cell = row1.createCell(b)
+                        val cell = expenseDataRow.createCell(b)
+                        try{
+                            if(index != null && !TextUtils.isEmpty(index)){
+                                if(jsonObject.has(index) &&
+                                    jsonObject.get(index).asString != null){
+                                    cell.setCellValue(jsonObject.get(index).asString)
+                                }else {
+                                    cell.setCellValue(" - ")
+                                }
+                            }
+                        }catch (e : java.lang.Exception){
+                            e.printStackTrace()
+                        }
+                        ++b
+                    }
+                }
+            }
+
+            //Start to fill earning sheet
+            rowIndex = 0
+            val earningsTitleRow : Row = earningsSheet.createRow(rowIndex)
+
+            rowIndex++
+            var columnEarningIncrement = 0
+
+            for (title in earningsTitles){
+                cell = earningsTitleRow.createCell(columnEarningIncrement)
+                cell.setCellValue(title)
+                columnEarningIncrement++
+            }
+
+            for(j in 0 until 123){
+                earningsSheet.setColumnWidth(j,(30*200))
+            }
+
+            for(i in 0 until earningsList.size()){
+
+                val jsonObject : JsonObject = earningsList.get(i).asJsonObject
+
+                if(jsonObject != null){
+                    var b = 0
+                    val earningDataRow : Row = earningsSheet.createRow(i + rowIndex)
+
+                    for( index in earningsIndexName){
+                        val cell = earningDataRow.createCell(b)
                         try{
                             if(index != null && !TextUtils.isEmpty(index)){
                                 if(jsonObject.has(index) &&
