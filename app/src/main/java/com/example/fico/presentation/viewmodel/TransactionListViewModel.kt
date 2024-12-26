@@ -413,6 +413,7 @@ class TransactionListViewModel(
             )
         }
         val transactionListSorted = transactionListTemp.toList().sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
+        _typeFilteredListLiveData.value = transactionListSorted
         _transactionsListLiveData.postValue(transactionListSorted)
     }
 

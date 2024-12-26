@@ -162,6 +162,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 val transactionList = viewModel.transactionsListLiveData.value?.toList()
                 if(!transactionList.isNullOrEmpty()){
                     clearAllFilter()
+                    updateTransactionTotalValue(transactionList)
                     transactionListAdapter.updateTransactions(transactionList)
                 }
                 return true
@@ -305,6 +306,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.actvDate.visibility = View.GONE
                         binding.ivClearFilter.visibility = View.GONE
                         binding.rvExpenseList.visibility = View.GONE
+                        binding.tilTotalPrice.visibility = View.GONE
                     }
                     is TransactionFragmentState.Error -> {
                         binding.ivNoInfoAvailable.visibility = View.VISIBLE
@@ -313,6 +315,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.actvDate.visibility = View.GONE
                         binding.ivClearFilter.visibility = View.GONE
                         binding.rvExpenseList.visibility = View.GONE
+                        binding.tilTotalPrice.visibility = View.GONE
                     }
                     TransactionFragmentState.Loading -> {
                         binding.ivNoInfoAvailable.visibility = View.GONE
@@ -321,6 +324,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.actvDate.visibility = View.GONE
                         binding.ivClearFilter.visibility = View.GONE
                         binding.rvExpenseList.visibility = View.GONE
+                        binding.tilTotalPrice.visibility = View.GONE
                     }
                     TransactionFragmentState.Success -> {
                         binding.ivNoInfoAvailable.visibility = View.GONE
@@ -329,6 +333,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.actvDate.visibility = View.VISIBLE
                         binding.ivClearFilter.visibility = View.VISIBLE
                         binding.rvExpenseList.visibility = View.VISIBLE
+                        binding.tilTotalPrice.visibility = View.VISIBLE
                     }
                 }
             }
@@ -571,11 +576,13 @@ class TransactionListFragment : Fragment(), XLSInterface {
     private fun generateFileAndShare() {
         val expenseList = getExpenseList()
         val gson = Gson()
-        var jsonArray = gson.toJsonTree(expenseList).asJsonArray
+        var expensesJsonArray = gson.toJsonTree(expenseList).asJsonArray
+        var earningsJsonArray = gson.toJsonTree(expenseList).asJsonArray
 
         var file = generateXlsFile(
-            requireActivity(), StringConstants.XLS.TITLES,
-            StringConstants.XLS.INDEX_NAME, jsonArray, HashMap(), StringConstants.XLS.SHEET_NAME,
+            requireActivity(), StringConstants.XLS.EXPENSE_TITLES, StringConstants.XLS.EARNINGS_TITLES,
+            StringConstants.XLS.EXPENSE_INDEX_NAME, StringConstants.XLS.EARNINGS_INDEX_NAME, expensesJsonArray,
+            earningsJsonArray, HashMap(), StringConstants.XLS.SHEET_NAME_EXPENSES, StringConstants.XLS.SHEET_NAME_EARNINGS,
             StringConstants.XLS.FILE_NAME, 0
         )
 

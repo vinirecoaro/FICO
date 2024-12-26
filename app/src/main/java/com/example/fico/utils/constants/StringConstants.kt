@@ -35,10 +35,13 @@ class StringConstants private constructor() {
     }
 
     object XLS {
-        val TITLES: Array<String> = arrayOf("Preço", "Descrição", "Categoria", "Data")
-        val INDEX_NAME: Array<String> = arrayOf("price", "description", "category", "date")
-        const val SHEET_NAME = "Gastos"
-        const val FILE_NAME = "expenses"
+        val EXPENSE_TITLES: Array<String> = arrayOf("Preço", "Descrição", "Categoria", "Data de Pagamento", "Data de Compra")
+        val EXPENSE_INDEX_NAME: Array<String> = arrayOf("price", "description", "category", "paymentDate", "purchaseDate")
+        val EARNINGS_TITLES: Array<String> = arrayOf("Valor", "Descrição", "Categoria", "Data")
+        val EARNINGS_INDEX_NAME: Array<String> = arrayOf("value", "description", "category", "date")
+        const val SHEET_NAME_EXPENSES = "depesas"
+        const val SHEET_NAME_EARNINGS = "receitas"
+        const val FILE_NAME = "transactions"
     }
 
     object FILE_PROVIDER {

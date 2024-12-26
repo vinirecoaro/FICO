@@ -18,14 +18,14 @@ import kotlin.collections.HashMap
 
 interface XLSInterface {
 
-    fun generateXlsFile(activity : Activity, titles : Array<String>,
-                        indexName : Array<String>, jsonArray : JsonArray,
-                        otherValueMap : HashMap<String, String>, sheetName : String,
-                        fileName : String, otherRowItemCount : Int) : File? {
+    fun generateXlsFile(activity : Activity, expensesTitles : Array<String>, earningsTitles : Array<String>,
+                        expensesIndexName : Array<String>, earningsIndexName : Array<String>, expensesList : JsonArray,
+                        earningsList : JsonArray, otherValueMap : HashMap<String, String>, expensesSheetName : String,
+                        earningsSheetName : String, fileName : String, otherRowItemCount : Int) : File? {
 
         try{
             val wb : Workbook = HSSFWorkbook()
-            val sheet : Sheet = wb.createSheet(sheetName)
+            val expensesSheet : Sheet = wb.createSheet(expensesSheetName)
             var cell : Cell
             var rowIndex = 0
 
@@ -33,7 +33,7 @@ interface XLSInterface {
                 var keys : Set<String> = otherValueMap.keys
                 var i = 0
                 var limit = 0
-                var row : Row = sheet.createRow(rowIndex)
+                var row : Row = expensesSheet.createRow(rowIndex)
                 for(one in keys){
                     if(otherValueMap.containsKey(one)){
                         if(limit == otherRowItemCount){
@@ -58,34 +58,34 @@ interface XLSInterface {
                     }
                 }
                 ++rowIndex
-                sheet.createRow(rowIndex)
+                expensesSheet.createRow(rowIndex)
                 ++rowIndex
             }
 
-            val row : Row = sheet.createRow(rowIndex)
+            val row : Row = expensesSheet.createRow(rowIndex)
 
             ++rowIndex
             var a = 0
 
-            for (title in titles){
+            for (title in expensesTitles){
                 cell = row.createCell(a)
                 cell.setCellValue(title)
                 a++
             }
 
             for(j in 0 until 123){
-                sheet.setColumnWidth(j,(30*200))
+                expensesSheet.setColumnWidth(j,(30*200))
             }
 
-            for(i in 0 until jsonArray.size()){
+            for(i in 0 until expensesList.size()){
 
-                val jsonObject : JsonObject = jsonArray.get(i).asJsonObject
+                val jsonObject : JsonObject = expensesList.get(i).asJsonObject
 
                 if(jsonObject != null){
                     var b = 0
-                    val row1 : Row = sheet.createRow(i + rowIndex)
+                    val row1 : Row = expensesSheet.createRow(i + rowIndex)
 
-                    for( index in indexName){
+                    for( index in expensesIndexName){
                         val cell = row1.createCell(b)
                         try{
                             if(index != null && !TextUtils.isEmpty(index)){
