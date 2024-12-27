@@ -1,6 +1,7 @@
 package com.example.fico.presentation.fragments.home
 
 import android.content.res.Configuration
+import android.graphics.BlurMaskFilter
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -41,16 +43,15 @@ class HomeFragment : Fragment(){
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        binding.tvTotalExpensesValue.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
-        binding.tvTotalExpensesValue.transformationMethod = PasswordTransformationMethod()
-        binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
-
         initExpenseEachMonthChartEmpty()
         setUpListeners()
 
         if(barChartEntries.isNotEmpty()){
             initExpenseEachMonthChart()
         }
+
+        // Blur total value field configuration
+        binding.tvTotalExpensesValue.setLayerType(TextView.LAYER_TYPE_SOFTWARE, null)
 
         return rootView
     }
@@ -112,8 +113,21 @@ class HomeFragment : Fragment(){
         }
 
         binding.tvTotalExpensesValue.setOnClickListener {
-            viewModel.ShowHideValue(binding.tvTotalExpensesValue)
+            viewModel.changeBlurState()
         }
+
+        viewModel.isBlurred.observe(viewLifecycleOwner){ state ->
+            if (state) {
+                val blurMaskFilter = BlurMaskFilter(30f, BlurMaskFilter.Blur.NORMAL) // Intensidade do desfoque
+                binding.tvTotalExpensesValue.paint.maskFilter = blurMaskFilter
+                binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
+            } else {
+                binding.tvTotalExpensesValue.paint.maskFilter = null
+                binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_24, 0)
+            }
+            binding.tvTotalExpensesValue.invalidate()
+        }
+
         viewModel.infoPerMonthLiveData.observe(viewLifecycleOwner){ infoPerMonthList ->
             barChartEntries.clear()
             var i = 0f

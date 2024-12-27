@@ -57,21 +57,16 @@ class HomeViewModel(
     private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(
         HomeFragmentState.Loading)
     val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
+    private val _isBlurred = MutableLiveData<Boolean>(true)
+    val isBlurred : LiveData<Boolean> = _isBlurred
 
     init{
         getInfoPerMonth()
     }
 
-    fun ShowHideValue(text: TextView){
-        if (text.inputType == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
-            text.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            text.transformationMethod = null
-            text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_24, 0)
-        }
-        else{
-            text.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
-            text.transformationMethod = PasswordTransformationMethod()
-            text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
+    fun changeBlurState(){
+        if(_isBlurred.value != null){
+            _isBlurred.postValue(!_isBlurred.value!!)
         }
     }
 

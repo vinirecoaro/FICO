@@ -90,21 +90,20 @@ class TransactionListFragment : Fragment(), XLSInterface {
         _binding = FragmentTransactionListBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
+        // Recycler View configuration
         binding.rvExpenseList.layoutManager = LinearLayoutManager(requireContext())
         transactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
         binding.rvExpenseList.adapter = transactionListAdapter
 
+        // Item list swiping configuration
         val swipeToDeleteCallback =
             SwipeToDeleteCallback(binding.rvExpenseList, viewModel, transactionListAdapter, viewLifecycleOwner)
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 
+        // Updating fields with current date
         binding.actvDate.setText(DateFunctions().getCurrentlyDateForFilter())
         viewModel.updateFilter(DateFunctions().getCurrentlyDateForFilter())
-
-        // Initial selected button on toggle group
-        binding.tbTransacList.check(binding.btAllTransacList.id)
-        binding.btAllTransacList.isClickable = false
 
         setUpListeners()
         setColorBasedOnTheme()
@@ -120,6 +119,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
     override fun onResume() {
         super.onResume()
         viewModel.getExpenseList(binding.actvDate.text.toString())
+
+        // Initial selected button on toggle group
+        binding.tbTransacList.check(binding.btAllTransacList.id)
+        binding.btAllTransacList.isClickable = false
     }
 
     override fun onDestroyView() {
