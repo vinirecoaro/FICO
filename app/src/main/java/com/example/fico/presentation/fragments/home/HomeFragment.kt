@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.presentation.viewmodel.HomeViewModel
+import com.example.fico.utils.custom_component.RoundedBarChartRenderer
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -182,8 +183,11 @@ class HomeFragment : Fragment(){
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
         xAxis.setDrawLabels(true)
+        xAxis.setDrawAxisLine(false)
         xAxis.granularity = 1f
         xAxis.valueFormatter = IndexAxisValueFormatter(barChartMonthLabels)
+        barChart.axisLeft.setDrawGridLines(false)
+        barChart.axisRight.setDrawGridLines(false)
 
         // Format text color based on theme
         when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
@@ -215,6 +219,8 @@ class HomeFragment : Fragment(){
 
         // Add animation of increasing bars
         barChart.animateY(1500, Easing.EaseInOutQuad)
+
+        barChart.renderer = RoundedBarChartRenderer(barChart, barChart.animator, barChart.viewPortHandler)
 
         // Update chart
         barChart.invalidate()

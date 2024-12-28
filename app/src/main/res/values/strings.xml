@@ -4,7 +4,7 @@
     <string name="list_of_expenses">Lista de gastos</string>
     <string name="config">configurações</string>
     <string name="available">Disponivel</string>
-    <string name="total_expenses">Gasto Total</string>
+    <string name="total_expenses">Despesa Total</string>
     <string name="add_value">Valor</string>
     <string name="add_description">Descrição</string>
     <string name="add_category">Categoria</string>
@@ -61,7 +61,7 @@
     <string name="category_healthy_icon_file_name">category_icon_healthy</string>
     <string name="category_games_icon_file_name">category_icon_games</string>
     <string name="category_investment_icon_file_name">category_icon_investment</string>
-    <string name="expense_per_month">Gasto por mês</string>
+    <string name="expense_per_month">Despesa por mês</string>
     <string name="title">title</string>
     <string name="image">image</string>
     <string name="description">description</string>
