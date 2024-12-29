@@ -165,6 +165,8 @@
     <string name="all">Todas</string>
     <string name="expenses_2">Despesas</string>
     <string name="earnings_2">Receitas</string>
+    <string name="recurring_expense">Compra Recorrente</string>
+    <string name="add_recurring_expense">Adicionar compra recorrente</string>
 
 
 </resources>

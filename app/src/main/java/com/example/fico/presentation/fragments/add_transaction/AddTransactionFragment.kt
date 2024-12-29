@@ -45,11 +45,17 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
+import android.widget.RadioButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.databinding.FragmentAddTransactionBinding
+import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
+import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.utils.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -156,7 +162,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.add_expense_menu, menu)
+        inflater.inflate(R.menu.add_transaction_menu, menu)
         //Save instance of menu
         this.menu = menu
         super.onCreateOptionsMenu(menu, inflater)
@@ -178,6 +184,11 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 binding.etInstallments.visibility = View.VISIBLE
                 binding.tilPaymentDate.hint = getString(R.string.payment_date_field_installment_hint)
                 clearUserInputs()
+                return true
+            }
+
+            R.id.add_recurring_expense_menu_installments -> {
+                recurringExpenseDialog()
                 return true
             }
 
@@ -1020,6 +1031,31 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
         val colorOnSurfaceVariant = ContextCompat.getColor(requireContext(), typedValue.resourceId)
         return colorOnSurfaceVariant
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun recurringExpenseDialog(){
+        val builder = MaterialAlertDialogBuilder(requireContext())
+        builder.setTitle(getString(R.string.add_recurring_expense))
+
+        val inflater = LayoutInflater.from(requireContext())
+        val dialogView = inflater.inflate(R.layout.dialog_recurring_expenses, null)
+
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.rv_recurring_expenses_list)
+
+        // Recycler View configuration
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val transactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
+        recyclerView.adapter = transactionListAdapter
+
+        //TODO Add recurring expense list
+        transactionListAdapter.updateTransactions(emptyList())
+
+        builder.setView(dialogView)
+
+        val dialog = builder.create()
+        dialog.show()
+
     }
 
 }

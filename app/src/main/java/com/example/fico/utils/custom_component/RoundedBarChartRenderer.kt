@@ -22,6 +22,10 @@ class RoundedBarChartRenderer(
         // Obter a largura configurada no barData
         val barWidth = mChart.barData.barWidth / 2f * 200
 
+        if(mBarBuffers.isEmpty()){
+            return
+        }
+
         // Pegue o buffer específico para o dataset em questão
         val buffer = mBarBuffers[index]
 
