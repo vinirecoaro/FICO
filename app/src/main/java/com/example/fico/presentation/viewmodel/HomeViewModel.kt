@@ -59,6 +59,8 @@ class HomeViewModel(
     val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
     private val _isBlurred = MutableLiveData<Boolean>(true)
     val isBlurred : LiveData<Boolean> = _isBlurred
+    private val _isFirstLoad = MutableLiveData<Boolean>(true)
+    val isFirstLoad : LiveData<Boolean> = _isFirstLoad
 
     init{
         getInfoPerMonth()
@@ -67,6 +69,12 @@ class HomeViewModel(
     fun changeBlurState(){
         if(_isBlurred.value != null){
             _isBlurred.postValue(!_isBlurred.value!!)
+        }
+    }
+
+    fun changeFirstLoadState(){
+        if(_isFirstLoad.value != null){
+            _isFirstLoad.postValue(!_isFirstLoad.value!!)
         }
     }
 

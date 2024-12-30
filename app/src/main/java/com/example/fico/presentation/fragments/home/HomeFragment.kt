@@ -146,8 +146,9 @@ class HomeFragment : Fragment(){
                 barChartMonthLabels.add(infoPerMonthLabel.date)
                 barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
             }
-            if(barChartEntries.isNotEmpty() && barChartMonthLabels.isNotEmpty() && barChartExpenseLabels.isNotEmpty()){
+            if(barChartEntries.isNotEmpty() && barChartMonthLabels.isNotEmpty() && barChartExpenseLabels.isNotEmpty() && viewModel.isFirstLoad.value!!){
                 initExpenseEachMonthChart()
+                viewModel.changeFirstLoadState()
             }
         }
         viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
@@ -239,6 +240,7 @@ class HomeFragment : Fragment(){
 
         // Crie um conjunto de dados com a lista de entradas
         val dataSet = BarDataSet(entries, "Label") // "Label" é o nome da legenda
+
         //dataSet.valueTextColor = Color.WHITE
         dataSet.valueTextSize = 12f
         dataSet.color = Color.BLUE
