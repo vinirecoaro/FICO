@@ -102,7 +102,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
     private lateinit var menu : Menu
     private val categoriesList : CategoriesList by inject()
-
+    private lateinit var recurringTransactionListAdapter : TransactionListAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -985,6 +985,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
         menu.findItem(R.id.add_expense_menu_common).isVisible = false
         menu.findItem(R.id.add_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_recurring_expense_menu_installments).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = true
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_income)
         viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EARNING)
@@ -1008,6 +1009,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = true
         menu.findItem(R.id.add_expense_menu_common).isVisible = true
         menu.findItem(R.id.add_expense_menu_installments).isVisible = true
+        menu.findItem(R.id.add_recurring_expense_menu_installments).isVisible = true
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_expense_title)
         viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EXPENSE)
@@ -1045,11 +1047,11 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
         // Recycler View configuration
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val transactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
-        recyclerView.adapter = transactionListAdapter
+        recurringTransactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
+        recyclerView.adapter = recurringTransactionListAdapter
 
         //TODO Add recurring expense list
-        transactionListAdapter.updateTransactions(emptyList())
+        recurringTransactionListAdapter.updateTransactions(emptyList())
 
         builder.setView(dialogView)
 

@@ -72,6 +72,8 @@ class ExpenseConfigurationFragment : Fragment(),
             startActivity(Intent(requireContext(), DefaultPaymentDateConfigurationActivity::class.java))
         }else if (item == getString(R.string.update_database_info_per_month_and_total_expense)){
             viewModel.updateInfoPerMonthAndTotalExpense()
+        }else if(item == getString(R.string.recurring_transactions_configuration_list)){
+
         }
     }
 

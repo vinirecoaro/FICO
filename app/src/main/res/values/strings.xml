@@ -92,6 +92,7 @@
     <string name="redefine_month_budget_success_message">Orçamento redefinido com sucesso</string>
     <string name="redefine_month_budget_failure_message">Falha ao redefinir o orçamento</string>
     <string name="budget_configuration_list">Orçamento</string>
+    <string name="recurring_transactions_configuration_list">Transações Recorrentes</string>
     <string name="cancel">Cancelar</string>
     <string name="transactions">Transações</string>
     <string name="overview">Visão Geral</string>
