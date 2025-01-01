@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.databinding.FragmentConfigurationBinding
@@ -73,6 +74,12 @@ class ExpenseConfigurationFragment : Fragment(),
         }else if (item == getString(R.string.update_database_info_per_month_and_total_expense)){
             viewModel.updateInfoPerMonthAndTotalExpense()
         }else if(item == getString(R.string.recurring_transactions_configuration_list)){
+            val navController = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+                ?.findNavController()
+            val bundle = Bundle().apply {
+                putBoolean("isSpecialMode", true)
+            }
+            navController!!.navigate(R.id.navigation_add_expense, bundle)
 
         }
     }
