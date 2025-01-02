@@ -15,6 +15,7 @@ import com.example.fico.presentation.activities.DefaultPaymentDateConfigurationA
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
+import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
 
@@ -77,10 +78,9 @@ class ExpenseConfigurationFragment : Fragment(),
             val navController = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
                 ?.findNavController()
             val bundle = Bundle().apply {
-                putBoolean("isSpecialMode", true)
+                putBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE, true)
             }
             navController!!.navigate(R.id.navigation_add_expense, bundle)
-
         }
     }
 

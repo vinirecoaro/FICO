@@ -37,6 +37,8 @@ class AddTransactionViewModel(
     val paymentDateSwitchInitialStateLiveData: LiveData<Boolean> = _paymentDateSwitchInitialState
     private val _addEarningResult = MutableLiveData<Boolean>()
     val addEarningResult: LiveData<Boolean> = _addEarningResult
+    private val _isRecurringMode = MutableLiveData<Boolean>()
+    val isRecurringMode: LiveData<Boolean> = _isRecurringMode
 
     init {
         getPaymentDateSwitchState()
@@ -258,6 +260,12 @@ class AddTransactionViewModel(
         viewModelScope.async(Dispatchers.IO) {
             val state = dataStore.getPaymentDateSwitchInitialState()
             _paymentDateSwitchInitialState.postValue(state)
+        }
+    }
+
+    fun updateRecurringMode(state : Boolean){
+        viewModelScope.async(Dispatchers.IO){
+            _isRecurringMode.postValue(state)
         }
     }
 }

@@ -124,6 +124,11 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         adapter = CategoryListAdapter(categoriesList.getExpenseCategoryList().sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
+        val recurringState = arguments?.getBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE) ?: false
+        if(recurringState){
+            viewModel.updateRecurringMode(recurringState)
+        }
+
         return rootView
     }
 
@@ -595,6 +600,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             }
         }
 
+        viewModel.isRecurringMode.observe(viewLifecycleOwner){state ->
+            if(state){
+                changeComponentsToRecurringExpenseState()
+            }
+        }
+
     }
 
     private fun verifyFields(vararg text: EditText): Boolean {
@@ -1021,6 +1032,30 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.ivPaymentDate.visibility = View.VISIBLE
         binding.tvSwtPaymentDay.visibility = View.VISIBLE
         binding.swtPaymentDay.visibility = View.VISIBLE
+        binding.tilReceivedDate.visibility = View.GONE
+        binding.etReceivedDate.visibility = View.GONE
+        binding.ivReceivedDate.visibility = View.GONE
+        adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
+    }
+
+    private fun changeComponentsToRecurringExpenseState(){
+        menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
+        menu.findItem(R.id.add_expense_menu_common).isVisible = false
+        menu.findItem(R.id.add_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_recurring_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_recurring_expense)
+        viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE)
+        binding.tilPurchaseDate.visibility = View.GONE
+        binding.etPurchaseDate.visibility = View.GONE
+        binding.ivPurchaseDate.visibility = View.GONE
+        binding.tilPaymentDate.visibility = View.GONE
+        binding.etPaymentDate.visibility = View.GONE
+        binding.ivPaymentDate.visibility = View.GONE
+        binding.tilInstallments.visibility = View.GONE
+        binding.etInstallments.visibility = View.GONE
+        binding.tvSwtPaymentDay.visibility = View.GONE
+        binding.swtPaymentDay.visibility = View.GONE
         binding.tilReceivedDate.visibility = View.GONE
         binding.etReceivedDate.visibility = View.GONE
         binding.ivReceivedDate.visibility = View.GONE

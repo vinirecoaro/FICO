@@ -160,6 +160,7 @@ class StringConstants private constructor() {
     object ADD_TRANSACTION {
         const val ADD_EARNING = "add_earning"
         const val ADD_EXPENSE = "add_expense"
+        const val ADD_RECURRING_EXPENSE = "recurring_expense"
     }
 
 }
