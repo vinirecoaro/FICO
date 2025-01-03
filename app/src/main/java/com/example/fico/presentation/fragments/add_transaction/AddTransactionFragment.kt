@@ -428,6 +428,21 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                         )
                     }
                 }
+                else if (viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE){
+                    if (verifyFields(
+                            binding.etPrice,
+                            binding.etDescription,
+                            binding.actvCategory,
+                        )
+                    ){
+                        viewModel.addEarning(
+                            binding.etPrice.text.toString(),
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            binding.etReceivedDate.text.toString()
+                        )
+                    }
+                }
             }
             binding.btSave.isEnabled = true
         }

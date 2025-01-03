@@ -219,6 +219,47 @@ class AddTransactionViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun addRecurringExpense(
+        price: String,
+        description: String,
+        category: String,
+    ){
+        viewModelScope.async(Dispatchers.IO){
+            val formattedInputDate =
+                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+
+            val formattedPrice = FormatValuesToDatabase().expensePrice(price, 1)
+
+            val randonNum = arrangeDataToUpdateToDatabase.generateRandomAddress(5)
+
+            val inputTime = FormatValuesToDatabase().timeNow()
+
+            val earningId = "${inputTime}-${randonNum}"
+
+            val earning = Earning(
+                earningId,
+                formattedPrice,
+                description,
+                category,
+                "",
+                formattedInputDate
+            )
+
+            firebaseAPI.addEarning(earning).fold(
+                onSuccess = {
+                    val earningList = mutableListOf<Earning>()
+                    earningList.add(earning)
+                    dataStore.updateEarningList(earningList)
+                    _addEarningResult.postValue(true)
+                },
+                onFailure = {
+                    _addEarningResult.postValue(false)
+                }
+            )
+        }
+    }
+
     suspend fun checkIfExistDefaultBudget(): Deferred<Boolean> {
         return viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.checkIfExistDefaultBudget()

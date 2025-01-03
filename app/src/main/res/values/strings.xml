@@ -167,7 +167,10 @@
     <string name="expenses_2">Despesas</string>
     <string name="earnings_2">Receitas</string>
     <string name="recurring_expense">Compra Recorrente</string>
-    <string name="add_recurring_expense">Adicionar compra recorrente</string>
+    <string name="add_recurring_expense">Adicionar Despesa Recorrente</string>
+    <string name="edit_recurring_transaction">Editar Transação Recorrente</string>
+    <string name="edit_recurring_transaction_message">Selecione o tipo da transação</string>
+    <string name="edit_recurring_transaction_message_step_2">Selecione o recurso que deseja acessar</string>
 
 
 </resources>
