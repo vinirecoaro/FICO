@@ -48,6 +48,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
@@ -127,6 +128,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         val recurringState = arguments?.getBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE) ?: false
         if(recurringState){
             viewModel.updateRecurringMode(recurringState)
+            arguments = null
         }
 
         return rootView

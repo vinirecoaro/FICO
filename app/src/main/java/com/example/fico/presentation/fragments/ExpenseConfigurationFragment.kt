@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
@@ -67,7 +68,7 @@ class ExpenseConfigurationFragment : Fragment(),
     }
 
     override fun onListItemClick(position: Int) {
-        val item = viewModel.configurationList[position]
+        var item = viewModel.configurationList[position]
         if(item == getString(R.string.budget_configuration_list)){
             startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
         }else if(item == getString(R.string.default_payment_date)){
@@ -80,7 +81,10 @@ class ExpenseConfigurationFragment : Fragment(),
             val bundle = Bundle().apply {
                 putBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE, true)
             }
-            navController!!.navigate(R.id.navigation_add_expense, bundle)
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.navigation_config, true) // Limpa o Back Stack para o fragment atual
+                .build()
+            navController!!.navigate(R.id.navigation_add_expense, bundle, navOptions)
         }
     }
 
