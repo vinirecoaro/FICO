@@ -71,4 +71,8 @@ class DateFunctions {
         val infoPair = Pair(month,year)
         return infoPair
     }
+
+    fun isValidMonthDay(day : Int) : Boolean{
+        return day in 1..31
+    }
 }

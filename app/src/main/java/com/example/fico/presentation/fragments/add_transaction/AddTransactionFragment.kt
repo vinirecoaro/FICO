@@ -433,14 +433,19 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                             binding.etPrice,
                             binding.etDescription,
                             binding.actvCategory,
+                            binding.etRecurringTransactionDay
                         )
                     ){
-                        viewModel.addEarning(
-                            binding.etPrice.text.toString(),
-                            binding.etDescription.text.toString(),
-                            binding.actvCategory.text.toString(),
-                            binding.etReceivedDate.text.toString()
-                        )
+                        if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
+                            /*viewModel.addRecurringExpense(
+                                binding.etPrice.text.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                binding.etRecurringTransactionDay.text.toString()
+                            )*/
+                        }else{
+                            Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                        }
                     }
                 }
             }
@@ -1030,6 +1035,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilReceivedDate.visibility = View.VISIBLE
         binding.etReceivedDate.visibility = View.VISIBLE
         binding.ivReceivedDate.visibility = View.VISIBLE
+        binding.tilRecurringTransactionDay.visibility = View.GONE
+        binding.etRecurringTransactionDay.visibility = View.GONE
         adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
 
@@ -1052,6 +1059,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilReceivedDate.visibility = View.GONE
         binding.etReceivedDate.visibility = View.GONE
         binding.ivReceivedDate.visibility = View.GONE
+        binding.tilRecurringTransactionDay.visibility = View.GONE
+        binding.etRecurringTransactionDay.visibility = View.GONE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
     }
 
@@ -1076,6 +1085,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilReceivedDate.visibility = View.GONE
         binding.etReceivedDate.visibility = View.GONE
         binding.ivReceivedDate.visibility = View.GONE
+        binding.tilRecurringTransactionDay.visibility = View.VISIBLE
+        binding.etRecurringTransactionDay.visibility = View.VISIBLE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
     }
 

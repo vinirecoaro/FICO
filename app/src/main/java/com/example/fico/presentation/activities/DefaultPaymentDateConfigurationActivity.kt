@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.fico.R
 import com.example.fico.databinding.ActivityDefaultPaymentDateConfigurationBinding
 import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
+import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -97,7 +98,7 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
             if(etDate.text.isNullOrEmpty()){
                 Snackbar.make(binding.llDefineDefaultDay, getString(R.string.type_the_day), Snackbar.LENGTH_LONG).show()
-            }else if (etDate.text.toString().toInt() > 31 ||etDate.text.toString().toInt() <= 0){
+            }else if (!DateFunctions().isValidMonthDay(etDate.text.toString().toInt())){
                 Snackbar.make(binding.llDefineDefaultDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
             }else{
                 with(sharedPref.edit()){

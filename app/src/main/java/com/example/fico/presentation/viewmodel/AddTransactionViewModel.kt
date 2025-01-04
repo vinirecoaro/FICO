@@ -224,6 +224,7 @@ class AddTransactionViewModel(
         price: String,
         description: String,
         category: String,
+        day: String,
     ){
         viewModelScope.async(Dispatchers.IO){
             val formattedInputDate =
