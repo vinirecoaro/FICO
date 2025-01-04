@@ -494,6 +494,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 val selectedDateInMillis = it
                 val formattedDate = formatDate(selectedDateInMillis)
                 binding.etPurchaseDate.setText(formattedDate)
+                viewModel.getDefaultPaymentDay()
                 binding.ivPurchaseDate.isEnabled = true
             }
 
@@ -556,7 +557,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
         viewModel.paymentDayLiveData.observe(viewLifecycleOwner) { paymentDay ->
             if(paymentDay != null){
-                val paymentDate = DateFunctions().paymentDate(paymentDay)
+                val paymentDate = DateFunctions().paymentDate(paymentDay, binding.etPurchaseDate.text.toString())
                 binding.etPaymentDate.setText(paymentDate)
             }
         }

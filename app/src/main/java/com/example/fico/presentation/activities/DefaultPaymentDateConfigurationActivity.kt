@@ -75,17 +75,18 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
     private fun setDefaultPaymentDateAlertDialog(){
         val builder = MaterialAlertDialogBuilder(this)
-        builder.setTitle(getString(R.string.default_payment_date))
+        builder.setTitle(getString(R.string.default_payment_day))
 
         val inflater = LayoutInflater.from(this)
         val dialogView = inflater.inflate(R.layout.select_date_for_alert_dialog, null)
 
-        val etDate = dialogView.findViewById<TextInputEditText>(R.id.et_payment_day_ad)
+        val etExpirationDay = dialogView.findViewById<TextInputEditText>(R.id.et_expiration_day_default_payment_date_dialog)
+        val etDaysForClosing = dialogView.findViewById<TextInputEditText>(R.id.et_days_for_closing_default_payment_date_dialog)
         val tvPaymentDay = dialogView.findViewById<TextView>(R.id.tv_payment_day_al)
         val paymentDay = sharedPref.getString(StringConstants.DATABASE.PAYMENT_DAY, null)
 
         if(paymentDay != null){
-            val text = "${getString(R.string.default_day)} $paymentDay"
+            val text = "Dados Atuais:\n\n${getString(R.string.expiration)} - $paymentDay\n${getString(R.string.days_for_closing)} - $paymentDay"
             tvPaymentDay.text = text
         }else{
             val text = getString(R.string.default_day_default_message)
@@ -96,16 +97,16 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
         builder.setPositiveButton(getString(R.string.save)){dialog, which ->
 
-            if(etDate.text.isNullOrEmpty()){
+            if(etExpirationDay.text.isNullOrEmpty()){
                 Snackbar.make(binding.llDefineDefaultDay, getString(R.string.type_the_day), Snackbar.LENGTH_LONG).show()
-            }else if (!DateFunctions().isValidMonthDay(etDate.text.toString().toInt())){
+            }else if (!DateFunctions().isValidMonthDay(etExpirationDay.text.toString().toInt())){
                 Snackbar.make(binding.llDefineDefaultDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
             }else{
                 with(sharedPref.edit()){
-                    putString(StringConstants.DATABASE.PAYMENT_DAY, etDate.text.toString())
+                    putString(StringConstants.DATABASE.PAYMENT_DAY, etExpirationDay.text.toString())
                     commit()
                 }
-                viewModel.setDefaultPaymentDay(etDate.text.toString())
+                viewModel.setDefaultPaymentDay(etExpirationDay.text.toString())
             }
         }
         val dialog = builder.create()

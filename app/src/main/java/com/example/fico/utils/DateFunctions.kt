@@ -42,25 +42,23 @@ class DateFunctions {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun paymentDate(payDay: String) : String{
-        val day = payDay.toInt()
-        val currentDate = LocalDate.now()
+    fun paymentDate(expirationDay: String, purchaseDateString : String?) : String{
+        val day = expirationDay.toInt()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val closingDate = LocalDate.of(currentDate.year, currentDate.month, day).minusDays(7)
+        var purchaseDate = LocalDate.now()
+        if(purchaseDateString != null){
+            purchaseDate = LocalDate.parse(purchaseDateString, formatter)
+        }
+        val closingDate = LocalDate.of(purchaseDate.year, purchaseDate.month, day).minusDays(7)
 
-        val baseDate = if(currentDate.dayOfMonth < closingDate.dayOfMonth){
-            LocalDate.of(currentDate.year, currentDate.month, day)
+        val baseDate = if(purchaseDate.dayOfMonth < closingDate.dayOfMonth){
+            LocalDate.of(purchaseDate.year, purchaseDate.month, day)
         }else{
-            val nextMonthDate = currentDate.plusMonths(1)
-            LocalDate.of(nextMonthDate.year, nextMonthDate.month, day)
+            val nextMonthDate = purchaseDate.plusMonths(1)
+            adjustToLastDayOfMonthIfNecessary(nextMonthDate.year, nextMonthDate.monthValue, day)
         }
 
-        val monthLastDay = YearMonth.of(baseDate.year, baseDate.month).lengthOfMonth()
-        return if(day < monthLastDay){
-            baseDate.format(formatter)
-        }else{
-            LocalDate.of(baseDate.year, baseDate.month, monthLastDay).plusDays(1).format(formatter)
-        }
+        return baseDate.format(formatter)
     }
 
     fun formatMonthValueFromFilterTransactionListToMonthYear(filterValue : String) : Pair<Int, Int>{
@@ -74,5 +72,13 @@ class DateFunctions {
 
     fun isValidMonthDay(day : Int) : Boolean{
         return day in 1..31
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun adjustToLastDayOfMonthIfNecessary(year: Int, month: Int, day: Int): LocalDate {
+        // Get last valid day for month and year
+        val lastDayOfMonth = YearMonth.of(year, month).lengthOfMonth()
+        // Using lowest value between `day` and `lastDayOfMonth`
+        return LocalDate.of(year, month, minOf(day, lastDayOfMonth))
     }
 }
