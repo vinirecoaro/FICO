@@ -27,6 +27,8 @@ class AddTransactionViewModel(
 
     private val _paymentDay = MutableLiveData<String>()
     val paymentDayLiveData: LiveData<String> = _paymentDay
+    private val _daysForClosingBill = MutableLiveData<String>()
+    val daysForClosingBill: LiveData<String> = _daysForClosingBill
     private val _addExpenseResult = MutableLiveData<Boolean>()
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _setDefaultBudgetResult = MutableLiveData<Boolean>()
@@ -286,6 +288,15 @@ class AddTransactionViewModel(
             val result = dataStore.getDefaultPaymentDay()
             if(result != null){
                 _paymentDay.value = result!!
+            }
+        }
+    }
+
+    fun getDaysForClosingBill() {
+        viewModelScope.launch {
+            val result = dataStore.getDaysForClosingBill()
+            if(result != null){
+                _daysForClosingBill.value = result!!
             }
         }
     }

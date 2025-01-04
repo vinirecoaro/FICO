@@ -65,6 +65,7 @@ class MainExpenseActivity : AppCompatActivity(){
         expensesViewModel.getTotalExpense()
         expensesViewModel.getDefaultBudget()
         expensesViewModel.getDefaultPaymentDay()
+        expensesViewModel.getDaysForClosingBill()
         expensesViewModel.getEarningsList()
     }
 

@@ -59,6 +59,15 @@ class ExpensesViewModel(
         }
     }
 
+    fun getDaysForClosingBill() {
+        viewModelScope.launch {
+            val daysForClosingBill = firebaseAPI.getDaysForClosingBill().await()
+            if(daysForClosingBill != StringConstants.DEFAULT_MESSAGES.FAIL){
+                dataStore.setDaysForClosingBill(daysForClosingBill)
+            }
+        }
+    }
+
     fun getEarningsList(){
         viewModelScope.async {
             val earningList = mutableListOf<Earning>()

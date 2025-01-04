@@ -14,8 +14,8 @@ class DefaultPaymentDateConfigurationViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
-    private val _setDefaultBudget = MutableLiveData<Boolean>()
-    val setDefaultBudgetLiveData: LiveData<Boolean> = _setDefaultBudget
+    private val _setDefaultPaymentDate = MutableLiveData<Boolean>()
+    val setDefaultPaymentDateLiveData: LiveData<Boolean> = _setDefaultPaymentDate
     private val _paymentDateSwitchInitialState = MutableLiveData<Boolean>()
     val paymentDateSwitchInitialStateLiveData: LiveData<Boolean> = _paymentDateSwitchInitialState
 
@@ -23,15 +23,16 @@ class DefaultPaymentDateConfigurationViewModel(
         getPaymentDateSwitchState()
     }
 
-    fun setDefaultPaymentDay(date: String) {
+    fun setDefaultPaymentDate(expirationDate: String, daysForClosingBill : String) {
         viewModelScope.async(Dispatchers.IO) {
-            firebaseAPI.setDefaultPaymentDay(date).fold(
+            firebaseAPI.setDefaultPaymentDay(expirationDate, daysForClosingBill).fold(
                 onSuccess = {
-                    dataStore.setDefaultPaymentDay(date)
-                    _setDefaultBudget.postValue(true)
+                    dataStore.setDefaultPaymentDay(expirationDate)
+                    dataStore.setDaysForClosingBill(daysForClosingBill)
+                    _setDefaultPaymentDate.postValue(true)
                 },
                 onFailure = {
-                    _setDefaultBudget.postValue(false)
+                    _setDefaultPaymentDate.postValue(false)
                 }
             )
 

@@ -557,7 +557,17 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
         viewModel.paymentDayLiveData.observe(viewLifecycleOwner) { paymentDay ->
             if(paymentDay != null){
-                val paymentDate = DateFunctions().paymentDate(paymentDay, binding.etPurchaseDate.text.toString())
+                viewModel.getDaysForClosingBill()
+            }
+        }
+
+        viewModel.daysForClosingBill.observe(viewLifecycleOwner) { daysForClosingBill ->
+            if(daysForClosingBill != null){
+                val paymentDate = DateFunctions().paymentDate(
+                    viewModel.paymentDayLiveData.value!!,
+                    daysForClosingBill ,
+                    binding.etPurchaseDate.text.toString()
+                )
                 binding.etPaymentDate.setText(paymentDate)
             }
         }

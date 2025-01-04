@@ -26,6 +26,7 @@ class DataStoreManager (context: Context) {
         val totalExpenseKey = stringPreferencesKey(StringConstants.DATA_STORE.TOTAL_EXPENSE)
         val defaultBudgetKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_BUDGET_KEY)
         val defaultPaymentDayKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_PAYMENT_DAY_KEY)
+        val daysForClosingBillKey = stringPreferencesKey(StringConstants.DATA_STORE.DAYS_FOR_CLOSING_BILL)
         val paymentDateSwitchKey = stringPreferencesKey(StringConstants.DATA_STORE.PAYMENT_DATE_SWITCH)
         val earningsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNINGS_LIST_KEY)
         val earningMonthsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNING_MONTHS_LIST_KEY)
@@ -137,15 +138,28 @@ class DataStoreManager (context: Context) {
         return Gson().fromJson(defaultBudget, object : TypeToken<String>() {}.type)
     }
 
-    suspend fun setDefaultPaymentDay(day : String){
+    suspend fun setDefaultPaymentDay(expirationDay : String){
         dataStore.edit { preferences ->
-            preferences[defaultPaymentDayKey] = day
+            preferences[defaultPaymentDayKey] = expirationDay
+        }
+    }
+
+    suspend fun setDaysForClosingBill(daysForClosingBill : String){
+        dataStore.edit { preferences ->
+            preferences[daysForClosingBillKey] = daysForClosingBill
         }
     }
 
     suspend fun getDefaultPaymentDay() : String?{
         val defaultPaymentDay = dataStore.data.map { preferences ->
             preferences[defaultPaymentDayKey]
+        }.first()
+        return Gson().fromJson(defaultPaymentDay, object : TypeToken<String?>() {}.type)
+    }
+
+    suspend fun getDaysForClosingBill() : String?{
+        val defaultPaymentDay = dataStore.data.map { preferences ->
+            preferences[daysForClosingBillKey]
         }.first()
         return Gson().fromJson(defaultPaymentDay, object : TypeToken<String?>() {}.type)
     }

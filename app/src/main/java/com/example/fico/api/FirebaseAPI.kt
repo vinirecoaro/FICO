@@ -1004,9 +1004,10 @@ class FirebaseAPI(
         return checkIfExistsOnDatabse(expenses)
     }
 
-    suspend fun setDefaultPaymentDay(date: String): Result<Unit> = withContext(Dispatchers.IO){
+    suspend fun setDefaultPaymentDay(paymentDay: String, daysForClosingBill : String): Result<Unit> = withContext(Dispatchers.IO){
         try{
-            default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY).setValue(date)
+            default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY).setValue(paymentDay)
+            default_expense_values.child(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL).setValue(daysForClosingBill)
             Result.success(Unit)
         }catch (e : Exception){
             Result.failure(e)
@@ -1028,5 +1029,22 @@ class FirebaseAPI(
                 paymentDay.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
             }
         return@withContext paymentDay
+    }
+
+    suspend fun getDaysForClosingBill(): Deferred<String> = withContext(Dispatchers.IO){
+        val daysForClosingBill = CompletableDeferred<String>()
+
+        default_expense_values.child(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL).get()
+            .addOnSuccessListener { snapshot ->
+                if(snapshot.value != null){
+                    daysForClosingBill.complete(snapshot.value.toString())
+                }else{
+                    daysForClosingBill.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
+                }
+            }
+            .addOnFailureListener {
+                daysForClosingBill.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
+            }
+        return@withContext daysForClosingBill
     }
 }

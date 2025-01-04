@@ -42,14 +42,14 @@ class DateFunctions {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun paymentDate(expirationDay: String, purchaseDateString : String?) : String{
+    fun paymentDate(expirationDay: String, daysForCLosingBill : String, purchaseDateString : String?) : String{
         val day = expirationDay.toInt()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         var purchaseDate = LocalDate.now()
         if(purchaseDateString != null){
             purchaseDate = LocalDate.parse(purchaseDateString, formatter)
         }
-        val closingDate = LocalDate.of(purchaseDate.year, purchaseDate.month, day).minusDays(7)
+        val closingDate = LocalDate.of(purchaseDate.year, purchaseDate.month, day).minusDays(daysForCLosingBill.toLong())
 
         val baseDate = if(purchaseDate.dayOfMonth < closingDate.dayOfMonth){
             LocalDate.of(purchaseDate.year, purchaseDate.month, day)

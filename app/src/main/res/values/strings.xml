@@ -72,8 +72,8 @@
     <string name="expiration_day">Dia de Vencimento</string>
     <string name="expiration">Vencimento</string>
     <string name="days_for_closing">Dias para o Fechamento</string>
-    <string name="payment_day_definition_success_message">Dia de pagamento padrão definido com sucesso</string>
-    <string name="payment_day_definition_fail_message">Falha ao definir dia de pagamento padrão</string>
+    <string name="set_default_payment_date_success_message">Data de pagamento padrão definido com sucesso</string>
+    <string name="set_default_payment_date_fail_message">Falha ao definir data de pagamento padrão</string>
     <string name="default_payment_date">Data de Pagamento Padrão</string>
     <string name="default_payment_day">Dia de Pagamento Padrão</string>
     <string name="define_default_payment_day">Definir dia padrão</string>
