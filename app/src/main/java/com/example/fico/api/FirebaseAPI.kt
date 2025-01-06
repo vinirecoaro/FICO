@@ -36,6 +36,7 @@ class FirebaseAPI(
     private lateinit var total_expenses_price : DatabaseReference
     private lateinit var expenses_information_per_month : DatabaseReference
     private lateinit var expense_list : DatabaseReference
+    private lateinit var recurring_expense_list : DatabaseReference
     private lateinit var default_expense_values : DatabaseReference
     private lateinit var earnings : DatabaseReference
     private lateinit var earningsList : DatabaseReference
@@ -47,6 +48,7 @@ class FirebaseAPI(
         total_expenses_price = expenses.child(StringConstants.DATABASE.TOTAL_EXPENSE)
         expenses_information_per_month = expenses.child(StringConstants.DATABASE.INFORMATION_PER_MONTH)
         expense_list = expenses.child(StringConstants.DATABASE.EXPENSES_LIST)
+        recurring_expense_list = expenses.child(StringConstants.DATABASE.RECURRING_EXPENSES_LIST)
         default_expense_values = expenses.child(StringConstants.DATABASE.DEFAULT_VALUES)
         earnings = user_root.child(StringConstants.DATABASE.EARNINGS)
         earningsList = earnings.child(StringConstants.DATABASE.EARNINGS_LIST)
