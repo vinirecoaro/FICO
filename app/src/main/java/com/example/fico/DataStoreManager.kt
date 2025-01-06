@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.RecurringExpense
 import com.example.fico.utils.constants.StringConstants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -29,6 +30,7 @@ class DataStoreManager (context: Context) {
         val daysForClosingBillKey = stringPreferencesKey(StringConstants.DATA_STORE.DAYS_FOR_CLOSING_BILL)
         val paymentDateSwitchKey = stringPreferencesKey(StringConstants.DATA_STORE.PAYMENT_DATE_SWITCH)
         val earningsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNINGS_LIST_KEY)
+        val recurringExpensesListKey = stringPreferencesKey(StringConstants.DATA_STORE.RECURRING_EXPENSES_LIST_KEY)
         val earningMonthsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNING_MONTHS_LIST_KEY)
     }
 
@@ -192,6 +194,30 @@ class DataStoreManager (context: Context) {
             val expenseListString = Gson().toJson(existingEarningList)
             preferences[earningsListKey] = expenseListString
         }
+    }
+
+    suspend fun updateRecurringExpensesList(recurringExpenseList : List<RecurringExpense>){
+        dataStore.edit { preferences ->
+            val existingRecurringExpensesListString = preferences[recurringExpensesListKey] ?: "[]"
+            val existingRecurringExpensesList = Gson().fromJson(existingRecurringExpensesListString, Array<RecurringExpense>::class.java).toMutableList()
+            existingRecurringExpensesList.addAll(recurringExpenseList)
+            val recurringExpensesListString = Gson().toJson(existingRecurringExpensesList)
+            preferences[recurringExpensesListKey] = recurringExpensesListString
+        }
+    }
+
+    suspend fun updateAndResetRecurringExpensesList(recurringExpenseList : List<RecurringExpense>){
+        val recurringExpensesListString = Gson().toJson(recurringExpenseList)
+        dataStore.edit { preferences ->
+            preferences[recurringExpensesListKey] = recurringExpensesListString
+        }
+    }
+
+    suspend fun getRecurringExpensesList() : List<RecurringExpense>{
+        val recurringExpensesListString = dataStore.data.map { preferences ->
+            preferences[recurringExpensesListKey]
+        }.first() ?: return emptyList()
+        return Gson().fromJson(recurringExpensesListString, object : TypeToken<List<RecurringExpense>>() {}.type)
     }
 
     suspend fun getEarningsList() : List<Earning>{

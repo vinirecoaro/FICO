@@ -1,6 +1,7 @@
 package com.example.fico.presentation.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,8 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringExpense
+import com.example.fico.model.Transaction
+import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
@@ -44,6 +47,8 @@ class AddTransactionViewModel(
     val isRecurringMode: LiveData<Boolean> = _isRecurringMode
     private val _addRecurringExpenseResult = MutableLiveData<Boolean>()
     val addRecurringExpenseResult: LiveData<Boolean> = _addRecurringExpenseResult
+    private val _recurringExpensesList = MutableLiveData<List<RecurringExpense>>()
+    val recurringExpensesList: LiveData<List<RecurringExpense>> = _recurringExpensesList
 
     init {
         getPaymentDateSwitchState()
@@ -256,7 +261,7 @@ class AddTransactionViewModel(
                 onSuccess = {
                     val recurringExpensesList = mutableListOf<RecurringExpense>()
                     recurringExpensesList.add(recurringExpense)
-                    //dataStore.updateEarningList(recurringExpensesList)
+                    dataStore.updateRecurringExpensesList(recurringExpensesList)
                     _addRecurringExpenseResult.postValue(true)
                 },
                 onFailure = {
@@ -264,6 +269,41 @@ class AddTransactionViewModel(
                 }
             )
         }
+    }
+
+    fun getRecurringExpensesList(){
+        viewModelScope.async {
+            try {
+                val recurringExpenseList = dataStore.getRecurringExpensesList()
+                if(recurringExpenseList.isNotEmpty()){
+                    var sortedExpenses = recurringExpenseList.sortedByDescending { it.description }
+                    _recurringExpensesList.value = sortedExpenses
+                }else{
+                    _recurringExpensesList.value = emptyList()
+                }
+            }catch (error: Exception){
+                Log.e("recurring expenses","Fail in get recurring expenses list: ${error.message}")
+            }
+        }
+    }
+
+    fun recurringExpenseToTransaction(recurringExpenseList : List<RecurringExpense>) : List<Transaction>{
+        val transactionList = mutableListOf<Transaction>()
+        for(recurringExpense in recurringExpenseList){
+            val transaction = Transaction(
+                id = recurringExpense.id,
+                price = recurringExpense.price,
+                description = recurringExpense.description,
+                category = recurringExpense.category,
+                paymentDate = recurringExpense.day,
+                purchaseDate = recurringExpense.day,
+                inputDateTime = recurringExpense.inputDateTime,
+                nOfInstallment = "1",
+                type = StringConstants.DATABASE.RECURRING_EXPENSE
+            )
+            transactionList.add(transaction)
+        }
+        return transactionList
     }
 
     suspend fun checkIfExistDefaultBudget(): Deferred<Boolean> {

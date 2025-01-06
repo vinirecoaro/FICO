@@ -67,6 +67,7 @@ class MainExpenseActivity : AppCompatActivity(){
         expensesViewModel.getDefaultPaymentDay()
         expensesViewModel.getDaysForClosingBill()
         expensesViewModel.getEarningsList()
+        expensesViewModel.getRecurringExpensesList()
     }
 
     private fun getUserEmail(){

@@ -29,9 +29,9 @@
     <string name="list">Lista</string>
     <string name="title_home">Home</string>
     <string name="title_add_expense">AddExpense</string>
-    <string name="purchase_in_installments">Compra Parcelada</string>
+    <string name="installment_expense">Despesa Parcelada</string>
     <string name="installments">Parcelas</string>
-    <string name="common_purchase">Compra Comum</string>
+    <string name="common_expense">Despesa Comum</string>
     <string name="filter">Filtro</string>
     <string name="forgot_my_password">Esqueci minha senha</string>
     <string name="send">Enviar</string>
@@ -172,7 +172,7 @@
     <string name="all">Todas</string>
     <string name="expenses_2">Despesas</string>
     <string name="earnings_2">Receitas</string>
-    <string name="recurring_expense">Compra Recorrente</string>
+    <string name="recurring_expense">Despesa Recorrente</string>
     <string name="add_recurring_expense">Adicionar Despesa Recorrente</string>
     <string name="edit_recurring_transaction">Editar Transação Recorrente</string>
     <string name="edit_recurring_transaction_message">Selecione o tipo da transação</string>

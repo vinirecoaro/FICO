@@ -21,6 +21,7 @@ class StringConstants private constructor() {
         const val AVAILABLE_NOW = "availableNow"
         const val EXPENSE = "expense"
         const val EXPENSES = "expenses"
+        const val RECURRING_EXPENSE = "recurring_expense"
         const val BUDGET = "budget"
         const val DEFAULT_BUDGET = "DefaultBudget"
         const val DEFAULT_VALUES = "DefaultValues"
@@ -147,6 +148,7 @@ class StringConstants private constructor() {
         const val DAYS_FOR_CLOSING_BILL = "days_for_closing_bill"
         const val PAYMENT_DATE_SWITCH = "PaymentDateSwitch"
         const val EARNINGS_LIST_KEY = "EarningsListKey"
+        const val RECURRING_EXPENSES_LIST_KEY = "RecurringExpensesListKey"
         const val EARNING_MONTHS_LIST_KEY = "EarningMonthsListKey"
 
     }

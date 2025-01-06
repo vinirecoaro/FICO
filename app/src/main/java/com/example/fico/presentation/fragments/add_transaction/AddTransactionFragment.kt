@@ -156,6 +156,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             arguments = null
         }
 
+        viewModel.getRecurringExpensesList()
+
     }
 
     override fun onPause() {
@@ -1144,7 +1146,11 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         recyclerView.adapter = recurringTransactionListAdapter
 
         //TODO Add recurring expense list
-        recurringTransactionListAdapter.updateTransactions(emptyList())
+
+        viewModel.recurringExpensesList.observe(viewLifecycleOwner){recurringExpenseList ->
+            val transactionList = viewModel.recurringExpenseToTransaction(recurringExpenseList)
+            recurringTransactionListAdapter.updateTransactions(transactionList)
+        }
 
         builder.setView(dialogView)
 

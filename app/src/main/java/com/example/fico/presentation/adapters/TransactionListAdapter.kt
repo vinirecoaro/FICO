@@ -54,11 +54,16 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
         val formattedPrice = currencyFormat.format(formattedNum)
         holder.price.text = formattedPrice
 
-        holder.date.text = item.purchaseDate
-
         val itemCategory = item.category
 
-        if(item.type == StringConstants.DATABASE.EXPENSE){
+        if(item.type == StringConstants.DATABASE.EXPENSE || item.type == StringConstants.DATABASE.RECURRING_EXPENSE){
+
+            if(item.type == StringConstants.DATABASE.EXPENSE){
+                holder.date.text = item.purchaseDate
+            }else{
+                val text = "Dia - ${item.purchaseDate}"
+                holder.date.text = text
+            }
 
             if(item.description.contains("Parcela") || item.description.contains("parcela")){
 
@@ -87,9 +92,13 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
             holder.itemView.setOnClickListener {
                 listener?.onListItemClick(position)
             }
-        }else{
+        }
+
+        else if(item.type == StringConstants.DATABASE.EARNING){
 
             holder.price.setTextColor(Color.GREEN)
+
+            holder.date.text = item.purchaseDate
 
             val categoryPathName = earningCategory.find{ it.description == itemCategory }
             if(categoryPathName != null){
@@ -105,7 +114,6 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
                 listener?.onListItemClick(position)
             }
         }
-
 
     }
 

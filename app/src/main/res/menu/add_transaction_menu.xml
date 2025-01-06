@@ -4,11 +4,11 @@
 
     <item
         android:id="@+id/add_expense_menu_common"
-        android:title="@string/common_purchase"
+        android:title="@string/common_expense"
         />
     <item
         android:id="@+id/add_expense_menu_installments"
-        android:title="@string/purchase_in_installments"
+        android:title="@string/installment_expense"
         />
     <item
         android:id="@+id/add_recurring_expense_menu_installments"

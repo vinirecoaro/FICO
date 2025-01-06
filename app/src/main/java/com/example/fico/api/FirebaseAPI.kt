@@ -825,13 +825,24 @@ class FirebaseAPI(
                     earningList.complete(snapshot)
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
             }
-
         })
-
         return@withContext earningList
+    }
+
+    suspend fun getRecurringExpensesList(): Deferred<DataSnapshot> = withContext(Dispatchers.IO){
+        val recurringExpensesList = CompletableDeferred<DataSnapshot>()
+        recurring_expense_list.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+                    recurringExpensesList.complete(snapshot)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+        return@withContext recurringExpensesList
     }
 
     suspend fun getExpenseMonths(): List<String> =
