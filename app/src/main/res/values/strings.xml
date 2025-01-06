@@ -153,10 +153,12 @@
     <string name="update_info_per_month_and_total_expense_failure_message">Falha ao atualizar dados</string>
     <string name="update_database_info_per_month_and_total_expense">Atualizar Dados do Banco de Dados</string>
     <string name="no_info_to_show_add_info">Sem informações para exibir. Adicione despesas e ganhos.</string>
-    <string name="add_expense_success_message">Gasto adicionado com sucesso</string>
-    <string name="add_expense_failure_message">Falha ao adicionar gasto</string>
+    <string name="add_expense_success_message">Despesa adicionada com sucesso</string>
+    <string name="add_expense_failure_message">Falha ao adicionar despesa</string>
     <string name="add_earning_success_message">Receita adicionada com sucesso</string>
     <string name="add_earning_failure_message">Falha ao adicionar receita</string>
+    <string name="add_recurring_expense_success_message">Despesa recorrente adicionada com sucesso</string>
+    <string name="add_recurring_expense_failure_message">Falha ao adicionar despesa recorrente</string>
     <string name="biometric_prompt_title">FICO</string>
     <string name="biometric_prompt_description">Desbloqueie seu celular</string>
     <string name="text_filter">Filtro de texto</string>

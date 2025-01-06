@@ -125,12 +125,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         adapter = CategoryListAdapter(categoriesList.getExpenseCategoryList().sortedBy { it.description }, this)
         binding.rvCategory.adapter = adapter
 
-        val recurringState = arguments?.getBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE) ?: false
-        if(recurringState){
-            viewModel.updateRecurringMode(recurringState)
-            arguments = null
-        }
-
         return rootView
     }
 
@@ -154,6 +148,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             requireContext().registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
             requireContext().registerReceiver(receiver, filter)
+        }
+
+        val recurringState = arguments?.getBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE) ?: false
+        if(recurringState){
+            viewModel.updateRecurringMode(recurringState)
+            arguments = null
         }
 
     }
@@ -437,12 +437,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                         )
                     ){
                         if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
-                            /*viewModel.addRecurringExpense(
+                            viewModel.addRecurringExpense(
                                 binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
                                 binding.etRecurringTransactionDay.text.toString()
-                            )*/
+                            )
                         }else{
                             Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
                         }
@@ -636,6 +636,24 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         viewModel.isRecurringMode.observe(viewLifecycleOwner){state ->
             if(state){
                 changeComponentsToRecurringExpenseState()
+            }
+        }
+
+        viewModel.addRecurringExpenseResult.observe(viewLifecycleOwner){ result ->
+            hideKeyboard(requireContext(), binding.btSave)
+            clearUserInputs()
+            if (result) {
+                Snackbar.make(
+                    binding.btSave,
+                    getString(R.string.add_recurring_expense_success_message),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } else {
+                Snackbar.make(
+                    binding.btSave,
+                    getString(R.string.add_recurring_expense_failure_message),
+                    Snackbar.LENGTH_LONG)
+                    .show()
             }
         }
 
@@ -1022,6 +1040,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.etDescription.setText("")
         binding.actvCategory.setText("")
         binding.etInstallments.setText("")
+        binding.etRecurringTransactionDay.setText("")
         adapter.clearCategorySelection()
     }
 

@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.RecurringExpense
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.model.User
 import com.example.fico.utils.constants.StringConstants
@@ -331,6 +332,22 @@ class FirebaseAPI(
         }
     }
 
+    suspend fun addRecurringExpense(
+        recurringExpense : RecurringExpense
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        val updates = mutableMapOf<String, Any>()
+
+        return@withContext try {
+            updates.putAll(generateMapToUpdateUserRecurringExpenses(recurringExpense))
+
+            recurring_expense_list.updateChildren(updates)
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun editExpense(
         expenseList: MutableList<Expense>,
         updatedTotalExpense: String,
@@ -420,6 +437,23 @@ class FirebaseAPI(
             earning.date
         updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
             earning.inputDateTime
+
+        return updatesOfEarningList
+    }
+
+    private fun generateMapToUpdateUserRecurringExpenses(recurringExpense : RecurringExpense): MutableMap<String, Any> {
+        val updatesOfEarningList = mutableMapOf<String, Any>()
+
+        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.PRICE}"] =
+            recurringExpense.price
+        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
+            recurringExpense.description
+        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.CATEGORY}"] =
+            recurringExpense.category
+        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.DAY}"] =
+            recurringExpense.day
+        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
+            recurringExpense.inputDateTime
 
         return updatesOfEarningList
     }

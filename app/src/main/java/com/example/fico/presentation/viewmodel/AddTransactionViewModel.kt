@@ -14,6 +14,7 @@ import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.RecurringExpense
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
@@ -41,6 +42,8 @@ class AddTransactionViewModel(
     val addEarningResult: LiveData<Boolean> = _addEarningResult
     private val _isRecurringMode = MutableLiveData<Boolean>()
     val isRecurringMode: LiveData<Boolean> = _isRecurringMode
+    private val _addRecurringExpenseResult = MutableLiveData<Boolean>()
+    val addRecurringExpenseResult: LiveData<Boolean> = _addRecurringExpenseResult
 
     init {
         getPaymentDateSwitchState()
@@ -238,26 +241,26 @@ class AddTransactionViewModel(
 
             val inputTime = FormatValuesToDatabase().timeNow()
 
-            val earningId = "${inputTime}-${randonNum}"
+            val id = "${inputTime}-${randonNum}"
 
-            val earning = Earning(
-                earningId,
+            val recurringExpense = RecurringExpense(
+                id,
                 formattedPrice,
                 description,
                 category,
-                "",
+                day,
                 formattedInputDate
             )
 
-            firebaseAPI.addEarning(earning).fold(
+            firebaseAPI.addRecurringExpense(recurringExpense).fold(
                 onSuccess = {
-                    val earningList = mutableListOf<Earning>()
-                    earningList.add(earning)
-                    dataStore.updateEarningList(earningList)
-                    _addEarningResult.postValue(true)
+                    val recurringExpensesList = mutableListOf<RecurringExpense>()
+                    recurringExpensesList.add(recurringExpense)
+                    //dataStore.updateEarningList(recurringExpensesList)
+                    _addRecurringExpenseResult.postValue(true)
                 },
                 onFailure = {
-                    _addEarningResult.postValue(false)
+                    _addRecurringExpenseResult.postValue(false)
                 }
             )
         }

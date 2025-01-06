@@ -14,6 +14,7 @@ class StringConstants private constructor() {
         const val PURCHASE_DATE = "purchase_date"
         const val INPUT_DATE_TIME = "input_date_time"
         const val DATE = "date"
+        const val DAY = "day"
         const val DESCRIPTION = "description"
         const val CATEGORY = "category"
         const val INFORMATION_PER_MONTH = "informationPerMonth"
