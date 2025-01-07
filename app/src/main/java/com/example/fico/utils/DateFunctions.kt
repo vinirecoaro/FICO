@@ -61,6 +61,14 @@ class DateFunctions {
         return baseDate.format(formatter)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun purchaseDateForRecurringExpense(day : String) : String{
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val currentDate = LocalDate.now()
+        val purchaseDate = LocalDate.of(currentDate.year, currentDate.month, day.toInt())
+        return purchaseDate.format(formatter)
+    }
+
     fun formatMonthValueFromFilterTransactionListToMonthYear(filterValue : String) : Pair<Int, Int>{
         val date = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(filterValue)
         val dateInfo = date.split("-")

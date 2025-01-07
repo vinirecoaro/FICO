@@ -217,6 +217,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         binding.actvDate.setOnClickListener {
             binding.actvDate.showDropDown()
         }
+
         binding.actvDate.setOnItemClickListener { parent, view, position, id ->
             val selectedOption = parent.getItemAtPosition(position).toString()
             viewModel.getExpenseList(selectedOption)
@@ -231,6 +232,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 binding.btAllTransacList.isClickable = false
             }
         }
+
         binding.ivClearFilter.setOnClickListener {
             binding.actvDate.setText("")
             viewModel.getEarningList("")

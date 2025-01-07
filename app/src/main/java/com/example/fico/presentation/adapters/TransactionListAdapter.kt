@@ -61,8 +61,10 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
             if(item.type == StringConstants.DATABASE.EXPENSE){
                 holder.date.text = item.purchaseDate
             }else{
-                val text = "Dia - ${item.purchaseDate}"
-                holder.date.text = text
+                if(item.purchaseDate != ""){
+                    val text = "Dia - ${item.purchaseDate}"
+                    holder.date.text = text
+                }
             }
 
             if(item.description.contains("Parcela") || item.description.contains("parcela")){

@@ -54,10 +54,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.databinding.FragmentAddTransactionBinding
+import com.example.fico.model.RecurringExpense
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
+import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.utils.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
@@ -67,6 +69,8 @@ import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
@@ -435,18 +439,26 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                             binding.etPrice,
                             binding.etDescription,
                             binding.actvCategory,
-                            binding.etRecurringTransactionDay
                         )
                     ){
-                        if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
+                        if(binding.etRecurringTransactionDay.text != null && binding.etRecurringTransactionDay.text.toString() != ""){
+                            if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
+                                viewModel.addRecurringExpense(
+                                    binding.etPrice.text.toString(),
+                                    binding.etDescription.text.toString(),
+                                    binding.actvCategory.text.toString(),
+                                    binding.etRecurringTransactionDay.text.toString()
+                                )
+                            }else{
+                                Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                            }
+                        }else{
                             viewModel.addRecurringExpense(
                                 binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
-                                binding.etRecurringTransactionDay.text.toString()
+                                ""
                             )
-                        }else{
-                            Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
                         }
                     }
                 }
@@ -1145,18 +1157,38 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         recurringTransactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
         recyclerView.adapter = recurringTransactionListAdapter
 
-        //TODO Add recurring expense list
-
-        viewModel.recurringExpensesList.observe(viewLifecycleOwner){recurringExpenseList ->
-            val transactionList = viewModel.recurringExpenseToTransaction(recurringExpenseList)
-            recurringTransactionListAdapter.updateTransactions(transactionList)
-        }
-
         builder.setView(dialogView)
 
         val dialog = builder.create()
         dialog.show()
 
+        // Listeners
+        viewModel.recurringExpensesList.observe(viewLifecycleOwner){recurringExpenseList ->
+            val transactionList = viewModel.recurringExpenseToTransaction(recurringExpenseList)
+            recurringTransactionListAdapter.updateTransactions(transactionList)
+            recurringTransactionListAdapter.setOnItemClickListener { position ->
+                val selectItem = recurringExpenseList[position]
+                fillFieldsWithRecurringExpense(selectItem)
+                dialog.cancel()
+            }
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun fillFieldsWithRecurringExpense(recurringExpense : RecurringExpense){
+        val formattedPrice = BigDecimal(recurringExpense.price).setScale(2, RoundingMode.HALF_UP).toString()
+        binding.etPrice.setText(formattedPrice)
+        binding.etDescription.setText(recurringExpense.description)
+        binding.actvCategory.setText(recurringExpense.category)
+        adapter.selectCategory(recurringExpense.category)
+        if(recurringExpense.day != ""){
+            val date = DateFunctions().purchaseDateForRecurringExpense(recurringExpense.day)
+            binding.etPurchaseDate.setText(date)
+            if(binding.swtPaymentDay.isChecked){
+                viewModel.getDefaultPaymentDay()
+            }
+        }
     }
 
 }
