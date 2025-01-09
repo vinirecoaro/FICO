@@ -20,7 +20,7 @@ class ExpenseMonthsListAdapter(private val context : Context, private var expens
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val cardView : CardView = itemView.findViewById(R.id.cv_expense_month)
-        val date : TextView = itemView.findViewById(R.id.tv_expense_month)
+        val date : TextView = itemView.findViewById(R.id.tv_expense_month_eml_adapter)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

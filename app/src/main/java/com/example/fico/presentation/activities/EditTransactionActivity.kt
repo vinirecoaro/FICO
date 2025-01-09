@@ -24,6 +24,7 @@ import com.example.fico.model.Expense
 import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.ActivityEditTransactionBinding
+import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.utils.constants.CategoriesList
@@ -44,7 +45,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     private val viewModel : EditTransactionViewModel by inject()
     private lateinit var adapter: CategoryListAdapter
     private var expenseIdLength = 0
-    lateinit var editingExpense : Expense
+    lateinit var editingTransaction : Transaction
     private val categoriesList : CategoriesList by inject()
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -54,7 +55,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
 
         setColorBasedOnTheme()
 
-        binding.editExpenseToolbar.setTitle("Editar Gasto")
+        binding.editExpenseToolbar.setTitle(getString(R.string.edit))
         binding.editExpenseToolbar.setTitleTextColor(Color.WHITE)
 
         //Create category chooser
@@ -64,47 +65,48 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
 
         val intent = intent
         if (intent != null) {
-            val expense = intent.getParcelableExtra<Expense>("expense")
-            if (expense != null) {
-                editingExpense = expense
-                expenseIdLength = expense.id.length
-                //Verify if is a installment expense
-                if (expenseIdLength == 41) {
-                    binding.tilInstallments.visibility = View.VISIBLE
-                    binding.tilPaymentDateEdit.hint = getString(R.string.payment_date_field_installment_hint)
+            val transaction = intent.getSerializableExtra(StringConstants.TRANSACTION_LIST.TRANSACTION) as? Transaction
+            if (transaction != null) {
+                adapter.selectCategory(transaction.category)
 
-                    val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(
-                        expense.price,
-                        expense.id
-                    )
-                    val description =
-                        FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
-                    val nOfInstallment =
-                        FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id)
-                    val initialDate = FormatValuesFromDatabase().installmentExpenseInitialDate(
-                        expense.id,
-                        expense.paymentDate
-                    )
+                if(transaction.type == StringConstants.DATABASE.EXPENSE){
+                    editingTransaction = transaction
+                    expenseIdLength = transaction.id.length
+                    //Verify if is a installment expense
+                    if (expenseIdLength == 41) {
+                        binding.tilInstallments.visibility = View.VISIBLE
+                        binding.tilPaymentDateEdit.hint = getString(R.string.payment_date_field_installment_hint)
 
-                    binding.etPrice.setText(priceFormatted)
-                    binding.etDescription.setText(description)
-                    binding.actvCategory.setText(expense.category)
-                    binding.etInstallments.setText(nOfInstallment)
-                    binding.etPaymentDateEdit.setText(initialDate)
-                    binding.etPurchaseDateEdit.setText(expense.purchaseDate)
-                } else {
+                        val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(
+                            transaction.price,
+                            transaction.id
+                        )
+                        val description =
+                            FormatValuesFromDatabase().installmentExpenseDescription(transaction.description)
+                        val nOfInstallment =
+                            FormatValuesFromDatabase().installmentExpenseNofInstallment(transaction.id)
+                        val initialDate = FormatValuesFromDatabase().installmentExpenseInitialDate(
+                            transaction.id,
+                            transaction.paymentDate
+                        )
 
-                    val priceFormatted = FormatValuesFromDatabase().price(expense.price)
+                        binding.etPrice.setText(priceFormatted)
+                        binding.etDescription.setText(description)
+                        binding.actvCategory.setText(transaction.category)
+                        binding.etInstallments.setText(nOfInstallment)
+                        binding.etPaymentDateEdit.setText(initialDate)
+                        binding.etPurchaseDateEdit.setText(transaction.purchaseDate)
+                    } else {
 
-                    binding.etPrice.setText(priceFormatted)
-                    binding.etDescription.setText(expense.description)
-                    binding.actvCategory.setText(expense.category)
-                    binding.etPaymentDateEdit.setText(expense.paymentDate)
-                    binding.etPurchaseDateEdit.setText(expense.purchaseDate)
+                        val priceFormatted = FormatValuesFromDatabase().price(transaction.price)
+
+                        binding.etPrice.setText(priceFormatted)
+                        binding.etDescription.setText(transaction.description)
+                        binding.actvCategory.setText(transaction.category)
+                        binding.etPaymentDateEdit.setText(transaction.paymentDate)
+                        binding.etPurchaseDateEdit.setText(transaction.purchaseDate)
+                    }
                 }
-            }
-            if (expense != null) {
-                adapter.selectCategory(expense.category)
             }
         }
 
@@ -122,39 +124,19 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     private fun setUpListeners() {
         binding.btSave.setOnClickListener {
             binding.btSave.isEnabled = false
-            val expense = intent.getParcelableExtra<Expense>("expense")
-            lifecycleScope.launch(Dispatchers.Main) {
-                // Verify if is commom expense
-                if (binding.tilInstallments.visibility == View.GONE) {
-                    if (verifyFields(
-                            binding.etPrice,
-                            binding.etDescription,
-                            binding.actvCategory,
-                            binding.etPaymentDateEdit,
-                            binding.etPurchaseDateEdit
-                        )
-                    ) {
-                        viewModel.saveEditExpense(
-                            expense!!,
-                            binding.etPrice.text.toString(),
-                            binding.etDescription.text.toString(),
-                            binding.actvCategory.text.toString(),
-                            binding.etPaymentDateEdit.text.toString(),
-                            binding.etPurchaseDateEdit.text.toString(),
-                            false
-                        )
-                    }
-                } else if (binding.tilInstallments.visibility == View.VISIBLE) {
-                    if (verifyFields(
-                            binding.etPrice,
-                            binding.etDescription,
-                            binding.actvCategory,
-                            binding.etInstallments,
-                            binding.etPaymentDateEdit,
-                            binding.etPurchaseDateEdit
-                        )
-                    ) {
-                        if (binding.etInstallments.text.toString() != "0") {
+            if(editingTransaction.type == StringConstants.DATABASE.EXPENSE){
+                val expense = editingTransaction.toExpense()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    // Verify if is commom expense
+                    if (binding.tilInstallments.visibility == View.GONE) {
+                        if (verifyFields(
+                                binding.etPrice,
+                                binding.etDescription,
+                                binding.actvCategory,
+                                binding.etPaymentDateEdit,
+                                binding.etPurchaseDateEdit
+                            )
+                        ) {
                             viewModel.saveEditExpense(
                                 expense!!,
                                 binding.etPrice.text.toString(),
@@ -162,21 +144,42 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                 binding.actvCategory.text.toString(),
                                 binding.etPaymentDateEdit.text.toString(),
                                 binding.etPurchaseDateEdit.text.toString(),
-                                true,
-                                binding.etInstallments.text.toString().toInt()
+                                false
                             )
-                        } else {
-                            Toast.makeText(
-                                this@EditTransactionActivity,
-                                "O número de parcelas não pode ser 0",
-                                Toast.LENGTH_LONG
-                            ).show()
+                        }
+                    } else if (binding.tilInstallments.visibility == View.VISIBLE) {
+                        if (verifyFields(
+                                binding.etPrice,
+                                binding.etDescription,
+                                binding.actvCategory,
+                                binding.etInstallments,
+                                binding.etPaymentDateEdit,
+                                binding.etPurchaseDateEdit
+                            )
+                        ) {
+                            if (binding.etInstallments.text.toString() != "0") {
+                                viewModel.saveEditExpense(
+                                    expense!!,
+                                    binding.etPrice.text.toString(),
+                                    binding.etDescription.text.toString(),
+                                    binding.actvCategory.text.toString(),
+                                    binding.etPaymentDateEdit.text.toString(),
+                                    binding.etPurchaseDateEdit.text.toString(),
+                                    true,
+                                    binding.etInstallments.text.toString().toInt()
+                                )
+                            } else {
+                                Toast.makeText(
+                                    this@EditTransactionActivity,
+                                    "O número de parcelas não pode ser 0",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     }
                 }
             }
             binding.btSave.isEnabled = true
-
         }
 
         binding.ivPaymentDate.setOnClickListener {
@@ -296,7 +299,8 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                     .setTitle("Apagar gasto")
                     .setMessage("Prosseguir com a exclusão deste gasto?")
                     .setPositiveButton("Confirmar") { dialog, which ->
-                        viewModel.deleteInstallmentExpense(editingExpense)
+                        val expense = editingTransaction.toExpense()
+                        viewModel.deleteInstallmentExpense(expense)
                     }
                     .show()
                 return true

@@ -414,23 +414,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     fun editExpense(transaction: Transaction) {
         val intent = Intent(requireContext(), EditTransactionActivity::class.java)
-        if(transaction.type == StringConstants.DATABASE.EXPENSE){
-            val sureExpense = Expense(
-                id = transaction.id,
-                price = transaction.price,
-                description = transaction.description,
-                category = transaction.category,
-                paymentDate = transaction.paymentDate,
-                purchaseDate = transaction.purchaseDate,
-                inputDateTime = transaction.inputDateTime,
-                nOfInstallment = transaction.nOfInstallment
-            )
-            intent.putExtra("expense", sureExpense)
-            startActivityForResult(intent, StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)
-        }else{
-            //TODO edit earning
-            Toast.makeText(requireContext(),"Em construção, aguarde !!", Toast.LENGTH_LONG).show()
-        }
+        intent.putExtra(StringConstants.TRANSACTION_LIST.TRANSACTION, transaction)
+        startActivityForResult(intent, StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
