@@ -83,7 +83,10 @@
     <string name="type_the_day">Digite o dia</string>
     <string name="invalid_day">Dia inválido</string>
     <string name="payment_day_info_message">Dados utilizados para facilitar a inclusão de compras feitas com cartão de crédito.\nInformar o dia de vencimento e quantos dias para o fechamento da fatura do cartão de crédito.</string>
+    <string name="confirm">Confirmar</string>
     <string name="delete">Apagar</string>
+    <string name="delete_expense">Apagar Despesa</string>
+    <string name="delete_expense_dialog_message">Prosseguir com a exclusão desta despesa?</string>
     <string name="default_budget_activity_title">Orçamento padrão</string>
     <string name="default_budget_tip_message">Definir qual será o limite de gasto padrão para todos os mesas sem definição de orçamento</string>
     <string name="change_default_budget_success_message">Orçamento padrão definido com sucesso</string>
@@ -179,6 +182,7 @@
     <string name="edit_recurring_transaction_message">Selecione o tipo da transação</string>
     <string name="edit_recurring_transaction_message_step_2">Selecione o recurso que deseja acessar</string>
     <string name="edit">Editar</string>
+    <string name="edit_earning">Editar Receita</string>
 
 
 </resources>

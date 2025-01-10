@@ -14,6 +14,7 @@ data class Transaction(
     var nOfInstallment: String = "1",
     var type: String
 ) : Serializable {
+
     fun toExpense() : Expense{
         return Expense(
             this.id,
@@ -24,6 +25,17 @@ data class Transaction(
             this.purchaseDate,
             this.inputDateTime,
             this.nOfInstallment
+        )
+    }
+
+    fun toEarning() : Earning{
+        return Earning(
+            this.id,
+            this.price,
+            this.description,
+            this.category,
+            this.paymentDate,
+            this.inputDateTime,
         )
     }
 }

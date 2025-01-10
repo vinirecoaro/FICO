@@ -3,6 +3,7 @@ package com.example.fico.presentation.activities
 import android.app.Dialog
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -36,6 +37,8 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.defaultPaymentDateConfigurationToolbar.setTitle(getString(R.string.default_payment_date))
+        binding.defaultPaymentDateConfigurationToolbar.setTitleTextColor(Color.WHITE)
+
 
         //Insert a back button on Navigation bar
         setSupportActionBar(binding.defaultPaymentDateConfigurationToolbar)

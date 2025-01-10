@@ -46,7 +46,7 @@ class DateFunctions {
         val day = expirationDay.toInt()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         var purchaseDate = LocalDate.now()
-        if(purchaseDateString != null){
+        if( purchaseDateString != "" || purchaseDateString != null){
             purchaseDate = LocalDate.parse(purchaseDateString, formatter)
         }
         val closingDate = LocalDate.of(purchaseDate.year, purchaseDate.month, day).minusDays(daysForCLosingBill.toLong())

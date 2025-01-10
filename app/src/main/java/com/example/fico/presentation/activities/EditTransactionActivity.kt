@@ -47,6 +47,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     private var expenseIdLength = 0
     lateinit var editingTransaction : Transaction
     private val categoriesList : CategoriesList by inject()
+    private lateinit var menu : Menu
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +68,6 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         if (intent != null) {
             val transaction = intent.getSerializableExtra(StringConstants.TRANSACTION_LIST.TRANSACTION) as? Transaction
             if (transaction != null) {
-                adapter.selectCategory(transaction.category)
 
                 if(transaction.type == StringConstants.DATABASE.EXPENSE){
                     editingTransaction = transaction
@@ -107,6 +107,12 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                         binding.etPurchaseDateEdit.setText(transaction.purchaseDate)
                     }
                 }
+
+                else if(transaction.type == StringConstants.DATABASE.EARNING){
+                    changeComponentsToEarningState()
+                }
+
+                adapter.selectCategory(transaction.category)
             }
         }
 
@@ -118,6 +124,42 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
 
         setMaxLength(binding.etInstallments, 3)
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.edit_expense_menu, menu)
+        this.menu = menu!!
+        val deleteMenuItem = menu?.findItem(R.id.edit_expense_menu_delete)
+        // Check if expense is installment
+        if (expenseIdLength == 41) {
+            deleteMenuItem!!.isVisible = true
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.edit_expense_menu_delete -> {
+                //delete installment expense
+                if(expenseIdLength == 41){
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle(getString(R.string.delete_expense))
+                        .setMessage(getString(R.string.delete_expense_dialog_message))
+                        .setPositiveButton(R.string.confirm) { dialog, which ->
+                            val expense = editingTransaction.toExpense()
+                            viewModel.deleteInstallmentExpense(expense)
+                        }
+                        .show()
+                }
+                //delete recurring expense
+                else if (editingTransaction.type == StringConstants.DATABASE.RECURRING_EXPENSE){
+                    // TODO
+                }
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -176,6 +218,19 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                 ).show()
                             }
                         }
+                    }
+                }
+            }
+            else if (editingTransaction.type == StringConstants.DATABASE.EARNING){
+                val earning = editingTransaction.toEarning()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    if(verifyFields(
+                            binding.etPrice,
+                            binding.etDescription,
+                            binding.actvCategory,
+                            binding.etPaymentDateEdit)
+                        ){
+
                     }
                 }
             }
@@ -282,34 +337,6 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.edit_expense_menu, menu)
-        val deleteMenuItem = menu?.findItem(R.id.edit_expense_menu_delete)
-        // Check if expense is installment
-        if (expenseIdLength == 41) {
-            deleteMenuItem!!.isVisible = true
-        }
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.edit_expense_menu_delete -> {
-                MaterialAlertDialogBuilder(this)
-                    .setTitle("Apagar gasto")
-                    .setMessage("Prosseguir com a exclusão deste gasto?")
-                    .setPositiveButton("Confirmar") { dialog, which ->
-                        val expense = editingTransaction.toExpense()
-                        viewModel.deleteInstallmentExpense(expense)
-                    }
-                    .show()
-                return true
-            }
-
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
     private fun verifyFields(vararg text: EditText): Boolean {
         for (i in text) {
             if (i.text.toString() == "" || i == null) {
@@ -382,6 +409,18 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
 
     override fun onCategorySelected(description: String) {
         binding.actvCategory.setText(description)
+    }
+
+    private fun changeComponentsToEarningState(){
+        binding.editExpenseToolbar.setTitle(getString(R.string.edit_earning))
+        binding.tilPurchaseDateEdit.visibility = View.GONE
+        binding.etPurchaseDateEdit.visibility = View.GONE
+        binding.ivPurchaseDateEdit.visibility = View.GONE
+        binding.ivArrowUpGetPurchaseDateEdit.visibility = View.GONE
+        binding.etPaymentDateEdit.hint = getString(R.string.add_date)
+        binding.tilInstallments.visibility = View.GONE
+        binding.etInstallments.visibility = View.GONE
+        adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
 
 }
