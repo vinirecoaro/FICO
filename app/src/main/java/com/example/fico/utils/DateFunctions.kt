@@ -1,6 +1,7 @@
 package com.example.fico.utils
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
@@ -46,7 +47,7 @@ class DateFunctions {
         val day = expirationDay.toInt()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         var purchaseDate = LocalDate.now()
-        if( purchaseDateString != "" || purchaseDateString != null){
+        if(purchaseDateString != null && purchaseDateString != ""){
             purchaseDate = LocalDate.parse(purchaseDateString, formatter)
         }
         val closingDate = LocalDate.of(purchaseDate.year, purchaseDate.month, day).minusDays(daysForCLosingBill.toLong())

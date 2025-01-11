@@ -70,6 +70,8 @@ class TransactionListViewModel(
     val dateFilterState : LiveData<Boolean> = _dateFilterState
     private val _dateFilterValue = MutableLiveData<Pair<String,String>>()
     val dateFilterValue : LiveData<Pair<String,String>> = _dateFilterValue
+    private val _returningFromEdit = MutableLiveData<Boolean>()
+    val returningFromEdit : LiveData<Boolean> = _returningFromEdit
 
 
     fun updateFilter(filter: String) {
@@ -430,6 +432,7 @@ class TransactionListViewModel(
         val filteredList = mutableListOf<Transaction>()
         filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
         _filteredTransactionsListLiveData.postValue(filteredList)
+        _typeFilteredListLiveData.value = filteredList
         _textFilterValues.postValue((_textFilterValues.value ?: mutableListOf()).apply {
             add(filter)
         })
@@ -482,6 +485,7 @@ class TransactionListViewModel(
         _dateFilterValue.value = dates
         filteredList.addAll(currentList.filter { isDateInRange(it.paymentDate, dates.first, dates.second) })
         _filteredTransactionsListLiveData.postValue(filteredList)
+        _typeFilteredListLiveData.value = filteredList
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -539,6 +543,14 @@ class TransactionListViewModel(
                 _typeFilteredListLiveData.postValue(justEarningList)
             }
         }
+    }
+
+    fun changeReturningFromEditState(state : Boolean){
+        _returningFromEdit.value = state
+    }
+
+    fun updateTypeFilteredList(){
+
     }
 
 }

@@ -118,8 +118,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getExpenseList(binding.actvDate.text.toString())
-
+        if(viewModel.returningFromEdit.value == null || viewModel.returningFromEdit.value == false){
+            viewModel.getExpenseList(binding.actvDate.text.toString())
+        }else{
+            viewModel.changeReturningFromEditState(false)
+        }
         // Initial selected button on toggle group
         binding.tbTransacList.check(binding.btAllTransacList.id)
         binding.btAllTransacList.isClickable = false
@@ -145,7 +148,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            //TODO Change function and instructions to export expenses to file
             R.id.expense_list_menu_generate_excel_file -> {
                 if (checkPermission()){
                     generateFileAndShare()
@@ -253,12 +255,12 @@ class TransactionListFragment : Fragment(), XLSInterface {
         viewModel.transactionsListLiveData.observe(viewLifecycleOwner){ transactionsList ->
             transactionListAdapter.updateTransactions(transactionsList)
             updateTransactionTotalValue(transactionsList)
-            transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
+            /*transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
                 override fun onListItemClick(position: Int) {
                     val selectItem = transactionsList[position]
                     editExpense(selectItem)
                 }
-            })
+            })*/
         }
 
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
@@ -399,6 +401,12 @@ class TransactionListFragment : Fragment(), XLSInterface {
         viewModel.typeFilteredListLiveData.observe(viewLifecycleOwner){ transacList ->
             transactionListAdapter.updateTransactions(transacList)
             updateTransactionTotalValue(transacList)
+            transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
+                override fun onListItemClick(position: Int) {
+                    val selectItem = transacList[position]
+                    editExpense(selectItem)
+                }
+            })
         }
 
     }
@@ -423,6 +431,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         // Check if edit expense was successfully completed
         if(requestCode == StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE){
+            viewModel.changeReturningFromEditState(true)
             if(resultCode == Activity.RESULT_OK){
                 Snackbar.make(
                     binding.rvExpenseList,
