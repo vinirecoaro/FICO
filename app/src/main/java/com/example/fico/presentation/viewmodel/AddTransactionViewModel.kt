@@ -88,7 +88,8 @@ class AddTransactionViewModel(
             val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
                 expense,
                 installment,
-                nOfInstallments
+                nOfInstallments,
+                false
             )
 
             val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(

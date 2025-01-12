@@ -281,7 +281,8 @@ class TransactionListViewModel(
             val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
                 expense,
                 installment,
-                nOfInstallments
+                nOfInstallments,
+                false
             )
 
             val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
@@ -557,7 +558,20 @@ class TransactionListViewModel(
 
             if(!currentList.isNullOrEmpty()){
                 currentList.forEach { transaction ->
-                    filteredTransactionList.addAll(updatedTransactionList.filter { it.id == transaction.id && it.type == transaction.type })
+                    val commondId = if(transaction.id.length > 25){
+                        transaction.id.substring(0,25)
+                    }else{
+                        transaction.id
+                    }
+                    filteredTransactionList.addAll(updatedTransactionList.filter {
+                        val transactDate = FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate)
+                        val filterDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
+                        if(it.id.length > 25){
+                            it.id.substring(0,25) == commondId && it.type == transaction.type && transactDate == filterDate
+                        }else{
+                            it.id == commondId && it.type == transaction.type && transactDate == filterDate
+                        }
+                     })
                 }
             }
 

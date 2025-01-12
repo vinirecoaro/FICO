@@ -97,7 +97,7 @@ class UploadFile : Service() {
 
                         val _expense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
 
-                        val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt())
+                        val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt(), false)
 
                         for(expenseFromExpenseList in expenseList){
                             masterExpenseList.expenseList.add(expenseFromExpenseList)

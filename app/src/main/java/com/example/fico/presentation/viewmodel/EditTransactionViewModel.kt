@@ -91,7 +91,7 @@ class EditTransactionViewModel(
                 oldExpenseFormatted
             )
 
-            val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(newExpense, installment, nOfInstallments)
+            val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(newExpense, installment, nOfInstallments, true)
 
             firebaseAPI.editExpense(expenseList, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment).fold(
                 onSuccess = {
@@ -115,7 +115,8 @@ class EditTransactionViewModel(
                     val oldExpenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
                         oldExpenseFormatted,
                         installment,
-                        oldExpenseFormatted.nOfInstallment.toInt()
+                        oldExpenseFormatted.nOfInstallment.toInt(),
+                        true
                     )
                     oldExpenseList.forEach {oldExpense ->
                         val oldExpenseDateYYYYmm = DateFunctions().YYYYmmDDtoYYYYmm(oldExpense.paymentDate)

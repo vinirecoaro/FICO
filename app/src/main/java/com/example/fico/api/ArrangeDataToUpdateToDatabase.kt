@@ -35,17 +35,11 @@ class ArrangeDataToUpdateToDatabase() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addToExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int) : MutableList<Expense>{
+    fun addToExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int, isEdit : Boolean) : MutableList<Expense>{
 
         val expenseList : MutableList<Expense> = mutableListOf()
         val randonNum = generateRandomAddress(5)
         val inputTime = FormatValuesToDatabase().timeNow()
-
-        val commonId = if(expense.id.length > 25){
-            expense.id.substring(0,25)
-        }else{
-            expense.id
-        }
 
         if(installment){
 
@@ -67,15 +61,31 @@ class ArrangeDataToUpdateToDatabase() {
                 }
 
                 var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime), i)
-                val expenseId = "${commonId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
-                formattedExpense.id = expenseId
+
+                if(isEdit){
+                    val commonExpenseId = expense.id.substring(0,25)
+                    val expenseId = "${commonExpenseId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+
+                    formattedExpense.id = expenseId
+                }else{
+                    val expenseId = "${formattedExpense.paymentDate}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+
+                    formattedExpense.id = expenseId
+                }
 
                 expenseList.add(formattedExpense)
 
             }
         }else{
-            /*val expenseId = commonId*/
-            val formattedExpense = Expense(commonId, expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
+
+            val formattedExpense = Expense("", expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
+
+            if (isEdit){
+                formattedExpense.id = expense.id
+            }else{
+                val expenseId = "${formattedExpense.paymentDate}-${inputTime}-${randonNum}"
+                formattedExpense.id = expenseId
+            }
 
             expenseList.add(formattedExpense)
         }
