@@ -415,7 +415,7 @@ class TransactionListViewModel(
             )
         }
         val transactionListSorted = transactionListTemp.toList().sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
-        _typeFilteredListLiveData.value = transactionListSorted
+        _typeFilteredListLiveData.postValue(transactionListSorted)
         _transactionsListLiveData.postValue(transactionListSorted)
     }
 
@@ -432,7 +432,7 @@ class TransactionListViewModel(
         val filteredList = mutableListOf<Transaction>()
         filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
         _filteredTransactionsListLiveData.postValue(filteredList)
-        _typeFilteredListLiveData.value = filteredList
+        _typeFilteredListLiveData.postValue(filteredList)
         _textFilterValues.postValue((_textFilterValues.value ?: mutableListOf()).apply {
             add(filter)
         })
@@ -485,7 +485,7 @@ class TransactionListViewModel(
         _dateFilterValue.value = dates
         filteredList.addAll(currentList.filter { isDateInRange(it.paymentDate, dates.first, dates.second) })
         _filteredTransactionsListLiveData.postValue(filteredList)
-        _typeFilteredListLiveData.value = filteredList
+        _typeFilteredListLiveData.postValue(filteredList)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -550,7 +550,33 @@ class TransactionListViewModel(
     }
 
     fun updateTypeFilteredList(){
+        viewModelScope.async(Dispatchers.IO){
+            val currentList = _typeFilteredListLiveData.value
+            val updatedTransactionList = dataStore.getTransactionList()
+            val filteredTransactionList = mutableListOf<Transaction>()
 
+            if(!currentList.isNullOrEmpty()){
+                currentList.forEach { transaction ->
+                    filteredTransactionList.addAll(updatedTransactionList.filter { it.id == transaction.id && it.type == transaction.type })
+                }
+            }
+
+            val sortedList = filteredTransactionList.sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
+
+            _typeFilteredListLiveData.postValue(sortedList)
+
+            //Update transaction list for when user clear filter
+            if(_monthFilterLiveData.value != null && _monthFilterLiveData.value != ""){
+                val findTransactionFromMonthDateFilter = updatedTransactionList.filter {
+                    val transactDate = FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate)
+                    val filterDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
+                    transactDate == filterDate
+                }
+                _transactionsListLiveData.postValue(findTransactionFromMonthDateFilter)
+            }else{
+                _transactionsListLiveData.postValue(updatedTransactionList)
+            }
+        }
     }
 
 }

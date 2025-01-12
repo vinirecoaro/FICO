@@ -41,6 +41,12 @@ class ArrangeDataToUpdateToDatabase() {
         val randonNum = generateRandomAddress(5)
         val inputTime = FormatValuesToDatabase().timeNow()
 
+        val commonId = if(expense.id.length > 25){
+            expense.id.substring(0,25)
+        }else{
+            expense.id
+        }
+
         if(installment){
 
             // Format Number of installments to expenseId
@@ -61,15 +67,15 @@ class ArrangeDataToUpdateToDatabase() {
                 }
 
                 var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime), i)
-                val expenseId = "${formattedExpense.paymentDate}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+                val expenseId = "${commonId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
                 formattedExpense.id = expenseId
 
                 expenseList.add(formattedExpense)
 
             }
         }else{
-            val expenseId = "${expense.paymentDate}-${inputTime}-${randonNum}"
-            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
+            /*val expenseId = commonId*/
+            val formattedExpense = Expense(commonId, expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
 
             expenseList.add(formattedExpense)
         }

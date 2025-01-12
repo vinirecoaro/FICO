@@ -365,6 +365,11 @@ class FirebaseAPI(
                 )
             )
 
+            expenses.updateChildren(updates)
+
+            //Clear updates list
+            updates.clear()
+
             // Add Expense List
             updates.putAll(generateMapToUpdateUserExpenses(expenseList))
 

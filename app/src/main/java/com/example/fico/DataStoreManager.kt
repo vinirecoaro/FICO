@@ -6,10 +6,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringExpense
+import com.example.fico.model.Transaction
 import com.example.fico.utils.constants.StringConstants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -241,6 +244,26 @@ class DataStoreManager (context: Context) {
         return Gson().fromJson(earningMonthsString, object : TypeToken<List<String>>() {}.type)
     }
 
+    suspend fun getTransactionList() : List<Transaction>{
+        val earningList = getEarningsList()
+        val expenseList = getExpenseList()
+        val transactionList = mutableListOf<Transaction>()
+
+        earningList.forEach { earning ->
+            earning.date = FormatValuesFromDatabase().date(earning.date)
+            transactionList.add(earning.toTransaction())
+        }
+
+        expenseList.forEach { expense ->
+            transactionList.add(expense.toTransaction())
+        }
+
+        var sortedList = listOf<Transaction>()
+
+        sortedList = transactionList.sortedByDescending { FormatValuesToDatabase().expenseDate(it.paymentDate) }
+
+        return sortedList
+    }
 
 
 }

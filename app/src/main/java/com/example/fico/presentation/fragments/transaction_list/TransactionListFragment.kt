@@ -121,6 +121,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         if(viewModel.returningFromEdit.value == null || viewModel.returningFromEdit.value == false){
             viewModel.getExpenseList(binding.actvDate.text.toString())
         }else{
+            viewModel.updateTypeFilteredList()
             viewModel.changeReturningFromEditState(false)
         }
         // Initial selected button on toggle group
@@ -252,16 +253,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
             viewModel.updateTransactionsList(expenseList,earningList)
         }
 
-        viewModel.transactionsListLiveData.observe(viewLifecycleOwner){ transactionsList ->
+        /*viewModel.transactionsListLiveData.observe(viewLifecycleOwner){ transactionsList ->
             transactionListAdapter.updateTransactions(transactionsList)
             updateTransactionTotalValue(transactionsList)
-            /*transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
-                override fun onListItemClick(position: Int) {
-                    val selectItem = transactionsList[position]
-                    editExpense(selectItem)
-                }
-            })*/
-        }
+        }*/
 
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
             expenseMonthsList = expenseMonths.toTypedArray()
@@ -364,10 +359,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
             }
         }
 
-        viewModel.filteredTransactionsListLiveData.observe(viewLifecycleOwner){ filteredTransactionList ->
+        /*viewModel.filteredTransactionsListLiveData.observe(viewLifecycleOwner){ filteredTransactionList ->
             transactionListAdapter.updateTransactions(filteredTransactionList)
             updateTransactionTotalValue(filteredTransactionList)
-        }
+        }*/
 
         viewModel.isFiltered.observe(viewLifecycleOwner){ state ->
             requireActivity().invalidateOptionsMenu()

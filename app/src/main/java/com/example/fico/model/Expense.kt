@@ -2,6 +2,7 @@ package com.example.fico.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.fico.utils.constants.StringConstants
 
 data class Expense(
     var id: String,
@@ -46,5 +47,19 @@ data class Expense(
         override fun newArray(size: Int): Array<Expense?> {
             return arrayOfNulls(size)
         }
+    }
+
+    fun toTransaction() : Transaction{
+        return Transaction(
+            this.id,
+            this.price,
+            this.description,
+            this.category,
+            this.paymentDate,
+            this.purchaseDate,
+            this.inputDateTime,
+            this.nOfInstallment,
+            StringConstants.DATABASE.EXPENSE
+        )
     }
 }
