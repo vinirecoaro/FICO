@@ -190,7 +190,7 @@ class TransactionListViewModel(
                     dataStore.updateAndResetExpenseList(currentList.toList())
 
                     //Update expenseList on screen
-                    getExpenseList(_monthFilterLiveData.value.toString())
+                    updateTypeFilteredList()
 
                     //Remove from dataStore expense Months List
                     val removedExpenseMonth = DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate)

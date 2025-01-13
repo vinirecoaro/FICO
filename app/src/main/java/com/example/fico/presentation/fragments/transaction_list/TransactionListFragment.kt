@@ -143,13 +143,44 @@ class TransactionListFragment : Fragment(), XLSInterface {
     override fun onPrepareOptionsMenu(menu: Menu){
         val clearFilterItem = menu.findItem(R.id.transaction_list_menu_clear_filter)
         clearFilterItem.isVisible = viewModel.isFiltered.value == true
+
+        val filterItem = menu.findItem(R.id.transaction_list_menu_filter)
+        val generateFileItem = menu.findItem(R.id.transaction_list_menu_generate_excel_file)
+
+        viewLifecycleOwner.lifecycleScope.launch{
+            viewModel.uiState.collectLatest{state ->
+                when(state){
+                    TransactionFragmentState.Empty -> {
+                        clearFilterItem.isVisible = false
+                        filterItem.isVisible = false
+                        generateFileItem.isVisible = false
+                    }
+                    is TransactionFragmentState.Error -> {
+                        clearFilterItem.isVisible = false
+                        filterItem.isVisible = false
+                        generateFileItem.isVisible = false
+                    }
+                    TransactionFragmentState.Loading -> {
+                        clearFilterItem.isVisible = false
+                        filterItem.isVisible = false
+                        generateFileItem.isVisible = false
+                    }
+                    TransactionFragmentState.Success -> {
+                        clearFilterItem.isVisible = true
+                        filterItem.isVisible = true
+                        generateFileItem.isVisible = true
+                    }
+                }
+            }
+        }
+
         return super.onPrepareOptionsMenu(menu)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.expense_list_menu_generate_excel_file -> {
+            R.id.transaction_list_menu_generate_excel_file -> {
                 if (checkPermission()){
                     generateFileAndShare()
                 }else{
@@ -253,11 +284,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
             viewModel.updateTransactionsList(expenseList,earningList)
         }
 
-        /*viewModel.transactionsListLiveData.observe(viewLifecycleOwner){ transactionsList ->
-            transactionListAdapter.updateTransactions(transactionsList)
-            updateTransactionTotalValue(transactionsList)
-        }*/
-
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner, Observer { expenseMonths ->
             expenseMonthsList = expenseMonths.toTypedArray()
             actvConfig()
@@ -327,6 +353,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.ivClearFilter.visibility = View.GONE
                         binding.rvExpenseList.visibility = View.GONE
                         binding.tilTotalPrice.visibility = View.GONE
+                        binding.tbTransacList.visibility = View.GONE
                     }
                     is TransactionFragmentState.Error -> {
                         binding.ivNoInfoAvailable.visibility = View.VISIBLE
@@ -336,6 +363,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.ivClearFilter.visibility = View.GONE
                         binding.rvExpenseList.visibility = View.GONE
                         binding.tilTotalPrice.visibility = View.GONE
+                        binding.tbTransacList.visibility = View.GONE
                     }
                     TransactionFragmentState.Loading -> {
                         binding.ivNoInfoAvailable.visibility = View.GONE
@@ -345,6 +373,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.ivClearFilter.visibility = View.GONE
                         binding.rvExpenseList.visibility = View.GONE
                         binding.tilTotalPrice.visibility = View.GONE
+                        binding.tbTransacList.visibility = View.GONE
                     }
                     TransactionFragmentState.Success -> {
                         binding.ivNoInfoAvailable.visibility = View.GONE
@@ -354,15 +383,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.ivClearFilter.visibility = View.VISIBLE
                         binding.rvExpenseList.visibility = View.VISIBLE
                         binding.tilTotalPrice.visibility = View.VISIBLE
+                        binding.tbTransacList.visibility = View.VISIBLE
                     }
                 }
             }
         }
-
-        /*viewModel.filteredTransactionsListLiveData.observe(viewLifecycleOwner){ filteredTransactionList ->
-            transactionListAdapter.updateTransactions(filteredTransactionList)
-            updateTransactionTotalValue(filteredTransactionList)
-        }*/
 
         viewModel.isFiltered.observe(viewLifecycleOwner){ state ->
             requireActivity().invalidateOptionsMenu()
