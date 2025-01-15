@@ -15,6 +15,10 @@ data class Transaction(
     var type: String
 ) : Serializable {
 
+    companion object {
+        fun empty() = Transaction("","","","","","","","","")
+    }
+
     fun toExpense() : Expense{
         return Expense(
             this.id,

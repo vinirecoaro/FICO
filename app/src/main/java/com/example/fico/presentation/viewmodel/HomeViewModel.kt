@@ -62,10 +62,6 @@ class HomeViewModel(
     private val _isFirstLoad = MutableLiveData<Boolean>(true)
     val isFirstLoad : LiveData<Boolean> = _isFirstLoad
 
-    init{
-        getInfoPerMonth()
-    }
-
     fun changeBlurState(){
         if(_isBlurred.value != null){
             _isBlurred.postValue(!_isBlurred.value!!)

@@ -120,13 +120,16 @@ class TransactionListFragment : Fragment(), XLSInterface {
         super.onResume()
         if(viewModel.returningFromEdit.value == null || viewModel.returningFromEdit.value == false){
             viewModel.getExpenseList(binding.actvDate.text.toString())
+            // Initial selected button on toggle group
+            binding.tbTransacList.check(binding.btAllTransacList.id)
+            binding.btAllTransacList.isClickable = false
+            viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.TRANSACTION)
         }else{
             viewModel.updateTypeFilteredList()
+            viewModel.updateTransactionOnList()
             viewModel.changeReturningFromEditState(false)
+            viewModel.updateEditingTransaction(Transaction.empty())
         }
-        // Initial selected button on toggle group
-        binding.tbTransacList.check(binding.btAllTransacList.id)
-        binding.btAllTransacList.isClickable = false
     }
 
     override fun onDestroyView() {
@@ -166,7 +169,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         generateFileItem.isVisible = false
                     }
                     TransactionFragmentState.Success -> {
-                        clearFilterItem.isVisible = true
                         filterItem.isVisible = true
                         generateFileItem.isVisible = true
                     }
@@ -197,11 +199,27 @@ class TransactionListFragment : Fragment(), XLSInterface {
             }
 
             R.id.transaction_list_menu_clear_filter -> {
-                val transactionList = viewModel.transactionsListLiveData.value?.toList()
-                if(!transactionList.isNullOrEmpty()){
-                    clearAllFilter()
-                    updateTransactionTotalValue(transactionList)
-                    transactionListAdapter.updateTransactions(transactionList)
+                val allList = viewModel.transactionsListLiveData.value?.toList()
+                if(!allList.isNullOrEmpty()){
+                    when(viewModel.transactionTypeFilter.value){
+                        StringConstants.DATABASE.TRANSACTION -> {
+                            clearAllFilter()
+                            updateTransactionTotalValue(allList)
+                            transactionListAdapter.updateTransactions(allList)
+                        }
+                        StringConstants.DATABASE.EXPENSE -> {
+                            val expenseList = allList.filter { it.type == StringConstants.DATABASE.EXPENSE }
+                            clearAllFilter()
+                            updateTransactionTotalValue(expenseList)
+                            transactionListAdapter.updateTransactions(expenseList)
+                        }
+                        StringConstants.DATABASE.EARNING -> {
+                            val earningList = allList.filter { it.type == StringConstants.DATABASE.EARNING }
+                            clearAllFilter()
+                            updateTransactionTotalValue(earningList)
+                            transactionListAdapter.updateTransactions(earningList)
+                        }
+                    }
                 }
                 return true
             }
@@ -213,7 +231,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
     private fun getTransactionsListForFile(): Pair<MutableList<Expense>,MutableList<Earning>> {
         val expensesList: MutableList<Expense> = ArrayList()
         val earningsList: MutableList<Earning> = ArrayList()
-        viewModel.typeFilteredListLiveData.observe(viewLifecycleOwner, Observer { transactions ->
+        viewModel.showListLiveData.observe(viewLifecycleOwner, Observer { transactions ->
             for (transation in transactions) {
                 if(transation.type == StringConstants.DATABASE.EXPENSE){
                     val modifiedExpense = Expense(
@@ -336,7 +354,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     .setTitle("Apagar gasto")
                     .setMessage("Para apagar um gasto parcelado clique no item desejado e faça a exclusão na janela de edição")
                     .setPositiveButton("Ok") { dialog, which ->
-                        viewModel.getExpenseList(viewModel.monthFilterLiveData.value.toString())
+                        viewModel.updateTypeFilteredList()
                     }
                     .show()
             }
@@ -400,25 +418,28 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.btAllTransacList.isClickable = false
                         binding.btExpensesTransacList.isClickable = true
                         binding.btEarningsTransacList.isClickable = true
+                        viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.TRANSACTION)
                         viewModel.showAllTransactions()
                     }
                     binding.btExpensesTransacList.id -> {
                         binding.btAllTransacList.isClickable = true
                         binding.btExpensesTransacList.isClickable = false
                         binding.btEarningsTransacList.isClickable = true
+                        viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.EXPENSE)
                         viewModel.showExpenseTransactions()
                     }
                     binding.btEarningsTransacList.id -> {
                         binding.btAllTransacList.isClickable = true
                         binding.btExpensesTransacList.isClickable = true
                         binding.btEarningsTransacList.isClickable = false
+                        viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.EARNING)
                         viewModel.showEarningTransactions()
                     }
                 }
             }
         }
 
-        viewModel.typeFilteredListLiveData.observe(viewLifecycleOwner){ transacList ->
+        viewModel.showListLiveData.observe(viewLifecycleOwner){ transacList ->
             transactionListAdapter.updateTransactions(transacList)
             updateTransactionTotalValue(transacList)
             transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
@@ -441,6 +462,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
     }
 
     fun editExpense(transaction: Transaction) {
+        viewModel.updateEditingTransaction(transaction)
         val intent = Intent(requireContext(), EditTransactionActivity::class.java)
         intent.putExtra(StringConstants.TRANSACTION_LIST.TRANSACTION, transaction)
         startActivityForResult(intent, StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)

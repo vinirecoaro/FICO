@@ -265,5 +265,35 @@ class DataStoreManager (context: Context) {
         return sortedList
     }
 
+    suspend fun getTransaction(transaction: Transaction) : Transaction{
+        when (transaction.type) {
+            StringConstants.DATABASE.EXPENSE -> {
+                val commonId = if(transaction.id.length > 25){
+                    transaction.id.substring(0,25)
+                }else{
+                    transaction.id
+                }
+                val expenseList = getExpenseList()
+                val updatedTransaction = expenseList.first {
+                    val listItemId =
+                        if(it.id.length > 25){
+                            it.id.substring(0,25)
+                        }else{
+                            it.id
+                        }
+                    listItemId == commonId }.toTransaction()
+                return updatedTransaction
+            }
+            StringConstants.DATABASE.EARNING -> {
+                val earningList = getEarningsList()
+                val updatedTransaction = earningList.first { it.id == transaction.id }.toTransaction()
+                return updatedTransaction
+            }
+            else -> {
+                return Transaction.empty()
+            }
+        }
+    }
+
 
 }

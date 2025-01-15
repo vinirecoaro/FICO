@@ -42,8 +42,8 @@ class TransactionListViewModel(
     val transactionsListLiveData: LiveData<List<Transaction>> = _transactionsListLiveData
     private val _filteredTransactionsListLiveData = MutableLiveData<List<Transaction>>()
     val filteredTransactionsListLiveData: LiveData<List<Transaction>> = _filteredTransactionsListLiveData
-    private val _typeFilteredListLiveData = MutableLiveData<List<Transaction>>()
-    val typeFilteredListLiveData : LiveData<List<Transaction>> = _typeFilteredListLiveData
+    private val _showListLiveData = MutableLiveData<List<Transaction>>()
+    val showListLiveData : LiveData<List<Transaction>> = _showListLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _deleteExpenseResult = MutableLiveData<Boolean>()
@@ -72,6 +72,9 @@ class TransactionListViewModel(
     val dateFilterValue : LiveData<Pair<String,String>> = _dateFilterValue
     private val _returningFromEdit = MutableLiveData<Boolean>()
     val returningFromEdit : LiveData<Boolean> = _returningFromEdit
+    private val _editingTransaction = MutableLiveData<Transaction>()
+    private val _transactionTypeFilter = MutableLiveData<String>(StringConstants.DATABASE.TRANSACTION)
+    val transactionTypeFilter : LiveData<String> = _transactionTypeFilter
 
 
     fun updateFilter(filter: String) {
@@ -416,7 +419,7 @@ class TransactionListViewModel(
             )
         }
         val transactionListSorted = transactionListTemp.toList().sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
-        _typeFilteredListLiveData.postValue(transactionListSorted)
+        _showListLiveData.postValue(transactionListSorted)
         _transactionsListLiveData.postValue(transactionListSorted)
     }
 
@@ -433,7 +436,7 @@ class TransactionListViewModel(
         val filteredList = mutableListOf<Transaction>()
         filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
         _filteredTransactionsListLiveData.postValue(filteredList)
-        _typeFilteredListLiveData.postValue(filteredList)
+        _showListLiveData.postValue(filteredList)
         _textFilterValues.postValue((_textFilterValues.value ?: mutableListOf()).apply {
             add(filter)
         })
@@ -486,7 +489,7 @@ class TransactionListViewModel(
         _dateFilterValue.value = dates
         filteredList.addAll(currentList.filter { isDateInRange(it.paymentDate, dates.first, dates.second) })
         _filteredTransactionsListLiveData.postValue(filteredList)
-        _typeFilteredListLiveData.postValue(filteredList)
+        _showListLiveData.postValue(filteredList)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -509,11 +512,11 @@ class TransactionListViewModel(
         if(_isFiltered.value == false || _isFiltered.value == null){
             if(transactionsListLiveData.value != null){
                 val allTransactionList = _transactionsListLiveData.value!!
-                _typeFilteredListLiveData.postValue(allTransactionList)
+                _showListLiveData.postValue(allTransactionList)
             }
         }else{
             val allTransactionList = _filteredTransactionsListLiveData.value!!
-            _typeFilteredListLiveData.postValue(allTransactionList)
+            _showListLiveData.postValue(allTransactionList)
         }
 
     }
@@ -522,12 +525,12 @@ class TransactionListViewModel(
         if(_isFiltered.value == false || _isFiltered.value == null){
             if(transactionsListLiveData.value != null){
                 val justEarningList = transactionsListLiveData.value!!.filter { it.type == StringConstants.DATABASE.EARNING }
-                _typeFilteredListLiveData.postValue(justEarningList)
+                _showListLiveData.postValue(justEarningList)
             }
         }else{
             if(filteredTransactionsListLiveData.value != null){
                 val justEarningList = _filteredTransactionsListLiveData.value!!.filter { it.type == StringConstants.DATABASE.EARNING }
-                _typeFilteredListLiveData.postValue(justEarningList)
+                _showListLiveData.postValue(justEarningList)
             }
         }
     }
@@ -536,12 +539,12 @@ class TransactionListViewModel(
         if(_isFiltered.value == false || _isFiltered.value == null){
             if(transactionsListLiveData.value != null){
                 val justEarningList = transactionsListLiveData.value!!.filter { it.type == StringConstants.DATABASE.EXPENSE }
-                _typeFilteredListLiveData.postValue(justEarningList)
+                _showListLiveData.postValue(justEarningList)
             }
         }else{
             if(filteredTransactionsListLiveData.value != null){
                 val justEarningList = _filteredTransactionsListLiveData.value!!.filter { it.type == StringConstants.DATABASE.EXPENSE }
-                _typeFilteredListLiveData.postValue(justEarningList)
+                _showListLiveData.postValue(justEarningList)
             }
         }
     }
@@ -552,7 +555,7 @@ class TransactionListViewModel(
 
     fun updateTypeFilteredList(){
         viewModelScope.async(Dispatchers.IO){
-            val currentList = _typeFilteredListLiveData.value
+            val currentList = _showListLiveData.value
             val updatedTransactionList = dataStore.getTransactionList()
             val filteredTransactionList = mutableListOf<Transaction>()
 
@@ -577,7 +580,7 @@ class TransactionListViewModel(
 
             val sortedList = filteredTransactionList.sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
 
-            _typeFilteredListLiveData.postValue(sortedList)
+            _showListLiveData.postValue(sortedList)
 
             //Update transaction list for when user clear filter
             if(_monthFilterLiveData.value != null && _monthFilterLiveData.value != ""){
@@ -593,4 +596,74 @@ class TransactionListViewModel(
         }
     }
 
+    fun updateEditingTransaction(transaction : Transaction){
+        _editingTransaction.postValue(transaction)
+    }
+
+    fun updateTransactionOnList(){
+        viewModelScope.async(Dispatchers.IO){
+            val oldTransaction = _editingTransaction.value
+            if(oldTransaction != null && oldTransaction.id != ""){
+                val updatedTransaction = dataStore.getTransaction(oldTransaction)
+                val commonId = if(updatedTransaction.id.length > 25){
+                    updatedTransaction.id.substring(0,25)
+                }else{
+                    updatedTransaction.id
+                }
+
+                // update show list
+                if(_showListLiveData.value != null){
+                    val updatedShowList = _showListLiveData.value!!.filter {
+                        val listItemId =
+                            if(it.id.length > 25){
+                                it.id.substring(0,25)
+                            }else{
+                                it.id
+                            }
+                        listItemId != commonId
+                    }.toMutableList()
+                    updatedShowList.add(updatedTransaction)
+                    val sortedShowList = updatedShowList.sortedByDescending { it.purchaseDate }
+                    _showListLiveData.postValue(sortedShowList)
+                }
+
+                // update filtered list
+                if(_isFiltered.value != null && _isFiltered.value == true){
+                    val updatedFilteredList = _filteredTransactionsListLiveData.value!!.filter {
+                        val listItemId =
+                            if(it.id.length > 25){
+                                it.id.substring(0,25)
+                            }else{
+                                it.id
+                            }
+                        listItemId != commonId
+                    }.toMutableList()
+                    updatedFilteredList.add(updatedTransaction)
+                    val sortedFilteredList = updatedFilteredList.sortedByDescending { it.purchaseDate }
+                    _filteredTransactionsListLiveData.postValue(sortedFilteredList)
+                }
+
+                // update transaction list
+                if(_transactionsListLiveData.value != null){
+                    val updatedTransactionList = _transactionsListLiveData.value!!.filter {
+                        val listItemId =
+                            if(it.id.length > 25){
+                                it.id.substring(0,25)
+                            }else{
+                                it.id
+                            }
+                        listItemId != commonId
+                    }.toMutableList()
+                    updatedTransactionList.add(updatedTransaction)
+                    val sortedTransactionList = updatedTransactionList.sortedByDescending { it.purchaseDate }
+                    _transactionsListLiveData.postValue(sortedTransactionList)
+                }
+            }
+        }
+    }
+
+    fun updateTransactionTypeFilter(type : String){
+        _transactionTypeFilter.postValue(type)
+    }
 }
+
