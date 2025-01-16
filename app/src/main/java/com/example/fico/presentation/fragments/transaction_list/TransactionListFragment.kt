@@ -61,6 +61,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class TransactionListFragment : Fragment(), XLSInterface {
 
@@ -756,13 +757,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
         dateRangePicker.show(requireActivity().supportFragmentManager, "dataRangePicker")
 
         dateRangePicker.addOnPositiveButtonClickListener {
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-            // Convert milliseconds to the desired format
-            val startDate = dateFormat.format(Date(it.first ?: 0))
-            val endDate = dateFormat.format(Date(it.second ?: 0))
+            val adjustedStartDate = formatDate(it.first)
+            val adjustedEndDate = formatDate(it.second)
 
-            val dates = Pair(startDate,endDate)
+            val dates = Pair(adjustedStartDate,adjustedEndDate)
 
             viewModel.applyDateFilter(dates)
         }
@@ -816,6 +815,13 @@ class TransactionListFragment : Fragment(), XLSInterface {
             binding.etTotalPrice.setTextColor(Color.GREEN)
         }
         binding.etTotalPrice.setText(FormatValuesFromDatabase().price(totalAbsolute.toString()))
+    }
+
+    private fun formatDate(timestamp: Long): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("GMT")
+        val date = Date(timestamp)
+        return sdf.format(date)
     }
 
 }

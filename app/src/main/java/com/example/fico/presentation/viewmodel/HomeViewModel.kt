@@ -199,41 +199,41 @@ class HomeViewModel(
                 }
                 if(monthWithExpenses.isEmpty()){
                     _uiState.value = HomeFragmentState.Empty
-                }
+                }else{
+                    val sortedMonthWithExpensesList = monthWithExpenses.sortedBy { it.date }
 
-                val sortedMonthWithExpensesList = monthWithExpenses.sortedBy { it.date }
+                    var i = 0f
+                    for (infoPerMonth in sortedMonthWithExpensesList){
 
-                var i = 0f
-                for (infoPerMonth in sortedMonthWithExpensesList){
+                        //Create entries
+                        val monthExpense = infoPerMonth.monthExpense.toFloat()
+                        barChartEntries.add(BarEntry(i, monthExpense))
+                        i += 1f
 
-                    //Create entries
-                    val monthExpense = infoPerMonth.monthExpense.toFloat()
-                    barChartEntries.add(BarEntry(i, monthExpense))
-                    i += 1f
-
-                    // Create labels
-                    formattedInfoPerMonthLabel.add(
-                        InformationPerMonthExpense(
-                            FormatValuesFromDatabase().formatDateAbbreviated(infoPerMonth.date),
-                            infoPerMonth.availableNow,
-                            infoPerMonth.budget,
-                            FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
+                        // Create labels
+                        formattedInfoPerMonthLabel.add(
+                            InformationPerMonthExpense(
+                                FormatValuesFromDatabase().formatDateAbbreviated(infoPerMonth.date),
+                                infoPerMonth.availableNow,
+                                infoPerMonth.budget,
+                                FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
+                            )
                         )
-                    )
+                    }
+
+                    _infoPerMonthLabel.postValue(formattedInfoPerMonthLabel)
+
+                    for(infoPerMonthLabel in formattedInfoPerMonthLabel){
+                        barChartMonthLabels.add(infoPerMonthLabel.date)
+                        barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
+                    }
+
+                    val barChartParams = BarChartParams(barChartEntries,barChartMonthLabels, barChartExpenseLabels)
+
+                    _expenseBarChartParams.postValue(barChartParams)
+
+                    _uiState.value = HomeFragmentState.Success(Pair(formattedInfoPerMonthLabel, formattedInfoPerMonthLabel))
                 }
-
-                _infoPerMonthLabel.postValue(formattedInfoPerMonthLabel)
-
-                for(infoPerMonthLabel in formattedInfoPerMonthLabel){
-                    barChartMonthLabels.add(infoPerMonthLabel.date)
-                    barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
-                }
-
-                val barChartParams = BarChartParams(barChartEntries,barChartMonthLabels, barChartExpenseLabels)
-
-                _expenseBarChartParams.postValue(barChartParams)
-
-                _uiState.value = HomeFragmentState.Success(Pair(formattedInfoPerMonthLabel, formattedInfoPerMonthLabel))
 
             }catch (error : Exception){
                 _uiState.value = HomeFragmentState.Error(error.message.toString())
