@@ -35,10 +35,7 @@ class HomeViewModel(
 
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
-    private val _infoPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
-    val infoPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonth
     private val _infoPerMonthLabel = MutableLiveData<List<InformationPerMonthExpense>>()
-    val infoPerMonthLabelLiveData : LiveData<List<InformationPerMonthExpense>> = _infoPerMonthLabel
     private val _totalExpense = MutableLiveData<String>()
     val totalExpenseLiveData : LiveData<String> = _totalExpense
     private val _informationPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
@@ -65,12 +62,6 @@ class HomeViewModel(
     fun changeBlurState(){
         if(_isBlurred.value != null){
             _isBlurred.postValue(!_isBlurred.value!!)
-        }
-    }
-
-    fun changeFirstLoadState(){
-        if(_isFirstLoad.value != null){
-            _isFirstLoad.postValue(!_isFirstLoad.value!!)
         }
     }
 
@@ -144,65 +135,24 @@ class HomeViewModel(
         return RecyclerView.NO_POSITION
     }
 
-    fun getInfoPerMonth(){
-
-        _uiState.value = HomeFragmentState.Loading
-
-        viewModelScope.async(Dispatchers.IO){
-            try {
-                val infoPerMonthList = dataStore.getExpenseInfoPerMonth()
-                val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
-                for(infoPerMonth in infoPerMonthList){
-                    if (BigDecimal(infoPerMonth.monthExpense).setScale(2,RoundingMode.HALF_UP) != BigDecimal("0").setScale(2,RoundingMode.HALF_UP)){
-                        monthWithExpenses.add(infoPerMonth)
-                    }
-                }
-                if(monthWithExpenses.isNotEmpty()){
-                    _infoPerMonth.postValue(monthWithExpenses)
-                }else{
-                    _uiState.value = HomeFragmentState.Empty
-                }
-
-            }catch (error : Exception){
-                _uiState.value = HomeFragmentState.Error(error.message.toString())
-            }
-       }
-    }
-
-    fun formatInfoPerMonthToLabel(){
-        try {
-            val formattedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
-            for(infoPerMonth in _infoPerMonth.value!!){
-                formattedInfoPerMonth.add(
-                    InformationPerMonthExpense(
-                        FormatValuesFromDatabase().formatDateAbbreviated(infoPerMonth.date),
-                        infoPerMonth.availableNow,
-                        infoPerMonth.budget,
-                        FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
-                    )
-                )
-            }
-            _infoPerMonthLabel.value = formattedInfoPerMonth
-            _uiState.value = HomeFragmentState.Success(Pair(formattedInfoPerMonth, formattedInfoPerMonth))
-        }catch (error : Exception){
-            _uiState.value = HomeFragmentState.Error(error.message.toString())
-        }
-
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun getCurrentDatePositionBarChart() : Int{
         val currentDate = FormatValuesFromDatabase().formatDateAbbreviated(DateFunctions().getCurrentlyDateYearMonthToDatabase())
-        _infoPerMonthLabel.value?.forEachIndexed { index, informationPerMonthExpense ->
-            if(informationPerMonthExpense.date == currentDate){
-                if(index < 1){
-                    return -1
-                }else{
-                    return index-1
+        if(_infoPerMonthLabel.value != null){
+            _infoPerMonthLabel.value!!.forEachIndexed { index, informationPerMonthExpense ->
+                if(informationPerMonthExpense.date == currentDate){
+                    return if(index < 1){
+                        -1
+                    }else{
+                        index-1
+                    }
                 }
             }
+            return _infoPerMonthLabel.value!!.size - 1
+        }else{
+            return 0
         }
-        return _infoPerMonthLabel.value!!.size-1
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -229,6 +179,9 @@ class HomeViewModel(
     }
 
     fun getExpenseBarChartParams(){
+
+        _uiState.value = HomeFragmentState.Loading
+
         viewModelScope.async(Dispatchers.IO){
 
             val barChartEntries : ArrayList<BarEntry> = arrayListOf()
@@ -248,8 +201,10 @@ class HomeViewModel(
                     _uiState.value = HomeFragmentState.Empty
                 }
 
+                val sortedMonthWithExpensesList = monthWithExpenses.sortedBy { it.date }
+
                 var i = 0f
-                for (infoPerMonth in monthWithExpenses){
+                for (infoPerMonth in sortedMonthWithExpensesList){
 
                     //Create entries
                     val monthExpense = infoPerMonth.monthExpense.toFloat()
@@ -266,6 +221,8 @@ class HomeViewModel(
                         )
                     )
                 }
+
+                _infoPerMonthLabel.postValue(formattedInfoPerMonthLabel)
 
                 for(infoPerMonthLabel in formattedInfoPerMonthLabel){
                     barChartMonthLabels.add(infoPerMonthLabel.date)

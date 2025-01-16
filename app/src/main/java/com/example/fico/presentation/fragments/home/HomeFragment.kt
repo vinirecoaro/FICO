@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
+import com.example.fico.model.BarChartParams
 import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.utils.custom_component.RoundedBarChartRenderer
 import com.github.mikephil.charting.animation.Easing
@@ -35,9 +36,6 @@ class HomeFragment : Fragment(){
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val viewModel : HomeViewModel by inject()
-    private var barChartEntries : ArrayList<BarEntry> = arrayListOf()
-    private var barChartMonthLabels : MutableSet<String> = mutableSetOf()
-    private var barChartExpenseLabels : MutableSet<String> = mutableSetOf()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -46,10 +44,6 @@ class HomeFragment : Fragment(){
 
         initExpenseEachMonthChartEmpty()
         setUpListeners()
-
-        /*if(barChartEntries.isNotEmpty()){
-            initExpenseEachMonthChart()
-        }*/
 
         // Blur total value field configuration
         binding.tvTotalExpensesValue.setLayerType(TextView.LAYER_TYPE_SOFTWARE, null)
@@ -60,7 +54,6 @@ class HomeFragment : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        //viewModel.getInfoPerMonth()
         viewModel.getTotalExpense()
         viewModel.getExpenseBarChartParams()
     }
@@ -68,7 +61,6 @@ class HomeFragment : Fragment(){
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        //barChartEntries.clear()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -158,14 +150,20 @@ class HomeFragment : Fragment(){
         viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
             binding.tvTotalExpensesValue.text = totalExpense
         }
+
+        viewModel.expenseBarChartParams.observe(viewLifecycleOwner){ barChartParams ->
+            if(barChartParams.entries.isNotEmpty()){
+                initExpenseEachMonthChart(barChartParams)
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initExpenseEachMonthChart(){
+    private fun initExpenseEachMonthChart(barChartParams : BarChartParams){
         val barChart = binding.bcExpenseEachMonth
 
         // Create a data set with entry list
-        val dataSet = BarDataSet(barChartEntries, "Label")
+        val dataSet = BarDataSet(barChartParams.entries, "Label")
         dataSet.valueTextSize = 12f
         dataSet.color = Color.BLUE
 
@@ -190,7 +188,7 @@ class HomeFragment : Fragment(){
         xAxis.setDrawLabels(true)
         xAxis.setDrawAxisLine(false)
         xAxis.granularity = 1f
-        xAxis.valueFormatter = IndexAxisValueFormatter(barChartMonthLabels)
+        xAxis.valueFormatter = IndexAxisValueFormatter(barChartParams.xBarLabels)
         barChart.axisLeft.setDrawGridLines(false)
         barChart.axisRight.setDrawGridLines(false)
 
@@ -226,6 +224,7 @@ class HomeFragment : Fragment(){
         barChart.animateY(1500, Easing.EaseInOutQuad)
 
         barChart.renderer = RoundedBarChartRenderer(barChart, barChart.animator, barChart.viewPortHandler)
+        barChart.renderer.initBuffers()
 
         // Update chart
         barChart.invalidate()
