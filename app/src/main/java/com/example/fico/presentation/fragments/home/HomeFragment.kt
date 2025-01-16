@@ -67,6 +67,7 @@ class HomeFragment : Fragment(){
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        //barChartEntries.clear()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

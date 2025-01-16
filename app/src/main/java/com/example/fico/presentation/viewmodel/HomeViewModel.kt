@@ -19,6 +19,7 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.utils.DateFunctions
+import com.github.mikephil.charting.data.BarEntry
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -61,6 +62,12 @@ class HomeViewModel(
     val isBlurred : LiveData<Boolean> = _isBlurred
     private val _isFirstLoad = MutableLiveData<Boolean>(true)
     val isFirstLoad : LiveData<Boolean> = _isFirstLoad
+    private val _barChartEntries = MutableLiveData<ArrayList<BarEntry>>()
+    val barChartEntries : LiveData<ArrayList<BarEntry>> = _barChartEntries
+    private val _barChartMonthLabels = MutableLiveData<Set<String>>()
+    val barChartMonthLabels : LiveData<Set<String>> = _barChartMonthLabels
+    private val _barChartExpenseLabels = MutableLiveData<Set<String>>()
+    val barChartExpenseLabels : LiveData<Set<String>> = _barChartExpenseLabels
 
     fun changeBlurState(){
         if(_isBlurred.value != null){
