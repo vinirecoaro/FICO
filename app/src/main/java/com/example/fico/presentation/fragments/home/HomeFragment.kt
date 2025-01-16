@@ -47,9 +47,9 @@ class HomeFragment : Fragment(){
         initExpenseEachMonthChartEmpty()
         setUpListeners()
 
-        if(barChartEntries.isNotEmpty()){
+        /*if(barChartEntries.isNotEmpty()){
             initExpenseEachMonthChart()
-        }
+        }*/
 
         // Blur total value field configuration
         binding.tvTotalExpensesValue.setLayerType(TextView.LAYER_TYPE_SOFTWARE, null)
@@ -60,8 +60,9 @@ class HomeFragment : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        viewModel.getInfoPerMonth()
+        //viewModel.getInfoPerMonth()
         viewModel.getTotalExpense()
+        viewModel.getExpenseBarChartParams()
     }
 
     override fun onDestroyView() {
@@ -130,7 +131,7 @@ class HomeFragment : Fragment(){
             binding.tvTotalExpensesValue.invalidate()
         }
 
-        viewModel.infoPerMonthLiveData.observe(viewLifecycleOwner){ infoPerMonthList ->
+       /* viewModel.infoPerMonthLiveData.observe(viewLifecycleOwner){ infoPerMonthList ->
             barChartEntries.clear()
             var i = 0f
             for (infoPerMonth in infoPerMonthList){
@@ -140,6 +141,7 @@ class HomeFragment : Fragment(){
             }
             viewModel.formatInfoPerMonthToLabel()
         }
+
         viewModel.infoPerMonthLabelLiveData.observe(viewLifecycleOwner){ infoPerMonthLabelList ->
             barChartMonthLabels.clear()
             barChartExpenseLabels.clear()
@@ -151,7 +153,8 @@ class HomeFragment : Fragment(){
                 initExpenseEachMonthChart()
                 viewModel.changeFirstLoadState()
             }
-        }
+        }*/
+
         viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
             binding.tvTotalExpensesValue.text = totalExpense
         }

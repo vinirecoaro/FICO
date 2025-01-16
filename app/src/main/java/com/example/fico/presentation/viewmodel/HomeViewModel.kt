@@ -2,9 +2,6 @@ package com.example.fico.presentation.viewmodel
 
 import android.graphics.Color
 import android.os.Build
-import android.text.InputType
-import android.text.method.PasswordTransformationMethod
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,10 +9,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
-import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.model.BarChartParams
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.utils.DateFunctions
@@ -62,12 +59,8 @@ class HomeViewModel(
     val isBlurred : LiveData<Boolean> = _isBlurred
     private val _isFirstLoad = MutableLiveData<Boolean>(true)
     val isFirstLoad : LiveData<Boolean> = _isFirstLoad
-    private val _barChartEntries = MutableLiveData<ArrayList<BarEntry>>()
-    val barChartEntries : LiveData<ArrayList<BarEntry>> = _barChartEntries
-    private val _barChartMonthLabels = MutableLiveData<Set<String>>()
-    val barChartMonthLabels : LiveData<Set<String>> = _barChartMonthLabels
-    private val _barChartExpenseLabels = MutableLiveData<Set<String>>()
-    val barChartExpenseLabels : LiveData<Set<String>> = _barChartExpenseLabels
+    private val _expenseBarChartParams = MutableLiveData<BarChartParams>(BarChartParams.empty())
+    val expenseBarChartParams : LiveData<BarChartParams> = _expenseBarChartParams
 
     fun changeBlurState(){
         if(_isBlurred.value != null){
@@ -233,6 +226,62 @@ class HomeViewModel(
 
     fun getPieChartCategoriesColors() : List<Int>{
         return pieChartPaletteColors
+    }
+
+    fun getExpenseBarChartParams(){
+        viewModelScope.async(Dispatchers.IO){
+
+            val barChartEntries : ArrayList<BarEntry> = arrayListOf()
+            val formattedInfoPerMonthLabel = mutableListOf<InformationPerMonthExpense>()
+            val barChartMonthLabels : MutableSet<String> = mutableSetOf()
+            val barChartExpenseLabels : MutableSet<String> = mutableSetOf()
+
+            try {
+                val infoPerMonthList = dataStore.getExpenseInfoPerMonth()
+                val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
+                for(infoPerMonth in infoPerMonthList){
+                    if (BigDecimal(infoPerMonth.monthExpense).setScale(2,RoundingMode.HALF_UP) != BigDecimal("0").setScale(2,RoundingMode.HALF_UP)){
+                        monthWithExpenses.add(infoPerMonth)
+                    }
+                }
+                if(monthWithExpenses.isEmpty()){
+                    _uiState.value = HomeFragmentState.Empty
+                }
+
+                var i = 0f
+                for (infoPerMonth in monthWithExpenses){
+
+                    //Create entries
+                    val monthExpense = infoPerMonth.monthExpense.toFloat()
+                    barChartEntries.add(BarEntry(i, monthExpense))
+                    i += 1f
+
+                    // Create labels
+                    formattedInfoPerMonthLabel.add(
+                        InformationPerMonthExpense(
+                            FormatValuesFromDatabase().formatDateAbbreviated(infoPerMonth.date),
+                            infoPerMonth.availableNow,
+                            infoPerMonth.budget,
+                            FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
+                        )
+                    )
+                }
+
+                for(infoPerMonthLabel in formattedInfoPerMonthLabel){
+                    barChartMonthLabels.add(infoPerMonthLabel.date)
+                    barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
+                }
+
+                val barChartParams = BarChartParams(barChartEntries,barChartMonthLabels, barChartExpenseLabels)
+
+                _expenseBarChartParams.postValue(barChartParams)
+
+                _uiState.value = HomeFragmentState.Success(Pair(formattedInfoPerMonthLabel, formattedInfoPerMonthLabel))
+
+            }catch (error : Exception){
+                _uiState.value = HomeFragmentState.Error(error.message.toString())
+            }
+        }
     }
 
 }
