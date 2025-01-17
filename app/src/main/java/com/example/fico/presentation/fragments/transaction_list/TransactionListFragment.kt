@@ -328,8 +328,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
         viewModel.deleteExpenseResult.observe(viewLifecycleOwner){
             if(it){
                 //Show snackbar to undo the action
-                val snackbar = Snackbar.make(binding.rvExpenseList, "Item excluido", Snackbar.LENGTH_LONG)
-                snackbar.setAction("Desfazer") {
+                val snackbar = Snackbar.make(binding.rvExpenseList, getString(R.string.excluded_item), Snackbar.LENGTH_SHORT)
+                snackbar.setAction(getString(R.string.undo)) {
                     lifecycleScope.launch {
                         viewModel.undoDeleteExpense(viewModel.deletedItem!!, false, 1)
                     }
@@ -337,24 +337,24 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 }.show()
             }else{
                 //Show snackbar with failure message
-                Snackbar.make(binding.rvExpenseList, "Falha ao excluir item", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.rvExpenseList, getString(R.string.exclude_item_fail_message), Snackbar.LENGTH_SHORT).show()
             }
         }
 
         viewModel.addExpenseResult.observe(viewLifecycleOwner){result ->
             if(result){
-                Snackbar.make(binding.rvExpenseList, "Exclusão cancelada com sucesso", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.rvExpenseList, getString(R.string.undo_exclude_item_success_message), Snackbar.LENGTH_SHORT).show()
             }else{
-                Snackbar.make(binding.rvExpenseList, "Falha ao cancelar a exclusão do item", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.rvExpenseList, getString(R.string.undo_exclude_item_fail_message), Snackbar.LENGTH_SHORT).show()
             }
         }
 
         viewModel.installmentExpenseSwiped.observe(viewLifecycleOwner){result ->
             if(result){
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Apagar gasto")
-                    .setMessage("Para apagar um gasto parcelado clique no item desejado e faça a exclusão na janela de edição")
-                    .setPositiveButton("Ok") { dialog, which ->
+                    .setTitle(getString(R.string.delete_expense))
+                    .setMessage(getString(R.string.exclude_installment_expense_message_instruction_message))
+                    .setPositiveButton(R.string.ok) { dialog, which ->
                         viewModel.updateTypeFilteredList()
                     }
                     .show()
@@ -478,26 +478,26 @@ class TransactionListFragment : Fragment(), XLSInterface {
             if(resultCode == Activity.RESULT_OK){
                 Snackbar.make(
                     binding.rvExpenseList,
-                    "Gasto alterado com sucesso",
-                    Snackbar.LENGTH_LONG
+                    getString(R.string.update_expense_success_message),
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }else if(resultCode == Activity.RESULT_CANCELED){
                 Snackbar.make(
                     binding.rvExpenseList,
-                    "Falha ao alterar gasto",
-                    Snackbar.LENGTH_LONG
+                    getString(R.string.update_expense_fail_message),
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }else if(resultCode == StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK){
                 Snackbar.make(
                     binding.rvExpenseList,
-                    "Gasto excluído com sucesso",
-                    Snackbar.LENGTH_LONG
+                    getString(R.string.delete_expense_success_message),
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }else if(resultCode == StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE){
                 Snackbar.make(
                     binding.rvExpenseList,
-                    "Falha ao excluir gasto",
-                    Snackbar.LENGTH_LONG
+                    getString(R.string.delete_expense_fail_message),
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }
         }
@@ -583,8 +583,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     Log.d(TAG, "storageActivityResultLauncher: ")
                     Toast.makeText(
                         requireContext(),
-                        "Manage External Storage Permission is denied ...",
-                        Toast.LENGTH_LONG
+                        getString(R.string.external_storage_permission_is_denied),
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
@@ -625,8 +625,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     Log.d(TAG, "onRequestPermissionResult: External Storage Permission denied ...")
                     Toast.makeText(
                         requireContext(),
-                        "Manage External Storage Permission is denied ...",
-                        Toast.LENGTH_LONG
+                        getString(R.string.external_storage_permission_is_denied),
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
             }

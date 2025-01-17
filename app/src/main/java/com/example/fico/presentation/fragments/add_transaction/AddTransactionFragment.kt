@@ -370,7 +370,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                     Toast.makeText(
                                         requireContext(),
                                         "O número de parcelas não pode ser 0",
-                                        Toast.LENGTH_LONG
+                                        Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             }
@@ -411,7 +411,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                     Toast.makeText(
                                         requireContext(),
                                         "O número de parcelas não pode ser 0",
-                                        Toast.LENGTH_LONG
+                                        Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             }
@@ -593,7 +593,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 Snackbar.make(
                     binding.rvCategory,
                     getString(R.string.add_expense_success_message),
-                    Snackbar.LENGTH_LONG
+                    Snackbar.LENGTH_SHORT
                 ).show()
             } else {
                 Snackbar.make(
@@ -606,7 +606,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
         viewModel.setDefaultBudgetResult.observe(requireActivity()){ result ->
             if(result){
-                Snackbar.make(binding.btSave, getString(R.string.change_default_budget_success_message),Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.btSave, getString(R.string.change_default_budget_success_message),Snackbar.LENGTH_SHORT).show()
             }
             else{
                 Snackbar.make(binding.btSave, getString(R.string.change_default_budget_failure_message),Snackbar.LENGTH_LONG).show()
@@ -636,7 +636,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 Snackbar.make(
                     binding.rvCategory,
                     getString(R.string.add_earning_success_message),
-                    Snackbar.LENGTH_LONG
+                    Snackbar.LENGTH_SHORT
                 ).show()
             } else {
                 Snackbar.make(
@@ -660,7 +660,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 Snackbar.make(
                     binding.btSave,
                     getString(R.string.add_recurring_expense_success_message),
-                    Snackbar.LENGTH_LONG
+                    Snackbar.LENGTH_SHORT
                 ).show()
             } else {
                 Snackbar.make(
@@ -841,7 +841,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                         Toast.makeText(
                             requireContext(),
                             "Dados corretos, salvando dados !",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         Toast.makeText(

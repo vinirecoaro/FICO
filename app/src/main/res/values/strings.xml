@@ -183,6 +183,18 @@
     <string name="edit_recurring_transaction_message_step_2">Selecione o recurso que deseja acessar</string>
     <string name="edit">Editar</string>
     <string name="edit_earning">Editar Receita</string>
+    <string name="excluded_item">Item excluido</string>
+    <string name="exclude_item_fail_message">Falha ao excluir item</string>
+    <string name="undo_exclude_item_fail_message">Falha ao cancelar a exclusão do item</string>
+    <string name="undo_exclude_item_success_message">"Exclusão cancelada com sucesso"</string>
+    <string name="exclude_installment_expense_message_instruction_message">"Para apagar um gasto parcelado clique no item desejado e faça a exclusão na janela de edição"</string>
+    <string name="undo">Desfazer</string>
+    <string name="ok">OK</string>
+    <string name="update_expense_success_message">Despesa alterada com sucesso</string>
+    <string name="delete_expense_success_message">Despesa excluída com sucesso</string>
+    <string name="update_expense_fail_message">Falha ao alterar despesa</string>
+    <string name="delete_expense_fail_message">Falha ao excluir despesa</string>
+    <string name="external_storage_permission_is_denied">A permissão para gerenciar armazenamento externo foi negada</string>
 
 
 </resources>
