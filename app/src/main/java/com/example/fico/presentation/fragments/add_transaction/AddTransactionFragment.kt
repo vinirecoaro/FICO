@@ -94,7 +94,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             if (intent?.action == StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD) {
                 // Show message to user
                 Toast.makeText(
-                    context, "Dados salvos com sucesso !!", Toast.LENGTH_SHORT
+                    context, getString(R.string.save_data_success_message), Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -341,7 +341,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                     binding.etPurchaseDate
                                 )
                             ) {
-                                if (binding.etInstallments.text.toString() != "0") {
+                                if (binding.etInstallments.text.toString().toInt() > 1) {
                                     val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                                     if (existsDefaultBudget) {
                                         viewModel.addExpense(
@@ -369,7 +369,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                 } else {
                                     Toast.makeText(
                                         requireContext(),
-                                        "O número de parcelas não pode ser 0",
+                                        getString(R.string.wrong_installment_input_message),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
@@ -382,7 +382,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                     binding.etPurchaseDate
                                 )
                             ) {
-                                if (binding.etInstallments.text.toString() != "0") {
+                                if (binding.etInstallments.text.toString().toInt() > 1) {
                                     val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                                     if (existsDefaultBudget) {
                                         viewModel.addExpense(
@@ -410,7 +410,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                 } else {
                                     Toast.makeText(
                                         requireContext(),
-                                        "O número de parcelas não pode ser 0",
+                                        getString(R.string.wrong_installment_input_message),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
@@ -475,7 +475,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.ivPaymentDate.isEnabled = false
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Escolha a Data")
+                .setTitleText(getString(R.string.choose_date))
                 .build()
 
             datePicker.addOnPositiveButtonClickListener {
@@ -501,7 +501,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.ivPurchaseDate.isEnabled = false
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Escolha a Data")
+                .setTitleText(getString(R.string.choose_date))
                 .build()
 
             datePicker.addOnPositiveButtonClickListener {
@@ -528,7 +528,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.ivReceivedDate.isEnabled = false
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Escolha a Data")
+                .setTitleText(getString(R.string.choose_date))
                 .build()
 
             datePicker.addOnPositiveButtonClickListener {
@@ -677,7 +677,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         for (i in text) {
             if (i.text.toString() == "" || i == null) {
                 Snackbar.make(
-                    binding.btSave, "Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG
+                    binding.btSave, "${getString(R.string.fill_field)} ${i.hint}", Snackbar.LENGTH_LONG
                 ).show()
                 return false
             }
@@ -981,7 +981,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 Log.d(TAG, "storageActivityResultLauncher: ")
                 Toast.makeText(
                     requireContext(),
-                    "Manage External Storage Permission is denied ...",
+                    getString(R.string.external_storage_permission_is_denied),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -1025,7 +1025,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     )
                     Toast.makeText(
                         requireContext(),
-                        "Manage External Storage Permission is denied ...",
+                        getString(R.string.external_storage_permission_is_denied),
                         Toast.LENGTH_LONG
                     ).show()
                 }

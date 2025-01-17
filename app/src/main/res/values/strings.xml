@@ -195,6 +195,10 @@
     <string name="update_expense_fail_message">Falha ao alterar despesa</string>
     <string name="delete_expense_fail_message">Falha ao excluir despesa</string>
     <string name="external_storage_permission_is_denied">A permissão para gerenciar armazenamento externo foi negada</string>
+    <string name="save_data_success_message">Dados salvos com sucesso !!</string>
+    <string name="wrong_installment_input_message">O número de parcelas deve ser maior que 1</string>
+    <string name="choose_date">Selecione a data</string>
+    <string name="fill_field">Preencher o campo</string>
 
 
 </resources>
