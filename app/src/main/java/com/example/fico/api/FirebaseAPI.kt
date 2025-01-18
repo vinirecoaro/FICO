@@ -145,6 +145,16 @@ class FirebaseAPI(
         }
     }
 
+    suspend fun deleteEarning(earning: Earning) : Result<Unit> = withContext(Dispatchers.IO) {
+        return@withContext try{
+            val reference = earningsList.child(earning.id)
+            reference.removeValue()
+            Result.success(Unit)
+        }catch (e : Exception){
+            Result.failure(e)
+        }
+    }
+
     suspend fun deleteInstallmentExpense(
         removeFromExpenseList: MutableList<String>,
         expenseNOfInstallment: Int,

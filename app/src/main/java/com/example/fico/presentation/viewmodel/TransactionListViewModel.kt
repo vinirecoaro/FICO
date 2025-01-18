@@ -48,7 +48,9 @@ class TransactionListViewModel(
     val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
     private val _deleteExpenseResult = MutableLiveData<Boolean>()
     val deleteExpenseResult: LiveData<Boolean> = _deleteExpenseResult
-    var deletedItem: Expense? = null
+    private val _deleteEarningResult = MutableLiveData<Boolean>()
+    val deleteEarningResult: LiveData<Boolean> = _deleteEarningResult
+    var deletedItem: Transaction = Transaction.empty()
     private val _addExpenseResult = MutableLiveData<Boolean>()
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _installmentExpenseSwiped = MutableLiveData<Boolean>()
@@ -183,7 +185,7 @@ class TransactionListViewModel(
             val result = firebaseAPI.deleteExpense(expense)
             result.fold(
                 onSuccess = {
-                    deletedItem = expense
+                    deletedItem = expense.toTransaction()
 
                     //Get current dataStore Expense list
                     val currentList = dataStore.getExpenseList().toMutableList()
@@ -251,6 +253,22 @@ class TransactionListViewModel(
                 },
                 onFailure = {
                     _deleteExpenseResult.postValue(false)
+                }
+            )
+        }
+    }
+
+    fun deleteEarning(earning : Earning){
+        viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.deleteEarning(earning).fold(
+                onSuccess = {
+                    deletedItem = earning.toTransaction()
+                    dataStore.deleteFromEarningList(earning)
+                    updateTypeFilteredList()
+                    _deleteEarningResult.postValue(true)
+                },
+                onFailure = {
+                    _deleteEarningResult.postValue(false)
                 }
             )
         }

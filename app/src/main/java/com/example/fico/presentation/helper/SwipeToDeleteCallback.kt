@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
@@ -38,8 +39,6 @@ class SwipeToDeleteCallback(
                 val formattedPaymentDate = FormatValuesToDatabase().expenseDate(deleteItem.paymentDate)
                 val formattedPurchaseDate =
                     FormatValuesToDatabase().expenseDate(deleteItem.purchaseDate)
-                val formattedInputDateTime =
-                    FormatValuesToDatabase().expenseDate(deleteItem.inputDateTime)
                 val expencePrice = "-${deleteItem.price.replace("R$ ", "").replace(",", ".")}"
                 val deleteItemFormatted = Expense(
                     deleteItem.id,
@@ -48,13 +47,17 @@ class SwipeToDeleteCallback(
                     deleteItem.category,
                     formattedPaymentDate,
                     formattedPurchaseDate,
-                    formattedInputDateTime
+                    deleteItem.inputDateTime
                 )
                 //Delete Item and update expense list
                 viewModel.deleteExpense(deleteItemFormatted)
             }else if(deleteItem.type == StringConstants.DATABASE.EARNING){
-                //TODO delete earning
-                viewModel.getEarningList(viewModel.monthFilterLiveData.value.toString())
+                val formattedValue = FormatValuesToDatabase().expensePrice(deleteItem.price,1)
+                val formattedDate =  FormatValuesToDatabase().expenseDate(deleteItem.paymentDate)
+                val earningFormatted = deleteItem.toEarning()
+                earningFormatted.value = formattedValue
+                earningFormatted.date = formattedDate
+                viewModel.deleteEarning(earningFormatted)
             }
 
         }else{

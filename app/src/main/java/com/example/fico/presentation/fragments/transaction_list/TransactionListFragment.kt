@@ -325,14 +325,30 @@ class TransactionListFragment : Fragment(), XLSInterface {
             }
         })
 
-        viewModel.deleteExpenseResult.observe(viewLifecycleOwner){
-            if(it){
+        viewModel.deleteExpenseResult.observe(viewLifecycleOwner){result ->
+            if(result){
                 //Show snackbar to undo the action
                 val snackbar = Snackbar.make(binding.rvExpenseList, getString(R.string.excluded_item), Snackbar.LENGTH_SHORT)
                 snackbar.setAction(getString(R.string.undo)) {
                     lifecycleScope.launch {
-                        viewModel.undoDeleteExpense(viewModel.deletedItem!!, false, 1)
+                        viewModel.undoDeleteExpense(viewModel.deletedItem.toExpense(), false, 1)
                     }
+
+                }.show()
+            }else{
+                //Show snackbar with failure message
+                Snackbar.make(binding.rvExpenseList, getString(R.string.exclude_item_fail_message), Snackbar.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.deleteEarningResult.observe(viewLifecycleOwner){ result ->
+            if(result){
+                //Show snackbar to undo the action
+                val snackbar = Snackbar.make(binding.rvExpenseList, getString(R.string.excluded_item), Snackbar.LENGTH_SHORT)
+                snackbar.setAction(getString(R.string.undo)) {
+                    /*lifecycleScope.launch {
+                        viewModel.undoDeleteExpense(viewModel.deletedItem.toExpense(), false, 1)
+                    }*/
 
                 }.show()
             }else{
