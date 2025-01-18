@@ -109,7 +109,16 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                 }
 
                 else if(transaction.type == StringConstants.DATABASE.EARNING){
+                    editingTransaction = transaction
                     changeComponentsToEarningState()
+
+                    val priceFormatted = FormatValuesFromDatabase().price(transaction.price)
+
+                    binding.etPrice.setText(priceFormatted)
+                    binding.etDescription.setText(transaction.description)
+                    binding.actvCategory.setText(transaction.category)
+                    binding.etPaymentDateEdit.hint = getString(R.string.add_date)
+                    binding.etPaymentDateEdit.setText(transaction.paymentDate)
                 }
 
                 adapter.selectCategory(transaction.category)
@@ -230,7 +239,13 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                             binding.actvCategory,
                             binding.etPaymentDateEdit)
                         ){
-
+                        viewModel.saveEditEarning(
+                            earning,
+                            binding.etPrice.text.toString(),
+                            binding.etDescription.text.toString(),
+                            binding.actvCategory.text.toString(),
+                            binding.etPaymentDateEdit.text.toString(),
+                        )
                     }
                 }
             }
@@ -318,6 +333,20 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                 //Minimize keyboard and show message
                 hideKeyboard(this, binding.btSave)
                 setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
+
+        viewModel.editEarningResult.observe(this) { result ->
+            if (result) {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_OK)
+                finish()
+            } else {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_FAILURE)
                 finish()
             }
         }

@@ -189,13 +189,18 @@ class DataStoreManager (context: Context) {
         }
     }
 
-    suspend fun updateEarningList(expenseList : List<Earning>){
+    suspend fun updateEarningList(earning : Earning){
         dataStore.edit { preferences ->
             val existingEarningsListString = preferences[earningsListKey] ?: "[]"
             val existingEarningList = Gson().fromJson(existingEarningsListString, Array<Earning>::class.java).toMutableList()
-            existingEarningList.addAll(expenseList)
-            val expenseListString = Gson().toJson(existingEarningList)
-            preferences[earningsListKey] = expenseListString
+            if(existingEarningList.find { it.id == earning.id } != null){
+                existingEarningList.removeAll { it.id == earning.id }
+                existingEarningList.add(earning)
+            }else{
+                existingEarningList.add(earning)
+            }
+            val earningListString = Gson().toJson(existingEarningList)
+            preferences[earningsListKey] = earningListString
         }
     }
 

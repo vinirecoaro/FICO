@@ -446,7 +446,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
                 override fun onListItemClick(position: Int) {
                     val selectItem = transacList[position]
-                    editExpense(selectItem)
+                    editTransaction(selectItem)
                 }
             })
         }
@@ -462,18 +462,18 @@ class TransactionListFragment : Fragment(), XLSInterface {
         binding.actvDate.setAdapter(adapter)
     }
 
-    fun editExpense(transaction: Transaction) {
+    fun editTransaction(transaction: Transaction) {
         viewModel.updateEditingTransaction(transaction)
         val intent = Intent(requireContext(), EditTransactionActivity::class.java)
         intent.putExtra(StringConstants.TRANSACTION_LIST.TRANSACTION, transaction)
-        startActivityForResult(intent, StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE)
+        startActivityForResult(intent, StringConstants.REQUEST_CODES.TRANSACTION_LIST_TO_EDIT_TRANSACTION)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         // Check if edit expense was successfully completed
-        if(requestCode == StringConstants.REQUEST_CODES.EXPENSE_LIST_TO_EDIT_EXPENSE){
+        if(requestCode == StringConstants.REQUEST_CODES.TRANSACTION_LIST_TO_EDIT_TRANSACTION){
             viewModel.changeReturningFromEditState(true)
             if(resultCode == Activity.RESULT_OK){
                 Snackbar.make(
@@ -497,6 +497,18 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 Snackbar.make(
                     binding.rvExpenseList,
                     getString(R.string.delete_expense_fail_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }else if(resultCode == StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_OK){
+                Snackbar.make(
+                    binding.rvExpenseList,
+                    getString(R.string.edit_earning_success_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }else if(resultCode == StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_FAILURE){
+                Snackbar.make(
+                    binding.rvExpenseList,
+                    getString(R.string.edit_earning_failure_message),
                     Snackbar.LENGTH_SHORT
                 ).show()
             }

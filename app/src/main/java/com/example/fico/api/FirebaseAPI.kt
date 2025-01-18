@@ -387,6 +387,24 @@ class FirebaseAPI(
         }
     }
 
+    suspend fun editEarning(
+        earning: Earning,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        val updates = mutableMapOf<String, Any?>()
+
+        try {
+
+            // Add Earning List
+            updates.putAll(generateMapToUpdateUserEarnings(earning))
+
+            earnings.updateChildren(updates)
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun updateInfoPerMonthAndTotalExpense(
         updatedTotalExpense: String,
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>

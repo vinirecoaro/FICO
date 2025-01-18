@@ -155,13 +155,15 @@ class StringConstants private constructor() {
     }
 
     object REQUEST_CODES {
-        const val EXPENSE_LIST_TO_EDIT_EXPENSE = 1111
+        const val TRANSACTION_LIST_TO_EDIT_TRANSACTION = 1111
     }
 
     object RESULT_CODES {
         const val BACK_BUTTON_PRESSED = 111111
         const val DELETE_INSTALLMENT_EXPENSE_RESULT_OK = 111112
         const val DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE = 111113
+        const val EDIT_EARNING_EXPENSE_RESULT_OK = 111114
+        const val EDIT_EARNING_EXPENSE_RESULT_FAILURE = 111115
     }
 
     object ADD_TRANSACTION {

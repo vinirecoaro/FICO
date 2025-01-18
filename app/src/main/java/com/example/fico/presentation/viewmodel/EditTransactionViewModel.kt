@@ -12,6 +12,7 @@ import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.utils.DateFunctions
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +25,13 @@ class EditTransactionViewModel(
     private val dataStore: DataStoreManager
 ) : ViewModel() {
 
-
     private val _editExpenseResult = MutableLiveData<Boolean>()
     val editExpenseResult : LiveData<Boolean> = _editExpenseResult
     private val _deleteInstallmentExpenseResult = MutableLiveData<Boolean>()
     val deleteInstallmentExpenseResult : LiveData<Boolean> = _deleteInstallmentExpenseResult
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
+    private val _editEarningResult = MutableLiveData<Boolean>()
+    val editEarningResult : LiveData<Boolean> = _editEarningResult
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(
@@ -199,8 +201,35 @@ class EditTransactionViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun saveEditEarning(
+        oldEarning: Earning,
+        value: String,
+        description: String,
+        category: String,
+        date: String,
+    )  {
+        viewModelScope.async(Dispatchers.IO) {
+
+            val newEarningValue = FormatValuesToDatabase().expensePrice(value, 1)
+            val newEarningDate = FormatValuesToDatabase().expenseDate(date)
+            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+
+            val newEarning = Earning(oldEarning.id, newEarningValue, description, category, newEarningDate, formattedInputDate)
+
+            firebaseAPI.editEarning(newEarning).fold(
+                onSuccess = {
+                    dataStore.updateEarningList(newEarning)
+                    _editEarningResult.postValue(true)
+                },
+                onFailure = {
+                    _editEarningResult.postValue(false)
+                }
+            )
+        }
+    }
+
     fun deleteInstallmentExpense(expense : Expense){
-        //TODO analyse and test
         viewModelScope.async(Dispatchers.IO){
             var expensePaymentDate = FormatValuesToDatabase().expenseDate(FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id,expense.paymentDate))
             var expensePurchaseDate = FormatValuesToDatabase().expenseDate(expense.purchaseDate)
