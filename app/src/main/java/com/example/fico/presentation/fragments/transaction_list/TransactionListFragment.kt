@@ -48,6 +48,7 @@ import com.example.fico.utils.constants.CategoriesList
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
@@ -126,7 +127,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             binding.btAllTransacList.isClickable = false
             viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.TRANSACTION)
         }else{
-            viewModel.updateTypeFilteredList()
+            viewModel.updateShowFilteredList()
             viewModel.updateTransactionOnList()
             viewModel.changeReturningFromEditState(false)
             viewModel.updateEditingTransaction(Transaction.empty())
@@ -346,9 +347,9 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 //Show snackbar to undo the action
                 val snackbar = Snackbar.make(binding.rvExpenseList, getString(R.string.excluded_item), Snackbar.LENGTH_SHORT)
                 snackbar.setAction(getString(R.string.undo)) {
-                    /*lifecycleScope.launch {
-                        viewModel.undoDeleteExpense(viewModel.deletedItem.toExpense(), false, 1)
-                    }*/
+                    lifecycleScope.launch {
+                        viewModel.undoDeleteEarning(viewModel.deletedItem.toEarning())
+                    }
 
                 }.show()
             }else{
@@ -371,7 +372,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     .setTitle(getString(R.string.delete_expense))
                     .setMessage(getString(R.string.exclude_installment_expense_message_instruction_message))
                     .setPositiveButton(R.string.ok) { dialog, which ->
-                        viewModel.updateTypeFilteredList()
+                        viewModel.updateShowFilteredList()
                     }
                     .show()
             }
@@ -465,6 +466,22 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     editTransaction(selectItem)
                 }
             })
+        }
+
+        viewModel.addEarningResult.observe(viewLifecycleOwner){ result ->
+            if (result) {
+                Snackbar.make(
+                    binding.rvExpenseList,
+                    getString(R.string.add_earning_success_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            } else {
+                Snackbar.make(
+                    binding.rvExpenseList,
+                    getString(R.string.add_earning_failure_message),
+                    Snackbar.LENGTH_LONG)
+                    .show()
+            }
         }
 
     }

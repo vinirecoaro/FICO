@@ -52,10 +52,8 @@ class SwipeToDeleteCallback(
                 //Delete Item and update expense list
                 viewModel.deleteExpense(deleteItemFormatted)
             }else if(deleteItem.type == StringConstants.DATABASE.EARNING){
-                val formattedValue = FormatValuesToDatabase().expensePrice(deleteItem.price,1)
                 val formattedDate =  FormatValuesToDatabase().expenseDate(deleteItem.paymentDate)
                 val earningFormatted = deleteItem.toEarning()
-                earningFormatted.value = formattedValue
                 earningFormatted.date = formattedDate
                 viewModel.deleteEarning(earningFormatted)
             }

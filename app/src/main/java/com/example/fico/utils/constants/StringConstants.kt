@@ -176,4 +176,9 @@ class StringConstants private constructor() {
         const val TRANSACTION = "transaction"
     }
 
+    object OPERATIONS {
+        const val DELETE = "delete"
+        const val UNDO_DELETE = "undo_delete"
+    }
+
 }

@@ -77,6 +77,9 @@ class TransactionListViewModel(
     private val _editingTransaction = MutableLiveData<Transaction>()
     private val _transactionTypeFilter = MutableLiveData<String>(StringConstants.DATABASE.TRANSACTION)
     val transactionTypeFilter : LiveData<String> = _transactionTypeFilter
+    private val _addEarningResult = MutableLiveData<Boolean>()
+    val addEarningResult: LiveData<Boolean> = _addEarningResult
+    private val operation = MutableLiveData<String>("")
 
 
     fun updateFilter(filter: String) {
@@ -181,6 +184,7 @@ class TransactionListViewModel(
     }
 
     fun deleteExpense(expense: Expense) {
+        operation.value = StringConstants.OPERATIONS.DELETE
         viewModelScope.async(Dispatchers.IO) {
             val result = firebaseAPI.deleteExpense(expense)
             result.fold(
@@ -195,7 +199,7 @@ class TransactionListViewModel(
                     dataStore.updateAndResetExpenseList(currentList.toList())
 
                     //Update expenseList on screen
-                    updateTypeFilteredList()
+                    updateShowFilteredList()
 
                     //Remove from dataStore expense Months List
                     val removedExpenseMonth = DateFunctions().YYYYmmDDtoYYYYmm(expense.paymentDate)
@@ -259,12 +263,13 @@ class TransactionListViewModel(
     }
 
     fun deleteEarning(earning : Earning){
+        operation.value = StringConstants.OPERATIONS.DELETE
         viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.deleteEarning(earning).fold(
                 onSuccess = {
                     deletedItem = earning.toTransaction()
                     dataStore.deleteFromEarningList(earning)
-                    updateTypeFilteredList()
+                    updateShowFilteredList()
                     _deleteEarningResult.postValue(true)
                 },
                 onFailure = {
@@ -280,8 +285,8 @@ class TransactionListViewModel(
         installment: Boolean,
         nOfInstallments: Int = 1
     ) {
+        operation.value = StringConstants.OPERATIONS.UNDO_DELETE
         viewModelScope.async(Dispatchers.IO) {
-
             val formattedInputDate =
                 "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
@@ -374,7 +379,7 @@ class TransactionListViewModel(
 
                     // Update dataStore expenseList and InfoPerMonth
                     dataStore.updateExpenseList(updatedExpenseList)
-                    getExpenseList(_monthFilterLiveData.value.toString())
+                    updateShowFilteredList()
                     dataStore.updateInfoPerMonthExpense(updatedInfoPerMonth)
 
                     // Update dataStore expenseMonths
@@ -395,6 +400,25 @@ class TransactionListViewModel(
                 },
                 onFailure = {
                     _addExpenseResult.postValue(false)
+                }
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun undoDeleteEarning(
+        deletedEarning: Earning,
+    ) {
+        operation.value = StringConstants.OPERATIONS.UNDO_DELETE
+        viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.addEarning(deletedEarning).fold(
+                onSuccess = {
+                    dataStore.updateEarningList(deletedEarning)
+                    updateShowFilteredList()
+                    _addEarningResult.postValue(true)
+                },
+                onFailure = {
+                    _addEarningResult.postValue(false)
                 }
             )
         }
@@ -571,29 +595,40 @@ class TransactionListViewModel(
         _returningFromEdit.value = state
     }
 
-    fun updateTypeFilteredList(){
+    fun updateShowFilteredList(){
         viewModelScope.async(Dispatchers.IO){
             val currentList = _showListLiveData.value
             val updatedTransactionList = dataStore.getTransactionList()
             val filteredTransactionList = mutableListOf<Transaction>()
 
             if(!currentList.isNullOrEmpty()){
-                currentList.forEach { transaction ->
-                    val commondId = if(transaction.id.length > 25){
-                        transaction.id.substring(0,25)
-                    }else{
-                        transaction.id
-                    }
-                    filteredTransactionList.addAll(updatedTransactionList.filter {
-                        val transactDate = FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate)
-                        val filterDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
-                        if(it.id.length > 25){
-                            it.id.substring(0,25) == commondId && it.type == transaction.type && transactDate == filterDate
+                if(operation.value == StringConstants.OPERATIONS.DELETE){
+                    currentList.forEach { transaction ->
+                        val commondId = if(transaction.id.length > 25){
+                            transaction.id.substring(0,25)
                         }else{
-                            it.id == commondId && it.type == transaction.type && transactDate == filterDate
+                            transaction.id
                         }
-                     })
+                        filteredTransactionList.addAll(updatedTransactionList.filter {
+                            val transactDate = FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate)
+                            val filterDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
+                            if(it.id.length > 25){
+                                it.id.substring(0,25) == commondId && it.type == transaction.type && transactDate == filterDate
+                            }else{
+                                it.id == commondId && it.type == transaction.type && transactDate == filterDate
+                            }
+                        })
+                    }
+                }else if(operation.value == StringConstants.OPERATIONS.UNDO_DELETE){
+                    filteredTransactionList.addAll(currentList)
+                    val formattedPaymentDate = FormatValuesFromDatabase().date(deletedItem.paymentDate)
+                    val formattedPurchaseDate = FormatValuesFromDatabase().date(deletedItem.purchaseDate)
+                    val transaction = deletedItem
+                    transaction.paymentDate = formattedPaymentDate
+                    transaction.purchaseDate = formattedPurchaseDate
+                    filteredTransactionList.add(transaction)
                 }
+
             }
 
             val sortedList = filteredTransactionList.sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
@@ -682,6 +717,10 @@ class TransactionListViewModel(
 
     fun updateTransactionTypeFilter(type : String){
         _transactionTypeFilter.postValue(type)
+    }
+
+    fun updateOperation(operationValue : String){
+        operation.value = operationValue
     }
 }
 
