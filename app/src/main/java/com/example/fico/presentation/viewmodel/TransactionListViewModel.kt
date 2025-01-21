@@ -601,7 +601,7 @@ class TransactionListViewModel(
             val updatedTransactionList = dataStore.getTransactionList()
             val filteredTransactionList = mutableListOf<Transaction>()
 
-            if(!currentList.isNullOrEmpty()){
+            if(currentList != null){
                 if(operation.value == StringConstants.OPERATIONS.DELETE){
                     currentList.forEach { transaction ->
                         val commondId = if(transaction.id.length > 25){
@@ -619,6 +619,7 @@ class TransactionListViewModel(
                             }
                         })
                     }
+                    operation.postValue("")
                 }else if(operation.value == StringConstants.OPERATIONS.UNDO_DELETE){
                     filteredTransactionList.addAll(currentList)
                     val formattedPaymentDate = FormatValuesFromDatabase().date(deletedItem.paymentDate)
@@ -627,6 +628,9 @@ class TransactionListViewModel(
                     transaction.paymentDate = formattedPaymentDate
                     transaction.purchaseDate = formattedPurchaseDate
                     filteredTransactionList.add(transaction)
+                    operation.postValue("")
+                } else if(operation.value == ""){
+                    filteredTransactionList.addAll(currentList)
                 }
 
             }
@@ -658,6 +662,8 @@ class TransactionListViewModel(
             val oldTransaction = _editingTransaction.value
             if(oldTransaction != null && oldTransaction.id != ""){
                 val updatedTransaction = dataStore.getTransaction(oldTransaction)
+                updatedTransaction.purchaseDate = FormatValuesFromDatabase().date(updatedTransaction.purchaseDate)
+                updatedTransaction.paymentDate = FormatValuesFromDatabase().date(updatedTransaction.paymentDate)
                 val commonId = if(updatedTransaction.id.length > 25){
                     updatedTransaction.id.substring(0,25)
                 }else{
