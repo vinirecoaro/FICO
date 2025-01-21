@@ -629,7 +629,44 @@ class TransactionListViewModel(
                     transaction.purchaseDate = formattedPurchaseDate
                     filteredTransactionList.add(transaction)
                     operation.postValue("")
-                } else if(operation.value == ""){
+                }else if(operation.value == StringConstants.OPERATIONS.UPDATE){
+                    val oldTransaction = _editingTransaction.value
+                    if(oldTransaction != null && oldTransaction.id != ""){
+
+                        //Prepare updated transaction and take common Id
+                        val updatedTransaction = dataStore.getTransaction(oldTransaction)
+                        val commonId = if(updatedTransaction.id.length > 25){
+                            updatedTransaction.id.substring(0,25)
+                        }else{
+                            updatedTransaction.id
+                        }
+
+                        // Update List
+                        filteredTransactionList.addAll(currentList.filter {
+                            val listItemId =
+                                if(it.id.length > 25){
+                                    it.id.substring(0,25)
+                                }else{
+                                    it.id
+                                }
+                            listItemId != commonId
+                        }.toMutableList())
+                        if(_monthFilterLiveData.value != null){
+                            if(_monthFilterLiveData.value != ""){
+                                if(
+                                    DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(updatedTransaction.paymentDate)) ==
+                                    FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
+                                ){
+                                    filteredTransactionList.add(updatedTransaction)
+                                }
+                            }else{
+                                filteredTransactionList.add(updatedTransaction)
+                            }
+                        }
+                    }
+                    operation.postValue("")
+                }
+                else if(operation.value == ""){
                     filteredTransactionList.addAll(currentList)
                 }
 
@@ -657,7 +694,7 @@ class TransactionListViewModel(
         _editingTransaction.postValue(transaction)
     }
 
-    fun updateTransactionOnList(){
+    /*fun updateTransactionOnList(){
         viewModelScope.async(Dispatchers.IO){
             val oldTransaction = _editingTransaction.value
             if(oldTransaction != null && oldTransaction.id != ""){
@@ -719,7 +756,7 @@ class TransactionListViewModel(
                 }
             }
         }
-    }
+    }*/
 
     fun updateTransactionTypeFilter(type : String){
         _transactionTypeFilter.postValue(type)

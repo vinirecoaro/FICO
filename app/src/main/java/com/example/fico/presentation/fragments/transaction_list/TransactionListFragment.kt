@@ -128,7 +128,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.TRANSACTION)
         }else{
             viewModel.updateShowFilteredList()
-            viewModel.updateTransactionOnList()
+            //viewModel.updateTransactionOnList()
             viewModel.changeReturningFromEditState(false)
             viewModel.updateEditingTransaction(Transaction.empty())
         }
@@ -509,6 +509,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         if(requestCode == StringConstants.REQUEST_CODES.TRANSACTION_LIST_TO_EDIT_TRANSACTION){
             viewModel.changeReturningFromEditState(true)
             if(resultCode == Activity.RESULT_OK){
+                viewModel.updateOperation(StringConstants.OPERATIONS.UPDATE)
                 Snackbar.make(
                     binding.rvExpenseList,
                     getString(R.string.update_expense_success_message),
@@ -533,6 +534,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     Snackbar.LENGTH_SHORT
                 ).show()
             }else if(resultCode == StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_OK){
+                viewModel.updateOperation(StringConstants.OPERATIONS.UPDATE)
                 Snackbar.make(
                     binding.rvExpenseList,
                     getString(R.string.edit_earning_success_message),

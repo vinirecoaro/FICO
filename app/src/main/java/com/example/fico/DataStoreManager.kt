@@ -304,6 +304,9 @@ class DataStoreManager (context: Context) {
             StringConstants.DATABASE.EARNING -> {
                 val earningList = getEarningsList()
                 val updatedTransaction = earningList.first { it.id == transaction.id }.toTransaction()
+                val formattedDate = FormatValuesFromDatabase().date(updatedTransaction.paymentDate)
+                updatedTransaction.purchaseDate = formattedDate
+                updatedTransaction.paymentDate = formattedDate
                 return updatedTransaction
             }
             else -> {

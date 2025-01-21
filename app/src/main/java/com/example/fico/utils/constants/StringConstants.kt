@@ -179,6 +179,7 @@ class StringConstants private constructor() {
     object OPERATIONS {
         const val DELETE = "delete"
         const val UNDO_DELETE = "undo_delete"
+        const val UPDATE = "update"
     }
 
 }
