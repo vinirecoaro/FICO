@@ -128,7 +128,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
             viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.TRANSACTION)
         }else{
             viewModel.updateShowFilteredList()
-            //viewModel.updateTransactionOnList()
             viewModel.changeReturningFromEditState(false)
             viewModel.updateEditingTransaction(Transaction.empty())
         }

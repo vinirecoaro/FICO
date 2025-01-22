@@ -602,34 +602,41 @@ class TransactionListViewModel(
             val filteredTransactionList = mutableListOf<Transaction>()
 
             if(currentList != null){
+
                 if(operation.value == StringConstants.OPERATIONS.DELETE){
-                    currentList.forEach { transaction ->
-                        val commondId = if(transaction.id.length > 25){
-                            transaction.id.substring(0,25)
-                        }else{
-                            transaction.id
-                        }
-                        filteredTransactionList.addAll(updatedTransactionList.filter {
-                            val transactDate = FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate)
-                            val filterDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
-                            if(it.id.length > 25){
-                                it.id.substring(0,25) == commondId && it.type == transaction.type && transactDate == filterDate
-                            }else{
-                                it.id == commondId && it.type == transaction.type && transactDate == filterDate
-                            }
-                        })
+                    val excludedItem = deletedItem
+                    val commondId = if(excludedItem.id.length > 25){
+                        excludedItem.id.substring(0,25)
+                    }else{
+                        excludedItem.id
                     }
+                    filteredTransactionList.addAll(currentList.filter {
+                        if(it.id.length > 25){
+                            it.id.substring(0,25) != commondId
+                        }else{
+                            it.id != commondId
+                        }
+                    })
+
                     operation.postValue("")
-                }else if(operation.value == StringConstants.OPERATIONS.UNDO_DELETE){
+                }
+
+                else if(operation.value == StringConstants.OPERATIONS.UNDO_DELETE){
                     filteredTransactionList.addAll(currentList)
                     val formattedPaymentDate = FormatValuesFromDatabase().date(deletedItem.paymentDate)
                     val formattedPurchaseDate = FormatValuesFromDatabase().date(deletedItem.purchaseDate)
                     val transaction = deletedItem
                     transaction.paymentDate = formattedPaymentDate
                     transaction.purchaseDate = formattedPurchaseDate
+                    if(transaction.type == StringConstants.DATABASE.EXPENSE){
+                        val formattedPrice = transaction.price.replace("-","")
+                        transaction.price = formattedPrice
+                    }
                     filteredTransactionList.add(transaction)
                     operation.postValue("")
-                }else if(operation.value == StringConstants.OPERATIONS.UPDATE){
+                }
+
+                else if(operation.value == StringConstants.OPERATIONS.UPDATE){
                     val oldTransaction = _editingTransaction.value
                     if(oldTransaction != null && oldTransaction.id != ""){
 
@@ -666,6 +673,7 @@ class TransactionListViewModel(
                     }
                     operation.postValue("")
                 }
+
                 else if(operation.value == ""){
                     filteredTransactionList.addAll(currentList)
                 }
@@ -693,70 +701,6 @@ class TransactionListViewModel(
     fun updateEditingTransaction(transaction : Transaction){
         _editingTransaction.postValue(transaction)
     }
-
-    /*fun updateTransactionOnList(){
-        viewModelScope.async(Dispatchers.IO){
-            val oldTransaction = _editingTransaction.value
-            if(oldTransaction != null && oldTransaction.id != ""){
-                val updatedTransaction = dataStore.getTransaction(oldTransaction)
-                updatedTransaction.purchaseDate = FormatValuesFromDatabase().date(updatedTransaction.purchaseDate)
-                updatedTransaction.paymentDate = FormatValuesFromDatabase().date(updatedTransaction.paymentDate)
-                val commonId = if(updatedTransaction.id.length > 25){
-                    updatedTransaction.id.substring(0,25)
-                }else{
-                    updatedTransaction.id
-                }
-
-                // update show list
-                if(_showListLiveData.value != null){
-                    val updatedShowList = _showListLiveData.value!!.filter {
-                        val listItemId =
-                            if(it.id.length > 25){
-                                it.id.substring(0,25)
-                            }else{
-                                it.id
-                            }
-                        listItemId != commonId
-                    }.toMutableList()
-                    updatedShowList.add(updatedTransaction)
-                    val sortedShowList = updatedShowList.sortedByDescending { it.purchaseDate }
-                    _showListLiveData.postValue(sortedShowList)
-                }
-
-                // update filtered list
-                if(_isFiltered.value != null && _isFiltered.value == true){
-                    val updatedFilteredList = _filteredTransactionsListLiveData.value!!.filter {
-                        val listItemId =
-                            if(it.id.length > 25){
-                                it.id.substring(0,25)
-                            }else{
-                                it.id
-                            }
-                        listItemId != commonId
-                    }.toMutableList()
-                    updatedFilteredList.add(updatedTransaction)
-                    val sortedFilteredList = updatedFilteredList.sortedByDescending { it.purchaseDate }
-                    _filteredTransactionsListLiveData.postValue(sortedFilteredList)
-                }
-
-                // update transaction list
-                if(_transactionsListLiveData.value != null){
-                    val updatedTransactionList = _transactionsListLiveData.value!!.filter {
-                        val listItemId =
-                            if(it.id.length > 25){
-                                it.id.substring(0,25)
-                            }else{
-                                it.id
-                            }
-                        listItemId != commonId
-                    }.toMutableList()
-                    updatedTransactionList.add(updatedTransaction)
-                    val sortedTransactionList = updatedTransactionList.sortedByDescending { it.purchaseDate }
-                    _transactionsListLiveData.postValue(sortedTransactionList)
-                }
-            }
-        }
-    }*/
 
     fun updateTransactionTypeFilter(type : String){
         _transactionTypeFilter.postValue(type)
