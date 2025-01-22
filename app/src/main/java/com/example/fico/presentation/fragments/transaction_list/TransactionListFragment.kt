@@ -48,7 +48,6 @@ import com.example.fico.utils.constants.CategoriesList
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
@@ -288,8 +287,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         binding.ivClearFilter.setOnClickListener {
             binding.actvDate.setText("")
-            viewModel.getEarningList("")
-            viewModel.getExpenseList("")
+            viewModel.updateOperation(StringConstants.OPERATIONS.CLEAR_MONTH_FILTER)
+            viewModel.updateShowFilteredList()
+            /*viewModel.getEarningList("")
+            viewModel.getExpenseList("")*/
             clearAllFilter()
         }
 
@@ -366,6 +367,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
 
         viewModel.installmentExpenseSwiped.observe(viewLifecycleOwner){result ->
+            viewModel.updateOperation(StringConstants.OPERATIONS.SWIPPED_INSTALLMENT_EXPENSE)
             if(result){
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(getString(R.string.delete_expense))

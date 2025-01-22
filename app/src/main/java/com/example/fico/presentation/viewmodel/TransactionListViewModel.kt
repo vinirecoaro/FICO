@@ -674,8 +674,28 @@ class TransactionListViewModel(
                     operation.postValue("")
                 }
 
-                else if(operation.value == ""){
+                else if(operation.value == StringConstants.OPERATIONS.SWIPPED_INSTALLMENT_EXPENSE){
                     filteredTransactionList.addAll(currentList)
+                    operation.postValue("")
+                }
+
+                else if(operation.value == StringConstants.OPERATIONS.CLEAR_MONTH_FILTER){
+                    when (_transactionTypeFilter.value) {
+                        StringConstants.DATABASE.TRANSACTION -> {
+                            filteredTransactionList.addAll(updatedTransactionList)
+                        }
+                        StringConstants.DATABASE.EXPENSE -> {
+                            filteredTransactionList.addAll(
+                                updatedTransactionList.filter { it.type == StringConstants.DATABASE.EXPENSE }
+                            )
+                        }
+                        StringConstants.DATABASE.EARNING -> {
+                            filteredTransactionList.addAll(
+                                updatedTransactionList.filter { it.type == StringConstants.DATABASE.EARNING }
+                            )
+                        }
+                    }
+                    operation.postValue("")
                 }
 
             }
