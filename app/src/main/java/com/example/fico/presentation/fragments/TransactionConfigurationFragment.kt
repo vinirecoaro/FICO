@@ -9,6 +9,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ import com.example.fico.databinding.FragmentConfigurationBinding
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.activities.BudgetConfigurationListActivity
 import com.example.fico.presentation.activities.DefaultPaymentDateConfigurationActivity
+import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
@@ -40,8 +42,30 @@ class TransactionConfigurationFragment : Fragment(),
     private lateinit var configuratonListAdapter: ExpenseConfigurationListAdapter
     private lateinit var recurringTransactionListAdapter : TransactionListAdapter
     private val categoriesList : CategoriesList by inject()
+    private val startEditTransactionActivityForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){result ->
+        when(result.resultCode){
+            StringConstants.RESULT_CODES.RECURRING_EXPENSE_EDIT_OK -> {
+                Snackbar.make(
+                    binding.rvConfigurationList,
+                    getString(R.string.edit_recurring_expense_success_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+
+            StringConstants.RESULT_CODES.RECURRING_EXPENSE_EDIT_FAILURE -> {
+                Snackbar.make(
+                    binding.rvConfigurationList,
+                    getString(R.string.edit_recurring_expense_failure_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentConfigurationBinding.inflate(inflater, container, false)
         val rootView = binding.root
@@ -54,11 +78,6 @@ class TransactionConfigurationFragment : Fragment(),
         setUpListeners()
 
         return rootView
-    }
-
-    override fun onResume() {
-        super.onResume()
-        /*viewModel.getRecurringExpensesList()*/
     }
 
     override fun onDestroyView() {
@@ -94,15 +113,20 @@ class TransactionConfigurationFragment : Fragment(),
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onListItemClick(position: Int) {
-        var item = viewModel.configurationList[position]
-        if(item == getString(R.string.budget_configuration_list)){
-            startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
-        }else if(item == getString(R.string.default_payment_date)){
-            startActivity(Intent(requireContext(), DefaultPaymentDateConfigurationActivity::class.java))
-        }else if (item == getString(R.string.update_database_info_per_month_and_total_expense)){
-            viewModel.updateInfoPerMonthAndTotalExpense()
-        }else if(item == getString(R.string.recurring_transactions_configuration_list)){
-            selectTransactionTypeDialog()
+        val item = viewModel.configurationList[position]
+        when (item) {
+            getString(R.string.budget_configuration_list) -> {
+                startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
+            }
+            getString(R.string.default_payment_date) -> {
+                startActivity(Intent(requireContext(), DefaultPaymentDateConfigurationActivity::class.java))
+            }
+            getString(R.string.update_database_info_per_month_and_total_expense) -> {
+                viewModel.updateInfoPerMonthAndTotalExpense()
+            }
+            getString(R.string.recurring_transactions_configuration_list) -> {
+                selectTransactionTypeDialog()
+            }
         }
     }
 
@@ -137,7 +161,6 @@ class TransactionConfigurationFragment : Fragment(),
         builder.setMessage(getString(R.string.edit_recurring_transaction_message_step_2))
 
         builder.setPositiveButton(getString(R.string.list)){dialog, which ->
-            //recurringTransactionListDialog()
             viewModel.getRecurringExpensesList()
         }
 
@@ -195,7 +218,9 @@ class TransactionConfigurationFragment : Fragment(),
         // Listeners
         recurringTransactionListAdapter.setOnItemClickListener { position ->
             val selectItem = recurringTransactionList[position]
-            //TODO go to edit transaction activity
+            val intent = Intent(requireContext(), EditTransactionActivity::class.java)
+            intent.putExtra(StringConstants.TRANSACTION_LIST.TRANSACTION, selectItem)
+            startEditTransactionActivityForResult.launch(intent)
             dialog.cancel()
         }
     }

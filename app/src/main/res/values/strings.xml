@@ -163,7 +163,9 @@
     <string name="edit_earning_success_message">Receita alterada com sucesso</string>
     <string name="edit_earning_failure_message">Falha ao alterar receita</string>
     <string name="add_recurring_expense_success_message">Despesa recorrente adicionada com sucesso</string>
+    <string name="edit_recurring_expense_success_message">Despesa recorrente editada com sucesso</string>
     <string name="add_recurring_expense_failure_message">Falha ao adicionar despesa recorrente</string>
+    <string name="edit_recurring_expense_failure_message">Falha ao editar despesa recorrente</string>
     <string name="biometric_prompt_title">FICO</string>
     <string name="biometric_prompt_description">Desbloqueie seu celular</string>
     <string name="text_filter">Filtro de texto</string>

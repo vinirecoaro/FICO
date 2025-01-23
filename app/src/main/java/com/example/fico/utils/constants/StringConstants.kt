@@ -164,6 +164,8 @@ class StringConstants private constructor() {
         const val DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE = 111113
         const val EDIT_EARNING_EXPENSE_RESULT_OK = 111114
         const val EDIT_EARNING_EXPENSE_RESULT_FAILURE = 111115
+        const val RECURRING_EXPENSE_EDIT_OK = 111116
+        const val RECURRING_EXPENSE_EDIT_FAILURE = 111117
     }
 
     object ADD_TRANSACTION {

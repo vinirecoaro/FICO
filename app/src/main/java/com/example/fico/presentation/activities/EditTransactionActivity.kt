@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
+import android.text.InputType
 import android.text.Spanned
 import android.text.TextWatcher
 import android.view.Menu
@@ -69,6 +70,8 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             val transaction = intent.getSerializableExtra(StringConstants.TRANSACTION_LIST.TRANSACTION) as? Transaction
             if (transaction != null) {
 
+                val priceFormatted = FormatValuesFromDatabase().price(transaction.price)
+
                 if(transaction.type == StringConstants.DATABASE.EXPENSE){
                     editingTransaction = transaction
                     expenseIdLength = transaction.id.length
@@ -77,7 +80,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                         binding.tilInstallments.visibility = View.VISIBLE
                         binding.tilPaymentDateEdit.hint = getString(R.string.payment_date_field_installment_hint)
 
-                        val priceFormatted = FormatValuesFromDatabase().installmentExpensePrice(
+                        val installmentPriceFormatted = FormatValuesFromDatabase().installmentExpensePrice(
                             transaction.price,
                             transaction.id
                         )
@@ -90,15 +93,13 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                             transaction.paymentDate
                         )
 
-                        binding.etPrice.setText(priceFormatted)
+                        binding.etPrice.setText(installmentPriceFormatted)
                         binding.etDescription.setText(description)
                         binding.actvCategory.setText(transaction.category)
                         binding.etInstallments.setText(nOfInstallment)
                         binding.etPaymentDateEdit.setText(initialDate)
                         binding.etPurchaseDateEdit.setText(transaction.purchaseDate)
                     } else {
-
-                        val priceFormatted = FormatValuesFromDatabase().price(transaction.price)
 
                         binding.etPrice.setText(priceFormatted)
                         binding.etDescription.setText(transaction.description)
@@ -112,12 +113,20 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                     editingTransaction = transaction
                     changeComponentsToEarningState()
 
-                    val priceFormatted = FormatValuesFromDatabase().price(transaction.price)
+                    binding.etPrice.setText(priceFormatted)
+                    binding.etDescription.setText(transaction.description)
+                    binding.actvCategory.setText(transaction.category)
+                    binding.etPaymentDateEdit.setText(transaction.paymentDate)
+                }
+
+                else if(transaction.type == StringConstants.DATABASE.RECURRING_EXPENSE){
+                    editingTransaction = transaction
+
+                    changeComponentsToRecurringExpenseState()
 
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(transaction.description)
                     binding.actvCategory.setText(transaction.category)
-                    binding.etPaymentDateEdit.hint = getString(R.string.add_date)
                     binding.etPaymentDateEdit.setText(transaction.paymentDate)
                 }
 
@@ -446,10 +455,26 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         binding.etPurchaseDateEdit.visibility = View.GONE
         binding.ivPurchaseDateEdit.visibility = View.GONE
         binding.ivArrowUpGetPurchaseDateEdit.visibility = View.GONE
-        binding.etPaymentDateEdit.hint = getString(R.string.add_date)
+        binding.tilPaymentDateEdit.hint = getString(R.string.add_date)
         binding.tilInstallments.visibility = View.GONE
         binding.etInstallments.visibility = View.GONE
         adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
+    }
+
+    private fun changeComponentsToRecurringExpenseState(){
+        binding.editExpenseToolbar.setTitle(getString(R.string.edit_earning))
+        binding.tilPurchaseDateEdit.visibility = View.GONE
+        binding.etPurchaseDateEdit.visibility = View.GONE
+        binding.ivPurchaseDateEdit.visibility = View.GONE
+        binding.ivArrowUpGetPurchaseDateEdit.visibility = View.GONE
+        binding.ivPaymentDate.visibility = View.GONE
+        binding.tilPaymentDateEdit.hint = getString(R.string.day)
+        binding.etPaymentDateEdit.isFocusable = true
+        binding.etPaymentDateEdit.isFocusableInTouchMode = true
+        binding.etPaymentDateEdit.inputType = InputType.TYPE_CLASS_NUMBER
+        binding.tilInstallments.visibility = View.GONE
+        binding.etInstallments.visibility = View.GONE
+        adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
     }
 
 }
