@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_config"
-        android:name="com.example.fico.presentation.fragments.ExpenseConfigurationFragment"
+        android:name="com.example.fico.presentation.fragments.TransactionConfigurationFragment"
         android:label="@string/configurations"
         tools:layout="@layout/fragment_configuration" />
 </navigation>

@@ -10,7 +10,7 @@ import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
 import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
 import com.example.fico.presentation.viewmodel.EditTransactionViewModel
-import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
+import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
 import com.example.fico.presentation.viewmodel.HomeViewModel
@@ -91,8 +91,8 @@ val appModule = module {
         )
     }
 
-    factory<ExpenseConfigurationViewModel> {
-        ExpenseConfigurationViewModel(
+    factory<TransactionConfigurationViewModel> {
+        TransactionConfigurationViewModel(
             androidContext(),
             firebaseAPI = get(),
             dataStore = get()

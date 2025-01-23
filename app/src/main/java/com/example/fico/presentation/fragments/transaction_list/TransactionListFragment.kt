@@ -289,8 +289,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
             binding.actvDate.setText("")
             viewModel.updateOperation(StringConstants.OPERATIONS.CLEAR_MONTH_FILTER)
             viewModel.updateShowFilteredList()
-            /*viewModel.getEarningList("")
-            viewModel.getExpenseList("")*/
             clearAllFilter()
         }
 

@@ -17,7 +17,7 @@ import kotlinx.coroutines.async
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class ExpenseConfigurationViewModel(
+class TransactionConfigurationViewModel(
     context : Context,
     private val firebaseAPI: FirebaseAPI,
     private val dataStore: DataStoreManager

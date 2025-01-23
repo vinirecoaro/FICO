@@ -9,7 +9,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -25,20 +24,19 @@ import com.example.fico.presentation.activities.DefaultPaymentDateConfigurationA
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
-import com.example.fico.presentation.viewmodel.ExpenseConfigurationViewModel
+import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import org.koin.android.ext.android.inject
 
-class ExpenseConfigurationFragment : Fragment(),
+class TransactionConfigurationFragment : Fragment(),
     OnListItemClick {
 
     private var _binding : FragmentConfigurationBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : ExpenseConfigurationViewModel by inject()
+    private val viewModel : TransactionConfigurationViewModel by inject()
     private lateinit var configuratonListAdapter: ExpenseConfigurationListAdapter
     private lateinit var recurringTransactionListAdapter : TransactionListAdapter
     private val categoriesList : CategoriesList by inject()
@@ -60,7 +58,7 @@ class ExpenseConfigurationFragment : Fragment(),
 
     override fun onResume() {
         super.onResume()
-        viewModel.getRecurringExpensesList()
+        /*viewModel.getRecurringExpensesList()*/
     }
 
     override fun onDestroyView() {
@@ -68,6 +66,7 @@ class ExpenseConfigurationFragment : Fragment(),
         _binding = null
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
         viewModel.updateDatabaseResult.observe(viewLifecycleOwner){ result ->
             if(result){
@@ -84,6 +83,12 @@ class ExpenseConfigurationFragment : Fragment(),
                 ).show()
             }
 
+        }
+
+        viewModel.recurringExpensesList.observe(viewLifecycleOwner){recurringExpenseList ->
+            val recurringTransactionList = mutableListOf<Transaction>()
+            recurringExpenseList.forEach { recurringExpense -> recurringTransactionList.add(recurringExpense.toTransaction()) }
+            recurringTransactionListDialog(recurringTransactionList, StringConstants.DATABASE.EXPENSE)
         }
     }
 
@@ -132,7 +137,8 @@ class ExpenseConfigurationFragment : Fragment(),
         builder.setMessage(getString(R.string.edit_recurring_transaction_message_step_2))
 
         builder.setPositiveButton(getString(R.string.list)){dialog, which ->
-            recurringExpenseListDialog()
+            //recurringTransactionListDialog()
+            viewModel.getRecurringExpensesList()
         }
 
         builder.setNegativeButton(getString(R.string.add)){dialog, which ->
@@ -161,9 +167,14 @@ class ExpenseConfigurationFragment : Fragment(),
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun recurringExpenseListDialog(){
+    private fun recurringTransactionListDialog(recurringTransactionList : List<Transaction>, transactionType : String){
         val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle(getString(R.string.recurring_expense_list))
+
+        if(transactionType ==  StringConstants.DATABASE.EXPENSE){
+            builder.setTitle(getString(R.string.dialog_recurring_expense_list_title))
+        } else if(transactionType ==  StringConstants.DATABASE.EARNING){
+            builder.setTitle(getString(R.string.dialog_recurring_earning_list_title))
+        }
 
         val inflater = LayoutInflater.from(requireContext())
         val dialogView = inflater.inflate(R.layout.dialog_recurring_expenses, null)
@@ -173,6 +184,7 @@ class ExpenseConfigurationFragment : Fragment(),
         // Recycler View configuration
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recurringTransactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
+        recurringTransactionListAdapter.updateTransactions(recurringTransactionList)
         recyclerView.adapter = recurringTransactionListAdapter
 
         builder.setView(dialogView)
@@ -181,17 +193,11 @@ class ExpenseConfigurationFragment : Fragment(),
         dialog.show()
 
         // Listeners
-        viewModel.recurringExpensesList.observe(viewLifecycleOwner){recurringExpenseList ->
-            val transactionList = mutableListOf<Transaction>()
-            recurringExpenseList.forEach { recurringExpense -> transactionList.add(recurringExpense.toTransaction()) }
-            recurringTransactionListAdapter.updateTransactions(transactionList)
-            recurringTransactionListAdapter.setOnItemClickListener { position ->
-                val selectItem = recurringExpenseList[position]
-                //TODO go to edit transaction activity
-                dialog.cancel()
-            }
+        recurringTransactionListAdapter.setOnItemClickListener { position ->
+            val selectItem = recurringTransactionList[position]
+            //TODO go to edit transaction activity
+            dialog.cancel()
         }
-
     }
 
     private fun recurringEarningDialog(){
