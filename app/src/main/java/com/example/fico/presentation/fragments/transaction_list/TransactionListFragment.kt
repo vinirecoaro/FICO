@@ -330,7 +330,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 val snackbar = Snackbar.make(binding.rvExpenseList, getString(R.string.excluded_item), Snackbar.LENGTH_SHORT)
                 snackbar.setAction(getString(R.string.undo)) {
                     lifecycleScope.launch {
-                        viewModel.undoDeleteExpense(viewModel.deletedItem.toExpense(), false, 1)
+                        val deletedExpesense = viewModel.getDeletedItem().toExpense()
+                        viewModel.undoDeleteExpense(deletedExpesense, false, 1)
                     }
 
                 }.show()
@@ -346,7 +347,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 val snackbar = Snackbar.make(binding.rvExpenseList, getString(R.string.excluded_item), Snackbar.LENGTH_SHORT)
                 snackbar.setAction(getString(R.string.undo)) {
                     lifecycleScope.launch {
-                        viewModel.undoDeleteEarning(viewModel.deletedItem.toEarning())
+                        viewModel.undoDeleteEarning(viewModel.getDeletedItem().toEarning())
                     }
 
                 }.show()
@@ -521,6 +522,9 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     Snackbar.LENGTH_SHORT
                 ).show()
             }else if(resultCode == StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK){
+                viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
+                val deletedItem = viewModel.getEditingTransaction()
+                viewModel.updateDeletedItem(deletedItem)
                 Snackbar.make(
                     binding.rvExpenseList,
                     getString(R.string.delete_expense_success_message),

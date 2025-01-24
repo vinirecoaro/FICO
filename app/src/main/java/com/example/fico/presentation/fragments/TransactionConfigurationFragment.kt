@@ -33,8 +33,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
 
-class TransactionConfigurationFragment : Fragment(),
-    OnListItemClick {
+class TransactionConfigurationFragment : Fragment(), OnListItemClick {
 
     private var _binding : FragmentConfigurationBinding? = null
     private val binding get() = _binding!!

@@ -50,7 +50,8 @@ class TransactionListViewModel(
     val deleteExpenseResult: LiveData<Boolean> = _deleteExpenseResult
     private val _deleteEarningResult = MutableLiveData<Boolean>()
     val deleteEarningResult: LiveData<Boolean> = _deleteEarningResult
-    var deletedItem: Transaction = Transaction.empty()
+    private val _deletedItem = MutableLiveData<Transaction>(Transaction.empty())
+    private val _undoDeletedItem = MutableLiveData<Transaction>(Transaction.empty())
     private val _addExpenseResult = MutableLiveData<Boolean>()
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _installmentExpenseSwiped = MutableLiveData<Boolean>()
@@ -189,7 +190,7 @@ class TransactionListViewModel(
             val result = firebaseAPI.deleteExpense(expense)
             result.fold(
                 onSuccess = {
-                    deletedItem = expense.toTransaction()
+                    _deletedItem.postValue(expense.toTransaction())
 
                     //Get current dataStore Expense list
                     val currentList = dataStore.getExpenseList().toMutableList()
@@ -267,7 +268,7 @@ class TransactionListViewModel(
         viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.deleteEarning(earning).fold(
                 onSuccess = {
-                    deletedItem = earning.toTransaction()
+                    _deletedItem.postValue(earning.toTransaction())
                     dataStore.deleteFromEarningList(earning)
                     updateShowFilteredList()
                     _deleteEarningResult.postValue(true)
@@ -310,6 +311,10 @@ class TransactionListViewModel(
                 nOfInstallments,
                 false
             )
+
+            val undoDeletedTransaction = expenseList[0].toTransaction()
+
+            _undoDeletedItem.postValue(undoDeletedTransaction)
 
             val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
@@ -409,6 +414,7 @@ class TransactionListViewModel(
     fun undoDeleteEarning(
         deletedEarning: Earning,
     ) {
+        _undoDeletedItem.postValue(deletedEarning.toTransaction())
         operation.value = StringConstants.OPERATIONS.UNDO_DELETE
         viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.addEarning(deletedEarning).fold(
@@ -603,99 +609,108 @@ class TransactionListViewModel(
 
             if(currentList != null){
 
-                if(operation.value == StringConstants.OPERATIONS.DELETE){
-                    val excludedItem = deletedItem
-                    val commondId = if(excludedItem.id.length > 25){
-                        excludedItem.id.substring(0,25)
-                    }else{
-                        excludedItem.id
-                    }
-                    filteredTransactionList.addAll(currentList.filter {
-                        if(it.id.length > 25){
-                            it.id.substring(0,25) != commondId
+                when (operation.value) {
+
+                    StringConstants.OPERATIONS.DELETE -> {
+                        val excludedItem = _deletedItem.value!!
+                        val commondId = if(excludedItem.id.length > 25){
+                            excludedItem.id.substring(0,25)
                         }else{
-                            it.id != commondId
+                            excludedItem.id
                         }
-                    })
-
-                    operation.postValue("")
-                }
-
-                else if(operation.value == StringConstants.OPERATIONS.UNDO_DELETE){
-                    filteredTransactionList.addAll(currentList)
-                    val formattedPaymentDate = FormatValuesFromDatabase().date(deletedItem.paymentDate)
-                    val formattedPurchaseDate = FormatValuesFromDatabase().date(deletedItem.purchaseDate)
-                    val transaction = deletedItem
-                    transaction.paymentDate = formattedPaymentDate
-                    transaction.purchaseDate = formattedPurchaseDate
-                    if(transaction.type == StringConstants.DATABASE.EXPENSE){
-                        val formattedPrice = transaction.price.replace("-","")
-                        transaction.price = formattedPrice
-                    }
-                    filteredTransactionList.add(transaction)
-                    operation.postValue("")
-                }
-
-                else if(operation.value == StringConstants.OPERATIONS.UPDATE){
-                    val oldTransaction = _editingTransaction.value
-                    if(oldTransaction != null && oldTransaction.id != ""){
-
-                        //Prepare updated transaction and take common Id
-                        val updatedTransaction = dataStore.getTransaction(oldTransaction)
-                        val commonId = if(updatedTransaction.id.length > 25){
-                            updatedTransaction.id.substring(0,25)
-                        }else{
-                            updatedTransaction.id
-                        }
-
-                        // Update List
                         filteredTransactionList.addAll(currentList.filter {
-                            val listItemId =
-                                if(it.id.length > 25){
-                                    it.id.substring(0,25)
+                            if(it.id.length > 25){
+                                it.id.substring(0,25) != commondId
+                            }else{
+                                it.id != commondId
+                            }
+                        })
+
+                        operation.postValue(StringConstants.OPERATIONS.NO_OPERATION)
+                    }
+
+                    StringConstants.OPERATIONS.UNDO_DELETE -> {
+                        filteredTransactionList.addAll(currentList)
+                        val transaction = _undoDeletedItem.value!!
+                        val formattedPaymentDate = FormatValuesFromDatabase().date(transaction.paymentDate)
+                        val formattedPurchaseDate = FormatValuesFromDatabase().date(transaction.purchaseDate)
+                        transaction.paymentDate = formattedPaymentDate
+                        transaction.purchaseDate = formattedPurchaseDate
+                        if(transaction.type == StringConstants.DATABASE.EXPENSE){
+                            val formattedPrice = transaction.price.replace("-","")
+                            transaction.price = formattedPrice
+                        }
+                        filteredTransactionList.add(transaction)
+                        operation.postValue(StringConstants.OPERATIONS.NO_OPERATION)
+                    }
+
+                    StringConstants.OPERATIONS.UPDATE -> {
+                        val oldTransaction = _editingTransaction.value
+                        if(oldTransaction != null && oldTransaction.id != ""){
+
+                            //Prepare updated transaction and take common Id
+                            val updatedTransaction = dataStore.getTransaction(oldTransaction)
+                            val commonId = if(updatedTransaction.id.length > 25){
+                                updatedTransaction.id.substring(0,25)
+                            }else{
+                                updatedTransaction.id
+                            }
+
+                            // Update List
+                            filteredTransactionList.addAll(currentList.filter {
+                                val listItemId =
+                                    if(it.id.length > 25){
+                                        it.id.substring(0,25)
+                                    }else{
+                                        it.id
+                                    }
+                                listItemId != commonId
+                            }.toMutableList())
+                            if(_monthFilterLiveData.value != null){
+                                if(_monthFilterLiveData.value != ""){
+                                    if(
+                                        DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(updatedTransaction.paymentDate)) ==
+                                        FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
+                                    ){
+                                        filteredTransactionList.add(updatedTransaction)
+                                    }
                                 }else{
-                                    it.id
-                                }
-                            listItemId != commonId
-                        }.toMutableList())
-                        if(_monthFilterLiveData.value != null){
-                            if(_monthFilterLiveData.value != ""){
-                                if(
-                                    DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(updatedTransaction.paymentDate)) ==
-                                    FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
-                                ){
                                     filteredTransactionList.add(updatedTransaction)
                                 }
-                            }else{
-                                filteredTransactionList.add(updatedTransaction)
                             }
                         }
+                        operation.postValue(StringConstants.OPERATIONS.NO_OPERATION)
                     }
-                    operation.postValue("")
-                }
 
-                else if(operation.value == StringConstants.OPERATIONS.SWIPPED_INSTALLMENT_EXPENSE){
-                    filteredTransactionList.addAll(currentList)
-                    operation.postValue("")
-                }
-
-                else if(operation.value == StringConstants.OPERATIONS.CLEAR_MONTH_FILTER){
-                    when (_transactionTypeFilter.value) {
-                        StringConstants.DATABASE.TRANSACTION -> {
-                            filteredTransactionList.addAll(updatedTransactionList)
-                        }
-                        StringConstants.DATABASE.EXPENSE -> {
-                            filteredTransactionList.addAll(
-                                updatedTransactionList.filter { it.type == StringConstants.DATABASE.EXPENSE }
-                            )
-                        }
-                        StringConstants.DATABASE.EARNING -> {
-                            filteredTransactionList.addAll(
-                                updatedTransactionList.filter { it.type == StringConstants.DATABASE.EARNING }
-                            )
-                        }
+                    StringConstants.OPERATIONS.SWIPPED_INSTALLMENT_EXPENSE -> {
+                        filteredTransactionList.addAll(currentList)
+                        operation.postValue(StringConstants.OPERATIONS.NO_OPERATION)
                     }
-                    operation.postValue("")
+
+                    StringConstants.OPERATIONS.CLEAR_MONTH_FILTER -> {
+                        when (_transactionTypeFilter.value) {
+                            StringConstants.DATABASE.TRANSACTION -> {
+                                filteredTransactionList.addAll(updatedTransactionList)
+                            }
+
+                            StringConstants.DATABASE.EXPENSE -> {
+                                filteredTransactionList.addAll(
+                                    updatedTransactionList.filter { it.type == StringConstants.DATABASE.EXPENSE }
+                                )
+                            }
+
+                            StringConstants.DATABASE.EARNING -> {
+                                filteredTransactionList.addAll(
+                                    updatedTransactionList.filter { it.type == StringConstants.DATABASE.EARNING }
+                                )
+                            }
+                        }
+                        operation.postValue(StringConstants.OPERATIONS.NO_OPERATION)
+                    }
+
+                    StringConstants.OPERATIONS.NO_OPERATION -> {
+                        filteredTransactionList.addAll(currentList)
+                    }
                 }
 
             }
@@ -722,6 +737,10 @@ class TransactionListViewModel(
         _editingTransaction.postValue(transaction)
     }
 
+    fun getEditingTransaction() : Transaction{
+        return _editingTransaction.value!!
+    }
+
     fun updateTransactionTypeFilter(type : String){
         _transactionTypeFilter.postValue(type)
     }
@@ -729,5 +748,16 @@ class TransactionListViewModel(
     fun updateOperation(operationValue : String){
         operation.value = operationValue
     }
+
+    fun getDeletedItem() : Transaction{
+        return _deletedItem.value!!
+    }
+
+    fun updateDeletedItem(transaction : Transaction) {
+        _deletedItem.value = transaction
+    }
+
+
+
 }
 

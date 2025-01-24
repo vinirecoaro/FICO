@@ -184,6 +184,7 @@ class StringConstants private constructor() {
         const val UPDATE = "update"
         const val SWIPPED_INSTALLMENT_EXPENSE = "swipped_installment_expense"
         const val CLEAR_MONTH_FILTER = "clear_month_filter"
+        const val NO_OPERATION = ""
     }
 
 }
