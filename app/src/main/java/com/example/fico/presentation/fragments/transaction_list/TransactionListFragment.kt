@@ -462,7 +462,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             updateTransactionTotalValue(transacList)
             transactionListAdapter.setOnItemClickListener(object : OnListItemClick {
                 override fun onListItemClick(position: Int) {
-                    val selectItem = transacList[position]
+                     val selectItem = transacList[position]
                     editTransaction(selectItem)
                 }
             })

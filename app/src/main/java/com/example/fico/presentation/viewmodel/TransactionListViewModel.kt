@@ -473,13 +473,10 @@ class TransactionListViewModel(
 
     fun applyTextFilter (filter : String){
         var currentList = mutableListOf<Transaction>()
-        if(_isFiltered.value == false || _isFiltered.value == null){
-            currentList = transactionsListLiveData.value!!.toMutableList()
-            _textFilterState.value = true
+        if(_showListLiveData.value != null){
             _isFiltered.postValue(true)
-        }else if(_isFiltered.value == true){
             _textFilterState.value = true
-            currentList = _filteredTransactionsListLiveData.value!!.toMutableList()
+            currentList.addAll(_showListLiveData.value!!)
         }
         val filteredList = mutableListOf<Transaction>()
         filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
@@ -525,13 +522,18 @@ class TransactionListViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     fun applyDateFilter(dates : Pair<String,String>){
         var currentList = mutableListOf<Transaction>()
-        if(_isFiltered.value == false || _isFiltered.value == null){
+        /*if(_isFiltered.value == false || _isFiltered.value == null){
             currentList = transactionsListLiveData.value!!.toMutableList()
             _dateFilterState.value = true
             _isFiltered.postValue(true)
         }else if(_isFiltered.value == true){
             _dateFilterState.value = true
             currentList = _filteredTransactionsListLiveData.value!!.toMutableList()
+        }*/
+        if(_showListLiveData.value != null){
+            _isFiltered.postValue(true)
+            _dateFilterState.value = true
+            currentList.addAll(_showListLiveData.value!!)
         }
         val filteredList = mutableListOf<Transaction>()
         _dateFilterValue.value = dates
