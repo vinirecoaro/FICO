@@ -522,14 +522,6 @@ class TransactionListViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     fun applyDateFilter(dates : Pair<String,String>){
         var currentList = mutableListOf<Transaction>()
-        /*if(_isFiltered.value == false || _isFiltered.value == null){
-            currentList = transactionsListLiveData.value!!.toMutableList()
-            _dateFilterState.value = true
-            _isFiltered.postValue(true)
-        }else if(_isFiltered.value == true){
-            _dateFilterState.value = true
-            currentList = _filteredTransactionsListLiveData.value!!.toMutableList()
-        }*/
         if(_showListLiveData.value != null){
             _isFiltered.postValue(true)
             _dateFilterState.value = true
@@ -559,14 +551,44 @@ class TransactionListViewModel(
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun showAllTransactions(){
-        if(_isFiltered.value == false || _isFiltered.value == null){
-            if(transactionsListLiveData.value != null){
-                val allTransactionList = _transactionsListLiveData.value!!
+        if(transactionsListLiveData.value != null) {
+            val allTransactionList = _transactionsListLiveData.value!!
+            if (_isFiltered.value == false || _isFiltered.value == null) {
                 _showListLiveData.postValue(allTransactionList)
+            } else {
+                val textFilteredList = mutableListOf<Transaction>()
+                val dateFilteredList = mutableListOf<Transaction>()
+                val finalFilteredList = mutableListOf<Transaction>()
+                if (_textFilterState.value == true) {
+                    textFilteredList.addAll(
+                        allTransactionList.filter { transaction ->
+                            _textFilterValues.value!!.all { textFilter ->
+                                transaction.description.contains(textFilter, ignoreCase = true)
+                            }
+                        }
+                    )
+                    finalFilteredList.clear()
+                    finalFilteredList.addAll(textFilteredList)
+                }else{
+                    finalFilteredList.addAll(allTransactionList)
+                }
+                if (_dateFilterState.value == true) {
+                    val dateFilter = _dateFilterValue.value!!
+                    dateFilteredList.addAll(
+                        finalFilteredList.filter {
+                            isDateInRange(
+                                it.paymentDate,
+                                dateFilter.first,
+                                dateFilter.second
+                            )
+                        }
+                    )
+                    finalFilteredList.clear()
+                    finalFilteredList.addAll(dateFilteredList)
+                }
+
+                _showListLiveData.postValue(finalFilteredList)
             }
-        }else{
-            val allTransactionList = _filteredTransactionsListLiveData.value!!
-            _showListLiveData.postValue(allTransactionList)
         }
 
     }
