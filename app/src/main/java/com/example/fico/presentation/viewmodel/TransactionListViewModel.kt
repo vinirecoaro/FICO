@@ -411,9 +411,7 @@ class TransactionListViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun undoDeleteEarning(
-        deletedEarning: Earning,
-    ) {
+    fun undoDeleteEarning(deletedEarning: Earning, ) {
         _undoDeletedItem.postValue(deletedEarning.toTransaction())
         operation.value = StringConstants.OPERATIONS.UNDO_DELETE
         viewModelScope.async(Dispatchers.IO) {
@@ -740,34 +738,50 @@ class TransactionListViewModel(
                         val oldTransaction = _editingTransaction.value
                         if(oldTransaction != null && oldTransaction.id != ""){
 
-                            //Prepare updated transaction and take common Id
-                            val updatedTransaction = dataStore.getTransaction(oldTransaction)
-                            val commonId = if(updatedTransaction.id.length > 25){
-                                updatedTransaction.id.substring(0,25)
-                            }else{
-                                updatedTransaction.id
-                            }
+                            //check if is installment expense
+                            if(oldTransaction.id.length > 25){
+                                val updatedTransactions = dataStore.getInstallmentExpense(oldTransaction)
+                                val commonId = oldTransaction.id.substring(0,25)
 
-                            // Update List
-                            filteredTransactionList.addAll(currentList.filter {
-                                val listItemId =
-                                    if(it.id.length > 25){
-                                        it.id.substring(0,25)
+                                // Update List
+                                filteredTransactionList.addAll(currentList.filter {
+                                    val listItemId = it.id.substring(0,25)
+                                    listItemId != commonId
+                                }.toMutableList())
+                                if(_monthFilterLiveData.value != null){
+                                    if(_monthFilterLiveData.value != ""){
+                                        updatedTransactions.forEach { updatedTransaction ->
+                                            if(
+                                                DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(updatedTransaction.paymentDate)) ==
+                                                FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
+                                            ){
+                                                filteredTransactionList.add(updatedTransaction)
+                                            }
+                                        }
                                     }else{
-                                        it.id
+                                        filteredTransactionList.addAll(updatedTransactions)
                                     }
-                                listItemId != commonId
-                            }.toMutableList())
-                            if(_monthFilterLiveData.value != null){
-                                if(_monthFilterLiveData.value != ""){
-                                    if(
-                                        DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(updatedTransaction.paymentDate)) ==
-                                        FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
-                                    ){
+                                }
+                            }else{
+
+                                //Prepare updated transaction and take common Id
+                                val updatedTransaction = dataStore.getTransaction(oldTransaction)
+
+                                // Update List
+                                filteredTransactionList.addAll(currentList.filter {
+                                    it.id != updatedTransaction.id
+                                }.toMutableList())
+                                if(_monthFilterLiveData.value != null){
+                                    if(_monthFilterLiveData.value != ""){
+                                        if(
+                                            DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(updatedTransaction.paymentDate)) ==
+                                            FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(_monthFilterLiveData.value!!)
+                                        ){
+                                            filteredTransactionList.add(updatedTransaction)
+                                        }
+                                    }else{
                                         filteredTransactionList.add(updatedTransaction)
                                     }
-                                }else{
-                                    filteredTransactionList.add(updatedTransaction)
                                 }
                             }
                         }

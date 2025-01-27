@@ -315,5 +315,17 @@ class DataStoreManager (context: Context) {
         }
     }
 
+    suspend fun getInstallmentExpense(transaction: Transaction) : List<Transaction>{
+        val commonId = transaction.id.substring(0,25)
+        val expenseList = getExpenseList()
+        val updatedExpenseList = expenseList.filter {
+            val listItemCommonId = it.id.substring(0,25)
+            listItemCommonId == commonId }
+        val updatedTransactionList = mutableListOf<Transaction>()
+        updatedExpenseList.forEach { updatedTransactionList.add(it.toTransaction()) }
+
+        return updatedTransactionList
+    }
+
 
 }
