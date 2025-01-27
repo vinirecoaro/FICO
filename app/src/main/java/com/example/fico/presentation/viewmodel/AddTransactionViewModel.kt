@@ -243,9 +243,7 @@ class AddTransactionViewModel(
 
             val randonNum = arrangeDataToUpdateToDatabase.generateRandomAddress(5)
 
-            val inputTime = FormatValuesToDatabase().timeNow()
-
-            val id = "${inputTime}-${randonNum}"
+            val id = "${formattedInputDate}-${randonNum}"
 
             val recurringExpense = RecurringExpense(
                 id,

@@ -863,7 +863,5 @@ class TransactionListViewModel(
         _deletedItem.value = transaction
     }
 
-
-
 }
 
