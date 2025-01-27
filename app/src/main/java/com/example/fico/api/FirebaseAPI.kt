@@ -415,6 +415,19 @@ class FirebaseAPI(
         }
     }
 
+    suspend fun editRecurringExpense(
+        recurringExpense: RecurringExpense,
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        val updates = mutableMapOf<String, Any?>()
+        try {
+            updates.putAll(generateMapToUpdateUserRecurringExpenses(recurringExpense))
+            recurring_expense_list.updateChildren(updates)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun updateInfoPerMonthAndTotalExpense(
         updatedTotalExpense: String,
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>

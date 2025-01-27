@@ -184,40 +184,21 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     private fun setUpListeners() {
         binding.btSave.setOnClickListener {
             binding.btSave.isEnabled = false
-            if(editingTransaction.type == StringConstants.DATABASE.EXPENSE){
-                val expense = editingTransaction.toExpense()
-                lifecycleScope.launch(Dispatchers.Main) {
-                    // Verify if is commom expense
-                    if (binding.tilInstallments.visibility == View.GONE) {
-                        if (verifyFields(
-                                binding.etPrice,
-                                binding.etDescription,
-                                binding.actvCategory,
-                                binding.etPaymentDateEdit,
-                                binding.etPurchaseDateEdit
-                            )
-                        ) {
-                            viewModel.saveEditExpense(
-                                expense!!,
-                                binding.etPrice.text.toString(),
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                binding.etPaymentDateEdit.text.toString(),
-                                binding.etPurchaseDateEdit.text.toString(),
-                                false
-                            )
-                        }
-                    } else if (binding.tilInstallments.visibility == View.VISIBLE) {
-                        if (verifyFields(
-                                binding.etPrice,
-                                binding.etDescription,
-                                binding.actvCategory,
-                                binding.etInstallments,
-                                binding.etPaymentDateEdit,
-                                binding.etPurchaseDateEdit
-                            )
-                        ) {
-                            if (binding.etInstallments.text.toString() != "0") {
+            when (editingTransaction.type) {
+
+                StringConstants.DATABASE.EXPENSE -> {
+                    val expense = editingTransaction.toExpense()
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        // Verify if is commom expense
+                        if (binding.tilInstallments.visibility == View.GONE) {
+                            if (verifyFields(
+                                    binding.etPrice,
+                                    binding.etDescription,
+                                    binding.actvCategory,
+                                    binding.etPaymentDateEdit,
+                                    binding.etPurchaseDateEdit
+                                )
+                            ) {
                                 viewModel.saveEditExpense(
                                     expense!!,
                                     binding.etPrice.text.toString(),
@@ -225,36 +206,83 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                     binding.actvCategory.text.toString(),
                                     binding.etPaymentDateEdit.text.toString(),
                                     binding.etPurchaseDateEdit.text.toString(),
-                                    true,
-                                    binding.etInstallments.text.toString().toInt()
+                                    false
                                 )
-                            } else {
-                                Toast.makeText(
-                                    this@EditTransactionActivity,
-                                    "O número de parcelas não pode ser 0",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                            }
+                        } else if (binding.tilInstallments.visibility == View.VISIBLE) {
+                            if (verifyFields(
+                                    binding.etPrice,
+                                    binding.etDescription,
+                                    binding.actvCategory,
+                                    binding.etInstallments,
+                                    binding.etPaymentDateEdit,
+                                    binding.etPurchaseDateEdit
+                                )
+                            ) {
+                                if (binding.etInstallments.text.toString() != "0") {
+                                    viewModel.saveEditExpense(
+                                        expense!!,
+                                        binding.etPrice.text.toString(),
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        binding.etPaymentDateEdit.text.toString(),
+                                        binding.etPurchaseDateEdit.text.toString(),
+                                        true,
+                                        binding.etInstallments.text.toString().toInt()
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        this@EditTransactionActivity,
+                                        "O número de parcelas não pode ser 0",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }
                         }
                     }
                 }
-            }
-            else if (editingTransaction.type == StringConstants.DATABASE.EARNING){
-                val earning = editingTransaction.toEarning()
-                lifecycleScope.launch(Dispatchers.Main) {
-                    if(verifyFields(
-                            binding.etPrice,
-                            binding.etDescription,
-                            binding.actvCategory,
-                            binding.etPaymentDateEdit)
+
+                StringConstants.DATABASE.EARNING -> {
+                    val earning = editingTransaction.toEarning()
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        if(verifyFields(
+                                binding.etPrice,
+                                binding.etDescription,
+                                binding.actvCategory,
+                                binding.etPaymentDateEdit)
                         ){
-                        viewModel.saveEditEarning(
-                            earning,
-                            binding.etPrice.text.toString(),
-                            binding.etDescription.text.toString(),
-                            binding.actvCategory.text.toString(),
-                            binding.etPaymentDateEdit.text.toString(),
-                        )
+                            viewModel.saveEditEarning(
+                                earning,
+                                binding.etPrice.text.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                binding.etPaymentDateEdit.text.toString(),
+                            )
+                        }
+                    }
+                }
+
+                StringConstants.DATABASE.RECURRING_EXPENSE -> {
+                    val recurringExpense = editingTransaction.toRecurringExpense()
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        if(verifyFields(
+                                binding.etPrice,
+                                binding.etDescription,
+                                binding.actvCategory,
+                                binding.etPaymentDateEdit)
+                        ){
+                            if(binding.etPaymentDateEdit.text.toString().toInt() in 1..31){
+                                viewModel.saveEditRecurringExpense(
+                                    recurringExpense,
+                                    binding.etPrice.text.toString(),
+                                    binding.etDescription.text.toString(),
+                                    binding.actvCategory.text.toString(),
+                                    binding.etPaymentDateEdit.text.toString(),
+                                )
+                            }else{
+                                Snackbar.make(binding.btSave,getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                            }
+                        }
                     }
                 }
             }
@@ -356,6 +384,20 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                 //Minimize keyboard and show message
                 hideKeyboard(this, binding.btSave)
                 setResult(StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_FAILURE)
+                finish()
+            }
+        }
+
+        viewModel.editRecurringExpenseResult.observe(this) { result ->
+            if (result) {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.RECURRING_EXPENSE_EDIT_OK)
+                finish()
+            } else {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.RECURRING_EXPENSE_EDIT_FAILURE)
                 finish()
             }
         }
@@ -462,7 +504,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     }
 
     private fun changeComponentsToRecurringExpenseState(){
-        binding.editExpenseToolbar.setTitle(getString(R.string.edit_earning))
+        binding.editExpenseToolbar.setTitle(getString(R.string.edit_recurring_expense))
         binding.tilPurchaseDateEdit.visibility = View.GONE
         binding.etPurchaseDateEdit.visibility = View.GONE
         binding.ivPurchaseDateEdit.visibility = View.GONE

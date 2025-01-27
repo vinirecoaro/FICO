@@ -14,6 +14,7 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.RecurringExpense
 import com.example.fico.utils.DateFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -32,6 +33,8 @@ class EditTransactionViewModel(
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     private val _editEarningResult = MutableLiveData<Boolean>()
     val editEarningResult : LiveData<Boolean> = _editEarningResult
+    private val _editRecurringExpenseResult = MutableLiveData<Boolean>()
+    val editRecurringExpenseResult : LiveData<Boolean> = _editRecurringExpenseResult
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(
@@ -224,6 +227,33 @@ class EditTransactionViewModel(
                 },
                 onFailure = {
                     _editEarningResult.postValue(false)
+                }
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun saveEditRecurringExpense(
+        oldRecurringExpense: RecurringExpense,
+        value: String,
+        description: String,
+        category: String,
+        day: String,
+    )  {
+        viewModelScope.async(Dispatchers.IO) {
+
+            val newValue = FormatValuesToDatabase().expensePrice(value, 1)
+            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+
+            val newRecurringExpense = RecurringExpense(oldRecurringExpense.id, newValue, description, category, day, formattedInputDate)
+
+            firebaseAPI.editRecurringExpense(newRecurringExpense).fold(
+                onSuccess = {
+                    dataStore.updateRecurringExpenseList(newRecurringExpense)
+                    _editRecurringExpenseResult.postValue(true)
+                },
+                onFailure = {
+                    _editRecurringExpenseResult.postValue(false)
                 }
             )
         }

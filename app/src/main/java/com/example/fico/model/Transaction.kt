@@ -42,4 +42,15 @@ data class Transaction(
             this.inputDateTime,
         )
     }
+
+    fun toRecurringExpense() : RecurringExpense{
+        return RecurringExpense(
+            this.id,
+            this.price,
+            this.description,
+            this.category,
+            this.paymentDate,
+            this.inputDateTime,
+        )
+    }
 }
