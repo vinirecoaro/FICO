@@ -508,47 +508,79 @@ class TransactionListFragment : Fragment(), XLSInterface {
         // Check if edit expense was successfully completed
         if(requestCode == StringConstants.REQUEST_CODES.TRANSACTION_LIST_TO_EDIT_TRANSACTION){
             viewModel.changeReturningFromEditState(true)
-            if(resultCode == Activity.RESULT_OK){
-                viewModel.updateOperation(StringConstants.OPERATIONS.UPDATE)
-                Snackbar.make(
-                    binding.rvExpenseList,
-                    getString(R.string.update_expense_success_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }else if(resultCode == Activity.RESULT_CANCELED){
-                Snackbar.make(
-                    binding.rvExpenseList,
-                    getString(R.string.update_expense_fail_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }else if(resultCode == StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK){
-                viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
-                val deletedItem = viewModel.getEditingTransaction()
-                viewModel.updateDeletedItem(deletedItem)
-                Snackbar.make(
-                    binding.rvExpenseList,
-                    getString(R.string.delete_expense_success_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }else if(resultCode == StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE){
-                Snackbar.make(
-                    binding.rvExpenseList,
-                    getString(R.string.delete_expense_fail_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }else if(resultCode == StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_OK){
-                viewModel.updateOperation(StringConstants.OPERATIONS.UPDATE)
-                Snackbar.make(
-                    binding.rvExpenseList,
-                    getString(R.string.edit_earning_success_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }else if(resultCode == StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_FAILURE){
-                Snackbar.make(
-                    binding.rvExpenseList,
-                    getString(R.string.edit_earning_failure_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+            when (resultCode) {
+
+                Activity.RESULT_OK -> {
+                    viewModel.updateOperation(StringConstants.OPERATIONS.UPDATE)
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.update_expense_success_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                Activity.RESULT_CANCELED -> {
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.update_expense_fail_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK -> {
+                    viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
+                    val deletedItem = viewModel.getEditingTransaction()
+                    viewModel.updateDeletedItem(deletedItem)
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.delete_expense_success_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE -> {
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.delete_expense_fail_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_OK -> {
+                    viewModel.updateOperation(StringConstants.OPERATIONS.UPDATE)
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.edit_earning_success_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_FAILURE -> {
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.edit_earning_failure_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                StringConstants.RESULT_CODES.DELETE_EXPENSE_RESULT_OK -> {
+                    viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
+                    val deletedItem = viewModel.getEditingTransaction()
+                    viewModel.updateDeletedItem(deletedItem)
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.delete_expense_success_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                StringConstants.RESULT_CODES.DELETE_EXPENSE_RESULT_FAILURE -> {
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.delete_expense_fail_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

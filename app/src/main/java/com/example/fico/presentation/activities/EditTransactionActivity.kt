@@ -46,9 +46,8 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     private val viewModel : EditTransactionViewModel by inject()
     private lateinit var adapter: CategoryListAdapter
     private var expenseIdLength = 0
-    lateinit var editingTransaction : Transaction
+    private lateinit var editingTransaction : Transaction
     private val categoriesList : CategoriesList by inject()
-    private lateinit var menu : Menu
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -146,32 +145,27 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.edit_expense_menu, menu)
-        this.menu = menu!!
-        val deleteMenuItem = menu?.findItem(R.id.edit_expense_menu_delete)
-        // Check if expense is installment
-        if (expenseIdLength == 41) {
-            deleteMenuItem!!.isVisible = true
-        }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.edit_expense_menu_delete -> {
-                //delete installment expense
-                if(expenseIdLength == 41){
-                    MaterialAlertDialogBuilder(this)
-                        .setTitle(getString(R.string.delete_expense))
-                        .setMessage(getString(R.string.delete_expense_dialog_message))
-                        .setPositiveButton(R.string.confirm) { dialog, which ->
-                            val expense = editingTransaction.toExpense()
-                            viewModel.deleteInstallmentExpense(expense)
-                        }
-                        .show()
+                //delete expense
+                if (editingTransaction.type == StringConstants.DATABASE.EXPENSE){
+                    if(expenseIdLength == 41)   {
+                        dialogDeleteInstallmentExpense()
+                    }else{
+                        dialogDeleteExpense()
+                    }
+                }
+                //delete recurring expense
+                else if (editingTransaction.type == StringConstants.DATABASE.EARNING){
+                    dialogDeleteEarning()
                 }
                 //delete recurring expense
                 else if (editingTransaction.type == StringConstants.DATABASE.RECURRING_EXPENSE){
-                    // TODO
+                    dialogDeleteRecurringExpense()
                 }
                 return true
             }
@@ -402,6 +396,20 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             }
         }
 
+        viewModel.deleteExpenseResult.observe(this) { result ->
+            if (result) {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.DELETE_EXPENSE_RESULT_OK)
+                finish()
+            } else {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.DELETE_EXPENSE_RESULT_FAILURE)
+                finish()
+            }
+        }
+
         binding.ivArrowUpGetPurchaseDateEdit.setOnClickListener {
             binding.etPaymentDateEdit.text = binding.etPurchaseDateEdit.text
         }
@@ -428,7 +436,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         return true
     }
 
-    fun setMaxLength(editText: EditText, maxLength: Int) {
+    private fun setMaxLength(editText: EditText, maxLength: Int) {
         val inputFilter = object : InputFilter {
             override fun filter(
                 source: CharSequence?,
@@ -518,5 +526,50 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         binding.etInstallments.visibility = View.GONE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
     }
+
+    private fun dialogDeleteInstallmentExpense(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.delete_installment_expense))
+            .setMessage(getString(R.string.delete_expense_dialog_message))
+            .setPositiveButton(R.string.confirm) { dialog, which ->
+                val expense = editingTransaction.toExpense()
+                viewModel.deleteInstallmentExpense(expense)
+            }
+            .show()
+    }
+
+    private fun dialogDeleteExpense(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.delete_expense))
+            .setMessage(getString(R.string.delete_expense_dialog_message))
+            .setPositiveButton(R.string.confirm) { dialog, which ->
+                val expense = editingTransaction.toExpense()
+                viewModel.deleteExpense(expense)
+            }
+            .show()
+    }
+
+    private fun dialogDeleteEarning(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.delete_earning))
+            .setMessage(getString(R.string.delete_earning_dialog_message))
+            .setPositiveButton(R.string.confirm) { dialog, which ->
+                val earning = editingTransaction.toEarning()
+                //viewModel.deleteInstallmentExpense(expense)
+            }
+            .show()
+    }
+
+    private fun dialogDeleteRecurringExpense(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.delete_recurring_expense))
+            .setMessage(getString(R.string.delete_expense_dialog_message))
+            .setPositiveButton(R.string.confirm) { dialog, which ->
+                val recurringExpense = editingTransaction.toRecurringExpense()
+                //viewModel.deleteInstallmentExpense(expense)
+            }
+            .show()
+    }
+
 
 }

@@ -86,7 +86,11 @@
     <string name="confirm">Confirmar</string>
     <string name="delete">Apagar</string>
     <string name="delete_expense">Apagar Despesa</string>
+    <string name="delete_recurring_expense">Apagar Despesa Recorrente</string>
+    <string name="delete_earning">Apagar Receita</string>
+    <string name="delete_installment_expense">Apagar Despesa Parcelada</string>
     <string name="delete_expense_dialog_message">Prosseguir com a exclusão desta despesa?</string>
+    <string name="delete_earning_dialog_message">Prosseguir com a exclusão desta receita?</string>
     <string name="default_budget_activity_title">Orçamento padrão</string>
     <string name="default_budget_tip_message">Definir qual será o limite de gasto padrão para todos os mesas sem definição de orçamento</string>
     <string name="change_default_budget_success_message">Orçamento padrão definido com sucesso</string>

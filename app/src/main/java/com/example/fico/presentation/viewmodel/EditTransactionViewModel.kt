@@ -16,6 +16,7 @@ import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringExpense
 import com.example.fico.utils.DateFunctions
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.math.BigDecimal
@@ -35,6 +36,10 @@ class EditTransactionViewModel(
     val editEarningResult : LiveData<Boolean> = _editEarningResult
     private val _editRecurringExpenseResult = MutableLiveData<Boolean>()
     val editRecurringExpenseResult : LiveData<Boolean> = _editRecurringExpenseResult
+    private val _deleteExpenseResult = MutableLiveData<Boolean>()
+    val deleteExpenseResult: LiveData<Boolean> = _deleteExpenseResult
+    private val _deleteEarningResult = MutableLiveData<Boolean>()
+    val deleteEarningResult: LiveData<Boolean> = _deleteEarningResult
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(
@@ -358,6 +363,97 @@ class EditTransactionViewModel(
                 },
                 onFailure = {
                     _deleteInstallmentExpenseResult.postValue(false)
+                }
+            )
+        }
+    }
+
+    fun deleteExpense(expense: Expense) {
+        viewModelScope.async(Dispatchers.IO) {
+            val formattedExpense = expense
+            formattedExpense.price = "-${expense.price}"
+            formattedExpense.paymentDate = FormatValuesToDatabase().expenseDate(expense.paymentDate)
+            formattedExpense.purchaseDate = FormatValuesToDatabase().expenseDate(expense.purchaseDate)
+
+            val result = firebaseAPI.deleteExpense(formattedExpense)
+            result.fold(
+                onSuccess = {
+
+                    //Get current dataStore Expense list
+                    val currentList = dataStore.getExpenseList().toMutableList()
+
+                    //Remove from dataStore expense List
+                    currentList.removeAll { it.id == formattedExpense.id }
+                    dataStore.updateAndResetExpenseList(currentList.toList())
+
+                    //Remove from dataStore expense Months List
+                    val removedExpenseMonth = DateFunctions().YYYYmmDDtoYYYYmm(formattedExpense.paymentDate)
+                    val existDate =
+                        currentList.any { DateFunctions().YYYYmmDDtoYYYYmm(FormatValuesToDatabase().expenseDate(it.paymentDate)) == removedExpenseMonth }
+                    if (!existDate) {
+                        val currentMonthList = dataStore.getExpenseMonths().toMutableList()
+                        currentMonthList.removeAll {
+                            it == DateFunctions().YYYYmmDDtoYYYYmm(formattedExpense.paymentDate)
+                        }
+                        dataStore.updateAndResetExpenseMonths(currentMonthList)
+
+                    }
+
+                    //Update info per month on dataStore
+                    val currentInfoPerMonth = dataStore.getExpenseInfoPerMonth()
+                    val updatedInfoPerMonth = mutableListOf<InformationPerMonthExpense>()
+                    val monthInfo = currentInfoPerMonth.find { infoPerMonth ->
+                        infoPerMonth.date == DateFunctions().YYYYmmDDtoYYYYmm(formattedExpense.paymentDate) }
+                    if(monthInfo != null){
+                        val expensePrice = BigDecimal(formattedExpense.price).setScale(8,RoundingMode.HALF_UP)
+                        val monthExpenseUpdated = BigDecimal(monthInfo.monthExpense).add(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
+                        val availableNowUpdated = BigDecimal(monthInfo.availableNow).subtract(expensePrice).setScale(8,RoundingMode.HALF_UP).toString()
+                        val monthInfoUpdated = InformationPerMonthExpense(
+                            monthInfo.date,
+                            availableNowUpdated,
+                            monthInfo.budget,
+                            monthExpenseUpdated
+                        )
+                        updatedInfoPerMonth.add(monthInfoUpdated)
+                    }else{
+                        val date = DateFunctions().YYYYmmDDtoYYYYmm(formattedExpense.paymentDate)
+                        val defaultBudget = BigDecimal(dataStore.getDefaultBudget()).setScale(8,RoundingMode.HALF_UP)
+                        val monthExpenseUpdated = BigDecimal(formattedExpense.price).setScale(8, RoundingMode.HALF_UP).toString()
+                        val availableNowUpdated = defaultBudget.subtract(BigDecimal(formattedExpense.price)).setScale(8,RoundingMode.HALF_UP).toString()
+                        val monthInfoUpdated = InformationPerMonthExpense(
+                            date,
+                            availableNowUpdated,
+                            defaultBudget.toString(),
+                            monthExpenseUpdated
+                        )
+                        updatedInfoPerMonth.add(monthInfoUpdated)
+                    }
+                    dataStore.updateInfoPerMonthExpense(updatedInfoPerMonth)
+
+                    //Update dataStore Total Expense
+                    val currentTotalExpense = BigDecimal(dataStore.getTotalExpense())
+                    val priceFormatted = BigDecimal(formattedExpense.price).setScale(2,RoundingMode.HALF_UP)
+                    val updatedTotalExpenseFromDataStore = currentTotalExpense.add(priceFormatted)
+                    dataStore.updateTotalExpense(updatedTotalExpenseFromDataStore.toString())
+
+                    _deleteExpenseResult.postValue(true)
+                },
+                onFailure = {
+                    _deleteExpenseResult.postValue(false)
+                }
+            )
+        }
+    }
+
+    fun deleteEarning(earning : Earning){
+        viewModelScope.async(Dispatchers.IO) {
+            firebaseAPI.deleteEarning(earning).fold(
+                onSuccess = {
+                    dataStore.deleteFromEarningList(earning)
+                    _deleteEarningResult.postValue(true)
+                },
+                onFailure = {
+                    _deleteEarningResult.postValue(false)
                 }
             )
         }
