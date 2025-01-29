@@ -581,6 +581,24 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
+                StringConstants.RESULT_CODES.DELETE_EARNING_RESULT_OK -> {
+                    viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
+                    val deletedItem = viewModel.getEditingTransaction()
+                    viewModel.updateDeletedItem(deletedItem)
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.delete_earning_success_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                StringConstants.RESULT_CODES.DELETE_EARNING_RESULT_FAILURE -> {
+                    Snackbar.make(
+                        binding.rvExpenseList,
+                        getString(R.string.delete_earning_fail_message),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

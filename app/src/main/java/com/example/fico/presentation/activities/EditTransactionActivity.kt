@@ -410,6 +410,20 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             }
         }
 
+        viewModel.deleteEarningResult.observe(this) { result ->
+            if (result) {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.DELETE_EARNING_RESULT_OK)
+                finish()
+            } else {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.DELETE_EARNING_RESULT_FAILURE)
+                finish()
+            }
+        }
+
         binding.ivArrowUpGetPurchaseDateEdit.setOnClickListener {
             binding.etPaymentDateEdit.text = binding.etPurchaseDateEdit.text
         }
@@ -555,7 +569,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             .setMessage(getString(R.string.delete_earning_dialog_message))
             .setPositiveButton(R.string.confirm) { dialog, which ->
                 val earning = editingTransaction.toEarning()
-                //viewModel.deleteInstallmentExpense(expense)
+                viewModel.deleteEarning(earning)
             }
             .show()
     }
