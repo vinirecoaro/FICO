@@ -424,6 +424,20 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             }
         }
 
+        viewModel.deleteRecurringExpenseResult.observe(this) { result ->
+            if (result) {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.DELETE_RECURRING_EXPENSE_RESULT_OK)
+                finish()
+            } else {
+                //Minimize keyboard and show message
+                hideKeyboard(this, binding.btSave)
+                setResult(StringConstants.RESULT_CODES.DELETE_RECURRING_EXPENSE_RESULT_FAILURE)
+                finish()
+            }
+        }
+
         binding.ivArrowUpGetPurchaseDateEdit.setOnClickListener {
             binding.etPaymentDateEdit.text = binding.etPurchaseDateEdit.text
         }
@@ -580,10 +594,9 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             .setMessage(getString(R.string.delete_expense_dialog_message))
             .setPositiveButton(R.string.confirm) { dialog, which ->
                 val recurringExpense = editingTransaction.toRecurringExpense()
-                //viewModel.deleteInstallmentExpense(expense)
+                viewModel.deleteRecurringExpense(recurringExpense)
             }
             .show()
     }
-
 
 }

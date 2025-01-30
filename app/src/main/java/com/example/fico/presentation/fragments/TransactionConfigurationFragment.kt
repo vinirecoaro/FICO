@@ -60,6 +60,22 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
+
+            StringConstants.RESULT_CODES.DELETE_RECURRING_EXPENSE_RESULT_OK -> {
+                Snackbar.make(
+                    binding.rvConfigurationList,
+                    getString(R.string.delete_recurring_expense_success_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+
+            StringConstants.RESULT_CODES.DELETE_RECURRING_EXPENSE_RESULT_FAILURE -> {
+                Snackbar.make(
+                    binding.rvConfigurationList,
+                    getString(R.string.delete_recurring_expense_failure_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

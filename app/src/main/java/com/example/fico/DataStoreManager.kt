@@ -231,6 +231,18 @@ class DataStoreManager (context: Context) {
         }
     }
 
+    suspend fun deleteFromRecurringExpenseList(recurringExpense : RecurringExpense){
+        dataStore.edit { preferences ->
+            val existingRecurringExpenseListString = preferences[recurringExpensesListKey] ?: "[]"
+            val existingRecurringExpenseList = Gson().fromJson(existingRecurringExpenseListString, Array<RecurringExpense>::class.java).toMutableList()
+            if(existingRecurringExpenseList.find { it.id == recurringExpense.id } != null){
+                existingRecurringExpenseList.removeAll { it.id == recurringExpense.id }
+            }
+            val earningListString = Gson().toJson(existingRecurringExpenseList)
+            preferences[recurringExpensesListKey] = earningListString
+        }
+    }
+
     suspend fun updateRecurringExpensesList(recurringExpenseList : List<RecurringExpense>){
         dataStore.edit { preferences ->
             val existingRecurringExpensesListString = preferences[recurringExpensesListKey] ?: "[]"

@@ -581,6 +581,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
+
                 StringConstants.RESULT_CODES.DELETE_EARNING_RESULT_OK -> {
                     viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
                     val deletedItem = viewModel.getEditingTransaction()

@@ -155,6 +155,16 @@ class FirebaseAPI(
         }
     }
 
+    suspend fun deleteRecurringExpense(recurringExpense: RecurringExpense) : Result<Unit> = withContext(Dispatchers.IO) {
+        return@withContext try{
+            val reference = recurring_expense_list.child(recurringExpense.id)
+            reference.removeValue()
+            Result.success(Unit)
+        }catch (e : Exception){
+            Result.failure(e)
+        }
+    }
+
     suspend fun deleteInstallmentExpense(
         removeFromExpenseList: MutableList<String>,
         expenseNOfInstallment: Int,
