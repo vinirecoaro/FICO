@@ -45,21 +45,16 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
-import android.widget.RadioButton
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.databinding.FragmentAddTransactionBinding
 import com.example.fico.model.RecurringExpense
-import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
-import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.utils.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
@@ -154,9 +149,14 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             requireContext().registerReceiver(receiver, filter)
         }
 
-        val recurringState = arguments?.getBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE) ?: false
-        if(recurringState){
-            viewModel.updateRecurringMode(recurringState)
+        val recurringExpenseState = arguments?.getBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE) ?: false
+        val recurringEarningState = arguments?.getBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING) ?: false
+        if(recurringExpenseState){
+            viewModel.updateRecurringMode(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE)
+            arguments = null
+        }
+        else if(recurringEarningState){
+            viewModel.updateRecurringMode(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING)
             arguments = null
         }
 
@@ -647,9 +647,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             }
         }
 
-        viewModel.isRecurringMode.observe(viewLifecycleOwner){state ->
-            if(state){
+        viewModel.recurringMode.observe(viewLifecycleOwner){mode ->
+            if(mode == StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE){
                 changeComponentsToRecurringExpenseState()
+            }
+            else if(mode == StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING){
+                changeComponentsToRecurringEarningState()
             }
         }
 
@@ -1132,6 +1135,32 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilRecurringTransactionDay.visibility = View.VISIBLE
         binding.etRecurringTransactionDay.visibility = View.VISIBLE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
+    }
+
+    private fun changeComponentsToRecurringEarningState(){
+        menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
+        menu.findItem(R.id.add_expense_menu_common).isVisible = false
+        menu.findItem(R.id.add_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_recurring_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_recurring_earning)
+        viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING)
+        binding.tilPurchaseDate.visibility = View.GONE
+        binding.etPurchaseDate.visibility = View.GONE
+        binding.ivPurchaseDate.visibility = View.GONE
+        binding.tilPaymentDate.visibility = View.GONE
+        binding.etPaymentDate.visibility = View.GONE
+        binding.ivPaymentDate.visibility = View.GONE
+        binding.tilInstallments.visibility = View.GONE
+        binding.etInstallments.visibility = View.GONE
+        binding.tvSwtPaymentDay.visibility = View.GONE
+        binding.swtPaymentDay.visibility = View.GONE
+        binding.tilReceivedDate.visibility = View.GONE
+        binding.etReceivedDate.visibility = View.GONE
+        binding.ivReceivedDate.visibility = View.GONE
+        binding.tilRecurringTransactionDay.visibility = View.VISIBLE
+        binding.etRecurringTransactionDay.visibility = View.VISIBLE
+        adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
 
     private fun getAlertDialogTextButtonColor() : Int{

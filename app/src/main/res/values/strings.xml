@@ -189,6 +189,7 @@
     <string name="dialog_recurring_expense_list_title">Lista de Despesas Recorrentes</string>
     <string name="dialog_recurring_earning_list_title">Lista de Receitas Recorrentes</string>
     <string name="add_recurring_expense">Adicionar Despesa Recorrente</string>
+    <string name="add_recurring_earning">Adicionar Receita Recorrente</string>
     <string name="edit_recurring_transaction">Editar Transação Recorrente</string>
     <string name="edit_recurring_expense">Editar Despesa Recorrente</string>
     <string name="edit_recurring_transaction_message">Selecione o tipo da transação</string>

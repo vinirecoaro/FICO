@@ -129,6 +129,17 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                     binding.etPaymentDateEdit.setText(transaction.paymentDate)
                 }
 
+                else if(transaction.type == StringConstants.DATABASE.RECURRING_EARNING){
+                   /* editingTransaction = transaction
+
+                    changeComponentsToRecurringExpenseState()
+
+                    binding.etPrice.setText(priceFormatted)
+                    binding.etDescription.setText(transaction.description)
+                    binding.actvCategory.setText(transaction.category)
+                    binding.etPaymentDateEdit.setText(transaction.paymentDate)*/
+                }
+
                 adapter.selectCategory(transaction.category)
             }
         }

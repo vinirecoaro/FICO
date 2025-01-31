@@ -22,6 +22,7 @@ class StringConstants private constructor() {
         const val EXPENSE = "expense"
         const val EXPENSES = "expenses"
         const val RECURRING_EXPENSE = "recurring_expense"
+        const val RECURRING_EARNING = "recurring_earning"
         const val BUDGET = "budget"
         const val DEFAULT_BUDGET = "DefaultBudget"
         const val DEFAULT_VALUES = "DefaultValues"
@@ -178,6 +179,7 @@ class StringConstants private constructor() {
         const val ADD_EARNING = "add_earning"
         const val ADD_EXPENSE = "add_expense"
         const val ADD_RECURRING_EXPENSE = "recurring_expense"
+        const val ADD_RECURRING_EARNING = "recurring_earning"
     }
 
     object TRANSACTION_LIST {

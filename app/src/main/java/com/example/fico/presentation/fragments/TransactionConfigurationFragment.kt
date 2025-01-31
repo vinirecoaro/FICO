@@ -250,7 +250,18 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
         }
 
         builder.setNegativeButton(getString(R.string.add)){dialog, which ->
+            val navController = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+                ?.findNavController()
+            val bundle = Bundle().apply {
+                putBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING, true)
+            }
 
+            // Clear the back stack to the current fragment
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.navigation_config, true)
+                .build()
+
+            navController!!.navigate(R.id.navigation_add_expense, bundle, navOptions)
         }
 
         val dialog = builder.create()
