@@ -13,6 +13,7 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.utils.DateFunctions
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.async
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -121,9 +122,10 @@ class TransactionConfigurationViewModel(
     fun getRecurringExpensesList(){
         viewModelScope.async {
             try {
-                val recurringExpenseList = dataStore.getRecurringExpensesList()
-                if(recurringExpenseList.isNotEmpty()){
-                    var sortedExpenses = recurringExpenseList.sortedByDescending { it.description }
+                val recurringTransactionsList = dataStore.getRecurringTransactionsList()
+                val recurringExpensesList = recurringTransactionsList.filter { it.type == StringConstants.DATABASE.RECURRING_EXPENSE }
+                if(recurringExpensesList.isNotEmpty()){
+                    var sortedExpenses = recurringExpensesList.sortedByDescending { it.description }
                     _recurringExpensesList.value = sortedExpenses
                 }else{
                     _recurringExpensesList.value = emptyList()

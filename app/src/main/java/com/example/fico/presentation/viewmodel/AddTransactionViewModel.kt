@@ -271,9 +271,10 @@ class AddTransactionViewModel(
     fun getRecurringExpensesList(){
         viewModelScope.async {
             try {
-                val recurringExpenseList = dataStore.getRecurringExpensesList()
-                if(recurringExpenseList.isNotEmpty()){
-                    var sortedExpenses = recurringExpenseList.sortedByDescending { it.description }
+                val recurringTransactionsList = dataStore.getRecurringTransactionsList()
+                val recurringExpensesList = recurringTransactionsList.filter { it.type == StringConstants.DATABASE.RECURRING_EXPENSE }
+                if(recurringExpensesList.isNotEmpty()){
+                    var sortedExpenses = recurringExpensesList.sortedByDescending { it.description }
                     _recurringExpensesList.value = sortedExpenses
                 }else{
                     _recurringExpensesList.value = emptyList()
