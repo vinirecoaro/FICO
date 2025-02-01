@@ -15,9 +15,8 @@ import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.model.RecurringExpense
+import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
-import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
@@ -47,8 +46,8 @@ class AddTransactionViewModel(
     val recurringMode: LiveData<String> = _recurringMode
     private val _addRecurringExpenseResult = MutableLiveData<Boolean>()
     val addRecurringExpenseResult: LiveData<Boolean> = _addRecurringExpenseResult
-    private val _recurringExpensesList = MutableLiveData<List<RecurringExpense>>()
-    val recurringExpensesList: LiveData<List<RecurringExpense>> = _recurringExpensesList
+    private val _recurringExpensesList = MutableLiveData<List<RecurringTransaction>>()
+    val recurringExpensesList: LiveData<List<RecurringTransaction>> = _recurringExpensesList
 
     init {
         getPaymentDateSwitchState()
@@ -245,18 +244,19 @@ class AddTransactionViewModel(
 
             val id = "${formattedInputDate}-${randonNum}"
 
-            val recurringExpense = RecurringExpense(
+            val recurringExpense = RecurringTransaction(
                 id,
                 formattedPrice,
                 description,
                 category,
                 day,
-                formattedInputDate
+                formattedInputDate,
+                StringConstants.DATABASE.RECURRING_EXPENSE
             )
 
             firebaseAPI.addRecurringExpense(recurringExpense).fold(
                 onSuccess = {
-                    val recurringExpensesList = mutableListOf<RecurringExpense>()
+                    val recurringExpensesList = mutableListOf<RecurringTransaction>()
                     recurringExpensesList.add(recurringExpense)
                     dataStore.updateRecurringExpensesList(recurringExpensesList)
                     _addRecurringExpenseResult.postValue(true)
@@ -284,7 +284,7 @@ class AddTransactionViewModel(
         }
     }
 
-    fun recurringExpenseToTransaction(recurringExpenseList : List<RecurringExpense>) : List<Transaction>{
+    fun recurringExpenseToTransaction(recurringExpenseList : List<RecurringTransaction>) : List<Transaction>{
         val transactionList = mutableListOf<Transaction>()
         for(recurringExpense in recurringExpenseList){
             val transaction = Transaction(

@@ -71,11 +71,6 @@ class LogoActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners() {
-        /*viewModel.onUserLogged = {
-            startActivity(Intent(this@LogoActivity, MainExpenseActivity::class.java))
-            finish()
-        }*/
-
         viewModel.onError = { message ->
             Snackbar.make(binding.ivLogo, message, Snackbar.LENGTH_LONG).show()
         }

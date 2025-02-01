@@ -14,7 +14,7 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.model.RecurringExpense
+import com.example.fico.model.RecurringTransaction
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.Dispatchers
@@ -241,7 +241,7 @@ class EditTransactionViewModel(
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditRecurringExpense(
-        oldRecurringExpense: RecurringExpense,
+        oldRecurringExpense: RecurringTransaction,
         value: String,
         description: String,
         category: String,
@@ -252,7 +252,7 @@ class EditTransactionViewModel(
             val newValue = FormatValuesToDatabase().expensePrice(value, 1)
             val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
-            val newRecurringExpense = RecurringExpense(oldRecurringExpense.id, newValue, description, category, day, formattedInputDate)
+            val newRecurringExpense = RecurringTransaction(oldRecurringExpense.id, newValue, description, category, day, formattedInputDate, StringConstants.DATABASE.RECURRING_EXPENSE)
 
             firebaseAPI.editRecurringExpense(newRecurringExpense).fold(
                 onSuccess = {
@@ -461,7 +461,7 @@ class EditTransactionViewModel(
         }
     }
 
-    fun deleteRecurringExpense(recurringExpense : RecurringExpense){
+    fun deleteRecurringExpense(recurringExpense : RecurringTransaction){
         viewModelScope.async(Dispatchers.IO) {
             firebaseAPI.deleteRecurringExpense(recurringExpense).fold(
                 onSuccess = {

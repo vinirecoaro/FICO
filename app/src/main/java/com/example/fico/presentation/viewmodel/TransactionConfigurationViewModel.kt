@@ -11,7 +11,7 @@ import com.example.fico.R
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.model.RecurringExpense
+import com.example.fico.model.RecurringTransaction
 import com.example.fico.utils.DateFunctions
 import kotlinx.coroutines.async
 import java.math.BigDecimal
@@ -25,8 +25,8 @@ class TransactionConfigurationViewModel(
 
     private val _updateDatabaseResult = MutableLiveData<Boolean>()
     val updateDatabaseResult : LiveData<Boolean> = _updateDatabaseResult
-    private val _recurringExpensesList = MutableLiveData<List<RecurringExpense>>()
-    val recurringExpensesList: LiveData<List<RecurringExpense>> = _recurringExpensesList
+    private val _recurringExpensesList = MutableLiveData<List<RecurringTransaction>>()
+    val recurringExpensesList: LiveData<List<RecurringTransaction>> = _recurringExpensesList
 
     val configurationList: MutableList<String> = mutableListOf(
         context.getString(R.string.default_payment_date),

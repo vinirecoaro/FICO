@@ -6,8 +6,10 @@ class StringConstants private constructor() {
         const val USERS = "users"
         const val EXPENSES_LIST = "expensesList"
         const val RECURRING_EXPENSES_LIST = "recurringExpensesList"
+        const val RECURRING_TRANSACTIONS_LIST = "recurringExpensesList"
         const val TOTAL_EXPENSE = "totalExpense"
         const val PRICE = "price"
+        const val TYPE = "type"
         const val PAYMENT_DATE = "payment_date"
         const val PAYMENT_DAY = "payment_day"
         const val DAYS_FOR_CLOSING_BILL = "days_for_closing_bill"
@@ -31,6 +33,7 @@ class StringConstants private constructor() {
         const val EARNINGS = "earnings"
         const val EARNING = "earning"
         const val TRANSACTION = "transaction"
+        const val TRANSACTIONS = "transactions"
         const val EARNINGS_LIST = "earningsList"
         const val VALUE = "value"
     }

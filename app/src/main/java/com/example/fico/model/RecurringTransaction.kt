@@ -1,14 +1,13 @@
 package com.example.fico.model
 
-import com.example.fico.utils.constants.StringConstants
-
-data class RecurringExpense(
+data class RecurringTransaction(
     var id: String,
     var price: String,
     var description: String,
     var category: String,
     var day: String,
     var inputDateTime: String,
+    var type: String
 ){
     fun toTransaction() : Transaction{
         return Transaction(
@@ -20,7 +19,7 @@ data class RecurringExpense(
             this.day,
             this.inputDateTime,
             "1",
-            StringConstants.DATABASE.RECURRING_EXPENSE
+            this.type
         )
     }
 }

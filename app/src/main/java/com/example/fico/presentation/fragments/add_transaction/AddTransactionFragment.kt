@@ -51,7 +51,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.databinding.FragmentAddTransactionBinding
-import com.example.fico.model.RecurringExpense
+import com.example.fico.model.RecurringTransaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
@@ -435,6 +435,34 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     }
                 }
                 else if (viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE){
+                    if (verifyFields(
+                            binding.etPrice,
+                            binding.etDescription,
+                            binding.actvCategory,
+                        )
+                    ){
+                        if(binding.etRecurringTransactionDay.text != null && binding.etRecurringTransactionDay.text.toString() != ""){
+                            if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
+                                viewModel.addRecurringExpense(
+                                    binding.etPrice.text.toString(),
+                                    binding.etDescription.text.toString(),
+                                    binding.actvCategory.text.toString(),
+                                    binding.etRecurringTransactionDay.text.toString()
+                                )
+                            }else{
+                                Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                            }
+                        }else{
+                            viewModel.addRecurringExpense(
+                                binding.etPrice.text.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                ""
+                            )
+                        }
+                    }
+                }
+                else if (viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING){
                     if (verifyFields(
                             binding.etPrice,
                             binding.etDescription,
@@ -1205,7 +1233,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun fillFieldsWithRecurringExpense(recurringExpense : RecurringExpense){
+    private fun fillFieldsWithRecurringExpense(recurringExpense : RecurringTransaction){
         val formattedPrice = BigDecimal(recurringExpense.price).setScale(2, RoundingMode.HALF_UP).toString()
         binding.etPrice.setText(formattedPrice)
         binding.etDescription.setText(recurringExpense.description)

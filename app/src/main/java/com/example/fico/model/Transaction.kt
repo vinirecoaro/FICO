@@ -1,6 +1,5 @@
 package com.example.fico.model
 
-import android.os.Parcelable
 import java.io.Serializable
 
 data class Transaction(
@@ -43,14 +42,15 @@ data class Transaction(
         )
     }
 
-    fun toRecurringExpense() : RecurringExpense{
-        return RecurringExpense(
+    fun toRecurringExpense() : RecurringTransaction{
+        return RecurringTransaction(
             this.id,
             this.price,
             this.description,
             this.category,
             this.paymentDate,
             this.inputDateTime,
+            this.type
         )
     }
 }

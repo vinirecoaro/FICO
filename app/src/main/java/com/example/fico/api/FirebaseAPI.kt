@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.model.RecurringExpense
+import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.model.User
 import com.example.fico.utils.constants.StringConstants
@@ -34,10 +34,11 @@ class FirebaseAPI(
     private lateinit var user_root : DatabaseReference
     private lateinit var user_info : DatabaseReference
     private lateinit var expenses : DatabaseReference
+    private lateinit var transactions : DatabaseReference
     private lateinit var total_expenses_price : DatabaseReference
     private lateinit var expenses_information_per_month : DatabaseReference
     private lateinit var expense_list : DatabaseReference
-    private lateinit var recurring_expense_list : DatabaseReference
+    private lateinit var recurring_transactions_list : DatabaseReference
     private lateinit var default_expense_values : DatabaseReference
     private lateinit var earnings : DatabaseReference
     private lateinit var earningsList : DatabaseReference
@@ -46,10 +47,11 @@ class FirebaseAPI(
         user_root = rootRef.child(auth.currentUser?.uid.toString())
         user_info = user_root.child(StringConstants.DATABASE.USER_INFO)
         expenses = user_root.child(StringConstants.DATABASE.EXPENSES)
+        transactions = user_root.child(StringConstants.DATABASE.TRANSACTIONS)
         total_expenses_price = expenses.child(StringConstants.DATABASE.TOTAL_EXPENSE)
         expenses_information_per_month = expenses.child(StringConstants.DATABASE.INFORMATION_PER_MONTH)
         expense_list = expenses.child(StringConstants.DATABASE.EXPENSES_LIST)
-        recurring_expense_list = expenses.child(StringConstants.DATABASE.RECURRING_EXPENSES_LIST)
+        recurring_transactions_list = transactions.child(StringConstants.DATABASE.RECURRING_TRANSACTIONS_LIST)
         default_expense_values = expenses.child(StringConstants.DATABASE.DEFAULT_VALUES)
         earnings = user_root.child(StringConstants.DATABASE.EARNINGS)
         earningsList = earnings.child(StringConstants.DATABASE.EARNINGS_LIST)
@@ -155,9 +157,9 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun deleteRecurringExpense(recurringExpense: RecurringExpense) : Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun deleteRecurringExpense(recurringExpense: RecurringTransaction) : Result<Unit> = withContext(Dispatchers.IO) {
         return@withContext try{
-            val reference = recurring_expense_list.child(recurringExpense.id)
+            val reference = recurring_transactions_list.child(recurringExpense.id)
             reference.removeValue()
             Result.success(Unit)
         }catch (e : Exception){
@@ -353,14 +355,14 @@ class FirebaseAPI(
     }
 
     suspend fun addRecurringExpense(
-        recurringExpense : RecurringExpense
+        recurringExpense : RecurringTransaction
     ): Result<Unit> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any>()
 
         return@withContext try {
             updates.putAll(generateMapToUpdateUserRecurringExpenses(recurringExpense))
 
-            recurring_expense_list.updateChildren(updates)
+            recurring_transactions_list.updateChildren(updates)
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -426,12 +428,12 @@ class FirebaseAPI(
     }
 
     suspend fun editRecurringExpense(
-        recurringExpense: RecurringExpense,
+        recurringExpense: RecurringTransaction,
     ): Result<Unit> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any?>()
         try {
             updates.putAll(generateMapToUpdateUserRecurringExpenses(recurringExpense))
-            recurring_expense_list.updateChildren(updates)
+            recurring_transactions_list.updateChildren(updates)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -497,21 +499,23 @@ class FirebaseAPI(
         return updatesOfEarningList
     }
 
-    private fun generateMapToUpdateUserRecurringExpenses(recurringExpense : RecurringExpense): MutableMap<String, Any> {
-        val updatesOfEarningList = mutableMapOf<String, Any>()
+    private fun generateMapToUpdateUserRecurringExpenses(recurringExpense : RecurringTransaction): MutableMap<String, Any> {
+        val updatesOfRecurringExpensesList = mutableMapOf<String, Any>()
 
-        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.PRICE}"] =
+        updatesOfRecurringExpensesList["${recurringExpense.id}/${StringConstants.DATABASE.PRICE}"] =
             recurringExpense.price
-        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
+        updatesOfRecurringExpensesList["${recurringExpense.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
             recurringExpense.description
-        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.CATEGORY}"] =
+        updatesOfRecurringExpensesList["${recurringExpense.id}/${StringConstants.DATABASE.CATEGORY}"] =
             recurringExpense.category
-        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.DAY}"] =
+        updatesOfRecurringExpensesList["${recurringExpense.id}/${StringConstants.DATABASE.DAY}"] =
             recurringExpense.day
-        updatesOfEarningList["${recurringExpense.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
+        updatesOfRecurringExpensesList["${recurringExpense.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
             recurringExpense.inputDateTime
+        updatesOfRecurringExpensesList["${recurringExpense.id}/${StringConstants.DATABASE.TYPE}"] =
+            recurringExpense.type
 
-        return updatesOfEarningList
+        return updatesOfRecurringExpensesList
     }
 
     private fun generateMapToRemoveUserExpenses(
@@ -889,7 +893,7 @@ class FirebaseAPI(
 
     suspend fun getRecurringExpensesList(): Deferred<DataSnapshot> = withContext(Dispatchers.IO){
         val recurringExpensesList = CompletableDeferred<DataSnapshot>()
-        recurring_expense_list.addValueEventListener(object : ValueEventListener{
+        recurring_transactions_list.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){
                     recurringExpensesList.complete(snapshot)
