@@ -443,21 +443,23 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     ){
                         if(binding.etRecurringTransactionDay.text != null && binding.etRecurringTransactionDay.text.toString() != ""){
                             if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
-                                viewModel.addRecurringExpense(
+                                viewModel.addRecurringTransaction(
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
-                                    binding.etRecurringTransactionDay.text.toString()
+                                    binding.etRecurringTransactionDay.text.toString(),
+                                    StringConstants.DATABASE.RECURRING_EXPENSE
                                 )
                             }else{
                                 Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
                             }
                         }else{
-                            viewModel.addRecurringExpense(
+                            viewModel.addRecurringTransaction(
                                 binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
-                                ""
+                                "",
+                                StringConstants.DATABASE.RECURRING_EXPENSE
                             )
                         }
                     }
@@ -471,21 +473,23 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     ){
                         if(binding.etRecurringTransactionDay.text != null && binding.etRecurringTransactionDay.text.toString() != ""){
                             if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
-                                viewModel.addRecurringExpense(
+                                viewModel.addRecurringTransaction(
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
-                                    binding.etRecurringTransactionDay.text.toString()
+                                    binding.etRecurringTransactionDay.text.toString(),
+                                    StringConstants.DATABASE.RECURRING_EARNING
                                 )
                             }else{
                                 Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
                             }
                         }else{
-                            viewModel.addRecurringExpense(
+                            viewModel.addRecurringTransaction(
                                 binding.etPrice.text.toString(),
                                 binding.etDescription.text.toString(),
                                 binding.actvCategory.text.toString(),
-                                ""
+                                "",
+                                StringConstants.DATABASE.RECURRING_EARNING
                             )
                         }
                     }
@@ -684,19 +688,19 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             }
         }
 
-        viewModel.addRecurringExpenseResult.observe(viewLifecycleOwner){ result ->
+        viewModel.addRecurringTransactionResult.observe(viewLifecycleOwner){ result ->
             hideKeyboard(requireContext(), binding.btSave)
             clearUserInputs()
             if (result) {
                 Snackbar.make(
                     binding.btSave,
-                    getString(R.string.add_recurring_expense_success_message),
+                    getString(R.string.add_recurring_transaction_success_message),
                     Snackbar.LENGTH_SHORT
                 ).show()
             } else {
                 Snackbar.make(
                     binding.btSave,
-                    getString(R.string.add_recurring_expense_failure_message),
+                    getString(R.string.add_recurring_transaction_failure_message),
                     Snackbar.LENGTH_LONG)
                     .show()
             }

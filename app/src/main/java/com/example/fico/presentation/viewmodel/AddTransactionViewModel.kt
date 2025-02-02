@@ -44,8 +44,8 @@ class AddTransactionViewModel(
     val addEarningResult: LiveData<Boolean> = _addEarningResult
     private val _recurringMode = MutableLiveData<String>()
     val recurringMode: LiveData<String> = _recurringMode
-    private val _addRecurringExpenseResult = MutableLiveData<Boolean>()
-    val addRecurringExpenseResult: LiveData<Boolean> = _addRecurringExpenseResult
+    private val _addRecurringTransactionResult = MutableLiveData<Boolean>()
+    val addRecurringTransactionResult: LiveData<Boolean> = _addRecurringTransactionResult
     private val _recurringExpensesList = MutableLiveData<List<RecurringTransaction>>()
     val recurringExpensesList: LiveData<List<RecurringTransaction>> = _recurringExpensesList
 
@@ -228,11 +228,12 @@ class AddTransactionViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addRecurringExpense(
+    suspend fun addRecurringTransaction(
         price: String,
         description: String,
         category: String,
         day: String,
+        type : String
     ){
         viewModelScope.async(Dispatchers.IO){
             val formattedInputDate =
@@ -244,25 +245,25 @@ class AddTransactionViewModel(
 
             val id = "${formattedInputDate}-${randonNum}"
 
-            val recurringExpense = RecurringTransaction(
+            val recurringTransaction = RecurringTransaction(
                 id,
                 formattedPrice,
                 description,
                 category,
                 day,
                 formattedInputDate,
-                StringConstants.DATABASE.RECURRING_EXPENSE
+                type
             )
 
-            firebaseAPI.addRecurringExpense(recurringExpense).fold(
+            firebaseAPI.addRecurringTransaction(recurringTransaction).fold(
                 onSuccess = {
-                    val recurringExpensesList = mutableListOf<RecurringTransaction>()
-                    recurringExpensesList.add(recurringExpense)
-                    dataStore.updateRecurringExpensesList(recurringExpensesList)
-                    _addRecurringExpenseResult.postValue(true)
+                    val recurringTransactionList = mutableListOf<RecurringTransaction>()
+                    recurringTransactionList.add(recurringTransaction)
+                    dataStore.updateRecurringExpensesList(recurringTransactionList)
+                    _addRecurringTransactionResult.postValue(true)
                 },
                 onFailure = {
-                    _addRecurringExpenseResult.postValue(false)
+                    _addRecurringTransactionResult.postValue(false)
                 }
             )
         }

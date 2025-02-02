@@ -5,7 +5,7 @@ class StringConstants private constructor() {
     object DATABASE {
         const val USERS = "users"
         const val EXPENSES_LIST = "expensesList"
-        const val RECURRING_TRANSACTIONS_LIST = "recurringExpensesList"
+        const val RECURRING_TRANSACTIONS_LIST = "recurringTransactionsList"
         const val TOTAL_EXPENSE = "totalExpense"
         const val PRICE = "price"
         const val TYPE = "type"

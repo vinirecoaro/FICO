@@ -354,7 +354,7 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun addRecurringExpense(
+    suspend fun addRecurringTransaction(
         recurringExpense : RecurringTransaction
     ): Result<Unit> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any>()
