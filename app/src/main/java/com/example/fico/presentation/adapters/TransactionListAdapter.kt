@@ -96,7 +96,7 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
             }
         }
 
-        else if(item.type == StringConstants.DATABASE.EARNING){
+        else if(item.type == StringConstants.DATABASE.EARNING || item.type == StringConstants.DATABASE.RECURRING_EARNING){
 
             holder.price.setTextColor(Color.GREEN)
 

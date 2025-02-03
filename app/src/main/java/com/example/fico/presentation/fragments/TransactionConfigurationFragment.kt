@@ -119,10 +119,12 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
 
         }
 
-        viewModel.recurringExpensesList.observe(viewLifecycleOwner){recurringExpenseList ->
-            val recurringTransactionList = mutableListOf<Transaction>()
-            recurringExpenseList.forEach { recurringExpense -> recurringTransactionList.add(recurringExpense.toTransaction()) }
-            recurringTransactionListDialog(recurringTransactionList, StringConstants.DATABASE.EXPENSE)
+        viewModel.recurringTransactionsList.observe(viewLifecycleOwner){ recurringTransactionList ->
+            val transactionList = mutableListOf<Transaction>()
+            val list =  recurringTransactionList.first
+            val type =  recurringTransactionList.second
+            list.forEach { recurringExpense -> transactionList.add(recurringExpense.toTransaction()) }
+            recurringTransactionListDialog(transactionList, type)
         }
     }
 
@@ -176,7 +178,7 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
         builder.setMessage(getString(R.string.edit_recurring_transaction_message_step_2))
 
         builder.setPositiveButton(getString(R.string.list)){dialog, which ->
-            viewModel.getRecurringExpensesList()
+            viewModel.getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EXPENSE)
         }
 
         builder.setNegativeButton(getString(R.string.add)){dialog, which ->
@@ -208,9 +210,9 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
     private fun recurringTransactionListDialog(recurringTransactionList : List<Transaction>, transactionType : String){
         val builder = MaterialAlertDialogBuilder(requireContext())
 
-        if(transactionType ==  StringConstants.DATABASE.EXPENSE){
+        if(transactionType ==  StringConstants.DATABASE.RECURRING_EXPENSE){
             builder.setTitle(getString(R.string.dialog_recurring_expense_list_title))
-        } else if(transactionType ==  StringConstants.DATABASE.EARNING){
+        } else if(transactionType ==  StringConstants.DATABASE.RECURRING_EARNING){
             builder.setTitle(getString(R.string.dialog_recurring_earning_list_title))
         }
 
@@ -246,7 +248,7 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
         builder.setMessage(getString(R.string.edit_recurring_transaction_message_step_2))
 
         builder.setPositiveButton(getString(R.string.list)){dialog, which ->
-
+            viewModel.getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EARNING)
         }
 
         builder.setNegativeButton(getString(R.string.add)){dialog, which ->

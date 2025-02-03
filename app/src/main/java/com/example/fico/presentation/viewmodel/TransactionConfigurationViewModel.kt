@@ -13,7 +13,6 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.utils.DateFunctions
-import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.async
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -26,8 +25,8 @@ class TransactionConfigurationViewModel(
 
     private val _updateDatabaseResult = MutableLiveData<Boolean>()
     val updateDatabaseResult : LiveData<Boolean> = _updateDatabaseResult
-    private val _recurringExpensesList = MutableLiveData<List<RecurringTransaction>>()
-    val recurringExpensesList: LiveData<List<RecurringTransaction>> = _recurringExpensesList
+    private val _recurringTransactionsList = MutableLiveData<Pair<List<RecurringTransaction>, String>>()
+    val recurringTransactionsList: LiveData<Pair<List<RecurringTransaction>, String>> = _recurringTransactionsList
 
     val configurationList: MutableList<String> = mutableListOf(
         context.getString(R.string.default_payment_date),
@@ -119,17 +118,15 @@ class TransactionConfigurationViewModel(
         }
     }
 
-    fun getRecurringExpensesList(){
+    fun getRecurringTransactionList(type : String){
         viewModelScope.async {
             try {
                 val recurringTransactionsList = dataStore.getRecurringTransactionsList()
-                val recurringExpensesList = recurringTransactionsList.filter { it.type == StringConstants.DATABASE.RECURRING_EXPENSE }
-                if(recurringExpensesList.isNotEmpty()){
-                    var sortedExpenses = recurringExpensesList.sortedByDescending { it.description }
-                    _recurringExpensesList.value = sortedExpenses
-                }else{
-                    _recurringExpensesList.value = emptyList()
-                }
+                val recurringTransactionTypeFilteredList = recurringTransactionsList.filter { it.type == type }
+                val sortedExpenses = recurringTransactionTypeFilteredList.sortedByDescending { it.description }
+                val result = Pair(sortedExpenses, type)
+                _recurringTransactionsList.value = result
+
             }catch (error: Exception){
                 Log.e("recurring expenses","Fail in get recurring expenses list: ${error.message}")
             }
