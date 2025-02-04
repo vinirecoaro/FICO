@@ -21,7 +21,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
-import com.example.fico.model.Expense
 import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.ActivityEditTransactionBinding
@@ -268,7 +267,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                 }
 
                 StringConstants.DATABASE.RECURRING_EXPENSE -> {
-                    val recurringExpense = editingTransaction.toRecurringExpense()
+                    val recurringExpense = editingTransaction.toRecurringTransaction()
                     lifecycleScope.launch(Dispatchers.Main) {
                         if(verifyFields(
                                 binding.etPrice,
@@ -604,7 +603,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             .setTitle(getString(R.string.delete_recurring_expense))
             .setMessage(getString(R.string.delete_expense_dialog_message))
             .setPositiveButton(R.string.confirm) { dialog, which ->
-                val recurringExpense = editingTransaction.toRecurringExpense()
+                val recurringExpense = editingTransaction.toRecurringTransaction()
                 viewModel.deleteRecurringExpense(recurringExpense)
             }
             .show()

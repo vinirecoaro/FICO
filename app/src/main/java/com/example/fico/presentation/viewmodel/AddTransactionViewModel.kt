@@ -46,8 +46,8 @@ class AddTransactionViewModel(
     val recurringMode: LiveData<String> = _recurringMode
     private val _addRecurringTransactionResult = MutableLiveData<Boolean>()
     val addRecurringTransactionResult: LiveData<Boolean> = _addRecurringTransactionResult
-    private val _recurringExpensesList = MutableLiveData<List<RecurringTransaction>>()
-    val recurringExpensesList: LiveData<List<RecurringTransaction>> = _recurringExpensesList
+    private val _recurringTransactionsList = MutableLiveData<Pair<List<RecurringTransaction>, String>>()
+    val recurringTransactionsList: LiveData<Pair<List<RecurringTransaction>, String>> = _recurringTransactionsList
 
     init {
         getPaymentDateSwitchState()
@@ -269,17 +269,15 @@ class AddTransactionViewModel(
         }
     }
 
-    fun getRecurringExpensesList(){
+    fun getRecurringTransactionList(type : String){
         viewModelScope.async {
             try {
                 val recurringTransactionsList = dataStore.getRecurringTransactionsList()
-                val recurringExpensesList = recurringTransactionsList.filter { it.type == StringConstants.DATABASE.RECURRING_EXPENSE }
-                if(recurringExpensesList.isNotEmpty()){
-                    var sortedExpenses = recurringExpensesList.sortedByDescending { it.description }
-                    _recurringExpensesList.value = sortedExpenses
-                }else{
-                    _recurringExpensesList.value = emptyList()
-                }
+                val recurringTransactionTypeFilteredList = recurringTransactionsList.filter { it.type == type }
+                val sortedExpenses = recurringTransactionTypeFilteredList.sortedByDescending { it.description }
+                val result = Pair(sortedExpenses, type)
+                _recurringTransactionsList.value = result
+
             }catch (error: Exception){
                 Log.e("recurring expenses","Fail in get recurring expenses list: ${error.message}")
             }

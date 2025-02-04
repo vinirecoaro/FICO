@@ -52,6 +52,7 @@ import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.databinding.FragmentAddTransactionBinding
 import com.example.fico.model.RecurringTransaction
+import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
@@ -160,8 +161,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             arguments = null
         }
 
-        viewModel.getRecurringExpensesList()
-
     }
 
     override fun onPause() {
@@ -200,8 +199,13 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 return true
             }
 
-            R.id.add_recurring_expense_menu_installments -> {
-                recurringExpenseDialog()
+            R.id.add_recurring_expense_menu -> {
+                viewModel.getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EXPENSE)
+                return true
+            }
+
+            R.id.add_recurring_earning_menu -> {
+                viewModel.getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EARNING)
                 return true
             }
 
@@ -706,6 +710,14 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             }
         }
 
+        viewModel.recurringTransactionsList.observe(viewLifecycleOwner){ recurringTransactionList ->
+            val transactionList = mutableListOf<Transaction>()
+            val list =  recurringTransactionList.first
+            val type =  recurringTransactionList.second
+            list.forEach { recurringExpense -> transactionList.add(recurringExpense.toTransaction()) }
+            recurringTransactionListDialog(transactionList, type)
+        }
+
     }
 
     private fun verifyFields(vararg text: EditText): Boolean {
@@ -1097,8 +1109,9 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
         menu.findItem(R.id.add_expense_menu_common).isVisible = false
         menu.findItem(R.id.add_expense_menu_installments).isVisible = false
-        menu.findItem(R.id.add_recurring_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = true
+        menu.findItem(R.id.add_recurring_earning_menu).isVisible = true
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_income)
         viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EARNING)
         binding.tilPurchaseDate.visibility = View.GONE
@@ -1123,7 +1136,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = true
         menu.findItem(R.id.add_expense_menu_common).isVisible = true
         menu.findItem(R.id.add_expense_menu_installments).isVisible = true
-        menu.findItem(R.id.add_recurring_expense_menu_installments).isVisible = true
+        menu.findItem(R.id.add_recurring_expense_menu).isVisible = true
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_expense_title)
         viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EXPENSE)
@@ -1147,7 +1160,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
         menu.findItem(R.id.add_expense_menu_common).isVisible = false
         menu.findItem(R.id.add_expense_menu_installments).isVisible = false
-        menu.findItem(R.id.add_recurring_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_recurring_expense)
         viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE)
@@ -1173,7 +1186,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
         menu.findItem(R.id.add_expense_menu_common).isVisible = false
         menu.findItem(R.id.add_expense_menu_installments).isVisible = false
-        menu.findItem(R.id.add_recurring_expense_menu_installments).isVisible = false
+        menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_recurring_earning)
         viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING)
@@ -1204,9 +1217,14 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun recurringExpenseDialog(){
+    private fun recurringTransactionListDialog(recurringTransactionList : List<Transaction>, transactionType : String){
         val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle(getString(R.string.add_recurring_expense))
+
+        if(transactionType ==  StringConstants.DATABASE.RECURRING_EXPENSE){
+            builder.setTitle(getString(R.string.dialog_recurring_expense_list_title))
+        } else if(transactionType ==  StringConstants.DATABASE.RECURRING_EARNING){
+            builder.setTitle(getString(R.string.dialog_recurring_earning_list_title))
+        }
 
         val inflater = LayoutInflater.from(requireContext())
         val dialogView = inflater.inflate(R.layout.dialog_recurring_expenses, null)
@@ -1216,6 +1234,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         // Recycler View configuration
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recurringTransactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
+        recurringTransactionListAdapter.updateTransactions(recurringTransactionList)
         recyclerView.adapter = recurringTransactionListAdapter
 
         builder.setView(dialogView)
@@ -1224,14 +1243,14 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         dialog.show()
 
         // Listeners
-        viewModel.recurringExpensesList.observe(viewLifecycleOwner){recurringExpenseList ->
-            val transactionList = viewModel.recurringExpenseToTransaction(recurringExpenseList)
-            recurringTransactionListAdapter.updateTransactions(transactionList)
-            recurringTransactionListAdapter.setOnItemClickListener { position ->
-                val selectItem = recurringExpenseList[position]
+        recurringTransactionListAdapter.setOnItemClickListener { position ->
+            val selectItem = recurringTransactionList[position].toRecurringTransaction()
+            if(transactionType ==  StringConstants.DATABASE.RECURRING_EXPENSE){
                 fillFieldsWithRecurringExpense(selectItem)
-                dialog.cancel()
+            } else if(transactionType ==  StringConstants.DATABASE.RECURRING_EARNING){
+                fillFieldsWithRecurringEarning(selectItem)
             }
+            dialog.cancel()
         }
 
     }
@@ -1249,6 +1268,19 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             if(binding.swtPaymentDay.isChecked){
                 viewModel.getDefaultPaymentDay()
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun fillFieldsWithRecurringEarning(recurringEarning : RecurringTransaction){
+        val formattedPrice = BigDecimal(recurringEarning.price).setScale(2, RoundingMode.HALF_UP).toString()
+        binding.etPrice.setText(formattedPrice)
+        binding.etDescription.setText(recurringEarning.description)
+        binding.actvCategory.setText(recurringEarning.category)
+        adapter.selectCategory(recurringEarning.category)
+        if(recurringEarning.day != ""){
+            val date = DateFunctions().purchaseDateForRecurringExpense(recurringEarning.day)
+            binding.etReceivedDate.setText(date)
         }
     }
 

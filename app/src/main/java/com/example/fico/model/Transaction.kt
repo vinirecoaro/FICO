@@ -42,7 +42,7 @@ data class Transaction(
         )
     }
 
-    fun toRecurringExpense() : RecurringTransaction{
+    fun toRecurringTransaction() : RecurringTransaction{
         return RecurringTransaction(
             this.id,
             this.price,

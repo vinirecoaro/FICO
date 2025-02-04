@@ -11,8 +11,13 @@
         android:title="@string/installment_expense"
         />
     <item
-        android:id="@+id/add_recurring_expense_menu_installments"
+        android:id="@+id/add_recurring_expense_menu"
         android:title="@string/recurring_expense"
+        />
+    <item
+        android:id="@+id/add_recurring_earning_menu"
+        android:title="@string/recurring_earning"
+        android:visible="false"
         />
     <!--<item
         android:id="@+id/add_expense_menu_get_data_from_file"

@@ -98,14 +98,6 @@ class TransactionConfigurationViewModel(
                     )
                 }
             }
-
-            Log.e("totalExpense",totalExpense.toString())
-            infoPerMonthUpdated.forEach { monthInfo ->
-                Log.e("monthInfo - ${monthInfo.date}",
-                    "month expense - ${monthInfo.monthExpense}\n" +
-                         "available now - ${monthInfo.availableNow}\n" +
-                         "budget - ${monthInfo.budget}")
-            }
             firebaseAPI.updateInfoPerMonthAndTotalExpense(totalExpense.toString(), infoPerMonthUpdated)
                 .fold(
                     onSuccess = {
