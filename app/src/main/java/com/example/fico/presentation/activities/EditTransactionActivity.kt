@@ -117,26 +117,17 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                     binding.etPaymentDateEdit.setText(transaction.paymentDate)
                 }
 
-                else if(transaction.type == StringConstants.DATABASE.RECURRING_EXPENSE){
+                else if(transaction.type == StringConstants.DATABASE.RECURRING_EXPENSE
+                    || transaction.type == StringConstants.DATABASE.RECURRING_EARNING)
+                {
                     editingTransaction = transaction
 
-                    changeComponentsToRecurringExpenseState()
+                    changeComponentsToRecurringTransactionState(transaction)
 
                     binding.etPrice.setText(priceFormatted)
                     binding.etDescription.setText(transaction.description)
                     binding.actvCategory.setText(transaction.category)
                     binding.etPaymentDateEdit.setText(transaction.paymentDate)
-                }
-
-                else if(transaction.type == StringConstants.DATABASE.RECURRING_EARNING){
-                   /* editingTransaction = transaction
-
-                    changeComponentsToRecurringExpenseState()
-
-                    binding.etPrice.setText(priceFormatted)
-                    binding.etDescription.setText(transaction.description)
-                    binding.actvCategory.setText(transaction.category)
-                    binding.etPaymentDateEdit.setText(transaction.paymentDate)*/
                 }
 
                 adapter.selectCategory(transaction.category)
@@ -272,19 +263,28 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                         if(verifyFields(
                                 binding.etPrice,
                                 binding.etDescription,
-                                binding.actvCategory,
-                                binding.etPaymentDateEdit)
+                                binding.actvCategory)
                         ){
-                            if(binding.etPaymentDateEdit.text.toString().toInt() in 1..31){
+                            if(binding.etPaymentDateEdit.text.isNullOrEmpty()){
                                 viewModel.saveEditRecurringExpense(
                                     recurringExpense,
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
-                                    binding.etPaymentDateEdit.text.toString(),
+                                    ""
                                 )
                             }else{
-                                Snackbar.make(binding.btSave,getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                                if(binding.etPaymentDateEdit.text.toString().toInt() in 1..31){
+                                    viewModel.saveEditRecurringExpense(
+                                        recurringExpense,
+                                        binding.etPrice.text.toString(),
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        binding.etPaymentDateEdit.text.toString()
+                                    )
+                                }else{
+                                    Snackbar.make(binding.btSave,getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }
@@ -549,7 +549,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
 
-    private fun changeComponentsToRecurringExpenseState(){
+    /*private fun changeComponentsToRecurringExpenseState(){
         binding.editExpenseToolbar.setTitle(getString(R.string.edit_recurring_expense))
         binding.tilPurchaseDateEdit.visibility = View.GONE
         binding.etPurchaseDateEdit.visibility = View.GONE
@@ -563,6 +563,45 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         binding.tilInstallments.visibility = View.GONE
         binding.etInstallments.visibility = View.GONE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
+    }
+
+    private fun changeComponentsToRecurringEarningState(){
+        binding.editExpenseToolbar.setTitle(getString(R.string.edit_recurring_earning))
+        binding.tilPurchaseDateEdit.visibility = View.GONE
+        binding.etPurchaseDateEdit.visibility = View.GONE
+        binding.ivPurchaseDateEdit.visibility = View.GONE
+        binding.ivArrowUpGetPurchaseDateEdit.visibility = View.GONE
+        binding.ivPaymentDate.visibility = View.GONE
+        binding.tilPaymentDateEdit.hint = getString(R.string.day)
+        binding.etPaymentDateEdit.isFocusable = true
+        binding.etPaymentDateEdit.isFocusableInTouchMode = true
+        binding.etPaymentDateEdit.inputType = InputType.TYPE_CLASS_NUMBER
+        binding.tilInstallments.visibility = View.GONE
+        binding.etInstallments.visibility = View.GONE
+        adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
+    }*/
+
+    private fun changeComponentsToRecurringTransactionState(transaction : Transaction){
+        binding.tilPurchaseDateEdit.visibility = View.GONE
+        binding.etPurchaseDateEdit.visibility = View.GONE
+        binding.ivPurchaseDateEdit.visibility = View.GONE
+        binding.ivArrowUpGetPurchaseDateEdit.visibility = View.GONE
+        binding.ivPaymentDate.visibility = View.GONE
+        binding.tilPaymentDateEdit.hint = getString(R.string.day)
+        binding.etPaymentDateEdit.isFocusable = true
+        binding.etPaymentDateEdit.isFocusableInTouchMode = true
+        binding.etPaymentDateEdit.inputType = InputType.TYPE_CLASS_NUMBER
+        binding.tilInstallments.visibility = View.GONE
+        binding.etInstallments.visibility = View.GONE
+        if(transaction.type == StringConstants.DATABASE.RECURRING_EXPENSE){
+            binding.editExpenseToolbar.setTitle(getString(R.string.edit_recurring_expense))
+            adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
+        }
+        else if(transaction.type == StringConstants.DATABASE.RECURRING_EARNING){
+            binding.editExpenseToolbar.setTitle(getString(R.string.edit_recurring_earning))
+            adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
+        }
+
     }
 
     private fun dialogDeleteInstallmentExpense(){

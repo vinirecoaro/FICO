@@ -193,6 +193,7 @@
     <string name="recurring_earning">Receita Recorrente</string>
     <string name="edit_recurring_transaction">Editar Transação Recorrente</string>
     <string name="edit_recurring_expense">Editar Despesa Recorrente</string>
+    <string name="edit_recurring_earning">Editar Receita Recorrente</string>
     <string name="edit_recurring_transaction_message">Selecione o tipo da transação</string>
     <string name="edit_recurring_transaction_message_step_2">Selecione o recurso que deseja acessar</string>
     <string name="edit">Editar</string>
