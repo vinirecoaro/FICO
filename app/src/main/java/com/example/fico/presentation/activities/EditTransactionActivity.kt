@@ -257,8 +257,9 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                     }
                 }
 
-                StringConstants.DATABASE.RECURRING_EXPENSE -> {
-                    val recurringExpense = editingTransaction.toRecurringTransaction()
+                StringConstants.DATABASE.RECURRING_EXPENSE,
+                StringConstants.DATABASE.RECURRING_EARNING -> {
+                    val recurringTransaction = editingTransaction.toRecurringTransaction()
                     lifecycleScope.launch(Dispatchers.Main) {
                         if(verifyFields(
                                 binding.etPrice,
@@ -266,8 +267,8 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                 binding.actvCategory)
                         ){
                             if(binding.etPaymentDateEdit.text.isNullOrEmpty()){
-                                viewModel.saveEditRecurringExpense(
-                                    recurringExpense,
+                                viewModel.saveEditRecurringTransaction(
+                                    recurringTransaction,
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
@@ -275,8 +276,8 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                 )
                             }else{
                                 if(binding.etPaymentDateEdit.text.toString().toInt() in 1..31){
-                                    viewModel.saveEditRecurringExpense(
-                                        recurringExpense,
+                                    viewModel.saveEditRecurringTransaction(
+                                        recurringTransaction,
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
@@ -392,16 +393,16 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             }
         }
 
-        viewModel.editRecurringExpenseResult.observe(this) { result ->
+        viewModel.editRecurringTransactionResult.observe(this) { result ->
             if (result) {
                 //Minimize keyboard and show message
                 hideKeyboard(this, binding.btSave)
-                setResult(StringConstants.RESULT_CODES.RECURRING_EXPENSE_EDIT_OK)
+                setResult(StringConstants.RESULT_CODES.EDIT_RECURRING_TRANSACTION_OK)
                 finish()
             } else {
                 //Minimize keyboard and show message
                 hideKeyboard(this, binding.btSave)
-                setResult(StringConstants.RESULT_CODES.RECURRING_EXPENSE_EDIT_FAILURE)
+                setResult(StringConstants.RESULT_CODES.EDIT_RECURRING_TRANSACTION_FAILURE)
                 finish()
             }
         }

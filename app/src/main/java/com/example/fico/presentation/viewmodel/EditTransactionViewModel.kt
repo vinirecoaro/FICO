@@ -16,7 +16,6 @@ import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.utils.DateFunctions
-import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.math.BigDecimal
@@ -34,8 +33,8 @@ class EditTransactionViewModel(
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     private val _editEarningResult = MutableLiveData<Boolean>()
     val editEarningResult : LiveData<Boolean> = _editEarningResult
-    private val _editRecurringExpenseResult = MutableLiveData<Boolean>()
-    val editRecurringExpenseResult : LiveData<Boolean> = _editRecurringExpenseResult
+    private val _editRecurringTransactionResult = MutableLiveData<Boolean>()
+    val editRecurringTransactionResult : LiveData<Boolean> = _editRecurringTransactionResult
     private val _deleteExpenseResult = MutableLiveData<Boolean>()
     val deleteExpenseResult: LiveData<Boolean> = _deleteExpenseResult
     private val _deleteEarningResult = MutableLiveData<Boolean>()
@@ -240,8 +239,8 @@ class EditTransactionViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun saveEditRecurringExpense(
-        oldRecurringExpense: RecurringTransaction,
+    suspend fun saveEditRecurringTransaction(
+        oldRecurringTransaction: RecurringTransaction,
         value: String,
         description: String,
         category: String,
@@ -252,15 +251,15 @@ class EditTransactionViewModel(
             val newValue = FormatValuesToDatabase().expensePrice(value, 1)
             val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
 
-            val newRecurringExpense = RecurringTransaction(oldRecurringExpense.id, newValue, description, category, day, formattedInputDate, StringConstants.DATABASE.RECURRING_EXPENSE)
+            val newRecurringExpense = RecurringTransaction(oldRecurringTransaction.id, newValue, description, category, day, formattedInputDate, oldRecurringTransaction.type)
 
             firebaseAPI.editRecurringExpense(newRecurringExpense).fold(
                 onSuccess = {
                     dataStore.updateRecurringExpenseList(newRecurringExpense)
-                    _editRecurringExpenseResult.postValue(true)
+                    _editRecurringTransactionResult.postValue(true)
                 },
                 onFailure = {
-                    _editRecurringExpenseResult.postValue(false)
+                    _editRecurringTransactionResult.postValue(false)
                 }
             )
         }
