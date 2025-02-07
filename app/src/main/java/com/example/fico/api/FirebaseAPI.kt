@@ -157,9 +157,9 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun deleteRecurringExpense(recurringExpense: RecurringTransaction) : Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun deleteRecurringTransaction(recurringTransaction: RecurringTransaction) : Result<Unit> = withContext(Dispatchers.IO) {
         return@withContext try{
-            val reference = recurring_transactions_list.child(recurringExpense.id)
+            val reference = recurring_transactions_list.child(recurringTransaction.id)
             reference.removeValue()
             Result.success(Unit)
         }catch (e : Exception){

@@ -152,21 +152,28 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.edit_expense_menu_delete -> {
-                //delete expense
-                if (editingTransaction.type == StringConstants.DATABASE.EXPENSE){
-                    if(expenseIdLength == 41)   {
-                        dialogDeleteInstallmentExpense()
-                    }else{
-                        dialogDeleteExpense()
+                val type = editingTransaction.type
+
+                when(type){
+
+                    //delete expense
+                    StringConstants.DATABASE.EXPENSE -> {
+                        if(expenseIdLength == 41)   {
+                            dialogDeleteInstallmentExpense()
+                        }else{
+                            dialogDeleteExpense()
+                        }
                     }
-                }
-                //delete recurring expense
-                else if (editingTransaction.type == StringConstants.DATABASE.EARNING){
-                    dialogDeleteEarning()
-                }
-                //delete recurring expense
-                else if (editingTransaction.type == StringConstants.DATABASE.RECURRING_EXPENSE){
-                    dialogDeleteRecurringExpense()
+
+                    //delete earning
+                    StringConstants.DATABASE.EARNING -> {
+                        dialogDeleteEarning()
+                    }
+
+                    //delete recurring transaction
+                    StringConstants.DATABASE.RECURRING_EXPENSE, StringConstants.DATABASE.RECURRING_EARNING -> {
+                        dialogDeleteRecurringTransaction(type)
+                    }
                 }
                 return true
             }
@@ -435,16 +442,16 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             }
         }
 
-        viewModel.deleteRecurringExpenseResult.observe(this) { result ->
+        viewModel.deleteRecurringTransactionResult.observe(this) { result ->
             if (result) {
                 //Minimize keyboard and show message
                 hideKeyboard(this, binding.btSave)
-                setResult(StringConstants.RESULT_CODES.DELETE_RECURRING_EXPENSE_RESULT_OK)
+                setResult(StringConstants.RESULT_CODES.DELETE_RECURRING_TRANSACTION_RESULT_OK)
                 finish()
             } else {
                 //Minimize keyboard and show message
                 hideKeyboard(this, binding.btSave)
-                setResult(StringConstants.RESULT_CODES.DELETE_RECURRING_EXPENSE_RESULT_FAILURE)
+                setResult(StringConstants.RESULT_CODES.DELETE_RECURRING_TRANSACTION_RESULT_FAILURE)
                 finish()
             }
         }
@@ -638,13 +645,24 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             .show()
     }
 
-    private fun dialogDeleteRecurringExpense(){
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.delete_recurring_expense))
-            .setMessage(getString(R.string.delete_expense_dialog_message))
-            .setPositiveButton(R.string.confirm) { dialog, which ->
-                val recurringExpense = editingTransaction.toRecurringTransaction()
-                viewModel.deleteRecurringExpense(recurringExpense)
+    private fun dialogDeleteRecurringTransaction(type : String){
+        val builder = MaterialAlertDialogBuilder(this)
+
+            when(type){
+                StringConstants.DATABASE.RECURRING_EXPENSE -> {
+                    builder.setTitle(getString(R.string.delete_recurring_expense))
+                    .setMessage(getString(R.string.delete_expense_dialog_message))
+                }
+                StringConstants.DATABASE.RECURRING_EARNING -> {
+                    builder.setTitle(getString(R.string.delete_recurring_earning))
+                    .setMessage(getString(R.string.delete_earning_dialog_message))
+                }
+            }
+
+
+            builder.setPositiveButton(R.string.confirm) { dialog, which ->
+                val recurringTransaction = editingTransaction.toRecurringTransaction()
+                viewModel.deleteRecurringTransaction(recurringTransaction)
             }
             .show()
     }

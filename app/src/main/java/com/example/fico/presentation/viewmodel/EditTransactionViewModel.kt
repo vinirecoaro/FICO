@@ -39,8 +39,8 @@ class EditTransactionViewModel(
     val deleteExpenseResult: LiveData<Boolean> = _deleteExpenseResult
     private val _deleteEarningResult = MutableLiveData<Boolean>()
     val deleteEarningResult: LiveData<Boolean> = _deleteEarningResult
-    private val _deleteRecurringExpenseResult = MutableLiveData<Boolean>()
-    val deleteRecurringExpenseResult: LiveData<Boolean> = _deleteRecurringExpenseResult
+    private val _deleteRecurringTransactionResult = MutableLiveData<Boolean>()
+    val deleteRecurringTransactionResult: LiveData<Boolean> = _deleteRecurringTransactionResult
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun saveEditExpense(
@@ -460,15 +460,15 @@ class EditTransactionViewModel(
         }
     }
 
-    fun deleteRecurringExpense(recurringExpense : RecurringTransaction){
+    fun deleteRecurringTransaction(recurringTransaction : RecurringTransaction){
         viewModelScope.async(Dispatchers.IO) {
-            firebaseAPI.deleteRecurringExpense(recurringExpense).fold(
+            firebaseAPI.deleteRecurringTransaction(recurringTransaction).fold(
                 onSuccess = {
-                    dataStore.deleteFromRecurringExpenseList(recurringExpense)
-                    _deleteRecurringExpenseResult.postValue(true)
+                    dataStore.deleteFromRecurringTransactionList(recurringTransaction)
+                    _deleteRecurringTransactionResult.postValue(true)
                 },
                 onFailure = {
-                    _deleteRecurringExpenseResult.postValue(false)
+                    _deleteRecurringTransactionResult.postValue(false)
                 }
             )
         }
