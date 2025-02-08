@@ -5,7 +5,7 @@ import com.example.fico.model.TransactionCategory
 
 class CategoriesList(private val context : Context) {
 
-        fun getExpenseCategoryList() : List<TransactionCategory>{
+     fun getExpenseCategoryList() : List<TransactionCategory>{
             return listOf(
                 TransactionCategory(
                     context.getString(R.string.category_list_description_food),

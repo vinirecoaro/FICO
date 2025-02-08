@@ -108,6 +108,7 @@ class LogoActivity : AppCompatActivity() {
                 }
             }
         }
+
         enrollLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->

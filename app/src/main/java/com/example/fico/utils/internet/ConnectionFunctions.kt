@@ -1,4 +1,4 @@
-package com.example.fico.utils
+package com.example.fico.utils.internet
 
 import android.content.Context
 import android.net.ConnectivityManager
