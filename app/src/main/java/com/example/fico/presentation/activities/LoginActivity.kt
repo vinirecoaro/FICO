@@ -20,6 +20,7 @@ class LoginActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private val viewModel : LoginViewModel by inject()
+    private var networkConnectionSnackBar: Snackbar? = null
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +58,24 @@ class LoginActivity : AppCompatActivity() {
         }
         viewModel.onError = { message ->
             Snackbar.make(binding.btLogin, message, Snackbar.LENGTH_LONG).show()
+        }
+        viewModel.internetConnection.observe(this) { isConnected ->
+            if (!isConnected) {
+                if (networkConnectionSnackBar == null) { //create just if it not exists
+                    networkConnectionSnackBar = Snackbar.make(
+                        binding.btLogin,
+                        getString(R.string.without_network_connection),
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                        .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
+                        .setActionTextColor(resources.getColor(android.R.color.white, theme))
+                        /*.setAction("Fechar") { networkConnectionSnackBar?.dismiss() }*/
+                    networkConnectionSnackBar?.show()
+                }
+            } else {
+                networkConnectionSnackBar?.dismiss()
+                networkConnectionSnackBar = null // Clear the instance to allow recreate after
+            }
         }
     }
 

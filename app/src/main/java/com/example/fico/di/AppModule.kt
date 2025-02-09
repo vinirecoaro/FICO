@@ -27,6 +27,7 @@ import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -132,7 +133,8 @@ val appModule = module {
 
     factory<LoginViewModel> {
         LoginViewModel(
-            firebaseAPI = get()
+            firebaseAPI = get(),
+            androidApplication()
         )
     }
 

@@ -1,5 +1,7 @@
 package com.example.fico.presentation.viewmodel
 
+import NetworkConnectionLiveData
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -10,8 +12,10 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.*
 
 class LoginViewModel(
-    private val firebaseAPI : FirebaseAPI
+    private val firebaseAPI : FirebaseAPI, application: Application
 ) : ViewModel() {
+
+    val internetConnection = NetworkConnectionLiveData(application)
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun login(email: String, password: String)=

@@ -14,6 +14,7 @@
     <string name="email">E-mail</string>
     <string name="password">Senha</string>
     <string name="login">Login</string>
+    <string name="without_network_connection">Sem conexão com a internet</string>
     <string name="register_login_screen">Não tem uma conta? Cadastre-se</string>
     <string name="register">Cadastrar</string>
     <string name="name">Nome</string>
@@ -106,6 +107,7 @@
     <string name="budget_configuration_list">Orçamento</string>
     <string name="recurring_transactions_configuration_list">Transações Recorrentes</string>
     <string name="cancel">Cancelar</string>
+    <string name="close">Fechar</string>
     <string name="transactions">Transações</string>
     <string name="overview">Visão Geral</string>
     <string name="add_income">Adicionar Receita</string>
