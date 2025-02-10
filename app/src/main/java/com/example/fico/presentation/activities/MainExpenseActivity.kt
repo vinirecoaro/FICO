@@ -18,6 +18,7 @@ import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.presentation.viewmodel.MainViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
+import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
@@ -52,22 +53,25 @@ class MainExpenseActivity : AppCompatActivity(){
             binding.drawerLayout.open()
         }
 
-        getUserEmail()
-        getUserName()
         setupListeners()
         removeTintOfMenuIcons()
         setImageBasedOnTheme()
 
         //Update DataStore with info from database
-        expensesViewModel.getExpenseList()
-        expensesViewModel.getExpenseMonths()
-        expensesViewModel.getExpenseInfoPerMonth()
-        expensesViewModel.getTotalExpense()
-        expensesViewModel.getDefaultBudget()
-        expensesViewModel.getDefaultPaymentDay()
-        expensesViewModel.getDaysForClosingBill()
-        expensesViewModel.getEarningsList()
-        expensesViewModel.getRecurringExpensesList()
+        if(ConnectionFunctions().internetConnectionVerification(this)){
+            //TODO save userEmail and name on dataStore
+            getUserEmail()
+            getUserName()
+            expensesViewModel.getExpenseList()
+            expensesViewModel.getExpenseMonths()
+            expensesViewModel.getExpenseInfoPerMonth()
+            expensesViewModel.getTotalExpense()
+            expensesViewModel.getDefaultBudget()
+            expensesViewModel.getDefaultPaymentDay()
+            expensesViewModel.getDaysForClosingBill()
+            expensesViewModel.getEarningsList()
+            expensesViewModel.getRecurringExpensesList()
+        }
     }
 
     private fun getUserEmail(){

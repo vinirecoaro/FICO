@@ -43,7 +43,7 @@ class LogoActivity : AppCompatActivity() {
         setUpListeners()
 
         lifecycleScope.launch(Dispatchers.Main) {
-            if (viewModel.isLogged().await()) {
+            if (viewModel.isLogged(this@LogoActivity).await()) {
                 promptManager.showBiometricPrompt(
                     title = getString(R.string.biometric_prompt_title),
                     description = getString(R.string.biometric_prompt_description)
