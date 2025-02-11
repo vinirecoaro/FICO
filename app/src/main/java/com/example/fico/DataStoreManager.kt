@@ -35,6 +35,8 @@ class DataStoreManager (context: Context) {
         val earningsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNINGS_LIST_KEY)
         val recurringTransactionsListKey = stringPreferencesKey(StringConstants.DATA_STORE.RECURRING_TRANSACTIONS_LIST_KEY)
         val earningMonthsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNING_MONTHS_LIST_KEY)
+        val userNameKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_NAME_KEY)
+        val userEmailKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_EMAIL_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -352,6 +354,32 @@ class DataStoreManager (context: Context) {
         updatedExpenseList.forEach { updatedTransactionList.add(it.toTransaction()) }
 
         return updatedTransactionList
+    }
+
+    suspend fun updateUserName(name : String){
+        dataStore.edit {preferences ->
+            preferences[userNameKey] = name
+        }
+    }
+
+    suspend fun getUserName() : String {
+        val defaultBudget = dataStore.data.map { preferences ->
+            preferences[userNameKey]
+        }.first()
+        return Gson().fromJson(defaultBudget, object : TypeToken<String>() {}.type)
+    }
+
+    suspend fun updateUserEmail(name : String){
+        dataStore.edit {preferences ->
+            preferences[userEmailKey] = name
+        }
+    }
+
+    suspend fun getUserEmail() : String {
+        val defaultBudget = dataStore.data.map { preferences ->
+            preferences[userEmailKey]
+        }.first()
+        return Gson().fromJson(defaultBudget, object : TypeToken<String>() {}.type)
     }
 
 

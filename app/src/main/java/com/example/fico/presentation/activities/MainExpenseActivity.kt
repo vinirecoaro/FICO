@@ -56,12 +56,11 @@ class MainExpenseActivity : AppCompatActivity(){
         setupListeners()
         removeTintOfMenuIcons()
         setImageBasedOnTheme()
+        getUserEmail()
+        getUserName()
 
         //Update DataStore with info from database
         if(ConnectionFunctions().internetConnectionVerification(this)){
-            //TODO save userEmail and name on dataStore
-            getUserEmail()
-            getUserName()
             expensesViewModel.getExpenseList()
             expensesViewModel.getExpenseMonths()
             expensesViewModel.getExpenseInfoPerMonth()
@@ -79,7 +78,12 @@ class MainExpenseActivity : AppCompatActivity(){
         val headerView = navigationView.getHeaderView(0)
         val headerUserEmail = headerView.findViewById<TextView>(R.id.nv_header_user_email)
         lifecycleScope.launch {
-            val email = viewModel.getUserEmail().await()
+            var email = ""
+            if(ConnectionFunctions().internetConnectionVerification(this@MainExpenseActivity)){
+                email = viewModel.getUserEmail().await()
+            }else{
+                email = viewModel.getUserEmailDataStore().await()
+            }
             headerUserEmail.text = email
         }
     }
@@ -89,7 +93,12 @@ class MainExpenseActivity : AppCompatActivity(){
         val headerView = navigationView.getHeaderView(0)
         val headerUserName = headerView.findViewById<TextView>(R.id.nv_header_user_name)
         lifecycleScope.launch {
-            val name = viewModel.getUserName().await()
+            var name = ""
+            if(ConnectionFunctions().internetConnectionVerification(this@MainExpenseActivity)){
+                name = viewModel.getUserName().await()
+            }else{
+                name = viewModel.getUserNameDataStore().await()
+            }
             headerUserName.text = name
         }
     }
