@@ -69,7 +69,6 @@ class LoginActivity : AppCompatActivity() {
                     )
                         .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
                         .setActionTextColor(resources.getColor(android.R.color.white, theme))
-                        /*.setAction("Fechar") { networkConnectionSnackBar?.dismiss() }*/
                     networkConnectionSnackBar?.show()
                 }
             } else {

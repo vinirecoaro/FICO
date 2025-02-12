@@ -255,9 +255,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                     binding.etPurchaseDate
                                 )
                             ) {
-                                val internetConnection =
-                                    ConnectionFunctions().internetConnectionVerification(requireContext())
-                                if (internetConnection) {
+                                if (hasInternetConnection()) {
                                     val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                                     if (existsDefaultBudget) {
                                         viewModel.addExpense(
@@ -280,15 +278,9 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                             )
                                         }
                                     }
-                                }/*else{
-                                    viewModel.addExpenseLocal(
-                                        binding.etPrice.text.toString(),
-                                        binding.etDescription.text.toString(),
-                                        binding.actvCategory.text.toString(),
-                                        binding.etDate.text.toString(),
-                                        false
-                                    )
-                                }*/
+                                }else{
+                                    noInternetConnectionSnackBar()
+                                }
                             }
                         }else{
                             if (verifyFields(
@@ -298,9 +290,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                     binding.etPurchaseDate
                                 )
                             ) {
-                                val internetConnection =
-                                    ConnectionFunctions().internetConnectionVerification(requireContext())
-                                if (internetConnection) {
+                                if (hasInternetConnection()) {
                                     val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
                                     if (existsDefaultBudget) {
                                         viewModel.addExpense(
@@ -323,15 +313,9 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                             )
                                         }
                                     }
-                                }/*else{
-                                    viewModel.addExpenseLocal(
-                                        binding.etPrice.text.toString(),
-                                        binding.etDescription.text.toString(),
-                                        binding.actvCategory.text.toString(),
-                                        binding.etDate.text.toString(),
-                                        false
-                                    )
-                                }*/
+                                }else{
+                                    noInternetConnectionSnackBar()
+                                }
                             }
                         }
 
@@ -345,20 +329,10 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                     binding.etPurchaseDate
                                 )
                             ) {
-                                if (binding.etInstallments.text.toString().toInt() > 1) {
-                                    val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                                    if (existsDefaultBudget) {
-                                        viewModel.addExpense(
-                                            price = binding.etPrice.text.toString(),
-                                            description =  binding.etDescription.text.toString(),
-                                            category =  binding.actvCategory.text.toString(),
-                                            paymentDate =  binding.etPaymentDate.text.toString(),
-                                            purchaseDate =  binding.etPurchaseDate.text.toString(),
-                                            installment = true,
-                                            nOfInstallments =  binding.etInstallments.text.toString().toInt()
-                                        )
-                                    } else {
-                                        if (setUpDefaultBudgetAlertDialog().await()) {
+                                if(hasInternetConnection()){
+                                    if (binding.etInstallments.text.toString().toInt() > 1) {
+                                        val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                                        if (existsDefaultBudget) {
                                             viewModel.addExpense(
                                                 price = binding.etPrice.text.toString(),
                                                 description =  binding.etDescription.text.toString(),
@@ -368,14 +342,28 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                                 installment = true,
                                                 nOfInstallments =  binding.etInstallments.text.toString().toInt()
                                             )
+                                        } else {
+                                            if (setUpDefaultBudgetAlertDialog().await()) {
+                                                viewModel.addExpense(
+                                                    price = binding.etPrice.text.toString(),
+                                                    description =  binding.etDescription.text.toString(),
+                                                    category =  binding.actvCategory.text.toString(),
+                                                    paymentDate =  binding.etPaymentDate.text.toString(),
+                                                    purchaseDate =  binding.etPurchaseDate.text.toString(),
+                                                    installment = true,
+                                                    nOfInstallments =  binding.etInstallments.text.toString().toInt()
+                                                )
+                                            }
                                         }
+                                    } else {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            getString(R.string.wrong_installment_input_message),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
-                                } else {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.wrong_installment_input_message),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                }else{
+                                    noInternetConnectionSnackBar()
                                 }
                             }
                         }else{
@@ -386,20 +374,10 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                     binding.etPurchaseDate
                                 )
                             ) {
-                                if (binding.etInstallments.text.toString().toInt() > 1) {
-                                    val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
-                                    if (existsDefaultBudget) {
-                                        viewModel.addExpense(
-                                            price = binding.etPrice.text.toString(),
-                                            description =  binding.etDescription.text.toString(),
-                                            category =  binding.actvCategory.text.toString(),
-                                            paymentDate =  binding.etPurchaseDate.text.toString(),
-                                            purchaseDate =  binding.etPurchaseDate.text.toString(),
-                                            installment = true,
-                                            nOfInstallments =  binding.etInstallments.text.toString().toInt()
-                                        )
-                                    } else {
-                                        if (setUpDefaultBudgetAlertDialog().await()) {
+                                if(hasInternetConnection()){
+                                    if (binding.etInstallments.text.toString().toInt() > 1) {
+                                        val existsDefaultBudget = viewModel.checkIfExistDefaultBudget().await()
+                                        if (existsDefaultBudget) {
                                             viewModel.addExpense(
                                                 price = binding.etPrice.text.toString(),
                                                 description =  binding.etDescription.text.toString(),
@@ -409,14 +387,28 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                                 installment = true,
                                                 nOfInstallments =  binding.etInstallments.text.toString().toInt()
                                             )
+                                        } else {
+                                            if (setUpDefaultBudgetAlertDialog().await()) {
+                                                viewModel.addExpense(
+                                                    price = binding.etPrice.text.toString(),
+                                                    description =  binding.etDescription.text.toString(),
+                                                    category =  binding.actvCategory.text.toString(),
+                                                    paymentDate =  binding.etPurchaseDate.text.toString(),
+                                                    purchaseDate =  binding.etPurchaseDate.text.toString(),
+                                                    installment = true,
+                                                    nOfInstallments =  binding.etInstallments.text.toString().toInt()
+                                                )
+                                            }
                                         }
+                                    } else {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            getString(R.string.wrong_installment_input_message),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
-                                } else {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.wrong_installment_input_message),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                }else{
+                                    noInternetConnectionSnackBar()
                                 }
                             }
                         }
@@ -430,12 +422,16 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                             binding.etReceivedDate
                         )
                     ){
-                        viewModel.addEarning(
-                            binding.etPrice.text.toString(),
-                            binding.etDescription.text.toString(),
-                            binding.actvCategory.text.toString(),
-                            binding.etReceivedDate.text.toString()
-                        )
+                        if(hasInternetConnection()){
+                            viewModel.addEarning(
+                                binding.etPrice.text.toString(),
+                                binding.etDescription.text.toString(),
+                                binding.actvCategory.text.toString(),
+                                binding.etReceivedDate.text.toString()
+                            )
+                        }else{
+                            noInternetConnectionSnackBar()
+                        }
                     }
                 }
                 else if (viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE){
@@ -445,26 +441,30 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                             binding.actvCategory,
                         )
                     ){
-                        if(binding.etRecurringTransactionDay.text != null && binding.etRecurringTransactionDay.text.toString() != ""){
-                            if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
+                        if(hasInternetConnection()){
+                            if(binding.etRecurringTransactionDay.text != null && binding.etRecurringTransactionDay.text.toString() != ""){
+                                if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
+                                    viewModel.addRecurringTransaction(
+                                        binding.etPrice.text.toString(),
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        binding.etRecurringTransactionDay.text.toString(),
+                                        StringConstants.DATABASE.RECURRING_EXPENSE
+                                    )
+                                }else{
+                                    Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                                }
+                            }else{
                                 viewModel.addRecurringTransaction(
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
-                                    binding.etRecurringTransactionDay.text.toString(),
+                                    "",
                                     StringConstants.DATABASE.RECURRING_EXPENSE
                                 )
-                            }else{
-                                Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
                             }
                         }else{
-                            viewModel.addRecurringTransaction(
-                                binding.etPrice.text.toString(),
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                "",
-                                StringConstants.DATABASE.RECURRING_EXPENSE
-                            )
+                            noInternetConnectionSnackBar()
                         }
                     }
                 }
@@ -475,26 +475,30 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                             binding.actvCategory,
                         )
                     ){
-                        if(binding.etRecurringTransactionDay.text != null && binding.etRecurringTransactionDay.text.toString() != ""){
-                            if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
+                        if(hasInternetConnection()){
+                            if(binding.etRecurringTransactionDay.text != null && binding.etRecurringTransactionDay.text.toString() != ""){
+                                if(DateFunctions().isValidMonthDay(binding.etRecurringTransactionDay.text.toString().toInt())){
+                                    viewModel.addRecurringTransaction(
+                                        binding.etPrice.text.toString(),
+                                        binding.etDescription.text.toString(),
+                                        binding.actvCategory.text.toString(),
+                                        binding.etRecurringTransactionDay.text.toString(),
+                                        StringConstants.DATABASE.RECURRING_EARNING
+                                    )
+                                }else{
+                                    Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                                }
+                            }else{
                                 viewModel.addRecurringTransaction(
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
-                                    binding.etRecurringTransactionDay.text.toString(),
+                                    "",
                                     StringConstants.DATABASE.RECURRING_EARNING
                                 )
-                            }else{
-                                Snackbar.make(binding.etRecurringTransactionDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
                             }
                         }else{
-                            viewModel.addRecurringTransaction(
-                                binding.etPrice.text.toString(),
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                "",
-                                StringConstants.DATABASE.RECURRING_EARNING
-                            )
+                            noInternetConnectionSnackBar()
                         }
                     }
                 }
@@ -1282,6 +1286,22 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             val date = DateFunctions().purchaseDateForRecurringExpense(recurringEarning.day)
             binding.etReceivedDate.setText(date)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun noInternetConnectionSnackBar(){
+        Snackbar.make(
+            binding.btSave,
+            getString(R.string.without_network_connection),
+            Snackbar.LENGTH_LONG
+        )
+            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, requireActivity().theme))
+            .setActionTextColor(resources.getColor(android.R.color.white, requireActivity().theme))
+            .show()
+    }
+
+    private fun hasInternetConnection() : Boolean{
+        return ConnectionFunctions().internetConnectionVerification(requireContext())
     }
 
 }
