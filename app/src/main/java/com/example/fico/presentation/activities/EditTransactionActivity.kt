@@ -29,6 +29,7 @@ import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.interfaces.OnCategorySelectedListener
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
+import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -186,42 +187,23 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     private fun setUpListeners() {
         binding.btSave.setOnClickListener {
             binding.btSave.isEnabled = false
-            when (editingTransaction.type) {
 
-                StringConstants.DATABASE.EXPENSE -> {
-                    val expense = editingTransaction.toExpense()
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        // Verify if is commom expense
-                        if (binding.tilInstallments.visibility == View.GONE) {
-                            if (verifyFields(
-                                    binding.etPrice,
-                                    binding.etDescription,
-                                    binding.actvCategory,
-                                    binding.etPaymentDateEdit,
-                                    binding.etPurchaseDateEdit
-                                )
-                            ) {
-                                viewModel.saveEditExpense(
-                                    expense!!,
-                                    binding.etPrice.text.toString(),
-                                    binding.etDescription.text.toString(),
-                                    binding.actvCategory.text.toString(),
-                                    binding.etPaymentDateEdit.text.toString(),
-                                    binding.etPurchaseDateEdit.text.toString(),
-                                    false
-                                )
-                            }
-                        } else if (binding.tilInstallments.visibility == View.VISIBLE) {
-                            if (verifyFields(
-                                    binding.etPrice,
-                                    binding.etDescription,
-                                    binding.actvCategory,
-                                    binding.etInstallments,
-                                    binding.etPaymentDateEdit,
-                                    binding.etPurchaseDateEdit
-                                )
-                            ) {
-                                if (binding.etInstallments.text.toString() != "0") {
+            if(hasInternetConnection()){
+                when (editingTransaction.type) {
+
+                    StringConstants.DATABASE.EXPENSE -> {
+                        val expense = editingTransaction.toExpense()
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            // Verify if is commom expense
+                            if (binding.tilInstallments.visibility == View.GONE) {
+                                if (verifyFields(
+                                        binding.etPrice,
+                                        binding.etDescription,
+                                        binding.actvCategory,
+                                        binding.etPaymentDateEdit,
+                                        binding.etPurchaseDateEdit
+                                    )
+                                ) {
                                     viewModel.saveEditExpense(
                                         expense!!,
                                         binding.etPrice.text.toString(),
@@ -229,75 +211,100 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                         binding.actvCategory.text.toString(),
                                         binding.etPaymentDateEdit.text.toString(),
                                         binding.etPurchaseDateEdit.text.toString(),
-                                        true,
-                                        binding.etInstallments.text.toString().toInt()
+                                        false
                                     )
-                                } else {
-                                    Toast.makeText(
-                                        this@EditTransactionActivity,
-                                        "O número de parcelas não pode ser 0",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                }
+                            } else if (binding.tilInstallments.visibility == View.VISIBLE) {
+                                if (verifyFields(
+                                        binding.etPrice,
+                                        binding.etDescription,
+                                        binding.actvCategory,
+                                        binding.etInstallments,
+                                        binding.etPaymentDateEdit,
+                                        binding.etPurchaseDateEdit
+                                    )
+                                ) {
+                                    if (binding.etInstallments.text.toString() != "0") {
+                                        viewModel.saveEditExpense(
+                                            expense!!,
+                                            binding.etPrice.text.toString(),
+                                            binding.etDescription.text.toString(),
+                                            binding.actvCategory.text.toString(),
+                                            binding.etPaymentDateEdit.text.toString(),
+                                            binding.etPurchaseDateEdit.text.toString(),
+                                            true,
+                                            binding.etInstallments.text.toString().toInt()
+                                        )
+                                    } else {
+                                        Toast.makeText(
+                                            this@EditTransactionActivity,
+                                            "O número de parcelas não pode ser 0",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                StringConstants.DATABASE.EARNING -> {
-                    val earning = editingTransaction.toEarning()
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        if(verifyFields(
-                                binding.etPrice,
-                                binding.etDescription,
-                                binding.actvCategory,
-                                binding.etPaymentDateEdit)
-                        ){
-                            viewModel.saveEditEarning(
-                                earning,
-                                binding.etPrice.text.toString(),
-                                binding.etDescription.text.toString(),
-                                binding.actvCategory.text.toString(),
-                                binding.etPaymentDateEdit.text.toString(),
-                            )
-                        }
-                    }
-                }
-
-                StringConstants.DATABASE.RECURRING_EXPENSE,
-                StringConstants.DATABASE.RECURRING_EARNING -> {
-                    val recurringTransaction = editingTransaction.toRecurringTransaction()
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        if(verifyFields(
-                                binding.etPrice,
-                                binding.etDescription,
-                                binding.actvCategory)
-                        ){
-                            if(binding.etPaymentDateEdit.text.isNullOrEmpty()){
-                                viewModel.saveEditRecurringTransaction(
-                                    recurringTransaction,
+                    StringConstants.DATABASE.EARNING -> {
+                        val earning = editingTransaction.toEarning()
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            if(verifyFields(
+                                    binding.etPrice,
+                                    binding.etDescription,
+                                    binding.actvCategory,
+                                    binding.etPaymentDateEdit)
+                            ){
+                                viewModel.saveEditEarning(
+                                    earning,
                                     binding.etPrice.text.toString(),
                                     binding.etDescription.text.toString(),
                                     binding.actvCategory.text.toString(),
-                                    ""
+                                    binding.etPaymentDateEdit.text.toString(),
                                 )
-                            }else{
-                                if(binding.etPaymentDateEdit.text.toString().toInt() in 1..31){
+                            }
+                        }
+                    }
+
+                    StringConstants.DATABASE.RECURRING_EXPENSE,
+                    StringConstants.DATABASE.RECURRING_EARNING -> {
+                        val recurringTransaction = editingTransaction.toRecurringTransaction()
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            if(verifyFields(
+                                    binding.etPrice,
+                                    binding.etDescription,
+                                    binding.actvCategory)
+                            ){
+                                if(binding.etPaymentDateEdit.text.isNullOrEmpty()){
                                     viewModel.saveEditRecurringTransaction(
                                         recurringTransaction,
                                         binding.etPrice.text.toString(),
                                         binding.etDescription.text.toString(),
                                         binding.actvCategory.text.toString(),
-                                        binding.etPaymentDateEdit.text.toString()
+                                        ""
                                     )
                                 }else{
-                                    Snackbar.make(binding.btSave,getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                                    if(binding.etPaymentDateEdit.text.toString().toInt() in 1..31){
+                                        viewModel.saveEditRecurringTransaction(
+                                            recurringTransaction,
+                                            binding.etPrice.text.toString(),
+                                            binding.etDescription.text.toString(),
+                                            binding.actvCategory.text.toString(),
+                                            binding.etPaymentDateEdit.text.toString()
+                                        )
+                                    }else{
+                                        Snackbar.make(binding.btSave,getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
+                                    }
                                 }
                             }
                         }
                     }
                 }
+            }else{
+                noInternetConnectionSnackBar()
             }
+
             binding.btSave.isEnabled = true
         }
 
@@ -659,12 +666,27 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                 }
             }
 
-
             builder.setPositiveButton(R.string.confirm) { dialog, which ->
                 val recurringTransaction = editingTransaction.toRecurringTransaction()
                 viewModel.deleteRecurringTransaction(recurringTransaction)
             }
             .show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun noInternetConnectionSnackBar(){
+        Snackbar.make(
+            binding.btSave,
+            getString(R.string.without_network_connection),
+            Snackbar.LENGTH_LONG
+        )
+            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
+            .setActionTextColor(resources.getColor(android.R.color.white, theme))
+            .show()
+    }
+
+    private fun hasInternetConnection() : Boolean{
+        return ConnectionFunctions().internetConnectionVerification(this)
     }
 
 }
