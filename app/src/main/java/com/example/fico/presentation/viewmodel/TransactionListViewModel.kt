@@ -81,7 +81,8 @@ class TransactionListViewModel(
     private val _addEarningResult = MutableLiveData<Boolean>()
     val addEarningResult: LiveData<Boolean> = _addEarningResult
     private val operation = MutableLiveData<String>("")
-
+    private val _internetConnection = MutableLiveData<Boolean>()
+    val internetConnection: LiveData<Boolean> = _internetConnection
 
     fun updateFilter(filter: String) {
         _monthFilterLiveData.value = filter
@@ -861,6 +862,10 @@ class TransactionListViewModel(
 
     fun updateDeletedItem(transaction : Transaction) {
         _deletedItem.value = transaction
+    }
+
+    fun updateInternetConnectionState(state : Boolean){
+        _internetConnection.postValue(state)
     }
 
 }

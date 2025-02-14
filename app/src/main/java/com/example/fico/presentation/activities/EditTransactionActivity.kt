@@ -150,32 +150,36 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         return true
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.edit_expense_menu_delete -> {
-                val type = editingTransaction.type
+                if(hasInternetConnection()){
+                    when(val type = editingTransaction.type){
 
-                when(type){
+                        //delete expense
+                        StringConstants.DATABASE.EXPENSE -> {
+                            if(expenseIdLength == 41)   {
+                                dialogDeleteInstallmentExpense()
+                            }else{
+                                dialogDeleteExpense()
+                            }
+                        }
 
-                    //delete expense
-                    StringConstants.DATABASE.EXPENSE -> {
-                        if(expenseIdLength == 41)   {
-                            dialogDeleteInstallmentExpense()
-                        }else{
-                            dialogDeleteExpense()
+                        //delete earning
+                        StringConstants.DATABASE.EARNING -> {
+                            dialogDeleteEarning()
+                        }
+
+                        //delete recurring transaction
+                        StringConstants.DATABASE.RECURRING_EXPENSE, StringConstants.DATABASE.RECURRING_EARNING -> {
+                            dialogDeleteRecurringTransaction(type)
                         }
                     }
-
-                    //delete earning
-                    StringConstants.DATABASE.EARNING -> {
-                        dialogDeleteEarning()
-                    }
-
-                    //delete recurring transaction
-                    StringConstants.DATABASE.RECURRING_EXPENSE, StringConstants.DATABASE.RECURRING_EARNING -> {
-                        dialogDeleteRecurringTransaction(type)
-                    }
+                }else{
+                    noInternetConnectionSnackBar()
                 }
+
                 return true
             }
 
@@ -563,38 +567,6 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
         binding.etInstallments.visibility = View.GONE
         adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
-
-    /*private fun changeComponentsToRecurringExpenseState(){
-        binding.editExpenseToolbar.setTitle(getString(R.string.edit_recurring_expense))
-        binding.tilPurchaseDateEdit.visibility = View.GONE
-        binding.etPurchaseDateEdit.visibility = View.GONE
-        binding.ivPurchaseDateEdit.visibility = View.GONE
-        binding.ivArrowUpGetPurchaseDateEdit.visibility = View.GONE
-        binding.ivPaymentDate.visibility = View.GONE
-        binding.tilPaymentDateEdit.hint = getString(R.string.day)
-        binding.etPaymentDateEdit.isFocusable = true
-        binding.etPaymentDateEdit.isFocusableInTouchMode = true
-        binding.etPaymentDateEdit.inputType = InputType.TYPE_CLASS_NUMBER
-        binding.tilInstallments.visibility = View.GONE
-        binding.etInstallments.visibility = View.GONE
-        adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
-    }
-
-    private fun changeComponentsToRecurringEarningState(){
-        binding.editExpenseToolbar.setTitle(getString(R.string.edit_recurring_earning))
-        binding.tilPurchaseDateEdit.visibility = View.GONE
-        binding.etPurchaseDateEdit.visibility = View.GONE
-        binding.ivPurchaseDateEdit.visibility = View.GONE
-        binding.ivArrowUpGetPurchaseDateEdit.visibility = View.GONE
-        binding.ivPaymentDate.visibility = View.GONE
-        binding.tilPaymentDateEdit.hint = getString(R.string.day)
-        binding.etPaymentDateEdit.isFocusable = true
-        binding.etPaymentDateEdit.isFocusableInTouchMode = true
-        binding.etPaymentDateEdit.inputType = InputType.TYPE_CLASS_NUMBER
-        binding.tilInstallments.visibility = View.GONE
-        binding.etInstallments.visibility = View.GONE
-        adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
-    }*/
 
     private fun changeComponentsToRecurringTransactionState(transaction : Transaction){
         binding.tilPurchaseDateEdit.visibility = View.GONE

@@ -98,7 +98,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         // Item list swiping configuration
         val swipeToDeleteCallback =
-            SwipeToDeleteCallback(binding.rvExpenseList, viewModel, transactionListAdapter, viewLifecycleOwner)
+            SwipeToDeleteCallback(viewModel, transactionListAdapter, requireActivity())
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvExpenseList)
 
@@ -481,6 +481,12 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     getString(R.string.add_earning_failure_message),
                     Snackbar.LENGTH_LONG)
                     .show()
+            }
+        }
+
+        viewModel.internetConnection.observe(viewLifecycleOwner){state ->
+            if(!state){
+                noInternetConnectionSnackBar()
             }
         }
 
@@ -923,6 +929,18 @@ class TransactionListFragment : Fragment(), XLSInterface {
         sdf.timeZone = TimeZone.getTimeZone("GMT")
         val date = Date(timestamp)
         return sdf.format(date)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun noInternetConnectionSnackBar(){
+        Snackbar.make(
+            binding.rvExpenseList,
+            getString(R.string.without_network_connection),
+            Snackbar.LENGTH_LONG
+        )
+            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, requireActivity().theme))
+            .setActionTextColor(resources.getColor(android.R.color.white, requireActivity().theme))
+            .show()
     }
 
 }
