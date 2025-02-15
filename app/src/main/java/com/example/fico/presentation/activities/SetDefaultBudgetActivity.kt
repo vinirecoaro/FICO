@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivitySetDefaultBudgetBinding
 import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
+import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -41,24 +42,31 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
         setColorBasedOnTheme()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpListeners(){
         binding.ivInfoMoney.setOnClickListener {
             val snackbar = Snackbar.make(it, getString(R.string.default_budget_tip_message), Snackbar.LENGTH_LONG)
             snackbar.show()
         }
+
         binding.btSave.setOnClickListener {
             binding.btSave.isEnabled = false
-            lifecycleScope.launch {
-                val regex = Regex("[\\d,.]+")
-                val justNumber = regex.find(binding.etAvailablePerMonth.text.toString())
-                val formatNum = DecimalFormat("#.##")
-                val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
-                val formatedNum = formatNum.format(numClean/100).replace(",",".")
-                val formattedNumString = formatedNum
 
-                if(binding.etAvailablePerMonth.text.toString() != ""){
-                    viewModel.setDefaultBudget(formattedNumString)
+            if(hasInternetConnection()){
+                lifecycleScope.launch {
+                    val regex = Regex("[\\d,.]+")
+                    val justNumber = regex.find(binding.etAvailablePerMonth.text.toString())
+                    val formatNum = DecimalFormat("#.##")
+                    val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                    val formatedNum = formatNum.format(numClean/100).replace(",",".")
+                    val formattedNumString = formatedNum
+
+                    if(binding.etAvailablePerMonth.text.toString() != ""){
+                        viewModel.setDefaultBudget(formattedNumString)
+                    }
                 }
+            }else{
+                noInternetConnectionSnackBar()
             }
             binding.btSave.isEnabled = true
         }
@@ -118,6 +126,22 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun noInternetConnectionSnackBar(){
+        Snackbar.make(
+            binding.btSave,
+            getString(R.string.without_network_connection),
+            Snackbar.LENGTH_LONG
+        )
+            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
+            .setActionTextColor(resources.getColor(android.R.color.white, theme))
+            .show()
+    }
+
+    private fun hasInternetConnection() : Boolean{
+        return ConnectionFunctions().internetConnectionVerification(this)
     }
 
 }

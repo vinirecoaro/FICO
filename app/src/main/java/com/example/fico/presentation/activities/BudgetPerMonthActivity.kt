@@ -22,6 +22,7 @@ import com.example.fico.model.Budget
 import com.example.fico.presentation.adapters.BudgetPerMonthAdapter
 import com.example.fico.presentation.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
+import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -118,19 +119,23 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         builder.setPositiveButton(getString(R.string.save)) { dialog, which ->
             val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
             saveButton.isEnabled = false
-            lifecycleScope.launch {
-                if(newBudget.text.toString() != ""){
+            if(hasInternetConnection()){
+                lifecycleScope.launch {
+                    if(newBudget.text.toString() != ""){
 
-                    val regex = Regex("[\\d,.]+")
-                    val justNumber = regex.find(newBudget.text.toString())
-                    val formatNum = DecimalFormat("#.##")
-                    val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
-                    val formatedNum = formatNum.format(numClean/100)
-                    val formattedNumString = formatedNum.toString().replace(",",".")
+                        val regex = Regex("[\\d,.]+")
+                        val justNumber = regex.find(newBudget.text.toString())
+                        val formatNum = DecimalFormat("#.##")
+                        val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                        val formatedNum = formatNum.format(numClean/100)
+                        val formattedNumString = formatedNum.toString().replace(",",".")
 
-                    viewModel.editBudget(formattedNumString, budget)
+                        viewModel.editBudget(formattedNumString, budget)
 
+                    }
                 }
+            }else{
+                noInternetConnectionSnackBar()
             }
             saveButton.isEnabled = true
         }
@@ -156,6 +161,22 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
         val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
         return colorOnSurfaceVariant
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun noInternetConnectionSnackBar(){
+        Snackbar.make(
+            binding.rvBudgetPerMonth,
+            getString(R.string.without_network_connection),
+            Snackbar.LENGTH_LONG
+        )
+            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
+            .setActionTextColor(resources.getColor(android.R.color.white, theme))
+            .show()
+    }
+
+    private fun hasInternetConnection() : Boolean{
+        return ConnectionFunctions().internetConnectionVerification(this)
     }
 
 }

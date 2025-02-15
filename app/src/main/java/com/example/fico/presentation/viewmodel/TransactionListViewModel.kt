@@ -868,5 +868,7 @@ class TransactionListViewModel(
         _internetConnection.postValue(state)
     }
 
+
+
 }
 

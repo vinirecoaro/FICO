@@ -4,11 +4,13 @@ import android.app.Dialog
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +20,7 @@ import com.example.fico.databinding.ActivityDefaultPaymentDateConfigurationBindi
 import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
+import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -32,6 +35,7 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
     private val sharedPref : SharedPreferences by inject()
     private val dataStore : DataStoreManager by inject()
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -47,6 +51,7 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
         setUpListeners()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpListeners(){
         binding.defaultPaymentDateConfigurationToolbar.setNavigationOnClickListener {
             finish()
@@ -83,6 +88,7 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setDefaultPaymentDateAlertDialog(){
         lifecycleScope.launch(Dispatchers.Main){
             val builder = MaterialAlertDialogBuilder(this@DefaultPaymentDateConfigurationActivity)
@@ -109,20 +115,41 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
             builder.setPositiveButton(getString(R.string.save)){dialog, which ->
 
-                if(verifyFields(
-                        etExpirationDay,
-                        etDaysForClosing
-                    )){
-                    if (DateFunctions().isValidMonthDay(etExpirationDay.text.toString().toInt())){
-                        with(sharedPref.edit()){
-                            putString(StringConstants.DATABASE.PAYMENT_DAY, etExpirationDay.text.toString())
-                            putString(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL, etDaysForClosing.text.toString())
-                            commit()
+                if(hasInternetConnection()){
+                    if (verifyFields(
+                            etExpirationDay,
+                            etDaysForClosing
+                        )
+                    ) {
+                        if (DateFunctions().isValidMonthDay(
+                                etExpirationDay.text.toString().toInt()
+                            )
+                        ) {
+                            with(sharedPref.edit()) {
+                                putString(
+                                    StringConstants.DATABASE.PAYMENT_DAY,
+                                    etExpirationDay.text.toString()
+                                )
+                                putString(
+                                    StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL,
+                                    etDaysForClosing.text.toString()
+                                )
+                                commit()
+                            }
+                            viewModel.setDefaultPaymentDate(
+                                etExpirationDay.text.toString(),
+                                etDaysForClosing.text.toString()
+                            )
+                        } else {
+                            Snackbar.make(
+                                binding.llDefineDefaultDay,
+                                getString(R.string.invalid_day),
+                                Snackbar.LENGTH_LONG
+                            ).show()
                         }
-                        viewModel.setDefaultPaymentDate(etExpirationDay.text.toString(), etDaysForClosing.text.toString())
-                    }else{
-                        Snackbar.make(binding.llDefineDefaultDay, getString(R.string.invalid_day), Snackbar.LENGTH_LONG).show()
                     }
+                }else{
+                    noInternetConnectionSnackBar()
                 }
             }
             val dialog = builder.create()
@@ -153,5 +180,21 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
             }
         }
         return true
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun noInternetConnectionSnackBar(){
+        Snackbar.make(
+            binding.defaultPaymentDateConfigurationToolbar,
+            getString(R.string.without_network_connection),
+            Snackbar.LENGTH_LONG
+        )
+            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
+            .setActionTextColor(resources.getColor(android.R.color.white, theme))
+            .show()
+    }
+
+    private fun hasInternetConnection() : Boolean{
+        return ConnectionFunctions().internetConnectionVerification(this)
     }
 }
