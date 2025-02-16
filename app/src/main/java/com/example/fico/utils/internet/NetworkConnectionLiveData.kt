@@ -3,36 +3,36 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class NetworkConnectionLiveData(context: Context) : LiveData<Boolean>() {
+class NetworkConnectionLiveData(context: Context) {
 
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+    private val _isConnected = MutableStateFlow(false)
+    val isConnected = _isConnected.asStateFlow()
+
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            postValue(true) // Conexão disponível
+            _isConnected.value = true // Conexão disponível
         }
 
         override fun onLost(network: Network) {
-            postValue(false) // Conexão perdida
+            _isConnected.value = false // Conexão perdida
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun onActive() {
-        super.onActive()
+    init {
         val activeNetwork = connectivityManager.activeNetwork
         val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-        postValue(networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true)
+        _isConnected.value = networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
 
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
     }
 
-    override fun onInactive() {
-        super.onInactive()
+    fun unregister() {
         connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 }

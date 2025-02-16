@@ -13,6 +13,7 @@ import com.example.fico.databinding.ActivityLoginBinding
 import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -59,21 +60,23 @@ class LoginActivity : AppCompatActivity() {
         viewModel.onError = { message ->
             Snackbar.make(binding.btLogin, message, Snackbar.LENGTH_LONG).show()
         }
-        viewModel.internetConnection.observe(this) { isConnected ->
-            if (!isConnected) {
-                if (networkConnectionSnackBar == null) { //create just if it not exists
-                    networkConnectionSnackBar = Snackbar.make(
-                        binding.btLogin,
-                        getString(R.string.without_network_connection),
-                        Snackbar.LENGTH_INDEFINITE
-                    )
-                        .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
-                        .setActionTextColor(resources.getColor(android.R.color.white, theme))
-                    networkConnectionSnackBar?.show()
+        lifecycleScope.launch(Dispatchers.Main){
+            viewModel.internetConnection.isConnected.collectLatest{ isConnected ->
+                if (!isConnected) {
+                    if (networkConnectionSnackBar == null) { //create just if it not exists
+                        networkConnectionSnackBar = Snackbar.make(
+                            binding.btLogin,
+                            getString(R.string.without_network_connection),
+                            Snackbar.LENGTH_INDEFINITE
+                        )
+                            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
+                            .setActionTextColor(resources.getColor(android.R.color.white, theme))
+                        networkConnectionSnackBar?.show()
+                    }
+                } else {
+                    networkConnectionSnackBar?.dismiss()
+                    networkConnectionSnackBar = null // Clear the instance to allow recreate after
                 }
-            } else {
-                networkConnectionSnackBar?.dismiss()
-                networkConnectionSnackBar = null // Clear the instance to allow recreate after
             }
         }
     }
