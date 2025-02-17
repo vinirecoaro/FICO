@@ -119,9 +119,8 @@ class MainExpenseActivity : AppCompatActivity(){
                     true
                 }
 
-                R.id.nav_menu_item_config -> {
-                    startActivity(Intent(this, GeneralConfigurationActivity::class.java))
-                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                R.id.nav_menu_item_logout -> {
+
                     true
                 }
 
@@ -133,15 +132,15 @@ class MainExpenseActivity : AppCompatActivity(){
     private fun setImageBasedOnTheme(){
         val navigationView = findViewById<NavigationView>(R.id.nv_main)
         val menu = navigationView.menu
-        val configMenuItem = menu.findItem(R.id.nav_menu_item_config)
+        val configMenuItem = menu.findItem(R.id.nav_menu_item_logout)
         val profileMenuItem = menu.findItem(R.id.nav_menu_item_personal_data)
         when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                configMenuItem.setIcon(R.drawable.config_image_light)
+                configMenuItem.setIcon(R.drawable.logout_24_light)
                 profileMenuItem.setIcon(R.drawable.baseline_person_24_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
-                configMenuItem.setIcon(R.drawable.config_image_dark)
+                configMenuItem.setIcon(R.drawable.logout_24_dark)
                 profileMenuItem.setIcon(R.drawable.baseline_person_24_black)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
