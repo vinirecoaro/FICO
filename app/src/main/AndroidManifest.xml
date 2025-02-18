@@ -23,9 +23,6 @@
             android:name=".presentation.activities.DefaultPaymentDateConfigurationActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.activities.earning.ConstructionActivity"
-            android:exported="false" />
-        <activity
             android:name=".presentation.activities.LogoActivity"
             android:exported="true">
             <intent-filter>
@@ -36,9 +33,6 @@
         </activity>
         <activity
             android:name=".presentation.activities.InstallmentExpenseImportFileInstructionsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".presentation.activities.GeneralConfigurationActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.activities.ComonExpenseImportFileInstructionsActivity"

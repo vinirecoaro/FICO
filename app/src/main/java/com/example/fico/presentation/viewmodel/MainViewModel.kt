@@ -42,4 +42,8 @@ class MainViewModel(
             return@async name
         }
 
+    fun logoff() = viewModelScope.async{
+        firebaseAPI.logoff()
+    }
+
 }

@@ -27,6 +27,7 @@
     <string name="home">Home</string>
     <string name="configurations">Configurações</string>
     <string name="logout">Sair</string>
+    <string name="logout_message">Sair da conta?</string>
     <string name="add">Adicionar</string>
     <string name="list">Lista</string>
     <string name="title_home">Home</string>

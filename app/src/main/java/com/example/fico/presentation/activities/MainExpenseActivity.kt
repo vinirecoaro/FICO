@@ -20,6 +20,7 @@ import com.example.fico.presentation.viewmodel.MainViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -120,7 +121,7 @@ class MainExpenseActivity : AppCompatActivity(){
                 }
 
                 R.id.nav_menu_item_logout -> {
-
+                    dialogLogout()
                     true
                 }
 
@@ -146,6 +147,24 @@ class MainExpenseActivity : AppCompatActivity(){
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
 
+    }
+
+    private fun dialogLogout(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.logout))
+            .setMessage(getString(R.string.logout_message))
+            .setPositiveButton(R.string.confirm) { dialog, which ->
+                viewModel.logoff()
+                finish()
+                val intent = Intent(this, LoginActivity::class.java)
+
+                // Create a new task to restart the app and clear the old activities stack
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                startActivity(intent)
+            }
+            .show()
     }
 
 }
