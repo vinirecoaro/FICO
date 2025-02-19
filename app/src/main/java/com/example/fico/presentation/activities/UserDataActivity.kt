@@ -1,28 +1,46 @@
 package com.example.fico.presentation.activities
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
+import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityUserDataBinding
+import com.example.fico.model.Budget
 import com.example.fico.presentation.viewmodel.UserDataViewModel
+import com.example.fico.utils.internet.ConnectionFunctions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class UserDataActivity : AppCompatActivity() {
 
     private val binding by lazy {ActivityUserDataBinding.inflate(layoutInflater)}
     private val viewModel : UserDataViewModel by inject()
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -39,9 +57,10 @@ class UserDataActivity : AppCompatActivity() {
         setUpListeners()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners(){
         binding.ivEditName.setOnClickListener {
-            setUserNameAlertDialog()
+            editNameDialog()
         }
 
         binding.userDataToolbar.setNavigationOnClickListener {
@@ -75,7 +94,7 @@ class UserDataActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUserNameAlertDialog() : CompletableDeferred<Boolean>{
+   /* private fun setUserNameAlertDialog() : CompletableDeferred<Boolean>{
         val result = CompletableDeferred<Boolean>()
         val builder = AlertDialog.Builder(this)
 
@@ -119,5 +138,76 @@ class UserDataActivity : AppCompatActivity() {
         val alertDialog = builder.create()
         alertDialog.show()
         return result
+    }*/
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun editNameDialog() : CompletableDeferred<Boolean>{
+        val result = CompletableDeferred<Boolean>()
+        val builder = MaterialAlertDialogBuilder(this)
+
+        builder.setTitle(getString(R.string.edit_name))
+
+        val inflater = LayoutInflater.from(this)
+        val dialogView = inflater.inflate(R.layout.month_budget_input_field_for_alert_dialog, null)
+
+        val textInputLayout = dialogView.findViewById<TextInputLayout>(R.id.til_month_budget_ad)
+        textInputLayout.hint = getString(R.string.name)
+        val newName = dialogView.findViewById<TextInputEditText>(R.id.et_month_budget_ad)
+        newName.inputType = InputType.TYPE_CLASS_TEXT
+        builder.setView(dialogView)
+
+        builder.setPositiveButton(getString(R.string.save)) { dialog, which ->
+            val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            saveButton.isEnabled = false
+            if(hasInternetConnection()){
+                lifecycleScope.launch {
+                    if(newName.text.toString() != ""){
+                        if(viewModel.editUserName(newName.text.toString()).await()){
+                            Snackbar.make(binding.ivUserProfile, getString(R.string.edit_name_success_message), Snackbar.LENGTH_LONG).show()
+                            getUserName()
+                        }else{
+                            Snackbar.make(binding.ivUserProfile, getString(R.string.edit_name_failure_message), Snackbar.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }else{
+                noInternetConnectionSnackBar()
+            }
+            saveButton.isEnabled = true
+        }
+
+        val dialog = builder.create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
+            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getAlertDialogTextButtonColor())
+        }
+
+        dialog.show()
+        return result
+    }
+
+    private fun getAlertDialogTextButtonColor() : Int{
+        val typedValue = TypedValue()
+        val theme: Resources.Theme = this.theme
+        theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
+        val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
+        return colorOnSurfaceVariant
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun noInternetConnectionSnackBar(){
+        Snackbar.make(
+            binding.ivUserProfile,
+            getString(R.string.without_network_connection),
+            Snackbar.LENGTH_LONG
+        )
+            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
+            .setActionTextColor(resources.getColor(android.R.color.white, theme))
+            .show()
+    }
+
+    private fun hasInternetConnection() : Boolean{
+        return ConnectionFunctions().internetConnectionVerification(this)
     }
 }

@@ -202,6 +202,9 @@
     <string name="edit_recurring_transaction_message">Selecione o tipo da transação</string>
     <string name="edit_recurring_transaction_message_step_2">Selecione o recurso que deseja acessar</string>
     <string name="edit">Editar</string>
+    <string name="edit_name">Editar Nome</string>
+    <string name="edit_name_success_message">Nome redefinido com sucesso</string>
+    <string name="edit_name_failure_message">Falha ao redefinir o nome</string>
     <string name="edit_earning">Editar Receita</string>
     <string name="excluded_item">Item excluido</string>
     <string name="exclude_item_fail_message">Falha ao excluir item</string>
