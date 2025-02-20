@@ -66,6 +66,15 @@ class UserDataActivity : AppCompatActivity() {
         binding.userDataToolbar.setNavigationOnClickListener {
             finish()
         }
+
+        viewModel.editUserNameResult.observe(this){result ->
+            if (result){
+                Snackbar.make(binding.ivUserProfile, getString(R.string.edit_name_success_message), Snackbar.LENGTH_LONG).show()
+                getUserName()
+            }else{
+                Snackbar.make(binding.ivUserProfile, getString(R.string.edit_name_failure_message), Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun setColorBasedOnTheme(){
@@ -94,52 +103,6 @@ class UserDataActivity : AppCompatActivity() {
         }
     }
 
-   /* private fun setUserNameAlertDialog() : CompletableDeferred<Boolean>{
-        val result = CompletableDeferred<Boolean>()
-        val builder = AlertDialog.Builder(this)
-
-        builder.setTitle("Editar Nome")
-
-        val newUserName = EditText(this)
-        newUserName.hint = "Nome"
-        builder.setView(newUserName)
-
-        builder.setPositiveButton("Salvar") { dialog, which ->
-            val saveButton =  (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            saveButton.isEnabled = false
-            lifecycleScope.launch {
-                if(newUserName.text.toString() != ""){
-
-                    if(viewModel.editUserName(newUserName.text.toString()).await()){
-                        val rootView: View? = findViewById(android.R.id.content)
-                        if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, "Nome redefinido com sucesso", Snackbar.LENGTH_LONG)
-                            snackbar.show()
-                            getUserName()
-                            result.complete(true)
-                        }
-                    }else{
-                        val rootView: View? = findViewById(android.R.id.content)
-                        if (rootView != null) {
-                            val snackbar = Snackbar.make(rootView, "Falha ao redefinir o nome", Snackbar.LENGTH_LONG)
-                            snackbar.show()
-                            result.complete(false)
-                        }
-                    }
-                }
-            }
-            saveButton.isEnabled = true
-        }
-
-        builder.setNegativeButton("Cancelar") { dialog, which ->
-
-        }
-
-        val alertDialog = builder.create()
-        alertDialog.show()
-        return result
-    }*/
-
     @RequiresApi(Build.VERSION_CODES.N)
     private fun editNameDialog() : CompletableDeferred<Boolean>{
         val result = CompletableDeferred<Boolean>()
@@ -162,12 +125,7 @@ class UserDataActivity : AppCompatActivity() {
             if(hasInternetConnection()){
                 lifecycleScope.launch {
                     if(newName.text.toString() != ""){
-                        if(viewModel.editUserName(newName.text.toString()).await()){
-                            Snackbar.make(binding.ivUserProfile, getString(R.string.edit_name_success_message), Snackbar.LENGTH_LONG).show()
-                            getUserName()
-                        }else{
-                            Snackbar.make(binding.ivUserProfile, getString(R.string.edit_name_failure_message), Snackbar.LENGTH_LONG).show()
-                        }
+                        viewModel.editUserName(newName.text.toString())
                     }
                 }
             }else{

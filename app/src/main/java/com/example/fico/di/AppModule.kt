@@ -75,7 +75,8 @@ val appModule = module {
 
     factory<UserDataViewModel> {
         UserDataViewModel(
-            firebaseAPI = get()
+            firebaseAPI = get(),
+            dataStore = get()
         )
     }
 
