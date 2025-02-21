@@ -363,23 +363,23 @@ class DataStoreManager (context: Context) {
     }
 
     suspend fun getUserName() : String {
-        val defaultBudget = dataStore.data.map { preferences ->
+        val userName = dataStore.data.map { preferences ->
             preferences[userNameKey]
         }.first()
-        return Gson().fromJson(defaultBudget, object : TypeToken<String>() {}.type)
+        return Gson().fromJson(userName, object : TypeToken<String>() {}.type) ?: ""
     }
 
-    suspend fun updateUserEmail(name : String){
+    suspend fun updateUserEmail(email : String){
         dataStore.edit {preferences ->
-            preferences[userEmailKey] = name
+            preferences[userEmailKey] = email
         }
     }
 
     suspend fun getUserEmail() : String {
-        val defaultBudget = dataStore.data.map { preferences ->
+        val userEmail = dataStore.data.map { preferences ->
             preferences[userEmailKey]
         }.first()
-        return Gson().fromJson(defaultBudget, object : TypeToken<String>() {}.type)
+        return Gson().fromJson(userEmail, object : TypeToken<String>() {}.type)
     }
 
 

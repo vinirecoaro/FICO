@@ -3,23 +3,27 @@ package com.example.fico.presentation.viewmodel
 import NetworkConnectionLiveData
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fico.DataStoreManager
 import com.example.fico.model.User
 import com.example.fico.api.FirebaseAPI
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.*
 
 class LoginViewModel(
-    private val firebaseAPI : FirebaseAPI, application: Application
+    private val firebaseAPI : FirebaseAPI,
+    application: Application,
+    private val dataStore : DataStoreManager
 ) : ViewModel() {
 
     val internetConnection = NetworkConnectionLiveData(application)
 
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun login(email: String, password: String)=
-        viewModelScope.async(Dispatchers.IO){
+        viewModelScope.launch{
             val user = User("",email, password)
             var successLogin = CompletableDeferred<Boolean>()
             firebaseAPI.login(user)
@@ -41,6 +45,7 @@ class LoginViewModel(
                 if(!verifyExistsExpensesPath().await()){
                     updateExpensesDatabasePath().await()
                 }
+                getUserInfo().await()
                 val currentUser = firebaseAPI.currentUser()
                 if(currentUser?.isEmailVerified == true){
                     onUserLogged()
@@ -72,6 +77,46 @@ class LoginViewModel(
         }catch (e: Exception){
 
         }
+    }
+
+    private suspend fun getUserInfo(): Deferred<Unit> = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Unit>()
+        viewModelScope.launch {
+            getUserName().await()
+            getUserEmail().await()
+            result.complete(Unit)
+        }
+        return@withContext result
+    }
+
+    private suspend fun getUserEmail() : Deferred<Unit> = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Unit>()
+            firebaseAPI.getUserEmail().fold(
+                onSuccess = { email ->
+                    dataStore.updateUserEmail(email)
+                    result.complete(Unit)
+                },
+                onFailure = { error ->
+                    Log.e("getUserEmail", error.message.toString())
+                    result.complete(Unit)
+                }
+            )
+        return@withContext result
+    }
+
+    private suspend fun getUserName() : Deferred<Unit> = withContext(Dispatchers.IO){
+        val result = CompletableDeferred<Unit>()
+            firebaseAPI.getUserName().fold(
+                onSuccess = {name ->
+                    dataStore.updateUserName(name)
+                    result.complete(Unit)
+                },
+                onFailure = { error ->
+                    Log.e("getUserName", error.message.toString())
+                    result.complete(Unit)
+                }
+            )
+        return@withContext result
     }
 
 }

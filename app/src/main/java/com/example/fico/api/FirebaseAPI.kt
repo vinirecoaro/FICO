@@ -95,9 +95,14 @@ class FirebaseAPI(
         expenses.child(StringConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
     }
 
-    suspend fun getUserEmail(): String = withContext(Dispatchers.IO) {
-        val email = currentUser()?.email.toString()
-        return@withContext email ?: ""
+    suspend fun getUserEmail() : Result<String> = withContext(Dispatchers.IO) {
+        try{
+            val email = currentUser()?.email.toString()
+            Result.success(email)
+        }catch (e : Exception){
+            Result.failure(e)
+        }
+
     }
 
     suspend fun editUserName(name: String) : Result<Unit> = withContext(Dispatchers.IO) {
@@ -114,24 +119,23 @@ class FirebaseAPI(
         user_info.child(StringConstants.DATABASE.NAME).setValue(name)
     }
 
-    suspend fun getUserName(): String = withContext(Dispatchers.IO) {
-        val userName = CompletableDeferred<String>()
-        user_info.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.child(StringConstants.DATABASE.NAME).exists()) {
-                    val username2 = snapshot.child(StringConstants.DATABASE.NAME).value.toString()
-                    userName.complete(username2)
-                } else {
-                    userName.complete("User")
-                }
+    suspend fun getUserName(): Result<String> = withContext(Dispatchers.IO) {
+        return@withContext suspendCancellableCoroutine { continuation ->
+            try {
+                user_info.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val username = snapshot.child(StringConstants.DATABASE.NAME).value?.toString() ?: "User"
+                        continuation.resume(Result.success(username))
+                    }
 
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resume(Result.success("User"))
+                    }
+                })
+            } catch (e: Exception) {
+                continuation.resume(Result.failure(e))
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                userName.complete("User")
-            }
-        })
-        return@withContext userName.await()
+        }
     }
 
     suspend fun deleteExpense(oldExpense: Expense) : Result<Unit> = withContext(Dispatchers.IO) {

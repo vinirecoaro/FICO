@@ -16,24 +16,10 @@ class MainViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
-    fun getUserEmail() : Deferred<String> =
-        viewModelScope.async{
-        val email = firebaseAPI.getUserEmail()
-        dataStore.updateUserEmail(email)
-        return@async email
-    }
-
     fun getUserEmailDataStore() : Deferred<String> =
         viewModelScope.async {
         val email = dataStore.getUserEmail()
         return@async email
-    }
-
-    fun getUserName() : Deferred<String> =
-        viewModelScope.async {
-        val name = firebaseAPI.getUserName()
-        dataStore.updateUserName(name)
-        return@async name
     }
 
     fun getUserNameDataStore() : Deferred<String> =

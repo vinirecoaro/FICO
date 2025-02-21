@@ -136,7 +136,8 @@ val appModule = module {
     factory<LoginViewModel> {
         LoginViewModel(
             firebaseAPI = get(),
-            androidApplication()
+            androidApplication(),
+            dataStore = get()
         )
     }
 
