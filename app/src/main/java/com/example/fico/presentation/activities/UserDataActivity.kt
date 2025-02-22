@@ -20,6 +20,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
+import com.example.fico.components.ImagePickerBottomSheet
 import com.example.fico.databinding.ActivityUserDataBinding
 import com.example.fico.model.Budget
 import com.example.fico.presentation.viewmodel.UserDataViewModel
@@ -74,6 +75,17 @@ class UserDataActivity : AppCompatActivity() {
             }else{
                 Snackbar.make(binding.ivUserProfile, getString(R.string.edit_name_failure_message), Snackbar.LENGTH_LONG).show()
             }
+        }
+
+        binding.ivUserProfile.setOnClickListener {
+            val bottomSheet = ImagePickerBottomSheet{ isCamera ->
+                if(isCamera){
+
+                }else{
+
+                }
+            }
+            bottomSheet.show(supportFragmentManager, "ImagePickerBottomSheet")
         }
     }
 
