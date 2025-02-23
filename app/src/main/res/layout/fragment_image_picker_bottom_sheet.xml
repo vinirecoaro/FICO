@@ -3,19 +3,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    >
 
-    <Button
-        android:id="@+id/btnCamera"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:padding="16dp"
+        android:id="@+id/ll_bottom_sheet_camera"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Abrir Câmera"/>
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/btnGallery"
-        android:layout_width="match_parent"
+        <ImageView
+            android:src="@drawable/photo_dark"
+            android:id="@+id/iv_bottom_sheet_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:textSize="16sp"
+            android:layout_marginStart="8dp"
+            android:id="@+id/tv_bottom_sheet_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/camera"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="16dp"
+        android:id="@+id/ll_bottom_sheet_gallery"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Abrir Galeria"
-        android:layout_marginTop="8dp"/>
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:src="@drawable/gallery_dark"
+            android:id="@+id/iv_bottom_sheet_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:textSize="16sp"
+            android:layout_marginStart="8dp"
+            android:id="@+id/tv_bottom_sheet_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gallery"/>
+
+    </LinearLayout>
 
 </LinearLayout>

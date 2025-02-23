@@ -224,6 +224,8 @@
     <string name="wrong_installment_input_message">O número de parcelas deve ser maior que 1</string>
     <string name="choose_date">Selecione a data</string>
     <string name="fill_field">Preencher o campo</string>
+    <string name="gallery">Galeria</string>
+    <string name="camera">Câmera</string>
 
 
 </resources>
