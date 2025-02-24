@@ -199,4 +199,8 @@ class StringConstants private constructor() {
         const val NO_OPERATION = ""
     }
 
+    object USER_DATA_ACTIVITY{
+        const val PROFILE_IMAGE_FILE_NAME = "profile_image.jpg"
+    }
+
 }
