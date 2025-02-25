@@ -52,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
         viewModel.onUserLogged = {
-            startActivity(Intent(this@LoginActivity, MainExpenseActivity::class.java))
+            startActivity(Intent(this@LoginActivity, MainTransactionActivity::class.java))
         }
         viewModel.onUserNotVerified = {
             startActivity(Intent(this, VerifyEmailActivity::class.java))

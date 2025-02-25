@@ -44,7 +44,7 @@ class VerifyEmailActivity : AppCompatActivity() {
 
         viewModel.isVerified.observe(this, Observer {isVerified ->
             if(isVerified){
-                startActivity(Intent(this, MainExpenseActivity::class.java))
+                startActivity(Intent(this, MainTransactionActivity::class.java))
             }
         })
 

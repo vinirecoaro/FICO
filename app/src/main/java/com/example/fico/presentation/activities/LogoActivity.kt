@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.biometric.BiometricManager
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.ActivityLogoBinding
 import com.example.fico.presentation.viewmodel.LogoViewModel
@@ -96,7 +95,7 @@ class LogoActivity : AppCompatActivity() {
                         }
                     }
                     BiometricResult.AuthenticationSuccess -> {
-                        startActivity(Intent(this@LogoActivity, MainExpenseActivity::class.java))
+                        startActivity(Intent(this@LogoActivity, MainTransactionActivity::class.java))
                         finish()
                     }
                     BiometricResult.FeatureUnavailable -> {
@@ -113,7 +112,7 @@ class LogoActivity : AppCompatActivity() {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                startActivity(Intent(this@LogoActivity, MainExpenseActivity::class.java))
+                startActivity(Intent(this@LogoActivity, MainTransactionActivity::class.java))
                 finish()
             }
         }

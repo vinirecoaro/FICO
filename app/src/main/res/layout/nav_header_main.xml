@@ -12,13 +12,20 @@
     android:paddingBottom="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/nav_header_description"
-        android:paddingTop="8dp"
-        app:srcCompat="@mipmap/app_icon_round" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_header_profile_image"
+        android:backgroundTint="@color/grey_200"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:cardCornerRadius="75dp">
+        <ImageView
+            android:id="@+id/iv_header_profile_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/nav_header_description"
+            app:srcCompat="@mipmap/app_icon_round" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/nv_header_user_name"

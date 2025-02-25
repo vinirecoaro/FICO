@@ -3,9 +3,11 @@ package com.example.fico.presentation.activities
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
@@ -18,18 +20,21 @@ import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.presentation.viewmodel.MainViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
+import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import java.io.File
 
-class MainExpenseActivity : AppCompatActivity(){
+class MainTransactionActivity : AppCompatActivity(){
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewModel : MainViewModel by inject()
     private val expensesViewModel : ExpensesViewModel by inject()
+    private val imageFileName = StringConstants.USER_DATA_ACTIVITY.PROFILE_IMAGE_FILE_NAME
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,8 +62,7 @@ class MainExpenseActivity : AppCompatActivity(){
         setupListeners()
         removeTintOfMenuIcons()
         setImageBasedOnTheme()
-        getUserName()
-        getUserEmail()
+        fillDrawer()
 
         //Update DataStore with info from database
         if(ConnectionFunctions().internetConnectionVerification(this)){
@@ -74,25 +78,37 @@ class MainExpenseActivity : AppCompatActivity(){
         }
     }
 
-    private fun getUserEmail(){
+    private fun fillDrawer(){
         val navigationView = findViewById<NavigationView>(R.id.nv_main)
         val headerView = navigationView.getHeaderView(0)
         val headerUserEmail = headerView.findViewById<TextView>(R.id.nv_header_user_email)
+        val headerUserName = headerView.findViewById<TextView>(R.id.nv_header_user_name)
+        val headerProfileImage = headerView.findViewById<ImageView>(R.id.iv_header_profile_image)
+        getUserEmail(headerUserEmail)
+        getUserName(headerUserName)
+        getProfileImage(headerProfileImage)
+    }
+
+    private fun getUserEmail(textView: TextView){
         lifecycleScope.launch {
             var email = ""
             email = viewModel.getUserEmailDataStore().await()
-            headerUserEmail.text = email
+            textView.text = email
         }
     }
 
-    private fun getUserName(){
-        val navigationView = findViewById<NavigationView>(R.id.nv_main)
-        val headerView = navigationView.getHeaderView(0)
-        val headerUserName = headerView.findViewById<TextView>(R.id.nv_header_user_name)
+    private fun getUserName(textView: TextView){
         lifecycleScope.launch {
             var name = ""
             name = viewModel.getUserNameDataStore().await()
-            headerUserName.text = name
+            textView.text = name
+        }
+    }
+
+    private fun getProfileImage(imageView : ImageView) {
+        val file = File(this.filesDir, imageFileName)
+        if (file.exists()) {
+            imageView.setImageURI(Uri.fromFile(file))
         }
     }
 
