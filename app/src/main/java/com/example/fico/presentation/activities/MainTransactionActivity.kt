@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -35,6 +36,11 @@ class MainTransactionActivity : AppCompatActivity(){
     private val viewModel : MainViewModel by inject()
     private val expensesViewModel : ExpensesViewModel by inject()
     private val imageFileName = StringConstants.USER_DATA_ACTIVITY.PROFILE_IMAGE_FILE_NAME
+    private lateinit var navigationView: NavigationView
+    private lateinit var headerView: View
+    private lateinit var headerUserEmail: TextView
+    private lateinit var headerUserName: TextView
+    private lateinit var headerProfileImage: ImageView
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +65,12 @@ class MainTransactionActivity : AppCompatActivity(){
             binding.drawerLayout.open()
         }
 
+        navigationView = findViewById(R.id.nv_main)
+        headerView = navigationView.getHeaderView(0)
+        headerUserEmail = headerView.findViewById(R.id.nv_header_user_email)
+        headerUserName = headerView.findViewById(R.id.nv_header_user_name)
+        headerProfileImage = headerView.findViewById(R.id.iv_header_profile_image)
+
         setupListeners()
         removeTintOfMenuIcons()
         setImageBasedOnTheme()
@@ -79,11 +91,6 @@ class MainTransactionActivity : AppCompatActivity(){
     }
 
     private fun fillDrawer(){
-        val navigationView = findViewById<NavigationView>(R.id.nv_main)
-        val headerView = navigationView.getHeaderView(0)
-        val headerUserEmail = headerView.findViewById<TextView>(R.id.nv_header_user_email)
-        val headerUserName = headerView.findViewById<TextView>(R.id.nv_header_user_name)
-        val headerProfileImage = headerView.findViewById<ImageView>(R.id.iv_header_profile_image)
         getUserEmail(headerUserEmail)
         getUserName(headerUserName)
         getProfileImage(headerProfileImage)
@@ -133,9 +140,11 @@ class MainTransactionActivity : AppCompatActivity(){
                     true
                 }
 
+
                 else -> false
             }
         }
+
     }
 
     private fun setImageBasedOnTheme(){

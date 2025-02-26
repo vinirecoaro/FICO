@@ -112,7 +112,7 @@ class UserDataActivity : AppCompatActivity() {
             }
         }
 
-        binding.ivUserProfile.setOnClickListener {
+        binding.cvEditProfileImage.setOnClickListener {
             val bottomSheet = ImagePickerBottomSheet{ isCamera ->
                 if(isCamera){
                     if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
