@@ -53,7 +53,10 @@ class UserDataActivity : AppCompatActivity() {
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             val file = File(this.filesDir, imageFileName)
-            binding.ivUserProfile.setImageURI(Uri.fromFile(file))
+            val uri = Uri.fromFile(file)
+            binding.ivUserProfile.setImageURI(null)
+            binding.ivUserProfile.setImageURI(uri)
+            binding.ivUserProfile.invalidate()
         }
     }
 

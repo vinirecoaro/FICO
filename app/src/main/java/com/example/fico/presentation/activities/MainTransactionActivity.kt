@@ -61,10 +61,6 @@ class MainTransactionActivity : AppCompatActivity(){
         setupActionBarWithNavController(navController,appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        binding.toolbar.setNavigationOnClickListener {
-            binding.drawerLayout.open()
-        }
-
         navigationView = findViewById(R.id.nv_main)
         headerView = navigationView.getHeaderView(0)
         headerUserEmail = headerView.findViewById(R.id.nv_header_user_email)
@@ -115,7 +111,9 @@ class MainTransactionActivity : AppCompatActivity(){
     private fun getProfileImage(imageView : ImageView) {
         val file = File(this.filesDir, imageFileName)
         if (file.exists()) {
+            imageView.setImageURI(null)
             imageView.setImageURI(Uri.fromFile(file))
+            imageView.invalidate()
         }
     }
 
@@ -143,6 +141,11 @@ class MainTransactionActivity : AppCompatActivity(){
 
                 else -> false
             }
+        }
+
+        binding.toolbar.setNavigationOnClickListener {
+            binding.drawerLayout.open()
+            getProfileImage(headerProfileImage)
         }
 
     }
