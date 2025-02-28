@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -86,6 +87,15 @@ class MainTransactionActivity : AppCompatActivity(){
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        navigationView.menu.setGroupCheckable(0, true, false)
+        for (i in 0 until navigationView.menu.size()) {
+            navigationView.menu.getItem(i).isChecked = false
+        }
+        navigationView.menu.setGroupCheckable(0, true, true)
+    }
+
     private fun fillDrawer(){
         getUserEmail(headerUserEmail)
         getUserName(headerUserName)
@@ -118,13 +128,10 @@ class MainTransactionActivity : AppCompatActivity(){
     }
 
     private fun removeTintOfMenuIcons(){
-        val navigationView = findViewById<NavigationView>(R.id.nv_main)
         navigationView.itemIconTintList = null
     }
 
     private fun setupListeners(){
-        val navigationView = findViewById<NavigationView>(R.id.nv_main)
-
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when(menuItem.itemId){
                 R.id.nav_menu_item_personal_data -> {
@@ -137,8 +144,6 @@ class MainTransactionActivity : AppCompatActivity(){
                     dialogLogout()
                     true
                 }
-
-
                 else -> false
             }
         }
@@ -151,7 +156,6 @@ class MainTransactionActivity : AppCompatActivity(){
     }
 
     private fun setImageBasedOnTheme(){
-        val navigationView = findViewById<NavigationView>(R.id.nv_main)
         val menu = navigationView.menu
         val configMenuItem = menu.findItem(R.id.nav_menu_item_logout)
         val profileMenuItem = menu.findItem(R.id.nav_menu_item_personal_data)
