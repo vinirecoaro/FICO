@@ -1,35 +1,27 @@
 package com.example.fico.repositories
 
+import com.example.fico.interfaces.AuthInterface
 import com.example.fico.model.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class FirebaseAuthRepository(private val auth: FirebaseAuth) {
+class FirebaseAuthRepository(private val auth: FirebaseAuth) : AuthInterface {
 
-    suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO) {
-        return@withContext auth.currentUser
-    }
-
-    suspend fun createUser(user: User): Task<AuthResult> = withContext(Dispatchers.IO) {
-        return@withContext auth.createUserWithEmailAndPassword(user.email, user.password)
-    }
-
-    suspend fun login(user: User): Task<AuthResult> = withContext(Dispatchers.IO) {
-        return@withContext auth.signInWithEmailAndPassword(user.email, user.password)
-    }
-
-    suspend fun logoff() = withContext(Dispatchers.IO) {
-        return@withContext auth.signOut()
-    }
-
-    suspend fun getUserEmail(): Result<String> = withContext(Dispatchers.IO) {
-        try {
-            val email = currentUser()?.email ?: throw Exception("User not logged in")
-            Result.success(email)
+    override suspend fun register(user: User, password: String): Result<User> {
+        return try{
+            val result = auth.createUserWithEmailAndPassword(user.email, password).await()
+            val firebaseUser = result.user
+            if (firebaseUser != null) {
+                val newUser = User(user.name, user.email, firebaseUser.uid)
+                Result.success(newUser)
+            } else {
+                Result.failure(Exception("User not found"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

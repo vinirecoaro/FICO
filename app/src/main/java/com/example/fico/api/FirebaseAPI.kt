@@ -61,12 +61,12 @@ class FirebaseAPI(
         return@withContext auth.currentUser
     }
 
-    suspend fun createUser(user: User): Task<AuthResult> = withContext(Dispatchers.IO) {
-        return@withContext auth.createUserWithEmailAndPassword(user.email, user.password)
+    suspend fun createUser(user: User, password: String): Task<AuthResult> = withContext(Dispatchers.IO) {
+        return@withContext auth.createUserWithEmailAndPassword(user.email, password)
     }
 
-    suspend fun login(user: User): Task<AuthResult> = withContext(Dispatchers.IO) {
-        return@withContext auth.signInWithEmailAndPassword(user.email, user.password)
+    suspend fun login(user: User, password: String): Task<AuthResult> = withContext(Dispatchers.IO) {
+        return@withContext auth.signInWithEmailAndPassword(user.email, password)
     }
 
     suspend fun sendEmailVerification(): Task<Void>? = withContext(Dispatchers.IO) {

@@ -24,9 +24,9 @@ class LoginViewModel(
     @RequiresApi(Build.VERSION_CODES.N)
     suspend fun login(email: String, password: String)=
         viewModelScope.launch{
-            val user = User("",email, password)
+            val user = User("", email)
             var successLogin = CompletableDeferred<Boolean>()
-            firebaseAPI.login(user)
+            firebaseAPI.login(user, password)
                 .addOnCompleteListener{ task ->
                     if (task.isSuccessful) {
                         firebaseAPI.updateReferences()

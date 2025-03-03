@@ -48,7 +48,7 @@ class RegisterViewModel(
         val user = User(name, email, password)
         try {
             viewModelScope.async(Dispatchers.IO){
-                val task = firebaseAPI.createUser(user).await()
+                val task = firebaseAPI.createUser(user, password).await()
                 if (task.user != null) {
                     firebaseAPI.updateReferences()
                     firebaseAPI.addNewUserOnDatabase()
