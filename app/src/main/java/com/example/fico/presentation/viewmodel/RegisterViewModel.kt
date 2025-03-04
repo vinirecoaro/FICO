@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.model.User
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.repositories.AuthRepository
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -17,7 +18,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 
 class RegisterViewModel(
-    private val firebaseAPI : FirebaseAPI
+    private val firebaseAPI : FirebaseAPI,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     fun checkFields(btn: Button, vararg fields : EditText): Boolean {
