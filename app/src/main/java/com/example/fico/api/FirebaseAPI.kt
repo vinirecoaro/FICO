@@ -2,6 +2,7 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.fico.interfaces.AuthInterface
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
@@ -19,6 +20,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.coroutines.resume
@@ -29,7 +31,7 @@ import kotlin.coroutines.suspendCoroutine
 class FirebaseAPI(
     private val auth : FirebaseAuth,
     private val database : FirebaseDatabase
-) {
+) : AuthInterface {
     private val rootRef = database.getReference(StringConstants.DATABASE.USERS)
     private lateinit var user_root : DatabaseReference
     private lateinit var user_info : DatabaseReference
@@ -63,6 +65,24 @@ class FirebaseAPI(
 
     suspend fun createUser(user: User, password: String): Task<AuthResult> = withContext(Dispatchers.IO) {
         return@withContext auth.createUserWithEmailAndPassword(user.email, password)
+    }
+
+    override suspend fun register(user: User, password: String): Result<User> {
+        return try{
+            val result = auth.createUserWithEmailAndPassword(user.email, password).await()
+            val firebaseUser = result.user
+            if (firebaseUser != null) {
+                val newUser = User(user.name, user.email, firebaseUser.uid)
+                updateReferences()
+                addNewUserOnDatabase().await()
+                setUserName(user.name).await()
+                Result.success(newUser)
+            } else {
+                Result.failure(Exception("User not found"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun login(user: User, password: String): Task<AuthResult> = withContext(Dispatchers.IO) {

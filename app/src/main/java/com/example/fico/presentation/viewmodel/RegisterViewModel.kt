@@ -16,6 +16,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class RegisterViewModel(
     private val firebaseAPI : FirebaseAPI,
@@ -47,7 +48,7 @@ class RegisterViewModel(
     }
 
     suspend fun createUser(name : String, email: String, password: String) {
-        val user = User(name, email, password)
+        val user = User(name, email)
         try {
             viewModelScope.async(Dispatchers.IO){
                 val task = firebaseAPI.createUser(user, password).await()
@@ -72,6 +73,23 @@ class RegisterViewModel(
         }
     }
 
+    suspend fun createUserNew(name : String, email: String, password: String) {
+        val user = User(name, email)
+        try {
+            withContext(Dispatchers.IO){
+                authRepository.register(user, password).fold(
+                    onSuccess = { onUserCreated() },
+                    onFailure = { exception ->
+                        val message = errorMessage(exception)
+                        onError(message)
+                    }
+                )
+            }
+        }catch (exception : Exception){
+            onError("Ocorreu um erro inesperado. Tente novamente mais tarde.")
+        }
+    }
+
     suspend fun sendEmailVerificarion(){
         viewModelScope.async(Dispatchers.IO){
             firebaseAPI.sendEmailVerification()
@@ -91,6 +109,15 @@ class RegisterViewModel(
             uid.complete(currentUser!!.uid)
         }
         return uid
+    }
+
+    private fun errorMessage(exception: Throwable): String {
+        return when(exception){
+            is FirebaseAuthInvalidCredentialsException ->"E-mail ou senha inválidos."
+            is FirebaseAuthUserCollisionException -> "Este e-mail já está em uso."
+            is FirebaseAuthWeakPasswordException -> "A senha deve ter pelo menos 6 caracteres."
+            else -> "Ocorreu um erro ao criar a conta. Tente novamente mais tarde."
+        }
     }
 
     var onUserCreated: () -> Unit = {}
