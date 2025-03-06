@@ -43,17 +43,11 @@ val appModule = module {
     //Create a singleton for FirebaseDatabase and FirebaseAuth
     single { FirebaseDatabase.getInstance() }
     single { FirebaseAuth.getInstance() }
+    single { FirebaseAPI(auth = get(), database = get()) }
+    single<AuthInterface> { get<FirebaseAPI>() }
     single { AuthRepository(get()) }
-
     single<DataStoreManager>(){
         DataStoreManager(androidContext())
-    }
-
-    single {
-        FirebaseAPI(
-            auth = get(),
-            database = get()
-        )
     }
 
     factory<ExpensesViewModel> {

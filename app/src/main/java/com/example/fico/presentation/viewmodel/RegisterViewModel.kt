@@ -73,7 +73,7 @@ class RegisterViewModel(
         }
     }
 
-    suspend fun createUserNew(name : String, email: String, password: String) {
+    suspend fun register(name : String, email: String, password: String) {
         val user = User(name, email)
         try {
             withContext(Dispatchers.IO){
