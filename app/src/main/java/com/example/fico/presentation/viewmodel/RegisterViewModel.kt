@@ -23,25 +23,6 @@ class RegisterViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    fun checkFields(btn: Button, vararg fields : EditText): Boolean {
-        val nFileds = fields.size
-        var counter = 0
-        for (i in fields){
-            if (i.text.isEmpty()){
-                emptyField(btn, i)
-                return false
-            }else{
-                counter++
-            }
-        }
-        return counter == nFileds
-    }
-
-    fun emptyField(btn: Button ,text: EditText){
-        val snackbar = Snackbar.make(btn, "O campo ${text.hint} está vazio, preencha-o", Snackbar.LENGTH_LONG)
-        snackbar.show()
-    }
-
     fun setUserName(name : String) =
         viewModelScope.async(Dispatchers.IO){
             firebaseAPI.setUserName(name).await()

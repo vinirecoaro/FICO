@@ -12,6 +12,10 @@
     <string name="save">Salvar</string>
     <string name="this_month_expense">Gasto do Mês</string>
     <string name="email">E-mail</string>
+    <string name="empty_field_part_1_message">O campo</string>
+    <string name="empty_field_part_2_message">está vazio, preencha-o</string>
+    <string name="verification_email_success_message">Email de verificação enviado com sucesso.</string>
+    <string name="verification_email_fail_message">Erro ao enviar email de verificação.</string>
     <string name="password">Senha</string>
     <string name="login">Login</string>
     <string name="without_network_connection">Sem conexão com a internet</string>

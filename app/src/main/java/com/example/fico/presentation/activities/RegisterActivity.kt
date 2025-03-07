@@ -5,6 +5,8 @@ import android.content.res.Configuration
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
@@ -24,7 +26,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.registerToolbar.setTitle("Registrar")
+        binding.registerToolbar.setTitle(getString(R.string.register))
         binding.registerToolbar.setTitleTextColor(Color.WHITE)
 
         //Insert a back button on Navigation bar
@@ -38,7 +40,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun setUpListeners(){
         binding.btRegister.setOnClickListener{
             binding.btRegister.isEnabled = false
-            if(viewModel.checkFields(binding.btRegister, binding.etEmail, binding.etPassword)){
+            if(checkFields(binding.etName, binding.etEmail, binding.etPassword)){
                 lifecycleScope.launch(Dispatchers.Main) {
                     viewModel.register(
                         binding.etName.text.toString(),
@@ -62,11 +64,11 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         viewModel.onSendEmailSuccess = {
-            Snackbar.make(binding.btRegister, "Email de verificação enviado com sucesso.", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.btRegister, getString(R.string.verification_email_success_message), Snackbar.LENGTH_LONG).show()
         }
 
         viewModel.onSendEmailFailure = {
-            Snackbar.make(binding.btRegister, "Erro ao enviar email de verificação.", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.btRegister, getString(R.string.verification_email_fail_message), Snackbar.LENGTH_LONG).show()
         }
 
         binding.registerToolbar.setNavigationOnClickListener {
@@ -84,6 +86,25 @@ class RegisterActivity : AppCompatActivity() {
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
+    }
+
+    fun checkFields(vararg fields : EditText): Boolean {
+        val nFileds = fields.size
+        var counter = 0
+        for (i in fields){
+            if (i.text.isEmpty()){
+                emptyField(i)
+                return false
+            }else{
+                counter++
+            }
+        }
+        return counter == nFileds
+    }
+
+    fun emptyField(text: EditText){
+        val snackbar = Snackbar.make(binding.btRegister, "${getString(R.string.empty_field_part_1_message)} ${text.hint} ${getString(R.string.empty_field_part_2_message)}", Snackbar.LENGTH_LONG)
+        snackbar.show()
     }
 
 }
