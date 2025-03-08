@@ -6,5 +6,6 @@
         <attr name="bottomAppBarItemTextColor" format="color"/>
         <attr name="customCardBackgroundColor" format="color" />
         <attr name="alertDialogTextButtonColor" format="color" />
+        <attr name="login_register_logo" format="reference" />
     </declare-styleable>
 </resources>

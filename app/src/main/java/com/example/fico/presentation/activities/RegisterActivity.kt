@@ -33,7 +33,6 @@ class RegisterActivity : AppCompatActivity() {
         setSupportActionBar(binding.registerToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        setColorBasedOnTheme()
         setUpListeners()
     }
 
@@ -73,18 +72,6 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.registerToolbar.setNavigationOnClickListener {
             finish()
-        }
-    }
-
-    private fun setColorBasedOnTheme(){
-        when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                binding.etName.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.baseline_person_24_light,0, 0, 0)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                binding.etName.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.baseline_person_24_black,0, 0, 0)
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
     }
 

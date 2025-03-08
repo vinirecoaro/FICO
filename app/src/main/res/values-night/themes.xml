@@ -25,6 +25,9 @@
         <!-- Dialog button text color -->
         <item name="alertDialogTextButtonColor">@color/blue_200</item>
 
+        <!-- Login and Register activity logo -->
+        <item name="login_register_logo">@drawable/login_logo_light</item>
+
     </style>
 
     <style name="Theme.App.SplashScreen" parent = "Theme.SplashScreen">
