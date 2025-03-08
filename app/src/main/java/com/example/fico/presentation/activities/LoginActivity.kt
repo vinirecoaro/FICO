@@ -29,7 +29,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         resetPasswordSucess()
-        setColorBasedOnTheme()
         setUpListeners()
 
     }
@@ -87,18 +86,5 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this,"Email de redefinição de senha enviado com sucesso", Toast.LENGTH_LONG).show()
         }
     }
-
-    private fun setColorBasedOnTheme(){
-        when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                binding.ivLogo.setImageResource(R.drawable.login_logo_light)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                binding.ivLogo.setImageResource(R.drawable.login_logo_black)
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-        }
-    }
-
 
 }
