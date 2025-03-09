@@ -63,10 +63,6 @@ class FirebaseAPI(
         return@withContext auth.currentUser
     }
 
-    suspend fun createUser(user: User, password: String): Task<AuthResult> = withContext(Dispatchers.IO) {
-        return@withContext auth.createUserWithEmailAndPassword(user.email, password)
-    }
-
     override suspend fun register(user: User, password: String): Result<User> {
         return try{
             val result = auth.createUserWithEmailAndPassword(user.email, password).await()
@@ -78,15 +74,43 @@ class FirebaseAPI(
                 setUserName(user.name).await()
                 Result.success(newUser)
             } else {
+                //TODO tratar messagem de erro conforme retorno
                 Result.failure(Exception("User not found"))
             }
         } catch (e: Exception) {
+            //TODO tratar messagem de erro conforme retorno
             Result.failure(e)
         }
     }
 
-    suspend fun login(user: User, password: String): Task<AuthResult> = withContext(Dispatchers.IO) {
+    suspend fun login2(user: User, password: String): Task<AuthResult> = withContext(Dispatchers.IO) {
         return@withContext auth.signInWithEmailAndPassword(user.email, password)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override suspend fun login(user: User, password: String): Result<Boolean> {
+        return try {
+            val result = auth.signInWithEmailAndPassword(user.email, password)
+            if(result.isSuccessful){
+                updateReferences()
+                if(!verifyExistsExpensesPath()){
+                    updateExpensePerListInformationPath()
+                    updateDefaultValuesPath()
+                    updateInformationPerMonthPath()
+                    updateTotalExpensePath()
+                }
+                val currentUser = currentUser()
+                if(currentUser?.isEmailVerified == true){
+                    Result.success(true)
+                }else{
+                    Result.success(false)
+                }
+            }else{
+                Result.failure(Exception("User not found"))
+            }
+        }catch (e: Exception){
+            Result.failure(e)
+        }
     }
 
     suspend fun sendEmailVerification(): Task<Void>? = withContext(Dispatchers.IO) {

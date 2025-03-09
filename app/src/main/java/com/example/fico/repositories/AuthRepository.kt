@@ -9,4 +9,9 @@ class AuthRepository(private val authInterface: AuthInterface) {
     suspend fun register(user: User, password: String): Result<User> {
         return authInterface.register(user, password)
     }
+
+    suspend fun login(user: User, password: String): Result<Boolean> {
+        return authInterface.login(user, password)
+    }
+
 }

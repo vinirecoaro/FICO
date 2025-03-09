@@ -10,13 +10,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.model.User
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.repositories.AuthRepository
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.*
 
 class LoginViewModel(
     private val firebaseAPI : FirebaseAPI,
     application: Application,
-    private val dataStore : DataStoreManager
+    private val dataStore : DataStoreManager,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     val internetConnection = NetworkConnectionLiveData(application)
@@ -26,7 +28,7 @@ class LoginViewModel(
         viewModelScope.launch{
             val user = User("", email)
             var successLogin = CompletableDeferred<Boolean>()
-            firebaseAPI.login(user, password)
+            firebaseAPI.login2(user, password)
                 .addOnCompleteListener{ task ->
                     if (task.isSuccessful) {
                         firebaseAPI.updateReferences()
@@ -53,6 +55,29 @@ class LoginViewModel(
                     onUserNotVerified()
                 }
             }
+    }
+
+    suspend fun login2(email: String, password: String){
+        val user = User("", email)
+        try {
+            withContext(Dispatchers.IO){
+                authRepository.login(user, password).fold(
+                    onSuccess = {result ->
+                        if(result){
+                            onUserLogged()
+                        }else{
+                            onUserNotVerified()
+                        }
+                    },
+                    onFailure = { error ->
+                        //TODO tratar messagem de erro conforme retorno
+                        onError(error.message.toString())
+                    }
+                )
+            }
+        }catch (e : Exception){
+
+        }
     }
 
     var onUserLogged: () -> Unit = {}
