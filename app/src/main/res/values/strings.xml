@@ -230,6 +230,9 @@
     <string name="fill_field">Preencher o campo</string>
     <string name="gallery">Galeria</string>
     <string name="camera">Câmera</string>
+    <string name="invalid_credentials">E-mail ou senha inválidos</string>
+    <string name="user_not_found">Usuário não encontrado</string>
+    <string name="login_error">Ocorreu um erro ao realizar o login. Tente novamente mais tarde</string>
 
 
 </resources>

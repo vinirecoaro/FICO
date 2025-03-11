@@ -13,6 +13,8 @@ import com.example.fico.utils.constants.StringConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
@@ -74,24 +76,18 @@ class FirebaseAPI(
                 setUserName(user.name).await()
                 Result.success(newUser)
             } else {
-                //TODO tratar messagem de erro conforme retorno
                 Result.failure(Exception("User not found"))
             }
         } catch (e: Exception) {
-            //TODO tratar messagem de erro conforme retorno
             Result.failure(e)
         }
-    }
-
-    suspend fun login2(user: User, password: String): Task<AuthResult> = withContext(Dispatchers.IO) {
-        return@withContext auth.signInWithEmailAndPassword(user.email, password)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override suspend fun login(user: User, password: String): Result<Boolean> {
         return try {
-            val result = auth.signInWithEmailAndPassword(user.email, password)
-            if(result.isSuccessful){
+            val result = auth.signInWithEmailAndPassword(user.email, password).await()
+            if(result.user != null){
                 updateReferences()
                 if(!verifyExistsExpensesPath()){
                     updateExpensePerListInformationPath()
@@ -106,10 +102,16 @@ class FirebaseAPI(
                     Result.success(false)
                 }
             }else{
-                Result.failure(Exception("User not found"))
+                Result.failure(Exception(StringConstants.MESSAGES.USER_NOT_FOUND))
             }
-        }catch (e: Exception){
-            Result.failure(e)
+        }catch (e: FirebaseAuthInvalidUserException){
+            Result.failure(Exception(StringConstants.MESSAGES.INVALID_CREDENTIALS))
+        }
+        catch (e: FirebaseAuthInvalidCredentialsException){
+            Result.failure(Exception(StringConstants.MESSAGES.INVALID_CREDENTIALS))
+        }
+        catch (e: Exception){
+            Result.failure(Exception(StringConstants.MESSAGES.LOGIN_ERROR))
         }
     }
 

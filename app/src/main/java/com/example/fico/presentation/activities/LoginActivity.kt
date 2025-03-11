@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityLoginBinding
 import com.example.fico.presentation.viewmodel.LoginViewModel
+import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -57,7 +58,18 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, VerifyEmailActivity::class.java))
         }
         viewModel.onError = { message ->
-            Snackbar.make(binding.btLogin, message, Snackbar.LENGTH_LONG).show()
+            when (message) {
+                StringConstants.MESSAGES.INVALID_CREDENTIALS -> {
+                    Snackbar.make(binding.btLogin, getString(R.string.invalid_credentials), Snackbar.LENGTH_LONG).show()
+                }
+                StringConstants.MESSAGES.USER_NOT_FOUND -> {
+                    Snackbar.make(binding.btLogin, getString(R.string.user_not_found), Snackbar.LENGTH_LONG).show()
+                }
+                StringConstants.MESSAGES.LOGIN_ERROR -> {
+                    Snackbar.make(binding.btLogin, getString(R.string.login_error), Snackbar.LENGTH_LONG).show()
+                }
+            }
+
         }
         lifecycleScope.launch(Dispatchers.Main){
             viewModel.internetConnection.isConnected.collectLatest{ isConnected ->

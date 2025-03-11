@@ -23,60 +23,26 @@ class LoginViewModel(
 
     val internetConnection = NetworkConnectionLiveData(application)
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun login(email: String, password: String)=
-        viewModelScope.launch{
-            val user = User("", email)
-            var successLogin = CompletableDeferred<Boolean>()
-            firebaseAPI.login2(user, password)
-                .addOnCompleteListener{ task ->
-                    if (task.isSuccessful) {
-                        firebaseAPI.updateReferences()
-                        successLogin.complete(true)
-                    } else {
-                        successLogin.complete(false)
-                        val message = when (task.exception) {
-                            is FirebaseAuthInvalidCredentialsException -> "E-mail ou senha inválidos."
-                            else -> "Ocorreu um erro ao realizar o login. Tente novamente mais tarde."
-                        }
-                        onError(message)
-                    }
-                }
-
-            if(successLogin.await()){
-                if(!verifyExistsExpensesPath().await()){
-                    updateExpensesDatabasePath().await()
-                }
-                getUserInfo().await()
-                val currentUser = firebaseAPI.currentUser()
-                if(currentUser?.isEmailVerified == true){
-                    onUserLogged()
-                }else{
-                    onUserNotVerified()
-                }
-            }
-    }
-
-    suspend fun login2(email: String, password: String){
+    suspend fun login(email: String, password: String){
         val user = User("", email)
         try {
             withContext(Dispatchers.IO){
                 authRepository.login(user, password).fold(
                     onSuccess = {result ->
                         if(result){
+                            getUserInfo().await()
                             onUserLogged()
                         }else{
                             onUserNotVerified()
                         }
                     },
                     onFailure = { error ->
-                        //TODO tratar messagem de erro conforme retorno
                         onError(error.message.toString())
                     }
                 )
             }
         }catch (e : Exception){
-
+            onError(e.message.toString())
         }
     }
 

@@ -203,4 +203,10 @@ class StringConstants private constructor() {
         const val PROFILE_IMAGE_FILE_NAME = "profile_image.jpg"
     }
 
+    object MESSAGES {
+        const val USER_NOT_FOUND = "user_not_found"
+        const val INVALID_CREDENTIALS = "invalid_credentials"
+        const val LOGIN_ERROR = "login_error"
+    }
+
 }

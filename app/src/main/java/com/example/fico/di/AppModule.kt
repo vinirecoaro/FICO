@@ -135,7 +135,8 @@ val appModule = module {
         LoginViewModel(
             firebaseAPI = get(),
             androidApplication(),
-            dataStore = get()
+            dataStore = get(),
+            authRepository = get()
         )
     }
 
