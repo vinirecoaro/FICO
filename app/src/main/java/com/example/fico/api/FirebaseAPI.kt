@@ -3,6 +3,7 @@ package com.example.fico.api
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.fico.interfaces.AuthInterface
+import com.example.fico.interfaces.UserDataInterface
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
@@ -33,7 +34,7 @@ import kotlin.coroutines.suspendCoroutine
 class FirebaseAPI(
     private val auth : FirebaseAuth,
     private val database : FirebaseDatabase
-) : AuthInterface {
+) : AuthInterface, UserDataInterface {
     private val rootRef = database.getReference(StringConstants.DATABASE.USERS)
     private lateinit var user_root : DatabaseReference
     private lateinit var user_info : DatabaseReference
@@ -141,7 +142,7 @@ class FirebaseAPI(
         expenses.child(StringConstants.DATABASE.TOTAL_EXPENSE).setValue("0.00")
     }
 
-    suspend fun getUserEmail() : Result<String> = withContext(Dispatchers.IO) {
+    override suspend fun getUserEmail() : Result<String> = withContext(Dispatchers.IO) {
         try{
             val email = currentUser()?.email.toString()
             Result.success(email)
@@ -165,7 +166,7 @@ class FirebaseAPI(
         user_info.child(StringConstants.DATABASE.NAME).setValue(name)
     }
 
-    suspend fun getUserName(): Result<String> = withContext(Dispatchers.IO) {
+    override suspend fun getUserName(): Result<String> = withContext(Dispatchers.IO) {
         return@withContext suspendCancellableCoroutine { continuation ->
             try {
                 user_info.addListenerForSingleValueEvent(object : ValueEventListener {

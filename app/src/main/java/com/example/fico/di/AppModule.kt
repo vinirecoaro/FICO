@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.interfaces.AuthInterface
+import com.example.fico.interfaces.UserDataInterface
 import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
@@ -25,6 +26,7 @@ import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.repositories.AuthRepository
+import com.example.fico.repositories.UserDataRepository
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
 import com.google.firebase.auth.FirebaseAuth
@@ -44,8 +46,13 @@ val appModule = module {
     single { FirebaseDatabase.getInstance() }
     single { FirebaseAuth.getInstance() }
     single { FirebaseAPI(auth = get(), database = get()) }
+
     single<AuthInterface> { get<FirebaseAPI>() }
     single { AuthRepository(get()) }
+
+    single<UserDataInterface> { get<FirebaseAPI>() }
+    single { UserDataRepository(get()) }
+
     single<DataStoreManager>(){
         DataStoreManager(androidContext())
     }
@@ -133,10 +140,10 @@ val appModule = module {
 
     factory<LoginViewModel> {
         LoginViewModel(
-            firebaseAPI = get(),
             androidApplication(),
             dataStore = get(),
-            authRepository = get()
+            authRepository = get(),
+            userDataRepository = get()
         )
     }
 
