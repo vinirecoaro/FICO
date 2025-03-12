@@ -66,6 +66,26 @@ class FirebaseAPI(
         return@withContext auth.currentUser
     }
 
+    override suspend fun isLogged() : Result<Boolean> {
+        return try{
+            val isLogged = auth.fetchSignInMethodsForEmail(currentUser()?.email.toString()).await()
+            if(isLogged.signInMethods?.isNotEmpty() == true){
+                updateReferences()
+                val existExpensesPath = verifyExistsExpensesPath()
+                if(!existExpensesPath){
+                    updateExpensePerListInformationPath()
+                    updateDefaultValuesPath()
+                    updateInformationPerMonthPath()
+                    updateTotalExpensePath()
+                }
+                return Result.success(true)
+            }
+            Result.success(false)
+        }catch (e : Exception){
+            Result.failure(e)
+        }
+    }
+
     override suspend fun register(user: User, password: String): Result<User> {
         return try{
             val result = auth.createUserWithEmailAndPassword(user.email, password).await()
@@ -1156,7 +1176,6 @@ class FirebaseAPI(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun verifyExistsExpensesPath(): Boolean {
         return checkIfExistsOnDatabse(expenses)
     }

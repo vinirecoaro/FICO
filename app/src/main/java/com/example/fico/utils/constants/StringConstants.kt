@@ -207,6 +207,8 @@ class StringConstants private constructor() {
         const val USER_NOT_FOUND = "user_not_found"
         const val INVALID_CREDENTIALS = "invalid_credentials"
         const val LOGIN_ERROR = "login_error"
+        const val IS_LOGGED_ERROR = "is_logged_error_message"
+        const val NO_INTERNET_CONNECTION = "no_internet_connection"
     }
 
 }

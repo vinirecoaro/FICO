@@ -134,7 +134,8 @@ val appModule = module {
 
     factory<LogoViewModel> {
         LogoViewModel(
-            firebaseAPI = get()
+            firebaseAPI = get(),
+            authRepository = get()
         )
     }
 

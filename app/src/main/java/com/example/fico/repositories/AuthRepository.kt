@@ -14,4 +14,8 @@ class AuthRepository(private val authInterface: AuthInterface) {
         return authInterface.login(user, password)
     }
 
+    suspend fun isLogged(): Result<Boolean> {
+        return authInterface.isLogged()
+    }
+
 }

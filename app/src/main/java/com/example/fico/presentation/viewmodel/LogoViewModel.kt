@@ -6,68 +6,51 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.repositories.AuthRepository
+import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class LogoViewModel(
-    private val firebaseAPI : FirebaseAPI
+    private val firebaseAPI : FirebaseAPI,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun isLogged(context : Context) : Deferred<Boolean> {
         val result = CompletableDeferred<Boolean>()
-        viewModelScope.async(Dispatchers.IO) {
-            val currentUser = firebaseAPI.currentUser()
-            if (currentUser != null) {
-                if(ConnectionFunctions().internetConnectionVerification(context)){
-                    firebaseAPI.updateReferences()
-                    try {
-                        val providers = firebaseAPI.verifyIfUserExists().await()
-                        if (providers.signInMethods?.isNotEmpty() == true) {
-                            if(!verifyExistsExpensesPath().await()){
-                                updateExpensesDatabasePath().await()
+        if(ConnectionFunctions().internetConnectionVerification(context)){
+            withContext(Dispatchers.IO){
+                try {
+                    authRepository.isLogged().fold(
+                        onSuccess = { isLogged ->
+                            if(isLogged){
+                                result.complete(true)
+                            }else{
+                                result.complete(false)
                             }
-                        } else {
-                            onError("Erro ao verificar o usuário")
+                        },
+                        onFailure = {
+                            onError(StringConstants.MESSAGES.IS_LOGGED_ERROR)
                             result.complete(false)
                         }
-                    } catch (e: Exception) {
-                        onError("Erro ao verificar o usuário")
-                        result.complete(false)
-                    }
+                    )
+                }catch (e : Exception){
+                    onError(StringConstants.MESSAGES.IS_LOGGED_ERROR)
+                    result.complete(false)
                 }
-                result.complete(true)
             }
+        }else{
+            onError(StringConstants.MESSAGES.NO_INTERNET_CONNECTION)
             result.complete(false)
         }
         return result
     }
 
     var onError: (String) -> Unit = {}
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private suspend fun verifyExistsExpensesPath() : Deferred<Boolean> {
-        return viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.verifyExistsExpensesPath()
-        }
-    }
-
-    private fun updateExpensesDatabasePath(): Deferred<Unit> = viewModelScope.async{
-        try{
-            viewModelScope.launch {
-                firebaseAPI.updateExpensePerListInformationPath()
-                firebaseAPI.updateDefaultValuesPath()
-                firebaseAPI.updateInformationPerMonthPath()
-                firebaseAPI.updateTotalExpensePath()
-            }
-        }catch (e: Exception){
-
-        }
-    }
 
 }

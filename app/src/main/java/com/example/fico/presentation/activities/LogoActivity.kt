@@ -23,6 +23,7 @@ import org.koin.android.ext.android.inject
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import com.example.fico.R
+import com.example.fico.utils.constants.StringConstants
 
 class LogoActivity : AppCompatActivity() {
 
@@ -71,7 +72,14 @@ class LogoActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners() {
         viewModel.onError = { message ->
-            Snackbar.make(binding.ivLogo, message, Snackbar.LENGTH_LONG).show()
+            when(message) {
+                StringConstants.MESSAGES.IS_LOGGED_ERROR -> {
+                    Snackbar.make(binding.ivLogo, getString(R.string.is_logged_error_message), Snackbar.LENGTH_LONG).show()
+                }
+                StringConstants.MESSAGES.NO_INTERNET_CONNECTION -> {
+                    Snackbar.make(binding.ivLogo, getString(R.string.no_internet_connection_error_message), Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
 
         lifecycleScope.launch {
