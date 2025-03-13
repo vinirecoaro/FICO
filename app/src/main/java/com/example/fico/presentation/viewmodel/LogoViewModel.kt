@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LogoViewModel(
-    private val firebaseAPI : FirebaseAPI,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 

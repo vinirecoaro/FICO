@@ -8,4 +8,6 @@ interface AuthInterface {
     suspend fun login(user: User, password: String) : Result<Boolean>
 
     suspend fun isLogged() : Result<Boolean>
+
+    suspend fun sendVerificationEmail() : Result<Boolean>
 }

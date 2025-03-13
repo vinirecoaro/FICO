@@ -18,4 +18,8 @@ class AuthRepository(private val authInterface: AuthInterface) {
         return authInterface.isLogged()
     }
 
+    suspend fun sendVerificationEmail() : Result<Boolean> {
+        return authInterface.sendVerificationEmail()
+    }
+
 }

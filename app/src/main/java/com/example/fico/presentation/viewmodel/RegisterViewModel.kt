@@ -13,7 +13,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class RegisterViewModel(
-    private val firebaseAPI : FirebaseAPI,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
@@ -34,15 +33,12 @@ class RegisterViewModel(
         }
     }
 
-    suspend fun sendEmailVerificarion(){
-        viewModelScope.async(Dispatchers.IO){
-            firebaseAPI.sendEmailVerification()
-                ?.addOnCompleteListener{
-                    onSendEmailSuccess()
-                }
-                ?.addOnFailureListener{
-                    onSendEmailFailure()
-                }
+    suspend fun sendVerificationEmail(){
+        withContext(Dispatchers.IO){
+            authRepository.sendVerificationEmail().fold(
+                onSuccess = { onSendEmailSuccess() },
+                onFailure = { onSendEmailFailure() }
+            )
         }
     }
 

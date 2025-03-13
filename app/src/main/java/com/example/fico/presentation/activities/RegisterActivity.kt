@@ -52,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
 
         viewModel.onUserCreated = {
             lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.sendEmailVerificarion()
+                viewModel.sendVerificationEmail()
             }
             startActivity(Intent(this, VerifyEmailActivity::class.java))
             finish()

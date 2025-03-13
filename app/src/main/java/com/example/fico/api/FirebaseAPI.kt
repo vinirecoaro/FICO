@@ -140,6 +140,15 @@ class FirebaseAPI(
         return@withContext auth.currentUser?.sendEmailVerification()
     }
 
+    override suspend fun sendVerificationEmail() : Result<Boolean>{
+        return try{
+            auth.currentUser?.sendEmailVerification()?.await()
+            Result.success(true)
+        }catch (e : Exception){
+            Result.failure(e)
+        }
+    }
+
     suspend fun stateListener() = withContext(Dispatchers.IO) {
         return@withContext auth.addAuthStateListener { }
     }
@@ -150,10 +159,6 @@ class FirebaseAPI(
 
     suspend fun resetPassword(email: String) = withContext(Dispatchers.IO) {
         return@withContext auth.sendPasswordResetEmail(email)
-    }
-
-    suspend fun verifyIfUserExists(): Task<SignInMethodQueryResult> = withContext(Dispatchers.IO) {
-        return@withContext auth.fetchSignInMethodsForEmail(currentUser()?.email.toString())
     }
 
     suspend fun addNewUserOnDatabase() = withContext(Dispatchers.IO) {

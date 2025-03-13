@@ -366,7 +366,7 @@ class DataStoreManager (context: Context) {
         val userName = dataStore.data.map { preferences ->
             preferences[userNameKey]
         }.first()
-        return Gson().fromJson(userName, object : TypeToken<String>() {}.type) ?: ""
+        return userName ?: ""
     }
 
     suspend fun updateUserEmail(email : String){
@@ -379,7 +379,7 @@ class DataStoreManager (context: Context) {
         val userEmail = dataStore.data.map { preferences ->
             preferences[userEmailKey]
         }.first()
-        return Gson().fromJson(userEmail, object : TypeToken<String>() {}.type)
+        return userEmail ?: ""
     }
 
 
