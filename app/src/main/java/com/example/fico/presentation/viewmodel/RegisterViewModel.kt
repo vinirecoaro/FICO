@@ -1,16 +1,14 @@
 package com.example.fico.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.fico.model.User
-import com.example.fico.api.FirebaseAPI
 import com.example.fico.repositories.AuthRepository
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import com.example.fico.utils.constants.StringConstants
 
 class RegisterViewModel(
     private val authRepository: AuthRepository
@@ -29,7 +27,7 @@ class RegisterViewModel(
                 )
             }
         }catch (exception : Exception){
-            onError("Ocorreu um erro inesperado. Tente novamente mais tarde.")
+            onError(StringConstants.MESSAGES.UNEXPECTED_ERROR)
         }
     }
 
@@ -44,10 +42,10 @@ class RegisterViewModel(
 
     private fun errorMessage(exception: Throwable): String {
         return when(exception){
-            is FirebaseAuthInvalidCredentialsException ->"E-mail ou senha inválidos."
-            is FirebaseAuthUserCollisionException -> "Este e-mail já está em uso."
-            is FirebaseAuthWeakPasswordException -> "A senha deve ter pelo menos 6 caracteres."
-            else -> "Ocorreu um erro ao criar a conta. Tente novamente mais tarde."
+            is FirebaseAuthInvalidCredentialsException -> StringConstants.MESSAGES.INVALID_CREDENTIALS
+            is FirebaseAuthUserCollisionException -> StringConstants.MESSAGES.EMAIL_ALREADY_IN_USE
+            is FirebaseAuthWeakPasswordException -> StringConstants.MESSAGES.WEAK_PASSWORD_ERROR
+            else -> StringConstants.MESSAGES.REGISTER_ERROR
         }
     }
 

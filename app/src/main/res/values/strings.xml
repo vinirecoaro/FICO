@@ -233,8 +233,12 @@
     <string name="invalid_credentials">E-mail ou senha inválidos</string>
     <string name="user_not_found">Usuário não encontrado</string>
     <string name="login_error">Ocorreu um erro ao realizar o login. Tente novamente mais tarde</string>
+    <string name="register_error_message">Ocorreu um erro ao criar a conta. Tente novamente mais tarde</string>
     <string name="is_logged_error_message">Erro ao autenticar o usuário</string>
+    <string name="weak_password_error_message">A senha deve ter pelo menos 6 caracteres</string>
     <string name="no_internet_connection_error_message">Sem conexão com a internet</string>
+    <string name="email_already_in_use">Este e-mail já está em uso</string>
+    <string name="unexpected_error_try_later">Ocorreu um erro inesperado. Tente novamente mais tarde</string>
 
 
 </resources>

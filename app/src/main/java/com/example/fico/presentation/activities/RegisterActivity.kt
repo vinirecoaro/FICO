@@ -1,17 +1,15 @@
 package com.example.fico.presentation.activities
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import android.widget.EditText
-import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityRegisterBinding
 import com.example.fico.presentation.viewmodel.RegisterViewModel
+import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,7 +57,27 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         viewModel.onError = { message ->
-            Snackbar.make(binding.btRegister, message, Snackbar.LENGTH_LONG).show()
+            when(message){
+                StringConstants.MESSAGES.INVALID_CREDENTIALS -> {
+                    Snackbar.make(binding.btRegister, getString(R.string.invalid_credentials), Snackbar.LENGTH_LONG).show()
+                }
+
+                StringConstants.MESSAGES.EMAIL_ALREADY_IN_USE -> {
+                    Snackbar.make(binding.btRegister, getString(R.string.email_already_in_use), Snackbar.LENGTH_LONG).show()
+                }
+
+                StringConstants.MESSAGES.WEAK_PASSWORD_ERROR -> {
+                    Snackbar.make(binding.btRegister, getString(R.string.weak_password_error_message), Snackbar.LENGTH_LONG).show()
+                }
+
+                StringConstants.MESSAGES.REGISTER_ERROR -> {
+                    Snackbar.make(binding.btRegister, getString(R.string.register_error_message), Snackbar.LENGTH_LONG).show()
+                }
+
+                StringConstants.MESSAGES.UNEXPECTED_ERROR -> {
+                    Snackbar.make(binding.btRegister, getString(R.string.unexpected_error_try_later), Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
 
         viewModel.onSendEmailSuccess = {

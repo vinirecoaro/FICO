@@ -206,7 +206,11 @@ class StringConstants private constructor() {
     object MESSAGES {
         const val USER_NOT_FOUND = "user_not_found"
         const val INVALID_CREDENTIALS = "invalid_credentials"
+        const val EMAIL_ALREADY_IN_USE = "email_already_in_use"
         const val LOGIN_ERROR = "login_error"
+        const val REGISTER_ERROR = "register_error"
+        const val WEAK_PASSWORD_ERROR = "weak_password_error"
+        const val UNEXPECTED_ERROR = "unexpected_error"
         const val IS_LOGGED_ERROR = "is_logged_error_message"
         const val NO_INTERNET_CONNECTION = "no_internet_connection"
     }

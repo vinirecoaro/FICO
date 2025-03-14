@@ -127,7 +127,6 @@ val appModule = module {
 
     factory<RegisterViewModel> {
         RegisterViewModel(
-            firebaseAPI = get(),
             authRepository = get()
         )
     }
