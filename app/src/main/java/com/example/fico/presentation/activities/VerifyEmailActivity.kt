@@ -28,7 +28,7 @@ class VerifyEmailActivity : AppCompatActivity() {
         binding.btResentEmail.setOnClickListener {
             binding.btResentEmail.isEnabled = false
             lifecycleScope.launch {
-                viewModel.sendEmailVerificarion()
+                viewModel.sendVerificationEmail()
                 binding.btResentEmail.isEnabled = true
             }
         }

@@ -66,7 +66,8 @@ val appModule = module {
 
     factory<VerifyEmailViewModel> {
         VerifyEmailViewModel(
-            firebaseAPI = get()
+            firebaseAPI = get(),
+            authRepository = get()
         )
     }
 

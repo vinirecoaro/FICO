@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.repositories.AuthRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 class VerifyEmailViewModel(
-    private val firebaseAPI : FirebaseAPI
+    private val firebaseAPI : FirebaseAPI,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _isVerified = MutableLiveData<Boolean>()
@@ -31,17 +34,13 @@ class VerifyEmailViewModel(
         }
     }
 
-    suspend fun sendEmailVerificarion(){
-        viewModelScope.async(Dispatchers.IO) {
-            firebaseAPI.sendEmailVerification()
-                ?.addOnCompleteListener{
-                    onSendEmailSuccess()
-                }
-                ?.addOnFailureListener{
-                    onSendEmailFailure()
-                }
+    suspend fun sendVerificationEmail(){
+        withContext(Dispatchers.IO){
+            authRepository.sendVerificationEmail().fold(
+                onSuccess = { onSendEmailSuccess() },
+                onFailure = { onSendEmailFailure() }
+            )
         }
-
     }
 
     var onSendEmailSuccess: () -> Unit = {}
