@@ -26,7 +26,7 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.ActivityEditTransactionBinding
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
-import com.example.fico.presentation.interfaces.OnCategorySelectedListener
+import com.example.fico.interfaces.OnCategorySelectedListener
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions

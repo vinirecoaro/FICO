@@ -20,7 +20,7 @@ import com.example.fico.R
 import com.example.fico.databinding.ActivityBudgetPerMonthBinding
 import com.example.fico.model.Budget
 import com.example.fico.presentation.adapters.BudgetPerMonthAdapter
-import com.example.fico.presentation.interfaces.OnListItemClick
+import com.example.fico.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
 import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

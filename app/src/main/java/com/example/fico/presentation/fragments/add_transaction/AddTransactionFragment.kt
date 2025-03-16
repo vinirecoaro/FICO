@@ -55,7 +55,7 @@ import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
-import com.example.fico.presentation.interfaces.OnCategorySelectedListener
+import com.example.fico.interfaces.OnCategorySelectedListener
 import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*

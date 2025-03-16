@@ -8,6 +8,7 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import com.example.fico.databinding.ActivityResetPasswordBinding
 import com.example.fico.presentation.viewmodel.ResetPasswordViewModel
+import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
 
@@ -40,7 +41,7 @@ class ResetPasswordActivity : AppCompatActivity() {
 
         viewModel.onResetPasswordSuccess = {
             val intent = Intent(this, LoginActivity::class.java)
-            intent.putExtra("Email Enviado", true)
+            intent.putExtra(StringConstants.RESET_PASSWORD.EMAIL_SENT, true)
             startActivity(intent)
         }
 

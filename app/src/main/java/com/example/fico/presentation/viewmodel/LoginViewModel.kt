@@ -5,6 +5,8 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
@@ -23,6 +25,8 @@ class LoginViewModel(
 ) : ViewModel() {
 
     val internetConnection = NetworkConnectionLiveData(application)
+    private val _enabledLoginButton = MutableLiveData<Boolean>()
+    val enabledLoginButton : LiveData<Boolean> = _enabledLoginButton
 
     suspend fun login(email: String, password: String){
         val user = User("", email)
@@ -39,6 +43,7 @@ class LoginViewModel(
                     },
                     onFailure = { error ->
                         onError(error.message.toString())
+                        _enabledLoginButton.postValue(true)
                     }
                 )
             }

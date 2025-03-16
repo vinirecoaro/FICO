@@ -25,7 +25,7 @@ import com.example.fico.presentation.activities.DefaultPaymentDateConfigurationA
 import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
-import com.example.fico.presentation.interfaces.OnListItemClick
+import com.example.fico.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants

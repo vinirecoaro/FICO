@@ -238,7 +238,7 @@
     <string name="weak_password_error_message">A senha deve ter pelo menos 6 caracteres</string>
     <string name="no_internet_connection_error_message">Sem conexão com a internet</string>
     <string name="email_already_in_use">Este e-mail já está em uso</string>
+    <string name="redefine_password_email_sent_success_message">Email de redefinição de senha enviado com sucesso</string>
     <string name="unexpected_error_try_later">Ocorreu um erro inesperado. Tente novamente mais tarde</string>
-
 
 </resources>

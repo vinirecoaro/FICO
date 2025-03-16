@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.presentation.interfaces.OnListItemClick
+import com.example.fico.interfaces.OnListItemClick
 
 class BudgetConfigurationListAdapter(private var data: MutableList<String>) : RecyclerView.Adapter<BudgetConfigurationListAdapter.ViewHolder>() {
 

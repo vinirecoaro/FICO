@@ -1,4 +1,4 @@
-package com.example.fico.presentation.interfaces
+package com.example.fico.interfaces
 
 import android.app.Activity
 import android.os.Environment

@@ -5,6 +5,8 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
@@ -38,25 +40,40 @@ class LoginActivity : AppCompatActivity() {
     private fun setUpListeners(){
         binding.btLogin.setOnClickListener {
             binding.btLogin.isEnabled = false
-            lifecycleScope.launch (Dispatchers.Main){
-                viewModel.login(
-                    binding.etEmail.text.toString(),
-                    binding.etPassword.text.toString())
+            binding.btLogin.text = StringConstants.MESSAGES.EMPTY_STRING
+            binding.pbLogin.visibility = View.VISIBLE
+            if(verifyFields(
+                binding.etEmail,
+                binding.etPassword
+            )){
+                lifecycleScope.launch (Dispatchers.Main){
+                    viewModel.login(
+                        binding.etEmail.text.toString(),
+                        binding.etPassword.text.toString())
+                }
+            }else{
+                binding.btLogin.isEnabled = true
+                binding.btLogin.text = getString(R.string.login)
+                binding.pbLogin.visibility = View.GONE
             }
-            binding.btLogin.isEnabled = true
         }
+
         binding.tvRedifinePassword.setOnClickListener {
             startActivity(Intent(this, ResetPasswordActivity::class.java))
         }
+
         binding.tvRegister.setOnClickListener{
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+
         viewModel.onUserLogged = {
             startActivity(Intent(this@LoginActivity, MainTransactionActivity::class.java))
         }
+
         viewModel.onUserNotVerified = {
             startActivity(Intent(this, VerifyEmailActivity::class.java))
         }
+
         viewModel.onError = { message ->
             when (message) {
                 StringConstants.MESSAGES.INVALID_CREDENTIALS -> {
@@ -69,22 +86,36 @@ class LoginActivity : AppCompatActivity() {
                     Snackbar.make(binding.btLogin, getString(R.string.login_error), Snackbar.LENGTH_LONG).show()
                 }
             }
-
         }
+
+        viewModel.enabledLoginButton.observe(this){ enabled ->
+            if(enabled){
+                binding.btLogin.isEnabled = true
+                binding.btLogin.text = getString(R.string.login)
+                binding.pbLogin.visibility = View.GONE
+            }
+        }
+
         lifecycleScope.launch(Dispatchers.Main){
             viewModel.internetConnection.isConnected.collectLatest{ isConnected ->
                 if (!isConnected) {
                     if (networkConnectionSnackBar == null) { //create just if it not exists
+
+                        binding.btLogin.isEnabled = false
+
                         networkConnectionSnackBar = Snackbar.make(
                             binding.btLogin,
                             getString(R.string.without_network_connection),
                             Snackbar.LENGTH_INDEFINITE
                         )
                             .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
-                            .setActionTextColor(resources.getColor(android.R.color.white, theme))
+                            .setTextColor(resources.getColor(android.R.color.white, theme))
                         networkConnectionSnackBar?.show()
                     }
                 } else {
+
+                    binding.btLogin.isEnabled = true
+
                     networkConnectionSnackBar?.dismiss()
                     networkConnectionSnackBar = null // Clear the instance to allow recreate after
                 }
@@ -93,10 +124,22 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun resetPasswordSucess(){
-        val result = intent.getBooleanExtra("Email Enviado",false)
+        val result = intent.getBooleanExtra(StringConstants.RESET_PASSWORD.EMAIL_SENT,false)
         if(result){
-            Toast.makeText(this,"Email de redefinição de senha enviado com sucesso", Toast.LENGTH_LONG).show()
+            Toast.makeText(this,getString(R.string.redefine_password_email_sent_success_message), Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun verifyFields(vararg text: EditText): Boolean {
+        for (i in text) {
+            if (i.text.toString() == "" || i == null) {
+                Snackbar.make(
+                    binding.btLogin, "${getString(R.string.fill_field)} ${i.hint}", Snackbar.LENGTH_LONG
+                ).show()
+                return false
+            }
+        }
+        return true
     }
 
 }

@@ -17,7 +17,7 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
 import com.example.fico.presentation.adapters.ExpenseMonthsListAdapter
-import com.example.fico.presentation.interfaces.OnExpenseMonthSelectedListener
+import com.example.fico.interfaces.OnExpenseMonthSelectedListener
 import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.utils.DateFunctions
 import com.github.mikephil.charting.animation.Easing

@@ -1,4 +1,4 @@
-package com.example.fico.presentation.interfaces
+package com.example.fico.interfaces
 
 interface OnCategorySelectedListener {
     fun onCategorySelected(description : String)

@@ -213,6 +213,11 @@ class StringConstants private constructor() {
         const val UNEXPECTED_ERROR = "unexpected_error"
         const val IS_LOGGED_ERROR = "is_logged_error_message"
         const val NO_INTERNET_CONNECTION = "no_internet_connection"
+        const val EMPTY_STRING = ""
+    }
+
+    object RESET_PASSWORD {
+        const val EMAIL_SENT = "email_sent"
     }
 
 }

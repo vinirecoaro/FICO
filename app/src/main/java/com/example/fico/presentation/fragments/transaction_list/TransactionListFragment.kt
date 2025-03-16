@@ -40,8 +40,8 @@ import com.example.fico.model.Transaction
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.TransactionListAdapter
-import com.example.fico.presentation.interfaces.OnListItemClick
-import com.example.fico.presentation.interfaces.XLSInterface
+import com.example.fico.interfaces.OnListItemClick
+import com.example.fico.interfaces.XLSInterface
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList

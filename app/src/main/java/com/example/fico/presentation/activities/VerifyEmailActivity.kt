@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.example.fico.R
 import com.example.fico.databinding.ActivityVerifyEmailBinding
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -49,13 +50,19 @@ class VerifyEmailActivity : AppCompatActivity() {
         })
 
         viewModel.onSendEmailSuccess = {
-            //Toast.makeText(this, "Email de verificação enviado com sucesso", Toast.LENGTH_LONG).show()
-            Snackbar.make(binding.btResentEmail, "Email de verificação enviado com sucesso.", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(
+                binding.btResentEmail,
+                getString(R.string.verification_email_success_message),
+                Snackbar.LENGTH_LONG
+            ).show()
         }
 
         viewModel.onSendEmailFailure = {
-            //Toast.makeText(this, "Erro ao enviar email de verificação", Toast.LENGTH_LONG).show()
-            Snackbar.make(binding.btResentEmail, "Erro ao enviar email de verificação.", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(
+                binding.btResentEmail,
+                getString(R.string.verification_email_fail_message),
+                Snackbar.LENGTH_LONG
+            ).show()
         }
 
     }

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.databinding.ActivityBudgetConfigurationListBinding
 import com.example.fico.presentation.adapters.BudgetConfigurationListAdapter
-import com.example.fico.presentation.interfaces.OnListItemClick
+import com.example.fico.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
 import org.koin.android.ext.android.inject
 

@@ -9,12 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.api.FormatValuesToDatabase
-import com.example.fico.model.Earning
-import com.example.fico.model.Expense
 import com.example.fico.model.Transaction
 import com.example.fico.model.TransactionCategory
-import com.example.fico.presentation.interfaces.OnListItemClick
+import com.example.fico.interfaces.OnListItemClick
 import com.example.fico.utils.constants.StringConstants
 import java.text.DecimalFormat
 import java.text.NumberFormat

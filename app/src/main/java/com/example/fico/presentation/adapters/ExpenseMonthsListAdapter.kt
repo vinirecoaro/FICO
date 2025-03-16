@@ -2,7 +2,6 @@ package com.example.fico.presentation.adapters
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.presentation.interfaces.OnExpenseMonthSelectedListener
+import com.example.fico.interfaces.OnExpenseMonthSelectedListener
 
 class ExpenseMonthsListAdapter(private val context : Context, private var expenseMonthList : List<String>) : RecyclerView.Adapter<ExpenseMonthsListAdapter.ViewHolder>() {
 

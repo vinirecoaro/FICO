@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.presentation.interfaces.OnListItemClick
+import com.example.fico.interfaces.OnListItemClick
 
 class GeneralConfigurationListAdapter(private val data : MutableList<String>) : RecyclerView.Adapter<GeneralConfigurationListAdapter.ViewHolder>() {
 

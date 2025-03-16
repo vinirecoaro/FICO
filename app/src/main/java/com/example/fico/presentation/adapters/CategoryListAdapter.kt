@@ -9,9 +9,8 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.model.Expense
 import com.example.fico.model.TransactionCategory
-import com.example.fico.presentation.interfaces.OnCategorySelectedListener
+import com.example.fico.interfaces.OnCategorySelectedListener
 
 
 class CategoryListAdapter(

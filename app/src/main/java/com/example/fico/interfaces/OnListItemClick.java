@@ -1,4 +1,4 @@
-package com.example.fico.presentation.interfaces;
+package com.example.fico.interfaces;
 
 public interface OnListItemClick {
     void onListItemClick(int position);
