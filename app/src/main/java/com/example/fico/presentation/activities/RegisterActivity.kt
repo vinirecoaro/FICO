@@ -37,12 +37,16 @@ class RegisterActivity : AppCompatActivity() {
     private fun setUpListeners(){
         binding.btRegister.setOnClickListener{
             binding.btRegister.isEnabled = false
-            if(checkFields(binding.etName, binding.etEmail, binding.etPassword)){
-                lifecycleScope.launch(Dispatchers.Main) {
-                    viewModel.register(
-                        binding.etName.text.toString(),
-                        binding.etEmail.text.toString(),
-                        binding.etPassword.text.toString())
+            if(checkFields(binding.etName, binding.etEmail, binding.etPasswordRegister, binding.etRepeatPasswordRegister)){
+                if(binding.etPasswordRegister.text.toString() == binding.etRepeatPasswordRegister.text.toString()){
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        viewModel.register(
+                            binding.etName.text.toString(),
+                            binding.etEmail.text.toString(),
+                            binding.etPasswordRegister.text.toString())
+                    }
+                }else{
+                    Snackbar.make(binding.btRegister, getString(R.string.password_dont_match), Snackbar.LENGTH_LONG).show()
                 }
             }
             binding.btRegister.isEnabled = true

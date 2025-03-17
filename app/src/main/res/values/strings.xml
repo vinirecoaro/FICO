@@ -240,5 +240,7 @@
     <string name="email_already_in_use">Este e-mail já está em uso</string>
     <string name="redefine_password_email_sent_success_message">Email de redefinição de senha enviado com sucesso</string>
     <string name="unexpected_error_try_later">Ocorreu um erro inesperado. Tente novamente mais tarde</string>
+    <string name="repeat_password">Repetir senha</string>
+    <string name="password_dont_match">Senhas não conferem</string>
 
 </resources>
