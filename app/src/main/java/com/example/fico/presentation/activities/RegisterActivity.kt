@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
@@ -36,7 +37,11 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setUpListeners(){
         binding.btRegister.setOnClickListener{
+
             binding.btRegister.isEnabled = false
+            binding.btRegister.text = StringConstants.MESSAGES.EMPTY_STRING
+            binding.pbRegister.visibility = View.VISIBLE
+
             if(checkFields(binding.etName, binding.etEmail, binding.etPasswordRegister, binding.etRepeatPasswordRegister)){
                 if(binding.etPasswordRegister.text.toString() == binding.etRepeatPasswordRegister.text.toString()){
                     lifecycleScope.launch(Dispatchers.Main) {
@@ -46,10 +51,18 @@ class RegisterActivity : AppCompatActivity() {
                             binding.etPasswordRegister.text.toString())
                     }
                 }else{
+                    binding.btRegister.isEnabled = true
+                    binding.btRegister.text = getString(R.string.register)
+                    binding.pbRegister.visibility = View.GONE
+
                     Snackbar.make(binding.btRegister, getString(R.string.password_dont_match), Snackbar.LENGTH_LONG).show()
                 }
+            }else{
+                binding.btRegister.isEnabled = true
+                binding.btRegister.text = getString(R.string.register)
+                binding.pbRegister.visibility = View.GONE
             }
-            binding.btRegister.isEnabled = true
+
         }
 
         viewModel.onUserCreated = {
@@ -94,6 +107,14 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.registerToolbar.setNavigationOnClickListener {
             finish()
+        }
+
+        viewModel.enabledRegisterButton.observe(this){ enabled ->
+            if(enabled){
+                binding.btRegister.isEnabled = true
+                binding.btRegister.text = getString(R.string.register)
+                binding.pbRegister.visibility = View.GONE
+            }
         }
     }
 

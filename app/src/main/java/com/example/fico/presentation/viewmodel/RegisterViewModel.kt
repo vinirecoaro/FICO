@@ -1,5 +1,7 @@
 package com.example.fico.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.fico.model.User
 import com.example.fico.repositories.AuthRepository
@@ -14,6 +16,9 @@ class RegisterViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
+    private val _enabledRegisterButton = MutableLiveData<Boolean>()
+    val enabledRegisterButton : LiveData<Boolean> = _enabledRegisterButton
+
     suspend fun register(name : String, email: String, password: String) {
         val user = User(name, email)
         try {
@@ -23,6 +28,7 @@ class RegisterViewModel(
                     onFailure = { exception ->
                         val message = errorMessage(exception)
                         onError(message)
+                        _enabledRegisterButton.postValue(true)
                     }
                 )
             }
