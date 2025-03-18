@@ -68,19 +68,24 @@ class FirebaseAPI(
 
     override suspend fun isLogged() : Result<Boolean> {
         return try{
-            val isLogged = auth.fetchSignInMethodsForEmail(currentUser()?.email.toString()).await()
-            if(isLogged.signInMethods?.isNotEmpty() == true){
-                updateReferences()
-                val existExpensesPath = verifyExistsExpensesPath()
-                if(!existExpensesPath){
-                    updateExpensePerListInformationPath()
-                    updateDefaultValuesPath()
-                    updateInformationPerMonthPath()
-                    updateTotalExpensePath()
+            val currentUser = currentUser()
+            if(currentUser != null){
+                val isLogged = auth.fetchSignInMethodsForEmail(currentUser.email.toString()).await()
+                if(isLogged.signInMethods?.isNotEmpty() == true){
+                    updateReferences()
+                    val existExpensesPath = verifyExistsExpensesPath()
+                    if(!existExpensesPath){
+                        updateExpensePerListInformationPath()
+                        updateDefaultValuesPath()
+                        updateInformationPerMonthPath()
+                        updateTotalExpensePath()
+                    }
+                    return Result.success(true)
                 }
-                return Result.success(true)
+                Result.success(false)
+            }else{
+                Result.success(false)
             }
-            Result.success(false)
         }catch (e : Exception){
             Result.failure(e)
         }
