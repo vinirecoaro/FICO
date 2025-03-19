@@ -1,6 +1,10 @@
 # FICO - Finantial Control
 This app make the finance control easy.
 
+# Demonstration Video
+
+https://youtu.be/FODgXmFl1Mk
+
 ## Resume
 
 This application stores expense information in a simple and
