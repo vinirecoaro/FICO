@@ -123,30 +123,6 @@ class HomeFragment : Fragment(){
             binding.tvTotalExpensesValue.invalidate()
         }
 
-       /* viewModel.infoPerMonthLiveData.observe(viewLifecycleOwner){ infoPerMonthList ->
-            barChartEntries.clear()
-            var i = 0f
-            for (infoPerMonth in infoPerMonthList){
-                val monthExpense = infoPerMonth.monthExpense.toFloat()
-                barChartEntries.add(BarEntry(i, monthExpense))
-                i += 1f
-            }
-            viewModel.formatInfoPerMonthToLabel()
-        }
-
-        viewModel.infoPerMonthLabelLiveData.observe(viewLifecycleOwner){ infoPerMonthLabelList ->
-            barChartMonthLabels.clear()
-            barChartExpenseLabels.clear()
-            for(infoPerMonthLabel in infoPerMonthLabelList){
-                barChartMonthLabels.add(infoPerMonthLabel.date)
-                barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
-            }
-            if(barChartEntries.isNotEmpty() && barChartMonthLabels.isNotEmpty() && barChartExpenseLabels.isNotEmpty() && viewModel.isFirstLoad.value!!){
-                initExpenseEachMonthChart()
-                viewModel.changeFirstLoadState()
-            }
-        }*/
-
         viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
             binding.tvTotalExpensesValue.text = totalExpense
         }

@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.interfaces.AuthInterface
+import com.example.fico.interfaces.TransactionsInterface
 import com.example.fico.interfaces.UserDataInterface
 import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
@@ -26,6 +27,7 @@ import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
 import com.example.fico.repositories.AuthRepository
+import com.example.fico.repositories.TransactionsRepository
 import com.example.fico.repositories.UserDataRepository
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
@@ -52,6 +54,9 @@ val appModule = module {
 
     single<UserDataInterface> { get<FirebaseAPI>() }
     single { UserDataRepository(get()) }
+
+    single<TransactionsInterface> { get<FirebaseAPI>() }
+    single { TransactionsRepository(get()) }
 
     single<DataStoreManager>(){
         DataStoreManager(androidContext())
@@ -134,7 +139,8 @@ val appModule = module {
 
     factory<LogoViewModel> {
         LogoViewModel(
-            authRepository = get()
+            authRepository = get(),
+            transactionsRepository = get()
         )
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.repositories.AuthRepository
+import com.example.fico.repositories.TransactionsRepository
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 import kotlinx.coroutines.CompletableDeferred
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LogoViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val transactionsRepository: TransactionsRepository
 ) : ViewModel() {
 
     suspend fun isLogged(context : Context) : Deferred<Boolean> {

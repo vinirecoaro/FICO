@@ -87,10 +87,6 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             }
         })
 
-        viewModel.informationPerMonthLiveData.observe(viewLifecycleOwner){
-
-        }
-
         viewModel.expensePerCategory.observe(viewLifecycleOwner){ expensePerCategoryList ->
             initExpensePerCategoryChart(expensePerCategoryList)
             val nOfCategories = expensePerCategoryList.size
@@ -227,9 +223,6 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
                     binding.tvTextCategoriesList5.text = text5
                 }
             }
-
-
-
         }
 
     }
