@@ -52,6 +52,21 @@ class LogoViewModel(
         return result
     }
 
+    suspend fun getDataFromDatabase(){
+        getExpenseList()
+    }
+
+    suspend fun getExpenseList(){
+        transactionsRepository.getExpenseList().fold(
+            onSuccess = { expenseList ->
+               println(expenseList)
+            },
+            onFailure = {
+                //TODO
+            }
+        )
+    }
+
     var onError: (String) -> Unit = {}
 
 }

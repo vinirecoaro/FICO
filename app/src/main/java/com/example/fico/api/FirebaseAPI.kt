@@ -954,9 +954,74 @@ class FirebaseAPI(
             return@withContext expensesList
         }
 
-    override suspend fun getExpenseList(): Result<List<Expense>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getExpenseList(): Result<List<Expense>> =
+        withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
+                val expenseList = mutableListOf<Expense>()
+                expense_list.orderByKey().addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            for (childSnapshot in snapshot.children) {
+                                val id = childSnapshot.key.toString()
+                                val priceDatabase =
+                                    BigDecimal(childSnapshot.child(StringConstants.DATABASE.PRICE).value.toString())
+                                val priceFormatted =
+                                    priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
+                                val description =
+                                    childSnapshot.child(StringConstants.DATABASE.DESCRIPTION).value.toString()
+                                val category =
+                                    childSnapshot.child(StringConstants.DATABASE.CATEGORY).value.toString()
+                                val paymentDateDatabase =
+                                    childSnapshot.child(StringConstants.DATABASE.PAYMENT_DATE).value.toString()
+                                var paymentDateFormatted =
+                                    "${paymentDateDatabase.substring(8, 10)}/" +
+                                            "${paymentDateDatabase.substring(5, 7)}/" +
+                                            paymentDateDatabase.substring(0, 4)
+                                if ((!childSnapshot.child(StringConstants.DATABASE.PURCHASE_DATE).exists())
+                                    || (!childSnapshot.child(StringConstants.DATABASE.INPUT_DATE_TIME).exists())
+                                ) {
+                                    val expense = Expense(
+                                        id,
+                                        priceFormatted,
+                                        description,
+                                        category,
+                                        paymentDateFormatted,
+                                        "",
+                                        ""
+                                    )
+                                    expenseList.add(expense)
+                                } else {
+                                    val purchaseDateDatabase =
+                                        childSnapshot.child(StringConstants.DATABASE.PURCHASE_DATE).value.toString()
+                                    val purchaseDateFormatted =
+                                        "${purchaseDateDatabase.substring(8, 10)}/" +
+                                                "${purchaseDateDatabase.substring(5, 7)}/" +
+                                                purchaseDateDatabase.substring(0, 4)
+                                    val inputDateTime =
+                                        childSnapshot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+                                    val expense = Expense(
+                                        id,
+                                        priceFormatted,
+                                        description,
+                                        category,
+                                        paymentDateFormatted,
+                                        purchaseDateFormatted,
+                                        inputDateTime
+                                    )
+                                    expenseList.add(expense)
+                                }
+                            }
+                            continuation.resume(Result.success(expenseList))
+                        }else{
+                            continuation.resume(Result.success(emptyList()))
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resume(Result.failure(Exception(error.message)))
+                    }
+                })
+            }
+        }
 
     suspend fun getEarningList(): Deferred<DataSnapshot> = withContext(Dispatchers.IO){
         val earningList = CompletableDeferred<DataSnapshot>()

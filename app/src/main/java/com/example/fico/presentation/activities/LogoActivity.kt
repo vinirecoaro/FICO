@@ -44,6 +44,7 @@ class LogoActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.Main) {
             if (viewModel.isLogged(this@LogoActivity).await()) {
+                viewModel.getDataFromDatabase()
                 promptManager.showBiometricPrompt(
                     title = getString(R.string.biometric_prompt_title),
                     description = getString(R.string.biometric_prompt_description)
