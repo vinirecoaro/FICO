@@ -2,9 +2,11 @@ package com.example.fico.presentation.viewmodel
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.repositories.AuthRepository
 import com.example.fico.repositories.TransactionsRepository
@@ -19,7 +21,8 @@ import kotlinx.coroutines.withContext
 
 class LogoViewModel(
     private val authRepository: AuthRepository,
-    private val transactionsRepository: TransactionsRepository
+    private val transactionsRepository: TransactionsRepository,
+    private val dataStore : DataStoreManager
 ) : ViewModel() {
 
     suspend fun isLogged(context : Context) : Deferred<Boolean> {
@@ -59,10 +62,10 @@ class LogoViewModel(
     suspend fun getExpenseList(){
         transactionsRepository.getExpenseList().fold(
             onSuccess = { expenseList ->
-               println(expenseList)
+                dataStore.updateAndResetExpenseList(expenseList)
             },
-            onFailure = {
-                //TODO
+            onFailure = {error ->
+                Log.e("LogoViewModel", "Error getting expense list: ${error.message}")
             }
         )
     }

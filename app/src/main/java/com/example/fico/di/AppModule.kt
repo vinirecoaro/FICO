@@ -140,7 +140,8 @@ val appModule = module {
     factory<LogoViewModel> {
         LogoViewModel(
             authRepository = get(),
-            transactionsRepository = get()
+            transactionsRepository = get(),
+            dataStore = get()
         )
     }
 
