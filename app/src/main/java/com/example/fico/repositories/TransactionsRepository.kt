@@ -7,4 +7,8 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
     suspend fun getExpenseList() : Result<List<Expense>> {
         return transactionsInterface.getExpenseList()
     }
+
+    suspend fun getExpenseMonths() : Result<List<String>>{
+        return transactionsInterface.getExpenseMonths()
+    }
 }

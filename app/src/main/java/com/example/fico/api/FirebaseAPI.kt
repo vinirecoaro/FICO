@@ -1051,7 +1051,7 @@ class FirebaseAPI(
         return@withContext recurringExpensesList
     }
 
-    suspend fun getExpenseMonths(): List<String> =
+    /*suspend fun getExpenseMonths(): List<String> =
         suspendCoroutine { continuation ->
             var isCompleted = false
             expenses_information_per_month.addValueEventListener(object : ValueEventListener {
@@ -1080,6 +1080,41 @@ class FirebaseAPI(
                 }
 
             })
+        }*/
+
+    override suspend fun getExpenseMonths(): Result<List<String>> =
+        suspendCoroutine { continuation ->
+            try{
+                val expenseMonths = mutableListOf<String>()
+                var isCompleted = false
+                expenses_information_per_month.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (month in snapshot.children) {
+                            val date: String = month.key.toString()
+                            if (month.child(StringConstants.DATABASE.BUDGET).value != month.child(
+                                    StringConstants.DATABASE.AVAILABLE_NOW
+                                ).value
+                            ) {
+                                expenseMonths.add(date)
+                            }
+                        }
+                        if (!isCompleted) { // Verifica se já foi retomado
+                            isCompleted = true
+                            continuation.resume(Result.success(expenseMonths))
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        if (!isCompleted) { // Verifica se já foi retomado
+                            isCompleted = true
+                            continuation.resume(Result.success(emptyList()))
+                        }
+                    }
+
+                })
+            }catch(error : Exception){
+                continuation.resume(Result.failure(error))
+            }
         }
 
     suspend fun getInformationPerMonth(): Deferred<MutableList<InformationPerMonthExpense>> =

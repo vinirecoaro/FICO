@@ -23,12 +23,12 @@ class ExpensesViewModel(
         }
     }
 
-    fun getExpenseMonths(){
+    /*fun getExpenseMonths(){
         viewModelScope.async {
             val expenseMonths = firebaseAPI.getExpenseMonths()
             dataStore.updateAndResetExpenseMonths(expenseMonths)
         }
-    }
+    }*/
 
     fun getExpenseInfoPerMonth(){
         viewModelScope.async {
