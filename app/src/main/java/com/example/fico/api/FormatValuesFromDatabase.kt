@@ -1,6 +1,10 @@
 package com.example.fico.api
 
+import com.example.fico.model.Expense
+import com.example.fico.utils.constants.StringConstants
+import com.google.firebase.database.DataSnapshot
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.NumberFormat
 
 class FormatValuesFromDatabase {
@@ -168,4 +172,54 @@ class FormatValuesFromDatabase {
         return formattedDate
     }
 
+    fun dataSnapshotToExpense(dataSnapShot : DataSnapshot) : Expense {
+        val id = dataSnapShot.key.toString()
+        val priceDatabase =
+            BigDecimal(dataSnapShot.child(StringConstants.DATABASE.PRICE).value.toString())
+        val priceFormatted =
+            priceDatabase.setScale(8, RoundingMode.HALF_UP).toString()
+        val description =
+            dataSnapShot.child(StringConstants.DATABASE.DESCRIPTION).value.toString()
+        val category =
+            dataSnapShot.child(StringConstants.DATABASE.CATEGORY).value.toString()
+        val paymentDateDatabase =
+            dataSnapShot.child(StringConstants.DATABASE.PAYMENT_DATE).value.toString()
+        var paymentDateFormatted =
+            "${paymentDateDatabase.substring(8, 10)}/" +
+                    "${paymentDateDatabase.substring(5, 7)}/" +
+                    paymentDateDatabase.substring(0, 4)
+        if ((!dataSnapShot.child(StringConstants.DATABASE.PURCHASE_DATE).exists())
+            || (!dataSnapShot.child(StringConstants.DATABASE.INPUT_DATE_TIME).exists())
+        ) {
+            val expense = Expense(
+                id,
+                priceFormatted,
+                description,
+                category,
+                paymentDateFormatted,
+                "",
+                ""
+            )
+            return expense
+        } else {
+            val purchaseDateDatabase =
+                dataSnapShot.child(StringConstants.DATABASE.PURCHASE_DATE).value.toString()
+            val purchaseDateFormatted =
+                "${purchaseDateDatabase.substring(8, 10)}/" +
+                        "${purchaseDateDatabase.substring(5, 7)}/" +
+                        purchaseDateDatabase.substring(0, 4)
+            val inputDateTime =
+                dataSnapShot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+            val expense = Expense(
+                id,
+                priceFormatted,
+                description,
+                category,
+                paymentDateFormatted,
+                purchaseDateFormatted,
+                inputDateTime
+            )
+            return expense
+        }
+    }
 }

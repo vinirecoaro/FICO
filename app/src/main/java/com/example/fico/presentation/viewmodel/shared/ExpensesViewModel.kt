@@ -16,20 +16,6 @@ class ExpensesViewModel(
     private val firebaseAPI : FirebaseAPI
 ) : ViewModel() {
 
-    fun getExpenseList(filter : String = "") {
-        viewModelScope.async{
-            val expenses = firebaseAPI.getExpenseList(filter).await()
-            dataStore.updateAndResetExpenseList(expenses)
-        }
-    }
-
-    /*fun getExpenseMonths(){
-        viewModelScope.async {
-            val expenseMonths = firebaseAPI.getExpenseMonths()
-            dataStore.updateAndResetExpenseMonths(expenseMonths)
-        }
-    }*/
-
     fun getExpenseInfoPerMonth(){
         viewModelScope.async {
             val expenseInfoPerMonth = firebaseAPI.getInformationPerMonth().await()

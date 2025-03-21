@@ -75,8 +75,6 @@ class MainTransactionActivity : AppCompatActivity(){
 
         //Update DataStore with info from database
         if(ConnectionFunctions().internetConnectionVerification(this)){
-            //expensesViewModel.getExpenseList()
-           //expensesViewModel.getExpenseMonths()
             expensesViewModel.getExpenseInfoPerMonth()
             expensesViewModel.getTotalExpense()
             expensesViewModel.getDefaultBudget()
