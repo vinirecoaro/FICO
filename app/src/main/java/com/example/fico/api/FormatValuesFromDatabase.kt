@@ -1,6 +1,7 @@
 package com.example.fico.api
 
 import com.example.fico.model.Expense
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.utils.constants.StringConstants
 import com.google.firebase.database.DataSnapshot
 import java.math.BigDecimal
@@ -221,5 +222,15 @@ class FormatValuesFromDatabase {
             )
             return expense
         }
+    }
+
+    fun dataSnapshotToInfoPerMonthExpense(dataSnapShot : DataSnapshot) : InformationPerMonthExpense {
+        val monthInfo = InformationPerMonthExpense(
+            dataSnapShot.key.toString(),
+            dataSnapShot.child(StringConstants.DATABASE.AVAILABLE_NOW).value.toString(),
+            dataSnapShot.child(StringConstants.DATABASE.BUDGET).value.toString(),
+            dataSnapShot.child(StringConstants.DATABASE.EXPENSE).value.toString(),
+        )
+        return monthInfo
     }
 }

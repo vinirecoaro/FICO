@@ -896,33 +896,28 @@ class FirebaseAPI(
             }
         }
 
-    suspend fun getInformationPerMonth(): Deferred<MutableList<InformationPerMonthExpense>> =
+    override suspend fun getExpenseInfoPerMonth(): Result<List<InformationPerMonthExpense>> =
         withContext(Dispatchers.IO) {
-            val informationPerMonthInfo =
-                CompletableDeferred<MutableList<InformationPerMonthExpense>>()
-            expenses_information_per_month.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
+            suspendCoroutine { continuation ->
+                try {
                     val infoList = mutableListOf<InformationPerMonthExpense>()
-                    for (month in snapshot.children) {
-                        val monthInfo = InformationPerMonthExpense(
-                            month.key.toString(),
-                            month.child(StringConstants.DATABASE.AVAILABLE_NOW).value.toString(),
-                            month.child(StringConstants.DATABASE.BUDGET).value.toString(),
-                            month.child(StringConstants.DATABASE.EXPENSE).value.toString(),
-                        )
-                        infoList.add(monthInfo)
-                    }
-                    informationPerMonthInfo.complete(infoList)
-                }
+                    expenses_information_per_month.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            for (month in snapshot.children) {
+                                val monthInfo = FormatValuesFromDatabase().dataSnapshotToInfoPerMonthExpense(month)
+                                infoList.add(monthInfo)
+                            }
+                            continuation.resume(Result.success(infoList))
+                        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    try {
-                        informationPerMonthInfo.complete(emptyList<InformationPerMonthExpense>() as MutableList<InformationPerMonthExpense>)
-                    } catch (e: Exception) {
-                    }
+                        override fun onCancelled(error: DatabaseError) {
+                            continuation.resume(Result.failure(Exception(error.message)))
+                        }
+                    })
+                }catch (error : Exception){
+                    continuation.resume(Result.failure(error))
                 }
-            })
-            return@withContext informationPerMonthInfo
+            }
         }
 
     fun formatDateFromFilterToDatabaseForInfoPerMonth(date: String): String {

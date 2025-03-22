@@ -75,12 +75,24 @@ class LogoViewModel(
         transactionsRepository.getExpenseMonths().fold(
             onSuccess = { expenseMonths ->
                 dataStore.updateAndResetExpenseMonths(expenseMonths)
+                getExpenseInfoPerMonth()
             },
             onFailure = {error ->
                 Log.e("LogoViewModel", "Error getting expense months: ${error.message}")
             }
         )
 
+    }
+
+    suspend fun getExpenseInfoPerMonth(){
+        transactionsRepository.getExpenseInfoPerMonth().fold(
+            onSuccess = { expenseInfoPerMonth ->
+                dataStore.updateAndResetInfoPerMonthExpense(expenseInfoPerMonth)
+            },
+            onFailure = {error ->
+                Log.e("LogoViewModel", "Error getting expense info per month: ${error.message}")
+            }
+        )
     }
 
     var onError: (String) -> Unit = {}
