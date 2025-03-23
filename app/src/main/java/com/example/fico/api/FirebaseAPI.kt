@@ -1101,20 +1101,22 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun getDaysForClosingBill(): Deferred<String> = withContext(Dispatchers.IO){
-        val daysForClosingBill = CompletableDeferred<String>()
-
-        default_expense_values.child(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL).get()
-            .addOnSuccessListener { snapshot ->
-                if(snapshot.value != null){
-                    daysForClosingBill.complete(snapshot.value.toString())
-                }else{
-                    daysForClosingBill.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
-                }
+    override suspend fun getDaysForClosingBill(): Result<String> = withContext(Dispatchers.IO){
+        suspendCoroutine{ continuation ->
+            try {
+                default_expense_values.child(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL).get()
+                    .addOnSuccessListener { snapshot ->
+                        if(snapshot.value != null){
+                            val daysForClosingBill = snapshot.value.toString()
+                            continuation.resume(Result.success(daysForClosingBill))
+                        }
+                    }
+                    .addOnFailureListener {error ->
+                        continuation.resume(Result.failure(Exception(error.message)))
+                    }
+            }catch (error : Exception){
+                continuation.resume(Result.failure(error))
             }
-            .addOnFailureListener {
-                daysForClosingBill.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
-            }
-        return@withContext daysForClosingBill
+        }
     }
 }

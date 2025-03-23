@@ -16,24 +16,6 @@ class ExpensesViewModel(
     private val firebaseAPI : FirebaseAPI
 ) : ViewModel() {
 
-    /*fun getDefaultPaymentDay() {
-        viewModelScope.launch {
-            val paymentDay = firebaseAPI.getDefaultPaymentDay().await()
-            if(paymentDay != StringConstants.DEFAULT_MESSAGES.FAIL){
-                dataStore.setDefaultPaymentDay(paymentDay)
-            }
-        }
-    }*/
-
-    fun getDaysForClosingBill() {
-        viewModelScope.launch {
-            val daysForClosingBill = firebaseAPI.getDaysForClosingBill().await()
-            if(daysForClosingBill != StringConstants.DEFAULT_MESSAGES.FAIL){
-                dataStore.setDaysForClosingBill(daysForClosingBill)
-            }
-        }
-    }
-
     fun getEarningsList(){
         viewModelScope.async {
             val earningList = mutableListOf<Earning>()

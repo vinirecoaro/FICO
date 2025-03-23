@@ -10,4 +10,5 @@ interface TransactionsInterface {
     suspend fun getTotalExpense() : Result<String>
     suspend fun getDefaultBudget() : Result<String>
     suspend fun getDefaultPaymentDay() : Result<String>
+    suspend fun getDaysForClosingBill() : Result<String>
 }

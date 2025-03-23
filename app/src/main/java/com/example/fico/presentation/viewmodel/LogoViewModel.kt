@@ -59,7 +59,7 @@ class LogoViewModel(
         getExpenseList()
     }
 
-    suspend fun getExpenseList(){
+    private suspend fun getExpenseList(){
         transactionsRepository.getExpenseList().fold(
             onSuccess = { expenseList ->
                 dataStore.updateAndResetExpenseList(expenseList)
@@ -71,7 +71,7 @@ class LogoViewModel(
         )
     }
 
-    suspend fun getExpenseMonths(){
+    private suspend fun getExpenseMonths(){
         transactionsRepository.getExpenseMonths().fold(
             onSuccess = { expenseMonths ->
                 dataStore.updateAndResetExpenseMonths(expenseMonths)
@@ -84,7 +84,7 @@ class LogoViewModel(
 
     }
 
-    suspend fun getExpenseInfoPerMonth(){
+    private suspend fun getExpenseInfoPerMonth(){
         transactionsRepository.getExpenseInfoPerMonth().fold(
             onSuccess = { expenseInfoPerMonth ->
                 dataStore.updateAndResetInfoPerMonthExpense(expenseInfoPerMonth)
@@ -96,7 +96,7 @@ class LogoViewModel(
         )
     }
 
-    suspend fun getTotalExpense(){
+    private suspend fun getTotalExpense(){
         transactionsRepository.getTotalExpense().fold(
             onSuccess = { totalExpense ->
                 dataStore.updateTotalExpense(totalExpense)
@@ -108,7 +108,7 @@ class LogoViewModel(
         )
     }
 
-    suspend fun getDefaultBudget(){
+    private suspend fun getDefaultBudget(){
         transactionsRepository.getDefaultBudget().fold(
             onSuccess = { defaultBudget ->
                 dataStore.updateDefaultBudget(defaultBudget)
@@ -120,13 +120,25 @@ class LogoViewModel(
         )
     }
 
-    suspend fun getDefaultPaymentDay(){
+    private suspend fun getDefaultPaymentDay(){
         transactionsRepository.getDefaultPaymentDay().fold(
             onSuccess = { defaultPaymentDay ->
                 dataStore.setDefaultPaymentDay(defaultPaymentDay)
+                getDaysForClosingBill()
             },
             onFailure = { error ->
                 Log.e("LogoViewModel", "Error getting default payment day: ${error.message}")
+            }
+        )
+    }
+
+    private suspend fun getDaysForClosingBill(){
+        transactionsRepository.getDaysForClosingBill().fold(
+            onSuccess = { daysForClosingBill ->
+                dataStore.setDaysForClosingBill(daysForClosingBill)
+            },
+            onFailure = {
+                Log.e("LogoViewModel", "Error getting days for closing bill: ${it.message}")
             }
         )
     }

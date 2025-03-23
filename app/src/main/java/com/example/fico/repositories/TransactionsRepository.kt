@@ -29,6 +29,10 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
         return transactionsInterface.getDefaultPaymentDay()
     }
 
+    suspend fun getDaysForClosingBill() : Result<String>{
+        return transactionsInterface.getDaysForClosingBill()
+    }
+
 
 
 }
