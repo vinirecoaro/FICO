@@ -21,4 +21,9 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
         return transactionsInterface.getTotalExpense()
     }
 
+    suspend fun getDefaultBudget() : Result<String> {
+        return transactionsInterface.getDefaultBudget()
+    }
+
+
 }

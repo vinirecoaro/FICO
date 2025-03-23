@@ -311,20 +311,24 @@ class FirebaseAPI(
         return updetedInfoPerMonth
     }
 
-    suspend fun getDefaultBudget(): Deferred<String> = withContext(Dispatchers.IO) {
-        val defaultBudget = CompletableDeferred<String>()
-        default_expense_values.child(StringConstants.DATABASE.DEFAULT_BUDGET)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val value = snapshot.value.toString()
-                    defaultBudget.complete(value)
-                }
+    override suspend fun getDefaultBudget(): Result<String> = withContext(Dispatchers.IO) {
+        suspendCoroutine{ continuation ->
+            try{
+                default_expense_values.child(StringConstants.DATABASE.DEFAULT_BUDGET)
+                    .addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val value = snapshot.value.toString()
+                            continuation.resume(Result.success(value))
+                        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    defaultBudget.complete("")
-                }
-            })
-        return@withContext defaultBudget
+                        override fun onCancelled(error: DatabaseError) {
+                            continuation.resume(Result.failure(Exception(error.message)))
+                        }
+                    })
+            }catch (error : Exception){
+                continuation.resume(Result.failure(error))
+            }
+        }
     }
 
     suspend fun checkIfExistsOnDatabse(reference: DatabaseReference): Boolean =

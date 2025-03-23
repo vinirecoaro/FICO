@@ -100,9 +100,21 @@ class LogoViewModel(
         transactionsRepository.getTotalExpense().fold(
             onSuccess = { totalExpense ->
                 dataStore.updateTotalExpense(totalExpense)
+                getDefaultBudget()
             },
             onFailure = {error ->
                 Log.e("LogoViewModel", "Error getting total expense: ${error.message}")
+            }
+        )
+    }
+
+    suspend fun getDefaultBudget(){
+        transactionsRepository.getDefaultBudget().fold(
+            onSuccess = { defaultBudget ->
+                dataStore.updateDefaultBudget(defaultBudget)
+            },
+            onFailure = {error ->
+                Log.e("LogoViewModel", "Error getting default budget: ${error.message}")
             }
         )
     }

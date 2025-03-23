@@ -16,20 +16,6 @@ class ExpensesViewModel(
     private val firebaseAPI : FirebaseAPI
 ) : ViewModel() {
 
-/*    fun getTotalExpense(){
-        viewModelScope.async {
-            val totalExpense = firebaseAPI.getTotalExpense().await()
-            dataStore.updateTotalExpense(totalExpense)
-        }
-    }*/
-
-    fun getDefaultBudget(){
-        viewModelScope.async {
-            val defaultBudget = firebaseAPI.getDefaultBudget().await()
-            dataStore.updateDefaultBudget(defaultBudget)
-        }
-    }
-
     fun getDefaultPaymentDay() {
         viewModelScope.launch {
             val paymentDay = firebaseAPI.getDefaultPaymentDay().await()

@@ -75,8 +75,6 @@ class MainTransactionActivity : AppCompatActivity(){
 
         //Update DataStore with info from database
         if(ConnectionFunctions().internetConnectionVerification(this)){
-            //expensesViewModel.getTotalExpense()
-            expensesViewModel.getDefaultBudget()
             expensesViewModel.getDefaultPaymentDay()
             expensesViewModel.getDaysForClosingBill()
             expensesViewModel.getEarningsList()
