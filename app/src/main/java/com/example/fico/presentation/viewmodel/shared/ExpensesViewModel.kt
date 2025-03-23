@@ -16,14 +16,14 @@ class ExpensesViewModel(
     private val firebaseAPI : FirebaseAPI
 ) : ViewModel() {
 
-    fun getDefaultPaymentDay() {
+    /*fun getDefaultPaymentDay() {
         viewModelScope.launch {
             val paymentDay = firebaseAPI.getDefaultPaymentDay().await()
             if(paymentDay != StringConstants.DEFAULT_MESSAGES.FAIL){
                 dataStore.setDefaultPaymentDay(paymentDay)
             }
         }
-    }
+    }*/
 
     fun getDaysForClosingBill() {
         viewModelScope.launch {

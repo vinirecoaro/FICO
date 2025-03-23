@@ -25,5 +25,10 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
         return transactionsInterface.getDefaultBudget()
     }
 
+    suspend fun getDefaultPaymentDay() : Result<String>{
+        return transactionsInterface.getDefaultPaymentDay()
+    }
+
+
 
 }

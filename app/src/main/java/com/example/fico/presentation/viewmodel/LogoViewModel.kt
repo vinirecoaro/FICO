@@ -112,9 +112,21 @@ class LogoViewModel(
         transactionsRepository.getDefaultBudget().fold(
             onSuccess = { defaultBudget ->
                 dataStore.updateDefaultBudget(defaultBudget)
+                getDefaultPaymentDay()
             },
             onFailure = {error ->
                 Log.e("LogoViewModel", "Error getting default budget: ${error.message}")
+            }
+        )
+    }
+
+    suspend fun getDefaultPaymentDay(){
+        transactionsRepository.getDefaultPaymentDay().fold(
+            onSuccess = { defaultPaymentDay ->
+                dataStore.setDefaultPaymentDay(defaultPaymentDay)
+            },
+            onFailure = { error ->
+                Log.e("LogoViewModel", "Error getting default payment day: ${error.message}")
             }
         )
     }

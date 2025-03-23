@@ -9,4 +9,5 @@ interface TransactionsInterface {
     suspend fun getExpenseInfoPerMonth() : Result<List<InformationPerMonthExpense>>
     suspend fun getTotalExpense() : Result<String>
     suspend fun getDefaultBudget() : Result<String>
+    suspend fun getDefaultPaymentDay() : Result<String>
 }

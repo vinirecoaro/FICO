@@ -1082,21 +1082,23 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun getDefaultPaymentDay(): Deferred<String> = withContext(Dispatchers.IO){
-        val paymentDay = CompletableDeferred<String>()
-
-        default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY).get()
-            .addOnSuccessListener { snapshot ->
-                if(snapshot.value != null){
-                    paymentDay.complete(snapshot.value.toString())
-                }else{
-                    paymentDay.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
-                }
+    override suspend fun getDefaultPaymentDay(): Result<String> = withContext(Dispatchers.IO){
+        suspendCoroutine{ continuation ->
+            try {
+                default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY).get()
+                    .addOnSuccessListener { snapshot ->
+                        if(snapshot.value != null){
+                            val day = snapshot.value.toString()
+                            continuation.resume(Result.success(day))
+                        }
+                    }
+                    .addOnFailureListener { error ->
+                        continuation.resume(Result.failure(Exception(error.message)))
+                    }
+            }catch (error:Exception){
+                continuation.resume(Result.failure(error))
             }
-            .addOnFailureListener {
-                paymentDay.complete(StringConstants.DEFAULT_MESSAGES.FAIL)
-            }
-        return@withContext paymentDay
+        }
     }
 
     suspend fun getDaysForClosingBill(): Deferred<String> = withContext(Dispatchers.IO){
