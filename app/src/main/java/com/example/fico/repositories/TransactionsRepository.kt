@@ -17,4 +17,8 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
         return transactionsInterface.getExpenseInfoPerMonth()
     }
 
+    suspend fun getTotalExpense() : Result<String> {
+        return transactionsInterface.getTotalExpense()
+    }
+
 }

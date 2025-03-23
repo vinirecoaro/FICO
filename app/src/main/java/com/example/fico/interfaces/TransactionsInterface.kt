@@ -7,4 +7,5 @@ interface TransactionsInterface {
     suspend fun getExpenseList() : Result<List<Expense>>
     suspend fun getExpenseMonths() : Result<List<String>>
     suspend fun getExpenseInfoPerMonth() : Result<List<InformationPerMonthExpense>>
+    suspend fun getTotalExpense() : Result<String>
 }

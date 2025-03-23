@@ -756,19 +756,22 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun getTotalExpense(): Deferred<String> = withContext(Dispatchers.IO) {
-        val totalExpense = CompletableDeferred<String>()
-        total_expenses_price.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.value.toString()
-                totalExpense.complete(value)
+    override suspend fun getTotalExpense(): Result<String> = withContext(Dispatchers.IO) {
+        suspendCoroutine{ continuation ->
+            try {
+                total_expenses_price.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val value = snapshot.value.toString()
+                        continuation.resume(Result.success(value))
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resume(Result.failure(Exception(error.message)))
+                    }
+                })
+            }catch (error : Exception){
+                continuation.resume(Result.failure(error))
             }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })
-        return@withContext totalExpense
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
