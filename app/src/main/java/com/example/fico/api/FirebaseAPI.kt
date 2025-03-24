@@ -657,109 +657,6 @@ class FirebaseAPI(
                 })
         }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getAvailableNow(date: String): String = withContext(Dispatchers.IO) {
-        val availableNow = CompletableDeferred<String>()
-        val reference = expenses_information_per_month
-        reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val availableValue = snapshot.child(StringConstants.DATABASE.AVAILABLE_NOW)
-                        .getValue(String::class.java)
-                    availableNow.complete(availableValue.toString())
-                } else {
-                    availableNow.complete("---")
-                }
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })
-        return@withContext availableNow.await()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getAvailableNow2(date: String): Flow<String?> = callbackFlow {
-
-        val reference = expenses_information_per_month.child(date)
-
-        val valueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    trySend(
-                        snapshot.child(StringConstants.DATABASE.AVAILABLE_NOW)
-                            .getValue(String::class.java)
-                    )
-                } else {
-                    trySend("---")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                close(error.toException())
-            }
-        }
-
-        reference.addValueEventListener(valueEventListener)
-
-        awaitClose {
-            reference.removeEventListener(valueEventListener)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getMonthExpense(date: String): String = withContext(Dispatchers.IO) {
-        val deferredExpense = CompletableDeferred<String>()
-        val reference = expenses_information_per_month
-        reference.child(date).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val monthExpenseValue =
-                        snapshot.child(StringConstants.DATABASE.EXPENSE).getValue(String::class.java)
-                    deferredExpense.complete(monthExpenseValue.toString())
-                } else {
-                    deferredExpense.complete("---")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                deferredExpense.completeExceptionally(error.toException())
-            }
-        })
-
-        return@withContext deferredExpense.await()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun getMonthExpense2(date: String): Flow<String?> = callbackFlow {
-
-        val reference = expenses_information_per_month.child(date)
-
-        val valueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    trySend(
-                        snapshot.child(StringConstants.DATABASE.EXPENSE).getValue(String::class.java)
-                    )
-                } else {
-                    trySend("---")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                close(error.toException())
-            }
-        }
-
-        reference.addValueEventListener(valueEventListener)
-
-        awaitClose {
-            reference.removeEventListener(valueEventListener)
-        }
-    }
-
     override suspend fun getTotalExpense(): Result<String> = withContext(Dispatchers.IO) {
         suspendCoroutine{ continuation ->
             try {
@@ -776,27 +673,6 @@ class FirebaseAPI(
                 continuation.resume(Result.failure(error))
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    suspend fun observeTotalExpense(): Flow<String?> = callbackFlow {
-        val valueEventListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // Quando os dados mudam, enviamos o valor para o fluxo
-                trySend(dataSnapshot.getValue(String::class.java))
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Em caso de erro, fechamos o fluxo com erro
-                close(databaseError.toException())
-            }
-        }
-        total_expenses_price.addValueEventListener(valueEventListener)
-
-        awaitClose {
-            total_expenses_price.removeEventListener(valueEventListener)
-        }
-
     }
 
     fun sumOldAndNewValue(expense: Expense, snapshot: DataSnapshot, child: String): String {
@@ -840,18 +716,30 @@ class FirebaseAPI(
             }
         }
 
-    suspend fun getEarningList(): Deferred<DataSnapshot> = withContext(Dispatchers.IO){
-        val earningList = CompletableDeferred<DataSnapshot>()
-        earningsList.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    earningList.complete(snapshot)
-                }
+    override suspend fun getEarningList(): Result<List<Earning>> = withContext(Dispatchers.IO){
+        suspendCoroutine{ continuation ->
+            try{
+                val earningList = mutableListOf<Earning>()
+                earningsList.addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for(earning in snapshot.children){
+                                val earningFormatted = FormatValuesFromDatabase().dataSnapshotToEarning(earning)
+                                earningList.add(earningFormatted)
+                            }
+                            continuation.resume(Result.success(earningList))
+                        }else{
+                            continuation.resume(Result.success(emptyList()))
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resume(Result.failure(Exception(error.message)))
+                    }
+                })
+            }catch (error : Exception){
+                continuation.resume(Result.failure(error))
             }
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
-        return@withContext earningList
+        }
     }
 
     suspend fun getRecurringExpensesList(): Deferred<DataSnapshot> = withContext(Dispatchers.IO){

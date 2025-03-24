@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.model.Earning
 import com.example.fico.repositories.AuthRepository
 import com.example.fico.repositories.TransactionsRepository
+import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 import kotlinx.coroutines.CompletableDeferred
@@ -136,11 +138,33 @@ class LogoViewModel(
         transactionsRepository.getDaysForClosingBill().fold(
             onSuccess = { daysForClosingBill ->
                 dataStore.setDaysForClosingBill(daysForClosingBill)
+                getEarningList()
             },
             onFailure = {
                 Log.e("LogoViewModel", "Error getting days for closing bill: ${it.message}")
             }
         )
+    }
+
+    private suspend fun getEarningList(){
+        transactionsRepository.getEarningList().fold(
+            onSuccess = { earningList ->
+                dataStore.updateAndResetEarningList(earningList)
+                val earningMonthsList = getEarningMonthsList(earningList)
+                dataStore.updateAndResetEarningMonths(earningMonthsList.toList())
+            },
+            onFailure = {
+                Log.e("LogoViewModel", "Error getting earning list: ${it.message}")
+            }
+        )
+    }
+
+    private fun getEarningMonthsList(earningList : List<Earning>) : Set<String> {
+        val earningMonthsList = mutableSetOf<String>()
+        for(earning in earningList){
+            earningMonthsList.add(DateFunctions().YYYYmmDDtoYYYYmm(earning.date))
+        }
+        return earningMonthsList
     }
 
     var onError: (String) -> Unit = {}

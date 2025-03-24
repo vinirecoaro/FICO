@@ -1,5 +1,6 @@
 package com.example.fico.interfaces
 
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 
@@ -11,4 +12,5 @@ interface TransactionsInterface {
     suspend fun getDefaultBudget() : Result<String>
     suspend fun getDefaultPaymentDay() : Result<String>
     suspend fun getDaysForClosingBill() : Result<String>
+    suspend fun getEarningList() : Result<List<Earning>>
 }

@@ -1,5 +1,6 @@
 package com.example.fico.api
 
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.utils.constants.StringConstants
@@ -232,5 +233,16 @@ class FormatValuesFromDatabase {
             dataSnapShot.child(StringConstants.DATABASE.EXPENSE).value.toString(),
         )
         return monthInfo
+    }
+
+    fun dataSnapshotToEarning(dataSnapShot : DataSnapshot) : Earning{
+        return Earning(
+            id = dataSnapShot.key.toString(),
+            value = dataSnapShot.child(StringConstants.DATABASE.VALUE).value.toString(),
+            description = dataSnapShot.child(StringConstants.DATABASE.DESCRIPTION).value.toString(),
+            category = dataSnapShot.child(StringConstants.DATABASE.CATEGORY).value.toString(),
+            date = dataSnapShot.child(StringConstants.DATABASE.DATE).value.toString(),
+            inputDateTime = dataSnapShot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+        )
     }
 }

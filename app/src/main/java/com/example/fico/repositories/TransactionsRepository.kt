@@ -1,6 +1,7 @@
 package com.example.fico.repositories
 
 import com.example.fico.interfaces.TransactionsInterface
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 
@@ -31,6 +32,10 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
 
     suspend fun getDaysForClosingBill() : Result<String>{
         return transactionsInterface.getDaysForClosingBill()
+    }
+
+    suspend fun getEarningList() : Result<List<Earning>>{
+        return transactionsInterface.getEarningList()
     }
 
 

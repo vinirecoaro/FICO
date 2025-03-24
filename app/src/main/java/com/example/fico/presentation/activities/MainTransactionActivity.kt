@@ -75,7 +75,7 @@ class MainTransactionActivity : AppCompatActivity(){
 
         //Update DataStore with info from database
         if(ConnectionFunctions().internetConnectionVerification(this)){
-            expensesViewModel.getEarningsList()
+            //expensesViewModel.getEarningsList()
             expensesViewModel.getRecurringExpensesList()
         }
     }
