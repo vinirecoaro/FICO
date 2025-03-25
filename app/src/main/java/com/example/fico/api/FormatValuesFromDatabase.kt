@@ -3,6 +3,7 @@ package com.example.fico.api
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.RecurringTransaction
 import com.example.fico.utils.constants.StringConstants
 import com.google.firebase.database.DataSnapshot
 import java.math.BigDecimal
@@ -243,6 +244,18 @@ class FormatValuesFromDatabase {
             category = dataSnapShot.child(StringConstants.DATABASE.CATEGORY).value.toString(),
             date = dataSnapShot.child(StringConstants.DATABASE.DATE).value.toString(),
             inputDateTime = dataSnapShot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+        )
+    }
+
+    fun dataSnapshotToRecurringExpense(dataSnapShot : DataSnapshot) : RecurringTransaction{
+        return RecurringTransaction(
+            id = dataSnapShot.key.toString(),
+            price = dataSnapShot.child(StringConstants.DATABASE.PRICE).value.toString(),
+            description = dataSnapShot.child(StringConstants.DATABASE.DESCRIPTION).value.toString(),
+            category = dataSnapShot.child(StringConstants.DATABASE.CATEGORY).value.toString(),
+            day = dataSnapShot.child(StringConstants.DATABASE.DAY).value.toString(),
+            inputDateTime = dataSnapShot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString(),
+            type = dataSnapShot.child(StringConstants.DATABASE.TYPE).value.toString()
         )
     }
 }

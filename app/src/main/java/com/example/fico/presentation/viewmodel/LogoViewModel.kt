@@ -152,6 +152,7 @@ class LogoViewModel(
                 dataStore.updateAndResetEarningList(earningList)
                 val earningMonthsList = getEarningMonthsList(earningList)
                 dataStore.updateAndResetEarningMonths(earningMonthsList.toList())
+                getRecurringExpensesList()
             },
             onFailure = {
                 Log.e("LogoViewModel", "Error getting earning list: ${it.message}")
@@ -165,6 +166,17 @@ class LogoViewModel(
             earningMonthsList.add(DateFunctions().YYYYmmDDtoYYYYmm(earning.date))
         }
         return earningMonthsList
+    }
+
+    private suspend fun getRecurringExpensesList(){
+        transactionsRepository.getRecurringExpensesList().fold(
+            onSuccess = { recurringExpensesList ->
+                dataStore.updateAndResetRecurringExpensesList(recurringExpensesList)
+            },
+            onFailure = {
+                Log.e("LogoViewModel", "Error getting recurring expenses list: ${it.message}")
+            }
+        )
     }
 
     var onError: (String) -> Unit = {}

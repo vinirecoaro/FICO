@@ -4,6 +4,7 @@ import com.example.fico.interfaces.TransactionsInterface
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.RecurringTransaction
 
 class TransactionsRepository(private val transactionsInterface : TransactionsInterface) {
     suspend fun getExpenseList() : Result<List<Expense>> {
@@ -36,6 +37,10 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
 
     suspend fun getEarningList() : Result<List<Earning>>{
         return transactionsInterface.getEarningList()
+    }
+
+    suspend fun getRecurringExpensesList() : Result<List<RecurringTransaction>> {
+        return transactionsInterface.getRecurringExpensesList()
     }
 
 

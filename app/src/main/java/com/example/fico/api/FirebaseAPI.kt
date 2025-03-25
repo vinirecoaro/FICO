@@ -742,18 +742,30 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun getRecurringExpensesList(): Deferred<DataSnapshot> = withContext(Dispatchers.IO){
-        val recurringExpensesList = CompletableDeferred<DataSnapshot>()
-        recurring_transactions_list.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-                    recurringExpensesList.complete(snapshot)
-                }
+    override suspend fun getRecurringExpensesList(): Result<List<RecurringTransaction>> = withContext(Dispatchers.IO){
+        suspendCoroutine{ continuation ->
+            try{
+                val recurringExpensesList = mutableListOf<RecurringTransaction>()
+                recurring_transactions_list.addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for(recurringExpenseSnapshot in snapshot.children){
+                                val recurringExpense = FormatValuesFromDatabase().dataSnapshotToRecurringExpense(recurringExpenseSnapshot)
+                                recurringExpensesList.add(recurringExpense)
+                            }
+                            continuation.resume(Result.success(recurringExpensesList))
+                        }else{
+                            continuation.resume(Result.success(emptyList()))
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resume(Result.failure(Exception(error.message)))
+                    }
+                })
+            }catch(error : Exception){
+                continuation.resume(Result.failure(error))
             }
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
-        return@withContext recurringExpensesList
+        }
     }
 
     override suspend fun getExpenseMonths(): Result<List<String>> =

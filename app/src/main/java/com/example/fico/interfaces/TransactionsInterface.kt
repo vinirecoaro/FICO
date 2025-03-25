@@ -3,6 +3,7 @@ package com.example.fico.interfaces
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.RecurringTransaction
 
 interface TransactionsInterface {
     suspend fun getExpenseList() : Result<List<Expense>>
@@ -13,4 +14,5 @@ interface TransactionsInterface {
     suspend fun getDefaultPaymentDay() : Result<String>
     suspend fun getDaysForClosingBill() : Result<String>
     suspend fun getEarningList() : Result<List<Earning>>
+    suspend fun getRecurringExpensesList() : Result<List<RecurringTransaction>>
 }

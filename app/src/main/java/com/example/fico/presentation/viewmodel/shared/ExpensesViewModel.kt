@@ -16,30 +16,7 @@ class ExpensesViewModel(
     private val firebaseAPI : FirebaseAPI
 ) : ViewModel() {
 
-    /*fun getEarningsList(){
-        viewModelScope.async {
-            val earningList = mutableListOf<Earning>()
-            val earningListSnapShot = firebaseAPI.getEarningList().await().children
-            val earningMonthsList = mutableSetOf<String>()
-            for(earning in earningListSnapShot){
-                earningList.add(
-                    Earning(
-                        id = earning.key.toString(),
-                        value = earning.child(StringConstants.DATABASE.VALUE).value.toString(),
-                        description = earning.child(StringConstants.DATABASE.DESCRIPTION).value.toString(),
-                        category = earning.child(StringConstants.DATABASE.CATEGORY).value.toString(),
-                        date = earning.child(StringConstants.DATABASE.DATE).value.toString(),
-                        inputDateTime = earning.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
-                    )
-                )
-                earningMonthsList.add(DateFunctions().YYYYmmDDtoYYYYmm(earning.child(StringConstants.DATABASE.DATE).value.toString()))
-            }
-            dataStore.updateAndResetEarningList(earningList)
-            dataStore.updateAndResetEarningMonths(earningMonthsList.toList())
-        }
-    }*/
-
-    fun getRecurringExpensesList(){
+    /*fun getRecurringExpensesList(){
         viewModelScope.async {
             val recurringExpensesList = mutableListOf<RecurringTransaction>()
             val recurringExpensesListSnapShot = firebaseAPI.getRecurringExpensesList().await().children
@@ -58,6 +35,6 @@ class ExpensesViewModel(
             }
             dataStore.updateAndResetRecurringExpensesList(recurringExpensesList)
         }
-    }
+    }*/
 
 }
