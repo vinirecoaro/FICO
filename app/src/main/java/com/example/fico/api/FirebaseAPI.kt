@@ -63,6 +63,13 @@ class FirebaseAPI(
         earningsList = earnings.child(StringConstants.DATABASE.EARNINGS_LIST)
     }
 
+    suspend fun updateExpensesPath(){
+        updateExpensePerListInformationPath()
+        updateDefaultValuesPath()
+        updateInformationPerMonthPath()
+        updateTotalExpensePath()
+    }
+
     suspend fun currentUser(): FirebaseUser? = withContext(Dispatchers.IO) {
         return@withContext auth.currentUser
     }
@@ -71,19 +78,7 @@ class FirebaseAPI(
         return try{
             val currentUser = currentUser()
             if(currentUser != null){
-                val isLogged = auth.fetchSignInMethodsForEmail(currentUser.email.toString()).await()
-                if(isLogged.signInMethods?.isNotEmpty() == true){
-                    updateReferences()
-                    val existExpensesPath = verifyExistsExpensesPath()
-                    if(!existExpensesPath){
-                        updateExpensePerListInformationPath()
-                        updateDefaultValuesPath()
-                        updateInformationPerMonthPath()
-                        updateTotalExpensePath()
-                    }
-                    return Result.success(true)
-                }
-                Result.success(false)
+                Result.success(true)
             }else{
                 Result.success(false)
             }

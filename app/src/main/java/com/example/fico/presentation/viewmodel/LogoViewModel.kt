@@ -27,9 +27,8 @@ class LogoViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
-    suspend fun isLogged(context : Context) : Deferred<Boolean> {
+    suspend fun isLogged() : Deferred<Boolean> {
         val result = CompletableDeferred<Boolean>()
-        if(ConnectionFunctions().internetConnectionVerification(context)){
             withContext(Dispatchers.IO){
                 try {
                     authRepository.isLogged().fold(
@@ -50,10 +49,6 @@ class LogoViewModel(
                     result.complete(false)
                 }
             }
-        }else{
-            onError(StringConstants.MESSAGES.NO_INTERNET_CONNECTION)
-            result.complete(false)
-        }
         return result
     }
 

@@ -38,6 +38,10 @@ class MyApp : Application() {
             internetConnection.isConnected.collectLatest { isConnected ->
                 if (isConnected) {
                     firebaseAPI.updateReferences()
+                    val existExpensesPath = firebaseAPI.verifyExistsExpensesPath()
+                    if(!existExpensesPath){
+                        firebaseAPI.updateExpensesPath()
+                    }
                 }
             }
         }

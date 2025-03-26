@@ -24,6 +24,7 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import com.example.fico.R
 import com.example.fico.utils.constants.StringConstants
+import com.example.fico.utils.internet.ConnectionFunctions
 
 class LogoActivity : AppCompatActivity() {
 
@@ -43,8 +44,10 @@ class LogoActivity : AppCompatActivity() {
         setUpListeners()
 
         lifecycleScope.launch(Dispatchers.Main) {
-            if (viewModel.isLogged(this@LogoActivity).await()) {
-                viewModel.getDataFromDatabase()
+            if (viewModel.isLogged().await()) {
+                if(ConnectionFunctions().internetConnectionVerification(this@LogoActivity)){
+                    viewModel.getDataFromDatabase()
+                }
                 promptManager.showBiometricPrompt(
                     title = getString(R.string.biometric_prompt_title),
                     description = getString(R.string.biometric_prompt_description)
