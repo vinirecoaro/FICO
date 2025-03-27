@@ -1142,6 +1142,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         menu.findItem(R.id.add_expense_menu_installments).isVisible = true
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = true
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
+        menu.findItem(R.id.add_recurring_earning_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_expense_title)
         viewModel.changeOperation(StringConstants.ADD_TRANSACTION.ADD_EXPENSE)
         binding.tilPurchaseDate.visibility = View.VISIBLE
