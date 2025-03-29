@@ -1,7 +1,6 @@
 package com.example.fico.presentation.activities
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityLoginBinding
 import com.example.fico.presentation.viewmodel.LoginViewModel
+import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +25,8 @@ class LoginActivity : AppCompatActivity() {
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private val viewModel : LoginViewModel by inject()
     private var networkConnectionSnackBar: Snackbar? = null
+    private val remoteDatabaseViewModel : RemoteDatabaseViewModel by inject()
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +69,10 @@ class LoginActivity : AppCompatActivity() {
         }
 
         viewModel.onUserLogged = {
-            startActivity(Intent(this@LoginActivity, MainTransactionActivity::class.java))
+            lifecycleScope.launch (Dispatchers.Main){
+                remoteDatabaseViewModel.getDataFromDatabase()
+                startActivity(Intent(this@LoginActivity, MainTransactionActivity::class.java))
+            }
         }
 
         viewModel.onUserNotVerified = {

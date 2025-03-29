@@ -25,7 +25,7 @@ import com.example.fico.presentation.viewmodel.ResetPasswordViewModel
 import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
-import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
+import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.repositories.AuthRepository
 import com.example.fico.repositories.TransactionsRepository
 import com.example.fico.repositories.UserDataRepository
@@ -62,10 +62,10 @@ val appModule = module {
         DataStoreManager(androidContext())
     }
 
-    factory<ExpensesViewModel> {
-        ExpensesViewModel(
+    factory<RemoteDatabaseViewModel> {
+        RemoteDatabaseViewModel(
             dataStore = get(),
-            firebaseAPI = get()
+            transactionsRepository = get()
         )
     }
 
@@ -139,9 +139,7 @@ val appModule = module {
 
     factory<LogoViewModel> {
         LogoViewModel(
-            authRepository = get(),
-            transactionsRepository = get(),
-            dataStore = get()
+            authRepository = get()
         )
     }
 

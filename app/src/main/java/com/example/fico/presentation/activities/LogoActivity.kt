@@ -23,6 +23,7 @@ import org.koin.android.ext.android.inject
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import com.example.fico.R
+import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 
@@ -30,6 +31,7 @@ class LogoActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityLogoBinding.inflate(layoutInflater) }
     private val viewModel: LogoViewModel by inject()
+    private val remoteDatabaseViewModel : RemoteDatabaseViewModel by inject()
     private val promptManager by lazy{
         BiometricPromptManager(this)
     }
@@ -46,7 +48,7 @@ class LogoActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.Main) {
             if (viewModel.isLogged().await()) {
                 if(ConnectionFunctions().internetConnectionVerification(this@LogoActivity)){
-                    viewModel.getDataFromDatabase()
+                    remoteDatabaseViewModel.getDataFromDatabase()
                 }
                 promptManager.showBiometricPrompt(
                     title = getString(R.string.biometric_prompt_title),

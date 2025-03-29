@@ -37,10 +37,12 @@ class MyApp : Application() {
         CoroutineScope(Dispatchers.Main).launch {
             internetConnection.isConnected.collectLatest { isConnected ->
                 if (isConnected) {
-                    firebaseAPI.updateReferences()
-                    val existExpensesPath = firebaseAPI.verifyExistsExpensesPath()
-                    if(!existExpensesPath){
-                        firebaseAPI.updateExpensesPath()
+                    if(firebaseAPI.currentUser() != null){
+                        firebaseAPI.updateReferences()
+                        val existExpensesPath = firebaseAPI.verifyExistsExpensesPath()
+                        if(!existExpensesPath){
+                            firebaseAPI.updateExpensesPath()
+                        }
                     }
                 }
             }

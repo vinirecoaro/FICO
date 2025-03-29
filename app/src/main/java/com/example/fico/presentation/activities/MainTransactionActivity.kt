@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -21,7 +20,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.fico.R
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.presentation.viewmodel.MainViewModel
-import com.example.fico.presentation.viewmodel.shared.ExpensesViewModel
+import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -35,7 +34,6 @@ class MainTransactionActivity : AppCompatActivity(){
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewModel : MainViewModel by inject()
-    private val expensesViewModel : ExpensesViewModel by inject()
     private val imageFileName = StringConstants.USER_DATA_ACTIVITY.PROFILE_IMAGE_FILE_NAME
     private lateinit var navigationView: NavigationView
     private lateinit var headerView: View
@@ -72,11 +70,6 @@ class MainTransactionActivity : AppCompatActivity(){
         removeTintOfMenuIcons()
         setImageBasedOnTheme()
         fillDrawer()
-
-        //Update DataStore with info from database
-        if(ConnectionFunctions().internetConnectionVerification(this)){
-            //expensesViewModel.getRecurringExpensesList()
-        }
     }
 
     override fun onResume() {
