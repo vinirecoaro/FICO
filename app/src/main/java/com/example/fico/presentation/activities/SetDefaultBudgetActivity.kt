@@ -11,6 +11,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
+import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivitySetDefaultBudgetBinding
 import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
 import com.example.fico.utils.internet.ConnectionFunctions
@@ -66,7 +67,7 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
                     }
                 }
             }else{
-                noInternetConnectionSnackBar()
+                PersonalizedSnackBars.noInternetConnection(binding.btSave, this).show()
             }
             binding.btSave.isEnabled = true
         }
@@ -126,18 +127,6 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun noInternetConnectionSnackBar(){
-        Snackbar.make(
-            binding.btSave,
-            getString(R.string.without_network_connection),
-            Snackbar.LENGTH_LONG
-        )
-            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
-            .setActionTextColor(resources.getColor(android.R.color.white, theme))
-            .show()
     }
 
     private fun hasInternetConnection() : Boolean{

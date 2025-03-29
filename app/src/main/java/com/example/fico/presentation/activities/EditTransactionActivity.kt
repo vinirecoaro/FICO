@@ -23,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityEditTransactionBinding
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
@@ -177,7 +178,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                         }
                     }
                 }else{
-                    noInternetConnectionSnackBar()
+                    PersonalizedSnackBars.noInternetConnection(binding.btSave, this).show()
                 }
 
                 return true
@@ -306,7 +307,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                     }
                 }
             }else{
-                noInternetConnectionSnackBar()
+                PersonalizedSnackBars.noInternetConnection(binding.btSave, this).show()
             }
 
             binding.btSave.isEnabled = true
@@ -642,18 +643,6 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                 val recurringTransaction = editingTransaction.toRecurringTransaction()
                 viewModel.deleteRecurringTransaction(recurringTransaction)
             }
-            .show()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun noInternetConnectionSnackBar(){
-        Snackbar.make(
-            binding.btSave,
-            getString(R.string.without_network_connection),
-            Snackbar.LENGTH_LONG
-        )
-            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
-            .setActionTextColor(resources.getColor(android.R.color.white, theme))
             .show()
     }
 

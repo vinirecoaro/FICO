@@ -1,24 +1,16 @@
 package com.example.fico.presentation.viewmodel
 
-import android.content.Context
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
-import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Earning
 import com.example.fico.repositories.AuthRepository
 import com.example.fico.repositories.TransactionsRepository
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
-import com.example.fico.utils.internet.ConnectionFunctions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LogoViewModel(

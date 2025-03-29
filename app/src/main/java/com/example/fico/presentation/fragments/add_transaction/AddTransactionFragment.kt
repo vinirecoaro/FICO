@@ -50,6 +50,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.FragmentAddTransactionBinding
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
@@ -279,7 +280,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                         }
                                     }
                                 }else{
-                                    noInternetConnectionSnackBar()
+                                    PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
                                 }
                             }
                         }else{
@@ -314,7 +315,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                         }
                                     }
                                 }else{
-                                    noInternetConnectionSnackBar()
+                                    PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
                                 }
                             }
                         }
@@ -363,7 +364,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                         ).show()
                                     }
                                 }else{
-                                    noInternetConnectionSnackBar()
+                                    PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
                                 }
                             }
                         }else{
@@ -408,7 +409,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                         ).show()
                                     }
                                 }else{
-                                    noInternetConnectionSnackBar()
+                                    PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
                                 }
                             }
                         }
@@ -430,7 +431,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                 binding.etReceivedDate.text.toString()
                             )
                         }else{
-                            noInternetConnectionSnackBar()
+                            PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
                         }
                     }
                 }
@@ -464,7 +465,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                 )
                             }
                         }else{
-                            noInternetConnectionSnackBar()
+                            PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
                         }
                     }
                 }
@@ -498,7 +499,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                 )
                             }
                         }else{
-                            noInternetConnectionSnackBar()
+                            PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
                         }
                     }
                 }
@@ -1287,18 +1288,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             val date = DateFunctions().purchaseDateForRecurringExpense(recurringEarning.day)
             binding.etReceivedDate.setText(date)
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun noInternetConnectionSnackBar(){
-        Snackbar.make(
-            binding.btSave,
-            getString(R.string.without_network_connection),
-            Snackbar.LENGTH_LONG
-        )
-            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, requireActivity().theme))
-            .setActionTextColor(resources.getColor(android.R.color.white, requireActivity().theme))
-            .show()
     }
 
     private fun hasInternetConnection() : Boolean{

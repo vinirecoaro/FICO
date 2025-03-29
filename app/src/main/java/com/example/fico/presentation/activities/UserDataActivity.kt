@@ -27,6 +27,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.components.ImagePickerBottomSheet
+import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityUserDataBinding
 import com.example.fico.model.Budget
 import com.example.fico.presentation.viewmodel.UserDataViewModel
@@ -183,7 +184,7 @@ class UserDataActivity : AppCompatActivity() {
                     }
                 }
             }else{
-                noInternetConnectionSnackBar()
+                PersonalizedSnackBars.noInternetConnection(binding.ivEditName, this).show()
             }
             saveButton.isEnabled = true
         }
@@ -205,18 +206,6 @@ class UserDataActivity : AppCompatActivity() {
         theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
         val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
         return colorOnSurfaceVariant
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun noInternetConnectionSnackBar(){
-        Snackbar.make(
-            binding.ivUserProfile,
-            getString(R.string.without_network_connection),
-            Snackbar.LENGTH_LONG
-        )
-            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
-            .setActionTextColor(resources.getColor(android.R.color.white, theme))
-            .show()
     }
 
     private fun hasInternetConnection() : Boolean{

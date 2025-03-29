@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
+import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityBudgetPerMonthBinding
 import com.example.fico.model.Budget
 import com.example.fico.presentation.adapters.BudgetPerMonthAdapter
@@ -135,7 +136,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     }
                 }
             }else{
-                noInternetConnectionSnackBar()
+                PersonalizedSnackBars.noInternetConnection(binding.rvBudgetPerMonth, this).show()
             }
             saveButton.isEnabled = true
         }
@@ -161,18 +162,6 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
         val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
         return colorOnSurfaceVariant
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun noInternetConnectionSnackBar(){
-        Snackbar.make(
-            binding.rvBudgetPerMonth,
-            getString(R.string.without_network_connection),
-            Snackbar.LENGTH_LONG
-        )
-            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, theme))
-            .setActionTextColor(resources.getColor(android.R.color.white, theme))
-            .show()
     }
 
     private fun hasInternetConnection() : Boolean{

@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
@@ -486,7 +487,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         viewModel.internetConnection.observe(viewLifecycleOwner){state ->
             if(!state){
-                noInternetConnectionSnackBar()
+                PersonalizedSnackBars.noInternetConnection(binding.rvExpenseList, requireActivity()).show()
             }
         }
 
@@ -929,18 +930,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
         sdf.timeZone = TimeZone.getTimeZone("GMT")
         val date = Date(timestamp)
         return sdf.format(date)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun noInternetConnectionSnackBar(){
-        Snackbar.make(
-            binding.rvExpenseList,
-            getString(R.string.without_network_connection),
-            Snackbar.LENGTH_LONG
-        )
-            .setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, requireActivity().theme))
-            .setActionTextColor(resources.getColor(android.R.color.white, requireActivity().theme))
-            .show()
     }
 
 }
