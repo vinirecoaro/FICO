@@ -310,7 +310,7 @@ class FirebaseAPI(
         suspendCoroutine{ continuation ->
             try{
                 default_expense_values.child(StringConstants.DATABASE.DEFAULT_BUDGET)
-                    .addValueEventListener(object : ValueEventListener {
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val value = snapshot.value.toString()
                             continuation.resume(Result.success(value))
@@ -655,7 +655,7 @@ class FirebaseAPI(
     override suspend fun getTotalExpense(): Result<String> = withContext(Dispatchers.IO) {
         suspendCoroutine{ continuation ->
             try {
-                total_expenses_price.addValueEventListener(object : ValueEventListener {
+                total_expenses_price.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val value = snapshot.value.toString()
                         continuation.resume(Result.success(value))
@@ -692,7 +692,7 @@ class FirebaseAPI(
         withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 val expenseList = mutableListOf<Expense>()
-                expense_list.orderByKey().addValueEventListener(object : ValueEventListener {
+                expense_list.orderByKey().addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             for (childSnapshot in snapshot.children) {
@@ -715,7 +715,7 @@ class FirebaseAPI(
         suspendCoroutine{ continuation ->
             try{
                 val earningList = mutableListOf<Earning>()
-                earningsList.addValueEventListener(object : ValueEventListener{
+                earningsList.addListenerForSingleValueEvent(object : ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if(snapshot.exists()){
                             for(earning in snapshot.children){
@@ -741,7 +741,7 @@ class FirebaseAPI(
         suspendCoroutine{ continuation ->
             try{
                 val recurringExpensesList = mutableListOf<RecurringTransaction>()
-                recurring_transactions_list.addValueEventListener(object : ValueEventListener{
+                recurring_transactions_list.addListenerForSingleValueEvent(object : ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if(snapshot.exists()){
                             for(recurringExpenseSnapshot in snapshot.children){
@@ -768,7 +768,7 @@ class FirebaseAPI(
             try{
                 val expenseMonths = mutableListOf<String>()
                 var isCompleted = false
-                expenses_information_per_month.addValueEventListener(object : ValueEventListener {
+                expenses_information_per_month.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         for (month in snapshot.children) {
                             val date: String = month.key.toString()
@@ -803,7 +803,7 @@ class FirebaseAPI(
             suspendCoroutine { continuation ->
                 try {
                     val infoList = mutableListOf<InformationPerMonthExpense>()
-                    expenses_information_per_month.addValueEventListener(object : ValueEventListener {
+                    expenses_information_per_month.addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             for (month in snapshot.children) {
                                 val monthInfo = FormatValuesFromDatabase().dataSnapshotToInfoPerMonthExpense(month)
