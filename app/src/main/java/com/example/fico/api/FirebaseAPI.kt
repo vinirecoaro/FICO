@@ -981,16 +981,23 @@ class FirebaseAPI(
     override suspend fun getDefaultPaymentDay(): Result<String> = withContext(Dispatchers.IO){
         suspendCoroutine{ continuation ->
             try {
-                default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY).get()
-                    .addOnSuccessListener { snapshot ->
+                default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY)
+                    .addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
                         if(snapshot.value != null){
                             val day = snapshot.value.toString()
                             continuation.resume(Result.success(day))
+                        }else{
+                            continuation.resume(Result.success(""))
                         }
                     }
-                    .addOnFailureListener { error ->
+
+                    override fun onCancelled(error: DatabaseError) {
                         continuation.resume(Result.failure(Exception(error.message)))
                     }
+
+                })
+
             }catch (error:Exception){
                 continuation.resume(Result.failure(error))
             }
@@ -1000,16 +1007,23 @@ class FirebaseAPI(
     override suspend fun getDaysForClosingBill(): Result<String> = withContext(Dispatchers.IO){
         suspendCoroutine{ continuation ->
             try {
-                default_expense_values.child(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL).get()
-                    .addOnSuccessListener { snapshot ->
-                        if(snapshot.value != null){
-                            val daysForClosingBill = snapshot.value.toString()
-                            continuation.resume(Result.success(daysForClosingBill))
+                default_expense_values.child(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL)
+                    .addListenerForSingleValueEvent(object : ValueEventListener{
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if(snapshot.value != null){
+                                val daysForClosingBill = snapshot.value.toString()
+                                continuation.resume(Result.success(daysForClosingBill))
+                            }else{
+                                continuation.resume(Result.success(""))
+                            }
                         }
-                    }
-                    .addOnFailureListener {error ->
-                        continuation.resume(Result.failure(Exception(error.message)))
-                    }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            continuation.resume(Result.failure(Exception(error.message)))
+                        }
+
+                    })
+
             }catch (error : Exception){
                 continuation.resume(Result.failure(error))
             }
