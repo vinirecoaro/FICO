@@ -977,6 +977,7 @@ class FirebaseAPI(
         }
     }
 
+    //TODO do with addSingleListener
     override suspend fun getDefaultPaymentDay(): Result<String> = withContext(Dispatchers.IO){
         suspendCoroutine{ continuation ->
             try {
