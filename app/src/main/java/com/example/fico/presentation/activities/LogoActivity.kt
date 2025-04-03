@@ -42,7 +42,6 @@ class LogoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        //formatLogoImage()
         setUpListeners()
 
         lifecycleScope.launch(Dispatchers.Main) {
@@ -58,21 +57,6 @@ class LogoActivity : AppCompatActivity() {
                 startActivity(Intent(this@LogoActivity, LoginActivity::class.java))
             }
         }
-    }
-
-    private fun formatLogoImage() {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val screenWidth = displayMetrics.widthPixels
-
-        val layoutParams = binding.ivLogo.layoutParams as ViewGroup.MarginLayoutParams
-
-        val marginPercentage = 0.32
-        val horizontalMargin = (screenWidth * marginPercentage).toInt()
-
-        layoutParams.setMargins(horizontalMargin, 0, horizontalMargin, 0)
-        binding.ivLogo.layoutParams = layoutParams
-
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
