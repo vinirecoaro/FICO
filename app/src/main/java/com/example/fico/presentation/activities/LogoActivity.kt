@@ -42,7 +42,7 @@ class LogoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        formatLogoImage()
+        //formatLogoImage()
         setUpListeners()
 
         lifecycleScope.launch(Dispatchers.Main) {
