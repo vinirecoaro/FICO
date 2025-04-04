@@ -18,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fico.R
+import com.example.fico.components.Dialogs
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.presentation.viewmodel.MainViewModel
 import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
@@ -159,21 +160,25 @@ class MainTransactionActivity : AppCompatActivity(){
     }
 
     private fun dialogLogout(){
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.logout))
-            .setMessage(getString(R.string.logout_message))
-            .setPositiveButton(R.string.confirm) { dialog, which ->
-                viewModel.logoff()
-                finish()
-                val intent = Intent(this, LoginActivity::class.java)
+        val dialog = Dialogs.dialogModelOne(
+            this,
+            this,
+            getString(R.string.logout),
+            getString(R.string.logout_message),
+            getString(R.string.confirm)
+        ) { logout() }
 
-                // Create a new task to restart the app and clear the old activities stack
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+        dialog.show()
+    }
 
-                startActivity(intent)
-            }
-            .show()
+    private fun logout(){
+        viewModel.logoff()
+        finish()
+        val intent = Intent(this, LoginActivity::class.java)
+        // Create a new task to restart the app and clear the old activities stack
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
 }
