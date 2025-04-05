@@ -23,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.components.Dialogs
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityEditTransactionBinding
 import com.example.fico.model.Transaction
@@ -593,57 +594,73 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     }
 
     private fun dialogDeleteInstallmentExpense(){
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.delete_installment_expense))
-            .setMessage(getString(R.string.delete_expense_dialog_message))
-            .setPositiveButton(R.string.confirm) { dialog, which ->
-                val expense = editingTransaction.toExpense()
-                viewModel.deleteInstallmentExpense(expense)
-            }
-            .show()
+        val dialog = Dialogs.dialogModelOne(
+            this,
+            this,
+            getString(R.string.delete_installment_expense),
+            getString(R.string.delete_expense_dialog_message),
+            getString(R.string.confirm)
+        ){
+            val expense = editingTransaction.toExpense()
+            viewModel.deleteInstallmentExpense(expense)
+        }
+        dialog.show()
     }
 
     private fun dialogDeleteExpense(){
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.delete_expense))
-            .setMessage(getString(R.string.delete_expense_dialog_message))
-            .setPositiveButton(R.string.confirm) { dialog, which ->
-                val expense = editingTransaction.toExpense()
-                viewModel.deleteExpense(expense)
-            }
-            .show()
+        val dialog = Dialogs.dialogModelOne(
+            this,
+            this,
+            getString(R.string.delete_expense),
+            getString(R.string.delete_expense_dialog_message),
+            getString(R.string.confirm)
+        ){
+            val expense = editingTransaction.toExpense()
+            viewModel.deleteExpense(expense)
+        }
+        dialog.show()
     }
 
     private fun dialogDeleteEarning(){
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.delete_earning))
-            .setMessage(getString(R.string.delete_earning_dialog_message))
-            .setPositiveButton(R.string.confirm) { dialog, which ->
-                val earning = editingTransaction.toEarning()
-                viewModel.deleteEarning(earning)
-            }
-            .show()
+        val dialog = Dialogs.dialogModelOne(
+            this,
+            this,
+            getString(R.string.delete_earning),
+            getString(R.string.delete_earning_dialog_message),
+            getString(R.string.confirm)
+        ){
+            val earning = editingTransaction.toEarning()
+            viewModel.deleteEarning(earning)
+        }
+        dialog.show()
     }
 
     private fun dialogDeleteRecurringTransaction(type : String){
-        val builder = MaterialAlertDialogBuilder(this)
-
-            when(type){
-                StringConstants.DATABASE.RECURRING_EXPENSE -> {
-                    builder.setTitle(getString(R.string.delete_recurring_expense))
-                    .setMessage(getString(R.string.delete_expense_dialog_message))
-                }
-                StringConstants.DATABASE.RECURRING_EARNING -> {
-                    builder.setTitle(getString(R.string.delete_recurring_earning))
-                    .setMessage(getString(R.string.delete_earning_dialog_message))
-                }
+        var title = ""
+        var subtitle = ""
+        when(type){
+            StringConstants.DATABASE.RECURRING_EXPENSE -> {
+                title = getString(R.string.delete_recurring_expense)
+                subtitle = getString(R.string.delete_expense_dialog_message)
             }
-
-            builder.setPositiveButton(R.string.confirm) { dialog, which ->
-                val recurringTransaction = editingTransaction.toRecurringTransaction()
-                viewModel.deleteRecurringTransaction(recurringTransaction)
+            StringConstants.DATABASE.RECURRING_EARNING -> {
+                title = getString(R.string.delete_recurring_earning)
+                subtitle = getString(R.string.delete_earning_dialog_message)
             }
-            .show()
+        }
+
+        val dialog = Dialogs.dialogModelOne(
+            this,
+            this,
+            title,
+            subtitle,
+            getString(R.string.confirm)
+        ){
+            val recurringTransaction = editingTransaction.toRecurringTransaction()
+            viewModel.deleteRecurringTransaction(recurringTransaction)
+        }
+        dialog.show()
+
     }
 
     private fun hasInternetConnection() : Boolean{

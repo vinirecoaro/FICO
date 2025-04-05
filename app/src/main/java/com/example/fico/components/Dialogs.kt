@@ -13,7 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class Dialogs {
     companion object {
 
-        //Title, subtitle, one button
+        //Title, subtitle, one button, one function
         fun dialogModelOne(
             activity : Activity,
             context : Context,
@@ -41,7 +41,36 @@ class Dialogs {
             return dialog
         }
 
-        private fun getAlertDialogTextButtonColor(activity : Activity, context : Context) : Int{
+        //Title, layout, textField
+        fun dialogModelTwo(
+            activity : Activity,
+            context : Context,
+            title : String,
+            buttonText : String,
+            function : () -> Unit
+        ) : androidx.appcompat.app.AlertDialog {
+
+            val builder = MaterialAlertDialogBuilder(context)
+
+            builder.setTitle(title)
+            builder.setPositiveButton(buttonText) { _,_ ->
+                function()
+            }
+
+            val dialog = builder.create()
+
+            dialog.setOnShowListener {
+                dialog.getButton(Dialog.BUTTON_POSITIVE)
+                    .setTextColor(getAlertDialogTextButtonColor(activity, context))
+            }
+
+            return dialog
+        }
+
+        private fun getAlertDialogTextButtonColor(
+            activity : Activity,
+            context : Context
+        ) : Int{
             val typedValue = TypedValue()
             val theme: Resources.Theme = activity.theme
             theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
