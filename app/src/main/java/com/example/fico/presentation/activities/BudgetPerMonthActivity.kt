@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
+import com.example.fico.components.Dialogs
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityBudgetPerMonthBinding
 import com.example.fico.model.Budget
@@ -67,7 +68,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
                     @RequiresApi(Build.VERSION_CODES.N)
                     override fun onListItemClick(position: Int) {
                         val selectItem = budgetList[position]
-                        editBudget(selectItem)
+                        editBudgetDialog(selectItem)
                     }
                 })
             })
@@ -87,73 +88,39 @@ class BudgetPerMonthActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun editBudget(budget : Budget) : CompletableDeferred<Boolean>{
-        val result = CompletableDeferred<Boolean>()
-        val builder = MaterialAlertDialogBuilder(this)
-
-        builder.setTitle(getString(R.string.edit_budget))
-
-        val inflater = LayoutInflater.from(this)
-        val dialogView = inflater.inflate(R.layout.month_budget_input_field_for_alert_dialog, null)
-
-        val newBudget = dialogView.findViewById<TextInputEditText>(R.id.et_month_budget_ad)
-        builder.setView(dialogView)
-
-        newBudget.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                val text = s.toString()
-                if (!text.isEmpty()) {
-                    val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
-                    val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
-                    newBudget.removeTextChangedListener(this)
-                    newBudget.setText(formatted)
-                    newBudget.setSelection(formatted.length)
-                    newBudget.addTextChangedListener(this)
-                }
-            }
-        })
-
-        builder.setPositiveButton(getString(R.string.save)) { dialog, which ->
-            val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            saveButton.isEnabled = false
-            if(hasInternetConnection()){
-                lifecycleScope.launch {
-                    if(newBudget.text.toString() != ""){
-
-                        val regex = Regex("[\\d,.]+")
-                        val justNumber = regex.find(newBudget.text.toString())
-                        val formatNum = DecimalFormat("#.##")
-                        val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
-                        val formatedNum = formatNum.format(numClean/100)
-                        val formattedNumString = formatedNum.toString().replace(",",".")
-
-                        viewModel.editBudget(formattedNumString, budget)
-
-                    }
-                }
-            }else{
-                PersonalizedSnackBars.noInternetConnection(binding.rvBudgetPerMonth, this).show()
-            }
-            saveButton.isEnabled = true
-        }
-
-        builder.setNegativeButton(R.string.cancel) { dialog, which ->
-
-        }
-
-        val dialog = builder.create()
-
-        dialog.setOnShowListener {
-            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
-            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getAlertDialogTextButtonColor())
-        }
+    private fun editBudgetDialog(budget : Budget){
+        val dialog = Dialogs.dialogModelTwo(
+            this,
+            this,
+            getString(R.string.edit_budget),
+            R.layout.month_budget_input_field_for_alert_dialog,
+            R.id.et_month_budget_ad,
+            getString(R.string.save)
+        ) { newBudgetString -> editBudget(budget, newBudgetString) }
 
         dialog.show()
-        return result
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun editBudget(budget : Budget, newBudget : String){
+        if(hasInternetConnection()){
+            lifecycleScope.launch {
+                if(newBudget != ""){
+
+                    val regex = Regex("[\\d,.]+")
+                    val justNumber = regex.find(newBudget)
+                    val formatNum = DecimalFormat("#.##")
+                    val numClean = justNumber!!.value.replace(",","").replace(".","").toFloat()
+                    val formatedNum = formatNum.format(numClean/100)
+                    val formattedNumString = formatedNum.toString().replace(",",".")
+
+                    viewModel.editBudget(formattedNumString, budget)
+
+                }
+            }
+        }else{
+            PersonalizedSnackBars.noInternetConnection(binding.rvBudgetPerMonth, this).show()
+        }
     }
 
     private fun getAlertDialogTextButtonColor() : Int{

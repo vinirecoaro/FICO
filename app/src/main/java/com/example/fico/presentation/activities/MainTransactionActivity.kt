@@ -21,11 +21,8 @@ import com.example.fico.R
 import com.example.fico.components.Dialogs
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.presentation.viewmodel.MainViewModel
-import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.utils.constants.StringConstants
-import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
