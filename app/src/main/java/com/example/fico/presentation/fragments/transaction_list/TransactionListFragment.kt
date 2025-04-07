@@ -3,10 +3,12 @@ package com.example.fico.presentation.fragments.transaction_list
 import SwipeToDeleteCallback
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -16,6 +18,7 @@ import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
@@ -33,6 +36,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.components.Dialogs
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Earning
@@ -369,13 +373,14 @@ class TransactionListFragment : Fragment(), XLSInterface {
         viewModel.installmentExpenseSwiped.observe(viewLifecycleOwner){result ->
             viewModel.updateOperation(StringConstants.OPERATIONS.SWIPPED_INSTALLMENT_EXPENSE)
             if(result){
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(getString(R.string.delete_expense))
-                    .setMessage(getString(R.string.exclude_installment_expense_message_instruction_message))
-                    .setPositiveButton(R.string.ok) { dialog, which ->
-                        viewModel.updateShowFilteredList()
-                    }
-                    .show()
+                val dialog = Dialogs.dialogModelOne(
+                    requireActivity(),
+                    requireContext(),
+                    getString(R.string.delete_expense),
+                    getString(R.string.exclude_installment_expense_message_instruction_message),
+                    getString(R.string.ok)
+                ){viewModel.updateShowFilteredList()}
+                dialog.show()
             }
         }
 
@@ -761,6 +766,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun filterDialog(){
+        //TODO Create a default dialog
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.select_filter))
 
@@ -809,10 +815,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
 
         builder.setView(dialogView)
-
-        builder.setNegativeButton(getString(R.string.cancel)){dialog, which ->
-
-        }
 
         val dialog = builder.create()
 

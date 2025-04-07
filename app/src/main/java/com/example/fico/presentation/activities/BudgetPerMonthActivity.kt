@@ -122,15 +122,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
             PersonalizedSnackBars.noInternetConnection(binding.rvBudgetPerMonth, this).show()
         }
     }
-
-    private fun getAlertDialogTextButtonColor() : Int{
-        val typedValue = TypedValue()
-        val theme: Resources.Theme = this.theme
-        theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
-        val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
-        return colorOnSurfaceVariant
-    }
-
+    
     private fun hasInternetConnection() : Boolean{
         return ConnectionFunctions().internetConnectionVerification(this)
     }

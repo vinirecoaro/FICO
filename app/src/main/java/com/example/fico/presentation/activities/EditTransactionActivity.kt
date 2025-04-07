@@ -33,7 +33,6 @@ import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -46,7 +46,7 @@ class Dialogs {
             return dialog
         }
 
-        //Title, layout, textField, function (String) -> Unit
+        //Title, layout, textField for currency, function (String) -> Unit
         fun dialogModelTwo(
             activity : Activity,
             context : Context,
