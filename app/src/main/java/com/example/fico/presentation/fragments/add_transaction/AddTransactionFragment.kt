@@ -268,16 +268,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                             false
                                         )
                                     } else {
-                                        if (setUpDefaultBudgetAlertDialog().await()) {
-                                            viewModel.addExpense(
-                                                price = binding.etPrice.text.toString(),
-                                                description = binding.etDescription.text.toString(),
-                                                category = binding.actvCategory.text.toString(),
-                                                paymentDate = binding.etPaymentDate.text.toString(),
-                                                purchaseDate = binding.etPurchaseDate.text.toString(),
-                                                installment = false
-                                            )
-                                        }
+                                        setUpDefaultBudgetAlertDialog()
                                     }
                                 }else{
                                     PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
@@ -303,16 +294,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                             installment = false
                                         )
                                     } else {
-                                        if (setUpDefaultBudgetAlertDialog().await()) {
-                                            viewModel.addExpense(
-                                                binding.etPrice.text.toString(),
-                                                binding.etDescription.text.toString(),
-                                                binding.actvCategory.text.toString(),
-                                                binding.etPaymentDate.text.toString(),
-                                                binding.etPurchaseDate.text.toString(),
-                                                false
-                                            )
-                                        }
+                                        setUpDefaultBudgetAlertDialog()
                                     }
                                 }else{
                                     PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
@@ -344,17 +326,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                                 nOfInstallments =  binding.etInstallments.text.toString().toInt()
                                             )
                                         } else {
-                                            if (setUpDefaultBudgetAlertDialog().await()) {
-                                                viewModel.addExpense(
-                                                    price = binding.etPrice.text.toString(),
-                                                    description =  binding.etDescription.text.toString(),
-                                                    category =  binding.actvCategory.text.toString(),
-                                                    paymentDate =  binding.etPaymentDate.text.toString(),
-                                                    purchaseDate =  binding.etPurchaseDate.text.toString(),
-                                                    installment = true,
-                                                    nOfInstallments =  binding.etInstallments.text.toString().toInt()
-                                                )
-                                            }
+                                            setUpDefaultBudgetAlertDialog()
                                         }
                                     } else {
                                         Toast.makeText(
@@ -389,17 +361,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                                 nOfInstallments =  binding.etInstallments.text.toString().toInt()
                                             )
                                         } else {
-                                            if (setUpDefaultBudgetAlertDialog().await()) {
-                                                viewModel.addExpense(
-                                                    price = binding.etPrice.text.toString(),
-                                                    description =  binding.etDescription.text.toString(),
-                                                    category =  binding.actvCategory.text.toString(),
-                                                    paymentDate =  binding.etPurchaseDate.text.toString(),
-                                                    purchaseDate =  binding.etPurchaseDate.text.toString(),
-                                                    installment = true,
-                                                    nOfInstallments =  binding.etInstallments.text.toString().toInt()
-                                                )
-                                            }
+                                            setUpDefaultBudgetAlertDialog()
                                         }
                                     } else {
                                         Toast.makeText(
@@ -737,8 +699,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         return true
     }
 
-    private fun setUpDefaultBudgetAlertDialog(): CompletableDeferred<Boolean> {
-        val result = CompletableDeferred<Boolean>()
+    private fun setUpDefaultBudgetAlertDialog(){
         val builder = MaterialAlertDialogBuilder(requireContext())
 
         builder.setTitle(requireContext().getString(R.string.define_default_budget_title))
@@ -806,7 +767,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         }
 
         dialog.show()
-        return result
     }
 
     fun importDataAlertDialog() {
