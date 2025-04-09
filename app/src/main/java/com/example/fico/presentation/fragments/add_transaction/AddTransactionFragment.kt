@@ -36,7 +36,6 @@ import com.example.fico.presentation.activities.InstallmentExpenseImportFileInst
 import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -705,10 +704,10 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         builder.setTitle(requireContext().getString(R.string.define_default_budget_title))
 
         val inflater = LayoutInflater.from(requireContext())
-        val dialogView = inflater.inflate(R.layout.month_budget_input_field_for_alert_dialog, null)
+        val dialogView = inflater.inflate(R.layout.dialog_input_field, null)
 
-        val defaultBudgetEt = dialogView.findViewById<TextInputEditText>(R.id.et_month_budget_ad)
-        val defaultBudetTil = dialogView.findViewById<TextInputLayout>(R.id.til_month_budget_ad)
+        val defaultBudgetEt = dialogView.findViewById<TextInputEditText>(R.id.tiet_dialog_input_field)
+        val defaultBudetTil = dialogView.findViewById<TextInputLayout>(R.id.til_dialog_input_field)
         defaultBudetTil.hint = requireContext().getString(R.string.default_budget_activity_title)
         builder.setView(dialogView)
 

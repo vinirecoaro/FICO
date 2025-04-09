@@ -6,13 +6,16 @@ import android.app.Dialog
 import android.content.Context
 import android.content.res.Resources
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.example.fico.R
+import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import java.text.NumberFormat
 
 class Dialogs {
@@ -46,13 +49,13 @@ class Dialogs {
             return dialog
         }
 
-        //Title, layout, textField for currency, function (String) -> Unit
+        //Title, textField, one => function (String) -> Unit
         fun dialogModelTwo(
             activity : Activity,
             context : Context,
             title : String,
-            layoutId : Int,
-            textInputId : Int,
+            inputFieldHint : String,
+            dataType : Int,
             buttonText : String,
             function : (String) -> Unit
         ) : androidx.appcompat.app.AlertDialog {
@@ -62,24 +65,36 @@ class Dialogs {
             builder.setTitle(title)
 
             val inflater = LayoutInflater.from(context)
-            val dialogView = inflater.inflate(layoutId, null)
-            val newBudget = dialogView.findViewById<TextInputEditText>(textInputId)
+            val dialogView = inflater.inflate(R.layout.dialog_input_field, null)
+
+            val textInputEditText = dialogView.findViewById<TextInputEditText>(R.id.tiet_dialog_input_field)
+            if(dataType == StringConstants.PERSONALIZED_INPUT_TYPE.MONEY){
+                textInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
+            }else{
+                textInputEditText.inputType = dataType
+            }
+
+            val textInputLayout = dialogView.findViewById<TextInputLayout>(R.id.til_dialog_input_field)
+            textInputLayout.hint = inputFieldHint
+
             builder.setView(dialogView)
 
-            newBudget.addTextChangedListener(object : TextWatcher {
+            textInputEditText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
                     val text = s.toString()
-                    if (text.isNotEmpty()) {
-                        val parsed = text.replace("\\D".toRegex(), "").toLong()
-                        val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
-                        newBudget.removeTextChangedListener(this)
-                        newBudget.setText(formatted)
-                        newBudget.setSelection(formatted.length)
-                        newBudget.addTextChangedListener(this)
+                    if(dataType == StringConstants.PERSONALIZED_INPUT_TYPE.MONEY){
+                        if (text.isNotEmpty()) {
+                            val parsed = text.replace("\\D".toRegex(), "").toLong()
+                            val formatted = (NumberFormat.getCurrencyInstance().format(parsed / 100.0))
+                            textInputEditText.removeTextChangedListener(this)
+                            textInputEditText.setText(formatted)
+                            textInputEditText.setSelection(formatted.length)
+                            textInputEditText.addTextChangedListener(this)
+                        }
                     }
                 }
             })
@@ -88,7 +103,7 @@ class Dialogs {
                 val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
                 saveButton.isEnabled = false
 
-                val newBudgetString = newBudget.text.toString()
+                val newBudgetString = textInputEditText.text.toString()
 
                 function(newBudgetString)
 

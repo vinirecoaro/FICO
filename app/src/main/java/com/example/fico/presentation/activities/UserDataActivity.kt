@@ -11,17 +11,11 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
 import android.text.InputType
-import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
@@ -29,7 +23,6 @@ import com.example.fico.R
 import com.example.fico.components.ImagePickerBottomSheet
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityUserDataBinding
-import com.example.fico.model.Budget
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
@@ -43,8 +36,6 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
-import java.text.DecimalFormat
-import java.text.NumberFormat
 
 class UserDataActivity : AppCompatActivity() {
 
@@ -166,11 +157,11 @@ class UserDataActivity : AppCompatActivity() {
         builder.setTitle(getString(R.string.edit_name))
 
         val inflater = LayoutInflater.from(this)
-        val dialogView = inflater.inflate(R.layout.month_budget_input_field_for_alert_dialog, null)
+        val dialogView = inflater.inflate(R.layout.dialog_input_field, null)
 
-        val textInputLayout = dialogView.findViewById<TextInputLayout>(R.id.til_month_budget_ad)
+        val textInputLayout = dialogView.findViewById<TextInputLayout>(R.id.til_dialog_input_field)
         textInputLayout.hint = getString(R.string.name)
-        val newName = dialogView.findViewById<TextInputEditText>(R.id.et_month_budget_ad)
+        val newName = dialogView.findViewById<TextInputEditText>(R.id.tiet_dialog_input_field)
         newName.inputType = InputType.TYPE_CLASS_TEXT
         builder.setView(dialogView)
 

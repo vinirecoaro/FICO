@@ -1,18 +1,10 @@
 package com.example.fico.presentation.activities
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.TypedValue
-import android.view.LayoutInflater
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,15 +16,12 @@ import com.example.fico.model.Budget
 import com.example.fico.presentation.adapters.BudgetPerMonthAdapter
 import com.example.fico.interfaces.OnListItemClick
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
+import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
-import java.text.NumberFormat
 
 class BudgetPerMonthActivity : AppCompatActivity() {
 
@@ -93,10 +82,10 @@ class BudgetPerMonthActivity : AppCompatActivity() {
             this,
             this,
             getString(R.string.edit_budget),
-            R.layout.month_budget_input_field_for_alert_dialog,
-            R.id.et_month_budget_ad,
+            getString(R.string.type_new_budget),
+            StringConstants.PERSONALIZED_INPUT_TYPE.MONEY,
             getString(R.string.save)
-        ) { newBudgetString -> editBudget(budget, newBudgetString) }
+        ){ newBudgetString -> editBudget(budget, newBudgetString) }
 
         dialog.show()
     }

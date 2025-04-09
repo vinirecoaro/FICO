@@ -220,4 +220,9 @@ class StringConstants private constructor() {
         const val EMAIL_SENT = "email_sent"
     }
 
+    //Before define new value look at InputType.class to avoid conflict with existing values
+    object PERSONALIZED_INPUT_TYPE {
+        const val MONEY = 5
+    }
+
 }
