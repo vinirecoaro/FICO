@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
+import com.example.fico.components.Dialogs
 import com.example.fico.components.ImagePickerBottomSheet
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityUserDataBinding
@@ -150,53 +151,30 @@ class UserDataActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun editNameDialog() : CompletableDeferred<Boolean>{
-        val result = CompletableDeferred<Boolean>()
-        val builder = MaterialAlertDialogBuilder(this)
-
-        builder.setTitle(getString(R.string.edit_name))
-
-        val inflater = LayoutInflater.from(this)
-        val dialogView = inflater.inflate(R.layout.dialog_input_field, null)
-
-        val textInputLayout = dialogView.findViewById<TextInputLayout>(R.id.til_dialog_input_field)
-        textInputLayout.hint = getString(R.string.name)
-        val newName = dialogView.findViewById<TextInputEditText>(R.id.tiet_dialog_input_field)
-        newName.inputType = InputType.TYPE_CLASS_TEXT
-        builder.setView(dialogView)
-
-        builder.setPositiveButton(getString(R.string.save)) { dialog, which ->
-            val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-            saveButton.isEnabled = false
-            if(hasInternetConnection()){
-                lifecycleScope.launch {
-                    if(newName.text.toString() != ""){
-                        viewModel.editUserName(newName.text.toString())
-                    }
-                }
-            }else{
-                PersonalizedSnackBars.noInternetConnection(binding.ivEditName, this).show()
-            }
-            saveButton.isEnabled = true
-        }
-
-        val dialog = builder.create()
-
-        dialog.setOnShowListener {
-            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
-            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getAlertDialogTextButtonColor())
-        }
+    private fun editNameDialog(){
+        val dialog = Dialogs.dialogModelTwo(
+            this,
+            this,
+            getString(R.string.edit_name),
+            getString(R.string.name),
+            InputType.TYPE_CLASS_TEXT,
+            getString(R.string.save)
+        ){ newName -> editName(newName)}
 
         dialog.show()
-        return result
     }
 
-    private fun getAlertDialogTextButtonColor() : Int{
-        val typedValue = TypedValue()
-        val theme: Resources.Theme = this.theme
-        theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
-        val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
-        return colorOnSurfaceVariant
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun editName(newName : String){
+        if(hasInternetConnection()){
+            lifecycleScope.launch {
+                if(newName != ""){
+                    viewModel.editUserName(newName)
+                }
+            }
+        }else{
+            PersonalizedSnackBars.noInternetConnection(binding.ivEditName, this).show()
+        }
     }
 
     private fun hasInternetConnection() : Boolean{
