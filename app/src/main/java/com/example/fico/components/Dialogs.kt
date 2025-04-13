@@ -120,6 +120,43 @@ class Dialogs {
             return dialog
         }
 
+        //Title, subtitle, two buttons, two functions
+        fun dialogModelThree(
+            activity : Activity,
+            context : Context,
+            title : String,
+            subtitle : String,
+            rightButtonText : String,
+            rightButtonFunction : () -> Unit,
+            leftButtonText : String,
+            leftButtonFunction : () -> Unit
+        ) : androidx.appcompat.app.AlertDialog {
+
+            val builder = MaterialAlertDialogBuilder(context)
+
+            builder.setTitle(title)
+            builder.setMessage(subtitle)
+
+            builder.setPositiveButton(rightButtonText) { _,_ ->
+                rightButtonFunction()
+            }
+
+            builder.setNegativeButton(leftButtonText) { _,_ ->
+                leftButtonFunction()
+            }
+
+            val dialog = builder.create()
+
+            dialog.setOnShowListener {
+                dialog.getButton(Dialog.BUTTON_POSITIVE)
+                    .setTextColor(getAlertDialogTextButtonColor(activity, context))
+                dialog.getButton(Dialog.BUTTON_NEGATIVE)
+                    .setTextColor(getAlertDialogTextButtonColor(activity, context))
+            }
+
+            return dialog
+        }
+
         private fun getAlertDialogTextButtonColor(
             activity : Activity,
             context : Context

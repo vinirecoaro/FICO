@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.components.Dialogs
 import com.example.fico.databinding.FragmentConfigurationBinding
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.activities.BudgetConfigurationListActivity
@@ -148,30 +149,23 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun selectTransactionTypeDialog(){
-        val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle(getString(R.string.edit_recurring_transaction))
-        builder.setMessage(getString(R.string.edit_recurring_transaction_message))
-
-        builder.setPositiveButton(getString(R.string.expenses_2)){dialog, which ->
-            recurringExpenseDialog()
-        }
-
-        builder.setNegativeButton(getString(R.string.earnings_2)){dialog, which ->
-            recurringEarningDialog()
-        }
-
-        val dialog = builder.create()
-
-        dialog.setOnShowListener {
-            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
-            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getAlertDialogTextButtonColor())
-        }
+        val dialog = Dialogs.dialogModelThree(
+            activity = requireActivity(),
+            context = requireContext(),
+            title = getString(R.string.edit_recurring_transaction),
+            subtitle = getString(R.string.edit_recurring_transaction_message),
+            rightButtonText =  getString(R.string.expenses_2),
+            rightButtonFunction = ::recurringExpenseDialog,
+            leftButtonText = getString(R.string.earnings_2),
+            leftButtonFunction = ::recurringEarningDialog
+        )
 
         dialog.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun recurringExpenseDialog(){
+
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.expenses_2))
         builder.setMessage(getString(R.string.edit_recurring_transaction_message_step_2))

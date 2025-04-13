@@ -692,6 +692,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         return true
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpDefaultBudgetAlertDialog(){
         val dialog = Dialogs.dialogModelTwo(
             requireActivity(),
@@ -701,10 +702,10 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             StringConstants.PERSONALIZED_INPUT_TYPE.MONEY,
             getString(R.string.save)
         ){ newDefaultBudget -> setUpDefaultBudget(newDefaultBudget)}
-
         dialog.show()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpDefaultBudget(defaultBudget : String){
         if(hasInternetConnection()){
             lifecycleScope.launch {
