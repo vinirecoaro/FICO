@@ -706,23 +706,28 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
 
     private fun setUpDefaultBudget(defaultBudget : String){
-        lifecycleScope.launch {
-            if (defaultBudget != "") {
+        if(hasInternetConnection()){
+            lifecycleScope.launch {
+                if (defaultBudget != "") {
 
-                val regex = Regex("[\\d,.]+")
-                val justNumber = regex.find(defaultBudget)
-                val formatNum = DecimalFormat("#.##")
-                val numClean = justNumber!!.value
-                    .replace(",", "")
-                    .replace(".", "").toFloat()
-                val formatedNum = formatNum.format(numClean / 100)
-                val formattedNumString = formatedNum.toString()
-                    .replace(",", ".")
+                    val regex = Regex("[\\d,.]+")
+                    val justNumber = regex.find(defaultBudget)
+                    val formatNum = DecimalFormat("#.##")
+                    val numClean = justNumber!!.value
+                        .replace(",", "")
+                        .replace(".", "").toFloat()
+                    val formatedNum = formatNum.format(numClean / 100)
+                    val formattedNumString = formatedNum.toString()
+                        .replace(",", ".")
 
-                viewModel.setDefaultBudget(formattedNumString)
+                    viewModel.setDefaultBudget(formattedNumString)
 
+                }
             }
+        }else{
+            PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
         }
+
     }
 
     fun importDataAlertDialog() {
