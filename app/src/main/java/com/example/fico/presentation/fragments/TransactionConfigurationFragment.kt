@@ -80,7 +80,6 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentConfigurationBinding.inflate(inflater, container, false)
@@ -165,42 +164,22 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun recurringExpenseDialog(){
-
-        val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle(getString(R.string.expenses_2))
-        builder.setMessage(getString(R.string.edit_recurring_transaction_message_step_2))
-
-        builder.setPositiveButton(getString(R.string.list)){dialog, which ->
-            viewModel.getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EXPENSE)
-        }
-
-        builder.setNegativeButton(getString(R.string.add)){dialog, which ->
-            val navController = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
-                ?.findNavController()
-            val bundle = Bundle().apply {
-                putBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE, true)
-            }
-
-            // Clear the back stack to the current fragment
-            val navOptions = NavOptions.Builder()
-                .setPopUpTo(R.id.navigation_config, true)
-                .build()
-
-            navController!!.navigate(R.id.navigation_add_expense, bundle, navOptions)
-        }
-
-        val dialog = builder.create()
-
-        dialog.setOnShowListener {
-            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
-            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getAlertDialogTextButtonColor())
-        }
-
+        val dialog = Dialogs.dialogModelThree(
+            activity = requireActivity(),
+            context = requireContext(),
+            title = getString(R.string.expenses_2),
+            subtitle = getString(R.string.edit_recurring_transaction_message_step_2),
+            rightButtonText =  getString(R.string.list),
+            rightButtonFunction = { getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EXPENSE) },
+            leftButtonText = getString(R.string.add),
+            leftButtonFunction = { addRecurringTransaction(StringConstants.DATABASE.RECURRING_EXPENSE) }
+        )
         dialog.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun recurringTransactionListDialog(recurringTransactionList : List<Transaction>, transactionType : String){
+
         val builder = MaterialAlertDialogBuilder(requireContext())
 
         if(transactionType ==  StringConstants.DATABASE.RECURRING_EXPENSE){
@@ -236,45 +215,37 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
     }
 
     private fun recurringEarningDialog(){
-        val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle(getString(R.string.earnings_2))
-        builder.setMessage(getString(R.string.edit_recurring_transaction_message_step_2))
-
-        builder.setPositiveButton(getString(R.string.list)){dialog, which ->
-            viewModel.getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EARNING)
-        }
-
-        builder.setNegativeButton(getString(R.string.add)){dialog, which ->
-            val navController = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
-                ?.findNavController()
-            val bundle = Bundle().apply {
-                putBoolean(StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING, true)
-            }
-
-            // Clear the back stack to the current fragment
-            val navOptions = NavOptions.Builder()
-                .setPopUpTo(R.id.navigation_config, true)
-                .build()
-
-            navController!!.navigate(R.id.navigation_add_expense, bundle, navOptions)
-        }
-
-        val dialog = builder.create()
-
-        dialog.setOnShowListener {
-            dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
-            dialog.getButton(Dialog.BUTTON_NEGATIVE).setTextColor(getAlertDialogTextButtonColor())
-        }
+        val dialog = Dialogs.dialogModelThree(
+            activity = requireActivity(),
+            context = requireContext(),
+            title = getString(R.string.earnings_2),
+            subtitle = getString(R.string.edit_recurring_transaction_message_step_2),
+            rightButtonText =  getString(R.string.list),
+            rightButtonFunction = { getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EARNING) },
+            leftButtonText = getString(R.string.add),
+            leftButtonFunction = { addRecurringTransaction(StringConstants.DATABASE.RECURRING_EARNING) }
+        )
 
         dialog.show()
     }
 
-    private fun getAlertDialogTextButtonColor() : Int{
-        val typedValue = TypedValue()
-        val theme: Resources.Theme = requireActivity().theme
-        theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
-        val colorOnSurfaceVariant = ContextCompat.getColor(requireContext(), typedValue.resourceId)
-        return colorOnSurfaceVariant
+    private fun getRecurringTransactionList(type : String){
+        viewModel.getRecurringTransactionList(type)
+    }
+
+    private fun addRecurringTransaction(type : String){
+        val navController = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+            ?.findNavController()
+        val bundle = Bundle().apply {
+            putBoolean(type, true)
+        }
+
+        // Clear the back stack to the current fragment
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.navigation_config, true)
+            .build()
+
+        navController!!.navigate(R.id.navigation_add_expense, bundle, navOptions)
     }
 
 }
