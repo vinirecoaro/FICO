@@ -1,9 +1,6 @@
 package com.example.fico.presentation.activities
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
@@ -12,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
-import android.util.TypedValue
-import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat

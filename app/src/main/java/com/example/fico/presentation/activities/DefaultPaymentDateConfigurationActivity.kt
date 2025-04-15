@@ -96,11 +96,11 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
             builder.setTitle(getString(R.string.default_payment_day))
 
             val inflater = LayoutInflater.from(this@DefaultPaymentDateConfigurationActivity)
-            val dialogView = inflater.inflate(R.layout.select_date_for_alert_dialog, null)
+            val dialogView = inflater.inflate(R.layout.dialog_2_input_text_2_text_view, null)
 
-            val etExpirationDay = dialogView.findViewById<TextInputEditText>(R.id.et_expiration_day_default_payment_date_dialog)
-            val etDaysForClosing = dialogView.findViewById<TextInputEditText>(R.id.et_days_for_closing_default_payment_date_dialog)
-            val tvPaymentDay = dialogView.findViewById<TextView>(R.id.tv_payment_day_al)
+            val etExpirationDay = dialogView.findViewById<TextInputEditText>(R.id.et_1_d2it_2tv)
+            val etDaysForClosing = dialogView.findViewById<TextInputEditText>(R.id.et_2_d2it_2tv)
+            val tvPaymentDay = dialogView.findViewById<TextView>(R.id.tv_2_d2it_2tv)
             val paymentDay = dataStore.getDefaultPaymentDay()
             val daysForClosingBill = dataStore.getDaysForClosingBill()
 

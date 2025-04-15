@@ -7,7 +7,7 @@
     android:padding="16dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_expiration_day_default_payment_date_dialog"
+        android:id="@+id/til_1_d2it_2tv"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_expiration_day_default_payment_date_dialog"
+            android:id="@+id/et_1_d2it_2tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -27,7 +27,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_days_for_closing_default_payment_date_dialog"
+        android:id="@+id/til_2_d2it_2tv"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,10 +36,10 @@
         app:boxBackgroundMode="outline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_expiration_day_default_payment_date_dialog">
+        app:layout_constraintTop_toBottomOf="@id/til_1_d2it_2tv">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_days_for_closing_default_payment_date_dialog"
+            android:id="@+id/et_2_d2it_2tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -48,21 +48,21 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/tv_payment_day_info_al"
+        android:id="@+id/tv_1_d2it_2tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/payment_day_info_message"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_days_for_closing_default_payment_date_dialog" />
+        app:layout_constraintTop_toBottomOf="@id/til_2_d2it_2tv" />
 
     <TextView
-        android:id="@+id/tv_payment_day_al"
+        android:id="@+id/tv_2_d2it_2tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_payment_day_info_al"
+        app:layout_constraintTop_toBottomOf="@id/tv_1_d2it_2tv"
         tools:text="Dados Atuais:\n\n Vencimento - 18\nFechamento - 7" />
 
 
