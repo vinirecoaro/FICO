@@ -10,6 +10,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.fico.R
 import com.example.fico.utils.constants.StringConstants
@@ -162,12 +163,12 @@ class Dialogs {
             activity : Activity,
             context : Context,
             title : String,
-            textFieldOneText : String,
-            textFieldTwoText : String,
             inputFieldOneHint : String,
             inputFieldOneDataType : Int,
             inputFieldTwoHint : String,
             inputFieldTwoDataType : Int,
+            textViewOneText : String,
+            textViewTwoText : String,
             buttonText : String,
             function : (String, String) -> Unit
         ) : androidx.appcompat.app.AlertDialog {
@@ -178,7 +179,6 @@ class Dialogs {
 
             val inflater = LayoutInflater.from(context)
             val dialogView = inflater.inflate(R.layout.dialog_2_input_text_2_text_view, null)
-
 
             //Config textInputLayouts and textInputFields
 
@@ -245,11 +245,11 @@ class Dialogs {
 
             //Config textViews
 
-            val textViewOne = dialogView.findViewById<TextInputEditText>(R.id.tv_1_d2it_2tv)
-            textViewOne.setText(textFieldOneText)
+            val textViewOne = dialogView.findViewById<TextView>(R.id.tv_1_d2it_2tv)
+            textViewOne.text = textViewOneText
 
-            val textViewTwo = dialogView.findViewById<TextInputEditText>(R.id.tv_2_d2it_2tv)
-            textViewTwo.setText(textFieldTwoText)
+            val textViewTwo = dialogView.findViewById<TextView>(R.id.tv_2_d2it_2tv)
+            textViewTwo.text = textViewTwoText
 
             builder.setView(dialogView)
 

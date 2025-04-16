@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.DataStoreManager
 import com.example.fico.R
+import com.example.fico.components.Dialogs
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityDefaultPaymentDateConfigurationBinding
 import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
@@ -43,7 +45,6 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
         binding.defaultPaymentDateConfigurationToolbar.setTitle(getString(R.string.default_payment_date))
         binding.defaultPaymentDateConfigurationToolbar.setTitleTextColor(Color.WHITE)
-
 
         //Insert a back button on Navigation bar
         setSupportActionBar(binding.defaultPaymentDateConfigurationToolbar)
@@ -92,7 +93,31 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setDefaultPaymentDateAlertDialog(){
         lifecycleScope.launch(Dispatchers.Main){
-            val builder = MaterialAlertDialogBuilder(this@DefaultPaymentDateConfigurationActivity)
+
+            val paymentDay = dataStore.getDefaultPaymentDay()
+            val daysForClosingBill = dataStore.getDaysForClosingBill()
+
+            val currentInfo = if(paymentDay != null && daysForClosingBill != null){
+                "Dados Atuais:\n\n${getString(R.string.expiration)} - $paymentDay\n${getString(R.string.days_for_closing)} - $daysForClosingBill"
+            }else{
+                getString(R.string.default_day_default_message)
+            }
+
+            val dialog = Dialogs.dialogModelFour(
+                this@DefaultPaymentDateConfigurationActivity,
+                this@DefaultPaymentDateConfigurationActivity,
+                getString(R.string.default_payment_day),
+                getString(R.string.expiration_day),
+                InputType.TYPE_CLASS_NUMBER,
+                getString(R.string.days_for_closing),
+                InputType.TYPE_CLASS_NUMBER,
+                getString(R.string.payment_day_info_message),
+                currentInfo,
+                getString(R.string.save),
+                function = ::setDefaultPaymentDate
+            )
+
+            /*val builder = MaterialAlertDialogBuilder(this@DefaultPaymentDateConfigurationActivity)
             builder.setTitle(getString(R.string.default_payment_day))
 
             val inflater = LayoutInflater.from(this@DefaultPaymentDateConfigurationActivity)
@@ -100,17 +125,6 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
             val etExpirationDay = dialogView.findViewById<TextInputEditText>(R.id.et_1_d2it_2tv)
             val etDaysForClosing = dialogView.findViewById<TextInputEditText>(R.id.et_2_d2it_2tv)
-            val tvPaymentDay = dialogView.findViewById<TextView>(R.id.tv_2_d2it_2tv)
-            val paymentDay = dataStore.getDefaultPaymentDay()
-            val daysForClosingBill = dataStore.getDaysForClosingBill()
-
-            if(paymentDay != null && daysForClosingBill != null){
-                val text = "Dados Atuais:\n\n${getString(R.string.expiration)} - $paymentDay\n${getString(R.string.days_for_closing)} - $daysForClosingBill"
-                tvPaymentDay.text = text
-            }else{
-                val text = getString(R.string.default_day_default_message)
-                tvPaymentDay.text = text
-            }
 
             builder.setView(dialogView)
 
@@ -157,9 +171,43 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
             dialog.setOnShowListener {
                 dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
-            }
+            }*/
 
             dialog.show()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setDefaultPaymentDate(expirationDay : String, daysForClosingBill : String){
+        if(hasInternetConnection()){
+            if (DateFunctions().isValidMonthDay(
+                    expirationDay.toInt()
+                )
+            ) {
+                with(sharedPref.edit()) {
+                    putString(
+                        StringConstants.DATABASE.PAYMENT_DAY,
+                        expirationDay
+                    )
+                    putString(
+                        StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL,
+                        daysForClosingBill
+                    )
+                    commit()
+                }
+                viewModel.setDefaultPaymentDate(
+                    expirationDay,
+                    daysForClosingBill
+                )
+            } else {
+                Snackbar.make(
+                    binding.llDefineDefaultDay,
+                    getString(R.string.invalid_day),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }else{
+            PersonalizedSnackBars.noInternetConnection(binding.tvDefineDefaultDay, this@DefaultPaymentDateConfigurationActivity).show()
         }
     }
 
