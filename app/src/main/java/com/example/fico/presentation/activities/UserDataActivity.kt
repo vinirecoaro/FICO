@@ -146,6 +146,7 @@ class UserDataActivity : AppCompatActivity() {
         val dialog = Dialogs.dialogModelTwo(
             this,
             this,
+            binding.ivEditName,
             getString(R.string.edit_name),
             getString(R.string.name),
             InputType.TYPE_CLASS_TEXT,

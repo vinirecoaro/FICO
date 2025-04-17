@@ -242,5 +242,6 @@
     <string name="unexpected_error_try_later">Ocorreu um erro inesperado. Tente novamente mais tarde</string>
     <string name="repeat_password">Repetir senha</string>
     <string name="password_dont_match">Senhas não conferem</string>
+    <string name="current_data">Dados atuais</string>
 
 </resources>

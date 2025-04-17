@@ -56,6 +56,7 @@ class Dialogs {
         fun dialogModelTwo(
             activity : Activity,
             context : Context,
+            viewFromActivity : View,
             title : String,
             inputFieldHint : String,
             dataType : Int,
@@ -106,9 +107,11 @@ class Dialogs {
                 val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
                 saveButton.isEnabled = false
 
-                val newBudgetString = textInputEditText.text.toString()
+                if(verifyFields(activity, viewFromActivity, textInputEditText)){
+                    val newBudgetString = textInputEditText.text.toString()
 
-                function(newBudgetString)
+                    function(newBudgetString)
+                }
 
                 saveButton.isEnabled = true
             }

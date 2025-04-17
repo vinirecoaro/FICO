@@ -98,7 +98,7 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
             val daysForClosingBill = dataStore.getDaysForClosingBill()
 
             val currentInfo = if(paymentDay != null && daysForClosingBill != null){
-                "Dados Atuais:\n\n${getString(R.string.expiration)} - $paymentDay\n${getString(R.string.days_for_closing)} - $daysForClosingBill"
+                "${getString(R.string.current_data)}:\n\n${getString(R.string.expiration)} - $paymentDay\n${getString(R.string.days_for_closing)} - $daysForClosingBill"
             }else{
                 getString(R.string.default_day_default_message)
             }

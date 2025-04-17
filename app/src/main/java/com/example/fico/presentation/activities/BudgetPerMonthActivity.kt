@@ -81,6 +81,7 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         val dialog = Dialogs.dialogModelTwo(
             this,
             this,
+            binding.rvBudgetPerMonth,
             getString(R.string.edit_budget),
             getString(R.string.type_new_budget),
             StringConstants.PERSONALIZED_INPUT_TYPE.MONEY,

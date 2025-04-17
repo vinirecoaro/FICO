@@ -697,6 +697,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         val dialog = Dialogs.dialogModelTwo(
             requireActivity(),
             requireContext(),
+            binding.btSave,
             getString(R.string.define_default_budget_title),
             getString(R.string.default_budget_activity_title),
             StringConstants.PERSONALIZED_INPUT_TYPE.MONEY,
