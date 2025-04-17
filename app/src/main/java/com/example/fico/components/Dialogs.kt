@@ -10,6 +10,8 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.fico.R
@@ -162,6 +164,7 @@ class Dialogs {
         fun dialogModelFour(
             activity : Activity,
             context : Context,
+            viewFromActivity : View,
             title : String,
             inputFieldOneHint : String,
             inputFieldOneDataType : Int,
@@ -257,10 +260,12 @@ class Dialogs {
                 val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
                 saveButton.isEnabled = false
 
-                val inputFieldOneValue = textInputEditTextOne.text.toString()
-                val inputFieldTwoValue = textInputEditTextTwo.text.toString()
+                if(verifyFields(activity, viewFromActivity, textInputEditTextOne, textInputEditTextTwo)){
+                    val inputFieldOneValue = textInputEditTextOne.text.toString()
+                    val inputFieldTwoValue = textInputEditTextTwo.text.toString()
 
-               function(inputFieldOneValue, inputFieldTwoValue)
+                    function(inputFieldOneValue, inputFieldTwoValue)
+                }
 
                 saveButton.isEnabled = true
             }
@@ -285,5 +290,16 @@ class Dialogs {
             val colorOnSurfaceVariant = ContextCompat.getColor(context, typedValue.resourceId)
             return colorOnSurfaceVariant
         }
+
+        private fun verifyFields(activity : Activity, viewFromActivity : View, vararg fields: EditText): Boolean {
+            for (field in fields) {
+                if (field.text.toString() == "") {
+                    PersonalizedSnackBars.fillField(activity, viewFromActivity, field.hint.toString())
+                    return false
+                }
+            }
+            return true
+        }
+
     }
 }

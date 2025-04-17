@@ -21,5 +21,13 @@ class PersonalizedSnackBars {
                 .setBackgroundTint(activity.resources.getColor(android.R.color.holo_red_dark, activity.theme))
                 .setTextColor(activity.resources.getColor(android.R.color.white, activity.theme))
         }
+
+        fun fillField(activity : Activity, viewFromActivity: View, fieldName : String){
+            Snackbar.make(
+                viewFromActivity,
+                "${activity.getString(R.string.fill_field)} $fieldName",
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
     }
 }

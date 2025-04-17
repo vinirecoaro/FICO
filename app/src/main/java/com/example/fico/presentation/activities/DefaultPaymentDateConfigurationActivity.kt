@@ -106,6 +106,7 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
             val dialog = Dialogs.dialogModelFour(
                 this@DefaultPaymentDateConfigurationActivity,
                 this@DefaultPaymentDateConfigurationActivity,
+                binding.tvDefineDefaultDay,
                 getString(R.string.default_payment_day),
                 getString(R.string.expiration_day),
                 InputType.TYPE_CLASS_NUMBER,
@@ -116,63 +117,7 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
                 getString(R.string.save),
                 function = ::setDefaultPaymentDate
             )
-
-            /*val builder = MaterialAlertDialogBuilder(this@DefaultPaymentDateConfigurationActivity)
-            builder.setTitle(getString(R.string.default_payment_day))
-
-            val inflater = LayoutInflater.from(this@DefaultPaymentDateConfigurationActivity)
-            val dialogView = inflater.inflate(R.layout.dialog_2_input_text_2_text_view, null)
-
-            val etExpirationDay = dialogView.findViewById<TextInputEditText>(R.id.et_1_d2it_2tv)
-            val etDaysForClosing = dialogView.findViewById<TextInputEditText>(R.id.et_2_d2it_2tv)
-
-            builder.setView(dialogView)
-
-            builder.setPositiveButton(getString(R.string.save)){dialog, which ->
-
-                if(hasInternetConnection()){
-                    if (verifyFields(
-                            etExpirationDay,
-                            etDaysForClosing
-                        )
-                    ) {
-                        if (DateFunctions().isValidMonthDay(
-                                etExpirationDay.text.toString().toInt()
-                            )
-                        ) {
-                            with(sharedPref.edit()) {
-                                putString(
-                                    StringConstants.DATABASE.PAYMENT_DAY,
-                                    etExpirationDay.text.toString()
-                                )
-                                putString(
-                                    StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL,
-                                    etDaysForClosing.text.toString()
-                                )
-                                commit()
-                            }
-                            viewModel.setDefaultPaymentDate(
-                                etExpirationDay.text.toString(),
-                                etDaysForClosing.text.toString()
-                            )
-                        } else {
-                            Snackbar.make(
-                                binding.llDefineDefaultDay,
-                                getString(R.string.invalid_day),
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                }else{
-                    PersonalizedSnackBars.noInternetConnection(binding.tvDefineDefaultDay, this@DefaultPaymentDateConfigurationActivity).show()
-                }
-            }
-            val dialog = builder.create()
-
-            dialog.setOnShowListener {
-                dialog.getButton(Dialog.BUTTON_POSITIVE).setTextColor(getAlertDialogTextButtonColor())
-            }*/
-
+            
             dialog.show()
         }
     }
@@ -209,26 +154,6 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
         }else{
             PersonalizedSnackBars.noInternetConnection(binding.tvDefineDefaultDay, this@DefaultPaymentDateConfigurationActivity).show()
         }
-    }
-
-    private fun getAlertDialogTextButtonColor() : Int{
-        val typedValue = TypedValue()
-        val theme: Resources.Theme = this.theme
-        theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
-        val colorOnSurfaceVariant = ContextCompat.getColor(this, typedValue.resourceId)
-        return colorOnSurfaceVariant
-    }
-
-    private fun verifyFields(vararg text: EditText): Boolean {
-        for (i in text) {
-            if (i.text.toString() == "" || i == null) {
-                Snackbar.make(
-                    binding.tvDefineDefaultDay, "Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG
-                ).show()
-                return false
-            }
-        }
-        return true
     }
 
     private fun hasInternetConnection() : Boolean{
