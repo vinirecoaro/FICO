@@ -78,6 +78,7 @@ class FirebaseAPI(
         return try{
             val currentUser = currentUser()
             if(currentUser != null){
+                updateReferences()
                 Result.success(true)
             }else{
                 Result.success(false)
