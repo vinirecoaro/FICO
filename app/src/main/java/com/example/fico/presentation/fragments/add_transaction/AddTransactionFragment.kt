@@ -1139,40 +1139,18 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun recurringTransactionListDialog(recurringTransactionList : List<Transaction>, transactionType : String){
-        val builder = MaterialAlertDialogBuilder(requireContext())
 
-        if(transactionType ==  StringConstants.DATABASE.RECURRING_EXPENSE){
-            builder.setTitle(getString(R.string.dialog_recurring_expense_list_title))
-        } else if(transactionType ==  StringConstants.DATABASE.RECURRING_EARNING){
-            builder.setTitle(getString(R.string.dialog_recurring_earning_list_title))
-        }
+        val dialog = Dialogs.dialogTransactionList(
+            requireActivity(),
+            requireContext(),
+            transactionType,
+            recurringTransactionList,
+            categoriesList,
+            {recurringTransaction -> fillFieldsWithRecurringExpense(recurringTransaction)},
+            {recurringTransaction -> fillFieldsWithRecurringEarning(recurringTransaction)}
+        )
 
-        val inflater = LayoutInflater.from(requireContext())
-        val dialogView = inflater.inflate(R.layout.dialog_recurring_expenses, null)
-
-        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.rv_recurring_expenses_list)
-
-        // Recycler View configuration
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recurringTransactionListAdapter = TransactionListAdapter(categoriesList.getExpenseCategoryListFull(), categoriesList.getEarningCategoryList())
-        recurringTransactionListAdapter.updateTransactions(recurringTransactionList)
-        recyclerView.adapter = recurringTransactionListAdapter
-
-        builder.setView(dialogView)
-
-        val dialog = builder.create()
         dialog.show()
-
-        // Listeners
-        recurringTransactionListAdapter.setOnItemClickListener { position ->
-            val selectItem = recurringTransactionList[position].toRecurringTransaction()
-            if(transactionType ==  StringConstants.DATABASE.RECURRING_EXPENSE){
-                fillFieldsWithRecurringExpense(selectItem)
-            } else if(transactionType ==  StringConstants.DATABASE.RECURRING_EARNING){
-                fillFieldsWithRecurringEarning(selectItem)
-            }
-            dialog.cancel()
-        }
 
     }
 

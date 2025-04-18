@@ -14,11 +14,19 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.model.RecurringTransaction
+import com.example.fico.model.Transaction
+import com.example.fico.model.TransactionCategory
+import com.example.fico.presentation.adapters.TransactionListAdapter
+import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import org.koin.android.ext.android.get
 import java.text.NumberFormat
 
 class Dialogs {
@@ -280,6 +288,52 @@ class Dialogs {
                     .setTextColor(getAlertDialogTextButtonColor(activity, context))
             }
 
+            return dialog
+        }
+
+        //Recurring transaction list, title, recyclerView, function : (Object)
+        fun dialogTransactionList(
+            activity : Activity,
+            context : Context,
+            transactionType: String,
+            recurringTransactionList : List<Transaction>,
+            categoryList: CategoriesList,
+            onRecurringExpenseSelectedFunction : (RecurringTransaction) -> Unit,
+            onRecurringEarningSelectedFunction : (RecurringTransaction) -> Unit
+        ): androidx.appcompat.app.AlertDialog{
+            val builder = MaterialAlertDialogBuilder(context)
+
+            if(transactionType ==  StringConstants.DATABASE.RECURRING_EXPENSE){
+                builder.setTitle(activity.getString(R.string.dialog_recurring_expense_list_title))
+            } else if(transactionType ==  StringConstants.DATABASE.RECURRING_EARNING){
+                builder.setTitle(activity.getString(R.string.dialog_recurring_earning_list_title))
+            }
+
+            val inflater = LayoutInflater.from(context)
+            val dialogView = inflater.inflate(R.layout.dialog_recurring_expenses, null)
+
+            val recyclerView = dialogView.findViewById<RecyclerView>(R.id.rv_recurring_expenses_list)
+
+            // Recycler View configuration
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            val recurringTransactionListAdapter = TransactionListAdapter(categoryList.getExpenseCategoryListFull(), categoryList.getEarningCategoryList())
+            recurringTransactionListAdapter.updateTransactions(recurringTransactionList)
+            recyclerView.adapter = recurringTransactionListAdapter
+
+            builder.setView(dialogView)
+
+            val dialog = builder.create()
+
+            // Listeners
+            recurringTransactionListAdapter.setOnItemClickListener { position ->
+                val selectItem = recurringTransactionList[position].toRecurringTransaction()
+                if(transactionType ==  StringConstants.DATABASE.RECURRING_EXPENSE){
+                    onRecurringExpenseSelectedFunction(selectItem)
+                } else if(transactionType ==  StringConstants.DATABASE.RECURRING_EARNING){
+                    onRecurringEarningSelectedFunction(selectItem)
+                }
+                dialog.cancel()
+            }
             return dialog
         }
 
