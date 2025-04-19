@@ -66,9 +66,10 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
 
             if(item.description.contains("Parcela") || item.description.contains("parcela")){
 
-                val numOfInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(item.id).replace("0","")
+                val numOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(item.id).replace("0","")
+                val currentInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(item.id).replace("0","")
                 holder.installmentField.visibility = View.VISIBLE
-                val installmentText = "Parcela $numOfInstallment"
+                val installmentText = "Parcela $currentInstallment de $numOfInstallment"
                 holder.installmentField.text = installmentText
 
                 val descriptionFormatted = FormatValuesFromDatabase().installmentExpenseDescription(item.description)
