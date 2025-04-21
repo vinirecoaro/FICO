@@ -51,10 +51,7 @@ class LogoActivity : AppCompatActivity() {
                 if(ConnectionFunctions().internetConnectionVerification(this@LogoActivity)){
                     remoteDatabaseViewModel.getDataFromDatabase()
                 }
-                promptManager.showBiometricPrompt(
-                    title = getString(R.string.biometric_prompt_title),
-                    description = getString(R.string.biometric_prompt_description)
-                )
+                showBiometricPrompt()
 
             }else{
                 startActivity(Intent(this@LogoActivity, LoginActivity::class.java))
@@ -64,6 +61,13 @@ class LogoActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners() {
+        binding.btUseCellphonePassword.setOnClickListener{
+            binding.btUseCellphonePassword.isEnabled = false
+            binding.btUseCellphonePassword.visibility = View.GONE
+            showBiometricPrompt()
+            binding.btUseCellphonePassword.isEnabled = true
+        }
+
         viewModel.onError = { message ->
             when(message) {
                 StringConstants.MESSAGES.IS_LOGGED_ERROR -> {
@@ -77,10 +81,11 @@ class LogoActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             promptManager.promptResults.collect{biometricResult ->
-                binding.btUseCellphonePassword.visibility = View.VISIBLE
+
                 when(biometricResult){
                     is BiometricResult.AuthenticationError -> {
-
+                        //Change button visibility to show biometric prompt again
+                        binding.btUseCellphonePassword.visibility = View.VISIBLE
                     }
                     BiometricResult.AuthenticationFailed -> {
 
@@ -104,7 +109,6 @@ class LogoActivity : AppCompatActivity() {
 
                     }
                     BiometricResult.HardwareUnavailable -> {
-
                     }
                 }
             }
@@ -118,6 +122,13 @@ class LogoActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun showBiometricPrompt(){
+        promptManager.showBiometricPrompt(
+            title = getString(R.string.biometric_prompt_title),
+            description = getString(R.string.biometric_prompt_description)
+        )
     }
 
 }
