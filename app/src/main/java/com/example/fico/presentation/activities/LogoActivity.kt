@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.DisplayMetrics
+import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.transition.Visibility
 import com.example.fico.R
 import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.utils.constants.StringConstants
@@ -53,6 +55,7 @@ class LogoActivity : AppCompatActivity() {
                     title = getString(R.string.biometric_prompt_title),
                     description = getString(R.string.biometric_prompt_description)
                 )
+
             }else{
                 startActivity(Intent(this@LogoActivity, LoginActivity::class.java))
             }
@@ -74,6 +77,7 @@ class LogoActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             promptManager.promptResults.collect{biometricResult ->
+                binding.btUseCellphonePassword.visibility = View.VISIBLE
                 when(biometricResult){
                     is BiometricResult.AuthenticationError -> {
 
