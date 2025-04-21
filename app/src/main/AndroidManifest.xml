@@ -5,8 +5,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:name=".MyApp"
@@ -21,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FICO"
         tools:targetApi="31">
+        <activity
+            android:name=".presentation.activities.SecurityConfigurationActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.activities.DefaultPaymentDateConfigurationActivity"
             android:exported="false" />

@@ -1,17 +1,13 @@
 package com.example.fico.presentation.fragments
 
-import android.app.Dialog
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -27,6 +23,7 @@ import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.interfaces.OnListItemClick
+import com.example.fico.presentation.activities.SecurityConfigurationActivity
 import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
@@ -39,7 +36,7 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
     private var _binding : FragmentConfigurationBinding? = null
     private val binding get() = _binding!!
     private val viewModel : TransactionConfigurationViewModel by inject()
-    private lateinit var configuratonListAdapter: ExpenseConfigurationListAdapter
+    private lateinit var configurationListAdapter: ExpenseConfigurationListAdapter
     private lateinit var recurringTransactionListAdapter : TransactionListAdapter
     private val categoriesList : CategoriesList by inject()
     private val startEditTransactionActivityForResult = registerForActivityResult(
@@ -86,9 +83,9 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
         val rootView = binding.root
 
         binding.rvConfigurationList.layoutManager = LinearLayoutManager(requireContext())
-        configuratonListAdapter = ExpenseConfigurationListAdapter(viewModel.configurationList)
-        configuratonListAdapter.setOnItemClickListener(this)
-        binding.rvConfigurationList.adapter = configuratonListAdapter
+        configurationListAdapter = ExpenseConfigurationListAdapter(viewModel.configurationList)
+        configurationListAdapter.setOnItemClickListener(this)
+        binding.rvConfigurationList.adapter = configurationListAdapter
 
         setUpListeners()
 
@@ -143,6 +140,10 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
             getString(R.string.recurring_transactions_configuration_list) -> {
                 selectTransactionTypeDialog()
             }
+            getString(R.string.security) -> {
+                startActivity(Intent(requireContext(), SecurityConfigurationActivity::class.java))
+            }
+
         }
     }
 

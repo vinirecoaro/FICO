@@ -244,5 +244,6 @@
     <string name="password_dont_match">Senhas não conferem</string>
     <string name="current_data">Dados atuais</string>
     <string name="use_cellphone_password">Usar senha do celular</string>
+    <string name="security">Segurança</string>
 
 </resources>

@@ -32,7 +32,8 @@ class TransactionConfigurationViewModel(
         context.getString(R.string.default_payment_date),
         context.getString(R.string.budget_configuration_list),
         context.getString(R.string.recurring_transactions_configuration_list),
-        //context.getString(R.string.update_database_info_per_month_and_total_expense)
+        //context.getString(R.string.update_database_info_per_month_and_total_expense),
+        context.getString(R.string.security)
     )
 
     //Update Info per Month and Total Expense based on dataStore expense list
