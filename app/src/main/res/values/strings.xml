@@ -245,5 +245,6 @@
     <string name="current_data">Dados atuais</string>
     <string name="use_cellphone_password">Usar senha do celular</string>
     <string name="security">Segurança</string>
+    <string name="block_app_with_phone_password">Bloquear app com senha do celular</string>
 
 </resources>
