@@ -46,11 +46,7 @@ class LogoActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.Main) {
             if (viewModel.isLogged().await()) {
-                if(ConnectionFunctions().internetConnectionVerification(this@LogoActivity)){
-                    remoteDatabaseViewModel.getDataFromDatabase()
-                }
-                showBiometricPrompt()
-
+                viewModel.getBlockAppStateFromDataStore()
             }else{
                 startActivity(Intent(this@LogoActivity, LoginActivity::class.java))
             }
@@ -59,6 +55,15 @@ class LogoActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners() {
+        viewModel.getBlockAppState.observe(this){ result ->
+            if(result){
+                showBiometricPrompt()
+            }else{
+                startActivity(Intent(this, MainTransactionActivity::class.java))
+                finish()
+            }
+        }
+
         binding.btUseCellphonePassword.setOnClickListener{
             binding.btUseCellphonePassword.isEnabled = false
             binding.btUseCellphonePassword.visibility = View.GONE
@@ -100,6 +105,9 @@ class LogoActivity : AppCompatActivity() {
                         }
                     }
                     BiometricResult.AuthenticationSuccess -> {
+                        if(ConnectionFunctions().internetConnectionVerification(this@LogoActivity)){
+                            remoteDatabaseViewModel.getDataFromDatabase()
+                        }
                         startActivity(Intent(this@LogoActivity, MainTransactionActivity::class.java))
                         finish()
                     }

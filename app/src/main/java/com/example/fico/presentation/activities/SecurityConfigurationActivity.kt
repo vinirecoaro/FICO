@@ -54,32 +54,31 @@ class SecurityConfigurationActivity : AppCompatActivity() {
             }else{
                 showBiometricPrompt()
             }
+        }
 
-            lifecycleScope.launch {
-                promptManager.promptResults.collect{biometricResult ->
+        lifecycleScope.launch {
+            promptManager.promptResults.collect{biometricResult ->
 
-                    when(biometricResult){
-                        is BiometricResult.AuthenticationError -> {
-                            binding.swtBlockApp.isChecked = true
-                        }
-                        BiometricResult.AuthenticationFailed -> {
+                when(biometricResult){
+                    is BiometricResult.AuthenticationError -> {
+                        binding.swtBlockApp.isChecked = true
+                    }
+                    BiometricResult.AuthenticationFailed -> {
 
-                        }
-                        BiometricResult.AuthenticationNotSet -> {
+                    }
+                    BiometricResult.AuthenticationNotSet -> {
 
-                        }
-                        BiometricResult.AuthenticationSuccess -> {
-                            viewModel.setBlockAppStateOnDataStore(state)
-                        }
-                        BiometricResult.FeatureUnavailable -> {
+                    }
+                    BiometricResult.AuthenticationSuccess -> {
+                        viewModel.setBlockAppStateOnDataStore(false)
+                    }
+                    BiometricResult.FeatureUnavailable -> {
 
-                        }
-                        BiometricResult.HardwareUnavailable -> {
-                        }
+                    }
+                    BiometricResult.HardwareUnavailable -> {
                     }
                 }
             }
-
         }
 
         viewModel.getBlockAppState.observe(this){ state ->
