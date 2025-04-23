@@ -156,6 +156,7 @@ class StringConstants private constructor() {
         const val EARNING_MONTHS_LIST_KEY = "EarningMonthsListKey"
         const val USER_NAME_KEY = "UserNameKey"
         const val USER_EMAIL_KEY = "UserEmailKey"
+        const val BLOCK_APP_STATE_KEY = "BlockAppStateKey"
 
     }
 

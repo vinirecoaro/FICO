@@ -22,6 +22,7 @@ import com.example.fico.presentation.viewmodel.LogoViewModel
 import com.example.fico.presentation.viewmodel.MainViewModel
 import com.example.fico.presentation.viewmodel.RegisterViewModel
 import com.example.fico.presentation.viewmodel.ResetPasswordViewModel
+import com.example.fico.presentation.viewmodel.SecurityConfigurationViewModel
 import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
@@ -115,6 +116,12 @@ val appModule = module {
     factory<BudgetPerMonthViewModel> {
         BudgetPerMonthViewModel(
             firebaseAPI = get(),
+            dataStore = get()
+        )
+    }
+
+    factory<SecurityConfigurationViewModel> {
+        SecurityConfigurationViewModel(
             dataStore = get()
         )
     }

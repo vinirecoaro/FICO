@@ -37,6 +37,7 @@ class DataStoreManager (context: Context) {
         val earningMonthsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNING_MONTHS_LIST_KEY)
         val userNameKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_NAME_KEY)
         val userEmailKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_EMAIL_KEY)
+        val blockAppStateKey = stringPreferencesKey(StringConstants.DATA_STORE.BLOCK_APP_STATE_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -182,6 +183,19 @@ class DataStoreManager (context: Context) {
             preferences[paymentDateSwitchKey]
         }.first().toBoolean()
         return paymentDateSwitch
+    }
+
+    suspend fun setBlockAppState(state : Boolean){
+        dataStore.edit { preferences ->
+            preferences[blockAppStateKey] = state.toString()
+        }
+    }
+
+    suspend fun getBlockAppState() : Boolean {
+        val blockAppState = dataStore.data.map { preferences ->
+            preferences[blockAppStateKey]?.toBoolean() ?: true
+        }.first()
+        return blockAppState
     }
 
     suspend fun updateAndResetEarningList(earningList : List<Earning>){

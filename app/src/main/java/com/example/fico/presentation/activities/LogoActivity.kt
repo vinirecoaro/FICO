@@ -34,9 +34,7 @@ class LogoActivity : AppCompatActivity() {
     private val binding by lazy { ActivityLogoBinding.inflate(layoutInflater) }
     private val viewModel: LogoViewModel by inject()
     private val remoteDatabaseViewModel : RemoteDatabaseViewModel by inject()
-    private val promptManager by lazy{
-        BiometricPromptManager(this)
-    }
+    private val promptManager by lazy{ BiometricPromptManager(this) }
     private lateinit var enrollLauncher: ActivityResultLauncher<Intent>
 
     @RequiresApi(Build.VERSION_CODES.N)
