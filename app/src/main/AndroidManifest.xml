@@ -78,7 +78,9 @@
         <activity
             android:name=".presentation.activities.LoginActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name=".presentation.activities.RegisterActivity" />
 
         <provider
