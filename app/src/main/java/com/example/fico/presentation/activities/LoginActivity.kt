@@ -128,6 +128,13 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+
+        UiFunctions.defineStrokeColorOnFocused(
+            this,
+            this,
+            Pair(binding.tlEmail, binding.etEmail),
+            Pair(binding.tlPassword, binding.etPassword)
+        )
     }
 
     private fun resetPasswordSucess(){
