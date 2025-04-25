@@ -13,6 +13,7 @@ import com.example.fico.R
 import com.example.fico.databinding.ActivityLoginBinding
 import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
+import com.example.fico.utils.UiFunctions
 import com.example.fico.utils.constants.StringConstants
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun setUpListeners(){
         binding.btLogin.setOnClickListener {
+            UiFunctions.hideKeyboard(this, binding.btLogin)
             binding.btLogin.isEnabled = false
             binding.btLogin.text = StringConstants.MESSAGES.EMPTY_STRING
             binding.pbLogin.visibility = View.VISIBLE
