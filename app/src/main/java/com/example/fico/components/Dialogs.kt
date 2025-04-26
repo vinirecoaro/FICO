@@ -23,6 +23,7 @@ import com.example.fico.model.TransactionCategory
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
+import com.example.fico.utils.ui_personalizations.InputFieldFunctions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -115,7 +116,7 @@ class Dialogs {
                 val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
                 saveButton.isEnabled = false
 
-                if(verifyFields(activity, viewFromActivity, textInputEditText)){
+                if(InputFieldFunctions.isFilled(activity, viewFromActivity, textInputEditText)){
                     val newBudgetString = textInputEditText.text.toString()
 
                     function(newBudgetString)
@@ -271,7 +272,7 @@ class Dialogs {
                 val saveButton =  (dialog as androidx.appcompat.app.AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
                 saveButton.isEnabled = false
 
-                if(verifyFields(activity, viewFromActivity, textInputEditTextOne, textInputEditTextTwo)){
+                if(InputFieldFunctions.isFilled(activity, viewFromActivity, textInputEditTextOne, textInputEditTextTwo)){
                     val inputFieldOneValue = textInputEditTextOne.text.toString()
                     val inputFieldTwoValue = textInputEditTextTwo.text.toString()
 
@@ -346,16 +347,6 @@ class Dialogs {
             theme.resolveAttribute(R.attr.alertDialogTextButtonColor, typedValue, true)
             val colorOnSurfaceVariant = ContextCompat.getColor(context, typedValue.resourceId)
             return colorOnSurfaceVariant
-        }
-
-        private fun verifyFields(activity : Activity, viewFromActivity : View, vararg fields: EditText): Boolean {
-            for (field in fields) {
-                if (field.text.toString() == "") {
-                    PersonalizedSnackBars.fillField(activity, viewFromActivity, field.hint.toString())
-                    return false
-                }
-            }
-            return true
         }
 
     }

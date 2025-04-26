@@ -15,6 +15,7 @@ import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.utils.UiFunctions
 import com.example.fico.utils.constants.StringConstants
+import com.example.fico.utils.ui_personalizations.InputFieldFunctions
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -46,9 +47,11 @@ class LoginActivity : AppCompatActivity() {
             binding.btLogin.isEnabled = false
             binding.btLogin.text = StringConstants.MESSAGES.EMPTY_STRING
             binding.pbLogin.visibility = View.VISIBLE
-            if(verifyFields(
-                binding.etEmail,
-                binding.etPassword
+            if(InputFieldFunctions.isFilled(
+                    this,
+                    binding.btLogin,
+                    binding.etEmail,
+                    binding.etPassword
             )){
                 lifecycleScope.launch (Dispatchers.Main){
                     viewModel.login(
@@ -129,7 +132,8 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        UiFunctions.defineStrokeColorOnFocused(
+        //Personalized box Stroke and Hint color
+        InputFieldFunctions.defineStrokeColorOnFocused(
             this,
             this,
             Pair(binding.tlEmail, binding.etEmail),
@@ -143,17 +147,4 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this,getString(R.string.redefine_password_email_sent_success_message), Toast.LENGTH_LONG).show()
         }
     }
-
-    private fun verifyFields(vararg text: EditText): Boolean {
-        for (i in text) {
-            if (i.text.toString() == "" || i == null) {
-                Snackbar.make(
-                    binding.btLogin, "${getString(R.string.fill_field)} ${i.hint}", Snackbar.LENGTH_LONG
-                ).show()
-                return false
-            }
-        }
-        return true
-    }
-
 }

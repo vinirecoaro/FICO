@@ -60,6 +60,7 @@ import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
+import com.example.fico.utils.ui_personalizations.InputFieldFunctions
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -677,6 +678,17 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             list.forEach { recurringExpense -> transactionList.add(recurringExpense.toTransaction()) }
             recurringTransactionListDialog(transactionList, type)
         }
+
+        //Personalized box Stroke and Hint color
+        InputFieldFunctions.defineStrokeColorOnFocused(
+            requireActivity(),
+            requireContext(),
+            Pair(binding.tilPrice, binding.etPrice),
+            Pair(binding.tilDescription, binding.etDescription),
+            Pair(binding.tilInstallments, binding.etInstallments),
+            Pair(binding.tilPaymentDate, binding.etPaymentDate),
+            Pair(binding.tilPurchaseDate, binding.etPurchaseDate)
+        )
 
     }
 
