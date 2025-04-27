@@ -98,7 +98,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
     private lateinit var menu : Menu
     private val categoriesList : CategoriesList by inject()
-    private lateinit var recurringTransactionListAdapter : TransactionListAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(

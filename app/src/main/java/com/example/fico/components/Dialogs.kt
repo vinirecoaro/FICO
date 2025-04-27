@@ -90,6 +90,12 @@ class Dialogs {
                 textInputEditText.inputType = dataType
             }
 
+            InputFieldFunctions.defineStrokeColorOnFocused(
+                activity,
+                context,
+                Pair(textInputLayout, textInputEditText)
+            )
+
             builder.setView(dialogView)
 
             textInputEditText.addTextChangedListener(object : TextWatcher {
@@ -257,6 +263,13 @@ class Dialogs {
                 }
             })
 
+            // Define text input layout stroke and hint color
+            InputFieldFunctions.defineStrokeColorOnFocused(
+                activity,
+                context,
+                Pair(textInputLayoutOne, textInputEditTextOne),
+                Pair(textInputLayoutTwo, textInputEditTextTwo),
+            )
 
             //Config textViews
 
