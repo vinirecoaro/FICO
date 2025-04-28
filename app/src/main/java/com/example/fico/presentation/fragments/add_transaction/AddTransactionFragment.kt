@@ -470,24 +470,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.btSave.visibility = View.VISIBLE
             binding.ivPaymentDate.isEnabled = false
 
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.choose_date))
-                .build()
-
-            datePicker.addOnPositiveButtonClickListener {
-                val selectedDateInMillis = it
-                val formattedDate = formatDate(selectedDateInMillis)
-                binding.etPaymentDate.setText(formattedDate)
-                binding.ivPaymentDate.isEnabled = true
-            }
-
-            datePicker.addOnNegativeButtonClickListener {
-                binding.ivPaymentDate.isEnabled = true
-            }
-
-            datePicker.addOnDismissListener {
-                binding.ivPaymentDate.isEnabled = true
-            }
+            val datePicker = Dialogs.datePicker(
+                requireContext(),
+                { dateInMillis -> setSelectedDate(dateInMillis, binding.etPaymentDate) },
+                { binding.ivPaymentDate.isEnabled = true },
+                { binding.ivPaymentDate.isEnabled = true },
+            )
 
             datePicker.show(parentFragmentManager, "PaymentDate")
         }
@@ -496,25 +484,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.btSave.visibility = View.VISIBLE
             binding.ivPurchaseDate.isEnabled = false
 
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.choose_date))
-                .build()
-
-            datePicker.addOnPositiveButtonClickListener {
-                val selectedDateInMillis = it
-                val formattedDate = formatDate(selectedDateInMillis)
-                binding.etPurchaseDate.setText(formattedDate)
-                viewModel.getDefaultPaymentDay()
-                binding.ivPurchaseDate.isEnabled = true
-            }
-
-            datePicker.addOnNegativeButtonClickListener {
-                binding.ivPurchaseDate.isEnabled = true
-            }
-
-            datePicker.addOnDismissListener {
-                binding.ivPurchaseDate.isEnabled = true
-            }
+            val datePicker = Dialogs.datePicker(
+                requireContext(),
+                { dateInMillis -> setSelectedDate(dateInMillis, binding.etPurchaseDate) },
+                { binding.ivPurchaseDate.isEnabled = true },
+                { binding.ivPurchaseDate.isEnabled = true },
+            )
 
             datePicker.show(parentFragmentManager, "PurchaseDate")
         }
@@ -523,24 +498,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.btSave.visibility = View.VISIBLE
             binding.ivReceivedDate.isEnabled = false
 
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.choose_date))
-                .build()
-
-            datePicker.addOnPositiveButtonClickListener {
-                val selectedDateInMillis = it
-                val formattedDate = formatDate(selectedDateInMillis)
-                binding.etReceivedDate.setText(formattedDate)
-                binding.ivReceivedDate.isEnabled = true
-            }
-
-            datePicker.addOnNegativeButtonClickListener {
-                binding.ivReceivedDate.isEnabled = true
-            }
-
-            datePicker.addOnDismissListener {
-                binding.ivReceivedDate.isEnabled = true
-            }
+            val datePicker = Dialogs.datePicker(
+                requireContext(),
+                { dateInMillis -> setSelectedDate(dateInMillis, binding.etReceivedDate) },
+                { binding.ivReceivedDate.isEnabled = true },
+                { binding.ivReceivedDate.isEnabled = true },
+            )
 
             datePicker.show(parentFragmentManager, "PurchaseDate")
         }
@@ -689,6 +652,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             Pair(binding.tilPurchaseDate, binding.etPurchaseDate)
         )
 
+    }
+
+    private fun setSelectedDate(dateInMillis : Long, editText : EditText){
+        val formattedDate = formatDate(dateInMillis)
+        editText.setText(formattedDate)
+        editText.isEnabled = true
     }
 
     private fun verifyFields(vararg text: EditText): Boolean {
