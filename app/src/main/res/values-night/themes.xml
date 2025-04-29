@@ -4,7 +4,7 @@
         <!-- Screen Background color. -->
         <item name="android:windowBackground">@color/black_500</item>
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/blue_400</item>
+        <item name="colorPrimary">@color/blue_200</item>
         <item name="colorPrimaryVariant">@color/blue_500</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -28,6 +28,9 @@
         <item name="boxStrokeColor">@color/blue_200</item>
         <!-- Login and Register activity logo -->
         <item name="login_register_logo">@drawable/login_logo_light</item>
+
+        <!-- button color -->
+        <item name="buttonColor">@color/blue_400</item>
 
     </style>
 

@@ -78,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:text="@string/login"
+            android:backgroundTint="?attr/buttonColor"
             app:layout_constraintWidth_percent="0.60"
             app:layout_constraintBottom_toTopOf="@id/tv_redifine_password"
             app:layout_constraintEnd_toEndOf="parent"

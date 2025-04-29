@@ -29,6 +29,9 @@
         <!-- Login and Register activity logo -->
         <item name="login_register_logo">@drawable/login_logo_black</item>
 
+        <!-- button color -->
+        <item name="buttonColor">@color/blue_400</item>
+
     </style>
 
     <style name="Theme.App.SplashScreen" parent = "Theme.SplashScreen">

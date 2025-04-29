@@ -5,19 +5,12 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.GridView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,19 +18,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
-import com.example.fico.model.TransactionCategory
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.ui_personalizations.InputFieldFunctions
-import com.google.android.material.color.MaterialColors
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import org.koin.android.ext.android.get
 import java.text.NumberFormat
-import java.util.Calendar
 
 class Dialogs {
     companion object {
