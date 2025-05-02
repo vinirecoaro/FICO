@@ -177,21 +177,17 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.add_expense_menu_common -> {
-                binding.tilInstallments.visibility = View.GONE
-                binding.etInstallments.visibility = View.GONE
-                binding.tilPaymentDate.hint = getString(R.string.payment_date)
-                clearUserInputs()
+            /*R.id.add_expense_menu_common -> {
+                changeToCommonExpense()
+                //clearUserInputs()
                 return true
             }
 
             R.id.add_expense_menu_installments -> {
-                binding.tilInstallments.visibility = View.VISIBLE
-                binding.etInstallments.visibility = View.VISIBLE
-                binding.tilPaymentDate.hint = getString(R.string.payment_date_field_installment_hint)
-                clearUserInputs()
+                changeToInstallmentExpense()
+                //clearUserInputs()
                 return true
-            }
+            }*/
 
             R.id.add_recurring_expense_menu -> {
                 viewModel.getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EXPENSE)
@@ -652,6 +648,16 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             Pair(binding.tilPurchaseDate, binding.etPurchaseDate)
         )
 
+        binding.rgExpenseType.setOnCheckedChangeListener { group, checkedId  ->
+            when(checkedId){
+                R.id.rb_common_expense -> {
+                    changeToCommonExpense()
+                }
+                R.id.rb_installment_expense -> {
+                    changeToInstallmentExpense()
+                }
+            }
+        }
     }
 
     private fun setSelectedDate(dateInMillis : Long, editText : EditText){
@@ -1015,8 +1021,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun changeComponentsToEarningState(){
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
-        menu.findItem(R.id.add_expense_menu_common).isVisible = false
-        menu.findItem(R.id.add_expense_menu_installments).isVisible = false
+        /*menu.findItem(R.id.add_expense_menu_common).isVisible = false
+        menu.findItem(R.id.add_expense_menu_installments).isVisible = false*/
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = true
         menu.findItem(R.id.add_recurring_earning_menu).isVisible = true
@@ -1042,8 +1048,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun changeComponentsToExpenseState(){
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = true
-        menu.findItem(R.id.add_expense_menu_common).isVisible = true
-        menu.findItem(R.id.add_expense_menu_installments).isVisible = true
+        /*menu.findItem(R.id.add_expense_menu_common).isVisible = true
+        menu.findItem(R.id.add_expense_menu_installments).isVisible = true*/
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = true
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         menu.findItem(R.id.add_recurring_earning_menu).isVisible = false
@@ -1067,8 +1073,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun changeComponentsToRecurringExpenseState(){
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
-        menu.findItem(R.id.add_expense_menu_common).isVisible = false
-        menu.findItem(R.id.add_expense_menu_installments).isVisible = false
+        /*menu.findItem(R.id.add_expense_menu_common).isVisible = false
+        menu.findItem(R.id.add_expense_menu_installments).isVisible = false*/
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_recurring_expense)
@@ -1093,8 +1099,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun changeComponentsToRecurringEarningState(){
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
-        menu.findItem(R.id.add_expense_menu_common).isVisible = false
-        menu.findItem(R.id.add_expense_menu_installments).isVisible = false
+        /*menu.findItem(R.id.add_expense_menu_common).isVisible = false
+        menu.findItem(R.id.add_expense_menu_installments).isVisible = false*/
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_recurring_earning)
@@ -1165,6 +1171,18 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun hasInternetConnection() : Boolean{
         return ConnectionFunctions().internetConnectionVerification(requireContext())
+    }
+
+    private fun changeToCommonExpense(){
+        binding.tilInstallments.visibility = View.GONE
+        binding.etInstallments.visibility = View.GONE
+        binding.tilPaymentDate.hint = getString(R.string.payment_date)
+    }
+
+    private fun changeToInstallmentExpense(){
+        binding.tilInstallments.visibility = View.VISIBLE
+        binding.etInstallments.visibility = View.VISIBLE
+        binding.tilPaymentDate.hint = getString(R.string.payment_date_field_installment_hint)
     }
 
 }
