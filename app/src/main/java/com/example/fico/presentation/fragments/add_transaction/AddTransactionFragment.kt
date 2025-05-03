@@ -1021,8 +1021,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun changeComponentsToEarningState(){
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
-        /*menu.findItem(R.id.add_expense_menu_common).isVisible = false
-        menu.findItem(R.id.add_expense_menu_installments).isVisible = false*/
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = true
         menu.findItem(R.id.add_recurring_earning_menu).isVisible = true
@@ -1048,8 +1046,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun changeComponentsToExpenseState(){
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = true
-        /*menu.findItem(R.id.add_expense_menu_common).isVisible = true
-        menu.findItem(R.id.add_expense_menu_installments).isVisible = true*/
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = true
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         menu.findItem(R.id.add_recurring_earning_menu).isVisible = false
@@ -1073,8 +1069,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun changeComponentsToRecurringExpenseState(){
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
-        /*menu.findItem(R.id.add_expense_menu_common).isVisible = false
-        menu.findItem(R.id.add_expense_menu_installments).isVisible = false*/
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_recurring_expense)
@@ -1099,8 +1093,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
     private fun changeComponentsToRecurringEarningState(){
         menu.findItem(R.id.add_earning_transaction_menu).isVisible = false
-        /*menu.findItem(R.id.add_expense_menu_common).isVisible = false
-        menu.findItem(R.id.add_expense_menu_installments).isVisible = false*/
         menu.findItem(R.id.add_recurring_expense_menu).isVisible = false
         menu.findItem(R.id.add_expense_transaction_menu).isVisible = false
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(R.string.add_recurring_earning)

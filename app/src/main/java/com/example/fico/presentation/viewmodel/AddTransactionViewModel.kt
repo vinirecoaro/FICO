@@ -111,7 +111,6 @@ class AddTransactionViewModel(
                 firebaseAPI.addExpense(expenseList, updatedTotalExpense, updatedInformationPerMonth)
             result.fold(
                 onSuccess = {
-
                     //Update dataStore expense List and infoPerMonth
                     val expenseListFormatted = mutableListOf<Expense>()
                     val currentInfoPerMonth = dataStore.getExpenseInfoPerMonth()
