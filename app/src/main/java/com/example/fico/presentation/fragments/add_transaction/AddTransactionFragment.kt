@@ -1041,6 +1041,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.ivReceivedDate.visibility = View.VISIBLE
         binding.tilRecurringTransactionDay.visibility = View.GONE
         binding.etRecurringTransactionDay.visibility = View.GONE
+        binding.rgExpenseType.visibility = View.GONE
         adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
 
@@ -1064,6 +1065,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.ivReceivedDate.visibility = View.GONE
         binding.tilRecurringTransactionDay.visibility = View.GONE
         binding.etRecurringTransactionDay.visibility = View.GONE
+        binding.rgExpenseType.visibility = View.VISIBLE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
     }
 
@@ -1088,6 +1090,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.ivReceivedDate.visibility = View.GONE
         binding.tilRecurringTransactionDay.visibility = View.VISIBLE
         binding.etRecurringTransactionDay.visibility = View.VISIBLE
+        binding.rgExpenseType.visibility = View.GONE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
     }
 
@@ -1112,6 +1115,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.ivReceivedDate.visibility = View.GONE
         binding.tilRecurringTransactionDay.visibility = View.VISIBLE
         binding.etRecurringTransactionDay.visibility = View.VISIBLE
+        binding.rgExpenseType.visibility = View.GONE
         adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
 
