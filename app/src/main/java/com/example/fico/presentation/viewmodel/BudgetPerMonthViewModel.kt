@@ -70,7 +70,7 @@ class BudgetPerMonthViewModel(
             val newAvailable = currentAvailableFormatted.add(correction)
             val newAvailableFormatted = newAvailable.setScale(8, RoundingMode.HALF_UP).toString()
 
-            firebaseAPI.editBudget(formattedDate, newBudgetBigNum, newAvailableFormatted).fold(
+            firebaseAPI. editBudget(formattedDate, newBudgetBigNum, newAvailableFormatted).fold(
                 onSuccess = {
                     val updatedInfoPerMonth = infoPerMonthDataStore.toMutableList()
                     updatedInfoPerMonth.removeAll { it.date == formattedDate }

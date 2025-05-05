@@ -92,12 +92,18 @@ class EditTransactionViewModel(
                 oldExpenseFormatted.price,
                 oldExpenseNOfInstallment)
 
+            val infoPerMonthDataStore = dataStore.getExpenseInfoPerMonth()
+
+            val monthBudgetDataStore = infoPerMonthDataStore.find { it.date == DateFunctions().YYYYmmDDtoYYYYmm(newExpense.paymentDate)}
+
+            val budget = monthBudgetDataStore!!.budget ?: dataStore.getDefaultBudget()
+
             val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonth(
                 newExpense,
                 installment,
                 nOfInstallments,
                 dataStore.getExpenseInfoPerMonth(),
-                dataStore.getDefaultBudget(),
+                budget,
                 true,
                 oldExpenseFormatted
             )
@@ -186,7 +192,7 @@ class EditTransactionViewModel(
                             updatedInfoPerMonthDataStore.add(updatedInfoOfMonth)
                         }
                     }
-                    //Update expense list on dataStore
+                    //Update expense list and info of month on dataStore
                     dataStore.updateAndResetExpenseList(updatedExpenseListDataStore)
                     dataStore.updateAndResetInfoPerMonthExpense(updatedInfoPerMonthDataStore.toList())
 
