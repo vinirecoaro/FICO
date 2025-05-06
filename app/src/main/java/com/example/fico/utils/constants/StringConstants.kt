@@ -157,7 +157,12 @@ class StringConstants private constructor() {
         const val USER_NAME_KEY = "UserNameKey"
         const val USER_EMAIL_KEY = "UserEmailKey"
         const val BLOCK_APP_STATE_KEY = "BlockAppStateKey"
+        const val FIREBASE_DATABASE_FIXING_VERSION_KEY = "FirebaseDatabaseFixingVersionKey"
+    }
 
+    object VERSION{
+        const val V0 = "v0"
+        const val V1 = "v1"
     }
 
     object REQUEST_CODES {

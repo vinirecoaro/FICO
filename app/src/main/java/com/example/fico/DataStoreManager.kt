@@ -38,6 +38,7 @@ class DataStoreManager (context: Context) {
         val userNameKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_NAME_KEY)
         val userEmailKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_EMAIL_KEY)
         val blockAppStateKey = stringPreferencesKey(StringConstants.DATA_STORE.BLOCK_APP_STATE_KEY)
+        val firebaseDatabaseFixingVersionKey = stringPreferencesKey(StringConstants.DATA_STORE.FIREBASE_DATABASE_FIXING_VERSION_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -394,6 +395,19 @@ class DataStoreManager (context: Context) {
             preferences[userEmailKey]
         }.first()
         return userEmail ?: ""
+    }
+
+    suspend fun setFirebaseDatabaseFixingVersion(version : String){
+        dataStore.edit {preferences ->
+            preferences[firebaseDatabaseFixingVersionKey] = version
+        }
+    }
+
+    suspend fun getFirebaseDatabaseFixingVersion() : String {
+        val firebaseDatabaseFixingVersion = dataStore.data.map { preferences ->
+            preferences[firebaseDatabaseFixingVersionKey]
+        }.first()
+        return firebaseDatabaseFixingVersion ?: StringConstants.VERSION.V0
     }
 
 

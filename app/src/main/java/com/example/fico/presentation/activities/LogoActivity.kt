@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
@@ -59,8 +60,13 @@ class LogoActivity : AppCompatActivity() {
             if(result){
                 showBiometricPrompt()
             }else{
-                startActivity(Intent(this, MainTransactionActivity::class.java))
-                finish()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    if(ConnectionFunctions().internetConnectionVerification(this@LogoActivity)){
+                        remoteDatabaseViewModel.getDataFromDatabase()
+                    }
+                    startActivity(Intent(this@LogoActivity, MainTransactionActivity::class.java))
+                    finish()
+                }
             }
         }
 
@@ -110,6 +116,7 @@ class LogoActivity : AppCompatActivity() {
                         }
                         startActivity(Intent(this@LogoActivity, MainTransactionActivity::class.java))
                         finish()
+
                     }
                     BiometricResult.FeatureUnavailable -> {
 
@@ -128,6 +135,7 @@ class LogoActivity : AppCompatActivity() {
                 finish()
             }
         }
+
     }
 
     private fun showBiometricPrompt(){

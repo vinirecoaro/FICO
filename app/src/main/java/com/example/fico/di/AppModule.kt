@@ -65,6 +65,7 @@ val appModule = module {
 
     factory<RemoteDatabaseViewModel> {
         RemoteDatabaseViewModel(
+            firebaseAPI = get(),
             dataStore = get(),
             transactionsRepository = get()
         )
