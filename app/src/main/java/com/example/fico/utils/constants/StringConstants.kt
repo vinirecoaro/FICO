@@ -226,4 +226,8 @@ class StringConstants private constructor() {
         const val MONEY = 5
     }
 
+    object GENERAL {
+        const val ZERO_STRING = "0"
+    }
+
 }

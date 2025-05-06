@@ -32,6 +32,7 @@ import com.example.fico.interfaces.OnCategorySelectedListener
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
+import com.example.fico.utils.ui_personalizations.InputFieldFunctions
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -201,7 +202,9 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                         lifecycleScope.launch(Dispatchers.Main) {
                             // Verify if is commom expense
                             if (binding.tilInstallments.visibility == View.GONE) {
-                                if (verifyFields(
+                                if (InputFieldFunctions.isFilled(
+                                        this@EditTransactionActivity,
+                                        binding.btSave,
                                         binding.etPrice,
                                         binding.etDescription,
                                         binding.actvCategory,
@@ -220,7 +223,9 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                     )
                                 }
                             } else if (binding.tilInstallments.visibility == View.VISIBLE) {
-                                if (verifyFields(
+                                if (InputFieldFunctions.isFilled(
+                                        this@EditTransactionActivity,
+                                        binding.btSave,
                                         binding.etPrice,
                                         binding.etDescription,
                                         binding.actvCategory,
@@ -229,7 +234,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                         binding.etPurchaseDateEdit
                                     )
                                 ) {
-                                    if (binding.etInstallments.text.toString() != "0") {
+                                    if (binding.etInstallments.text.toString() != StringConstants.GENERAL.ZERO_STRING) {
                                         viewModel.saveEditExpense(
                                             expense!!,
                                             binding.etPrice.text.toString(),
@@ -243,7 +248,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                                     } else {
                                         Toast.makeText(
                                             this@EditTransactionActivity,
-                                            "O número de parcelas não pode ser 0",
+                                            getString(R.string.wrong_installment_input_message),
                                             Toast.LENGTH_LONG
                                         ).show()
                                     }
@@ -255,7 +260,9 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                     StringConstants.DATABASE.EARNING -> {
                         val earning = editingTransaction.toEarning()
                         lifecycleScope.launch(Dispatchers.Main) {
-                            if(verifyFields(
+                            if(InputFieldFunctions.isFilled(
+                                    this@EditTransactionActivity,
+                                    binding.btSave,
                                     binding.etPrice,
                                     binding.etDescription,
                                     binding.actvCategory,
@@ -276,7 +283,9 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                     StringConstants.DATABASE.RECURRING_EARNING -> {
                         val recurringTransaction = editingTransaction.toRecurringTransaction()
                         lifecycleScope.launch(Dispatchers.Main) {
-                            if(verifyFields(
+                            if(InputFieldFunctions.isFilled(
+                                    this@EditTransactionActivity,
+                                    binding.btSave,
                                     binding.etPrice,
                                     binding.etDescription,
                                     binding.actvCategory)
@@ -318,7 +327,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             binding.ivPaymentDate.isEnabled = false
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Escolha a Data")
+                .setTitleText(R.string.choose_date)
                 .build()
 
             datePicker.addOnPositiveButtonClickListener {
@@ -344,7 +353,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
             binding.ivPurchaseDateEdit.isEnabled = false
 
             val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Escolha a Data")
+                .setTitleText(R.string.choose_date)
                 .build()
 
             datePicker.addOnPositiveButtonClickListener {
@@ -481,17 +490,6 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                 finish()
             }
         }
-    }
-
-    private fun verifyFields(vararg text: EditText): Boolean {
-        for (i in text) {
-            if (i.text.toString() == "" || i == null) {
-                Snackbar.make(binding.btSave, "Preencher o campo ${i.hint}", Snackbar.LENGTH_LONG)
-                    .show()
-                return false
-            }
-        }
-        return true
     }
 
     private fun setMaxLength(editText: EditText, maxLength: Int) {
