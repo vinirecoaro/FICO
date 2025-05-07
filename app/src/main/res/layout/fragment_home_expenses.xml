@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragments.home.ExpenseMonthInfoHomeFragment">
+    tools:context=".presentation.fragments.home.HomeExpensesFragment">
 
     <ProgressBar
         android:id="@+id/pb_expense_per_month"
@@ -18,7 +18,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_home_expenses_empty_state"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <TextView
             android:id="@+id/tv_no_info_available"

@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.text.NumberFormat
 
-class ExpenseMonthInfoHomeFragment : Fragment() {
+class HomeExpensesFragment : Fragment() {
 
     private var _binding : FragmentExpenseMonthInfoHomeBinding? = null
     private val binding get() = _binding!!
