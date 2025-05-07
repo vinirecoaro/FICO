@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
-import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
+import com.example.fico.databinding.FragmentHomeExpensesBinding
 import com.example.fico.presentation.adapters.ExpenseMonthsListAdapter
 import com.example.fico.interfaces.OnExpenseMonthSelectedListener
 import com.example.fico.model.BarChartParams
@@ -44,7 +44,7 @@ import java.text.NumberFormat
 
 class HomeExpensesFragment : Fragment() {
 
-    private var _binding : FragmentExpenseMonthInfoHomeBinding? = null
+    private var _binding : FragmentHomeExpensesBinding? = null
     private val binding get() = _binding!!
     private val viewModel : HomeViewModel by inject()
     private lateinit var adapter : ExpenseMonthsListAdapter
@@ -54,7 +54,7 @@ class HomeExpensesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentExpenseMonthInfoHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeExpensesBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
         adapter = ExpenseMonthsListAdapter(requireContext(),emptyList())
@@ -92,20 +92,20 @@ class HomeExpensesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 when(state){
-                    is HomeFragmentState.Loading -> {
+                    is HomeExpensesFragmentState.Loading -> {
                         binding.clInfo.visibility = View.GONE
                         binding.clHomeExpensesEmptyState.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.VISIBLE
                     }
-                    is HomeFragmentState.Empty ->{
+                    is HomeExpensesFragmentState.Empty ->{
                         binding.clInfo.visibility = View.GONE
                         binding.clHomeExpensesEmptyState.visibility = View.VISIBLE
                         binding.pbExpensePerMonth.visibility = View.GONE
                     }
-                    is HomeFragmentState.Error -> {
+                    is HomeExpensesFragmentState.Error -> {
 
                     }
-                    is HomeFragmentState.Success -> {
+                    is HomeExpensesFragmentState.Success -> {
                         binding.clInfo.visibility = View.VISIBLE
                         binding.clHomeExpensesEmptyState.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.GONE
