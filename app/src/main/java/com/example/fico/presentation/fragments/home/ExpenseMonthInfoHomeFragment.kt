@@ -1,6 +1,7 @@
 package com.example.fico.presentation.fragments.home
 
 import android.content.res.Configuration
+import android.graphics.BlurMaskFilter
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -18,15 +20,24 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentExpenseMonthInfoHomeBinding
 import com.example.fico.presentation.adapters.ExpenseMonthsListAdapter
 import com.example.fico.interfaces.OnExpenseMonthSelectedListener
+import com.example.fico.model.BarChartParams
 import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.utils.DateFunctions
+import com.example.fico.utils.custom_component.RoundedBarChartRenderer
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.text.NumberFormat
@@ -49,9 +60,14 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         adapter = ExpenseMonthsListAdapter(requireContext(),emptyList())
         binding.rvExpenseMonths.adapter = adapter
 
+        initExpenseEachMonthChartEmpty()
+
         setUpListeners()
 
         initEmptyChart(binding.pcExpensePerCategory, binding.pcMonthExpense, binding.pcAvailableNow)
+
+        // Blur total value field configuration
+        binding.tvTotalExpensesValue.setLayerType(TextView.LAYER_TYPE_SOFTWARE, null)
 
         return rootView
     }
@@ -66,10 +82,38 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
         initAvailableNowChart()
         viewModel.getCategoriesWithMoreExpense()
         viewModel.getExpenseMonths()
+        viewModel.getTotalExpense()
+        viewModel.getExpenseBarChartParams()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                when(state){
+                    is HomeFragmentState.Loading -> {
+                        binding.clInfo.visibility = View.GONE
+                        binding.clHomeExpensesEmptyState.visibility = View.GONE
+                        binding.pbExpensePerMonth.visibility = View.VISIBLE
+                    }
+                    is HomeFragmentState.Empty ->{
+                        binding.clInfo.visibility = View.GONE
+                        binding.clHomeExpensesEmptyState.visibility = View.VISIBLE
+                        binding.pbExpensePerMonth.visibility = View.GONE
+                    }
+                    is HomeFragmentState.Error -> {
+
+                    }
+                    is HomeFragmentState.Success -> {
+                        binding.clInfo.visibility = View.VISIBLE
+                        binding.clHomeExpensesEmptyState.visibility = View.GONE
+                        binding.pbExpensePerMonth.visibility = View.GONE
+                    }
+                }
+            }
+        }
+
         viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner) { expenseMonths ->
             adapter.updateExpenseMonths(expenseMonths)
             focusOnCurrentMonth()
@@ -87,141 +131,65 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             }
         })
 
-        viewModel.expensePerCategory.observe(viewLifecycleOwner){ expensePerCategoryList ->
+        viewModel.expensePerCategory.observe(viewLifecycleOwner) { expensePerCategoryList ->
             initExpensePerCategoryChart(expensePerCategoryList)
-            val nOfCategories = expensePerCategoryList.size
+
+            val imageViews = listOf(
+                binding.ivIconCategoriesLegend1,
+                binding.ivIconCategoriesLegend2,
+                binding.ivIconCategoriesLegend3,
+                binding.ivIconCategoriesLegend4,
+                binding.ivIconCategoriesLegend5
+            )
+
+            val textViews = listOf(
+                binding.tvTextCategoriesList1,
+                binding.tvTextCategoriesList2,
+                binding.tvTextCategoriesList3,
+                binding.tvTextCategoriesList4,
+                binding.tvTextCategoriesList5
+            )
+
             val colors = viewModel.getPieChartCategoriesColors()
-            when (nOfCategories) {
-                1 -> {
-                    //Visibility
-                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend2.visibility = View.GONE
-                    binding.tvTextCategoriesList2.visibility = View.GONE
-                    binding.ivIconCategoriesLegend3.visibility = View.GONE
-                    binding.tvTextCategoriesList3.visibility = View.GONE
-                    binding.ivIconCategoriesLegend4.visibility = View.GONE
-                    binding.tvTextCategoriesList4.visibility = View.GONE
-                    binding.ivIconCategoriesLegend5.visibility = View.GONE
-                    binding.tvTextCategoriesList5.visibility = View.GONE
 
-                    //Colors
-                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
-
-                    //Text
-                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
-                    binding.tvTextCategoriesList1.text = text1
+            for (i in imageViews.indices) {
+                if (i < expensePerCategoryList.size) {
+                    val (category, amount) = expensePerCategoryList[i]
+                    imageViews[i].visibility = View.VISIBLE
+                    textViews[i].visibility = View.VISIBLE
+                    imageViews[i].setColorFilter(colors[i])
+                    val text = "$category\n${NumberFormat.getCurrencyInstance().format(amount.toFloat())}"
+                    textViews[i].text = text
+                } else {
+                    imageViews[i].visibility = View.GONE
+                    textViews[i].visibility = View.GONE
                 }
-                2 -> {
-                    //Visibility
-                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList2.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend3.visibility = View.GONE
-                    binding.tvTextCategoriesList3.visibility = View.GONE
-                    binding.ivIconCategoriesLegend4.visibility = View.GONE
-                    binding.tvTextCategoriesList4.visibility = View.GONE
-                    binding.ivIconCategoriesLegend5.visibility = View.GONE
-                    binding.tvTextCategoriesList5.visibility = View.GONE
+            }
+        }
 
-                    //Colors
-                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
-                    binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
+        binding.tvTotalExpensesValue.setOnClickListener {
+            viewModel.changeBlurState()
+        }
 
-                    //Text
-                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
-                    binding.tvTextCategoriesList1.text = text1
-                    val text2 = "${expensePerCategoryList[1].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[1].second.toFloat())}"
-                    binding.tvTextCategoriesList2.text = text2
-                }
-                3 -> {
-                    //Visibility
-                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList2.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend3.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList3.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend4.visibility = View.GONE
-                    binding.tvTextCategoriesList4.visibility = View.GONE
-                    binding.ivIconCategoriesLegend5.visibility = View.GONE
-                    binding.tvTextCategoriesList5.visibility = View.GONE
+        viewModel.isBlurred.observe(viewLifecycleOwner){ state ->
+            if (state) {
+                val blurMaskFilter = BlurMaskFilter(30f, BlurMaskFilter.Blur.NORMAL) // Intensidade do desfoque
+                binding.tvTotalExpensesValue.paint.maskFilter = blurMaskFilter
+                binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off_24, 0)
+            } else {
+                binding.tvTotalExpensesValue.paint.maskFilter = null
+                binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_24, 0)
+            }
+            binding.tvTotalExpensesValue.invalidate()
+        }
 
-                    //Colors
-                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
-                    binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
-                    binding.ivIconCategoriesLegend3.setColorFilter(colors[2])
+        viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
+            binding.tvTotalExpensesValue.text = totalExpense
+        }
 
-                    //Text
-                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
-                    binding.tvTextCategoriesList1.text = text1
-                    val text2 = "${expensePerCategoryList[1].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[1].second.toFloat())}"
-                    binding.tvTextCategoriesList2.text = text2
-                    val text3 = "${expensePerCategoryList[2].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[2].second.toFloat())}"
-                    binding.tvTextCategoriesList3.text = text3
-                }
-                4 -> {
-                    //Visibility
-                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList2.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend3.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList3.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend4.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList4.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend5.visibility = View.GONE
-                    binding.tvTextCategoriesList5.visibility = View.GONE
-
-                    //Colors
-                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
-                    binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
-                    binding.ivIconCategoriesLegend3.setColorFilter(colors[2])
-                    binding.ivIconCategoriesLegend4.setColorFilter(colors[3])
-
-                    //Text
-                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
-                    binding.tvTextCategoriesList1.text = text1
-                    val text2 = "${expensePerCategoryList[1].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[1].second.toFloat())}"
-                    binding.tvTextCategoriesList2.text = text2
-                    val text3 = "${expensePerCategoryList[2].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[2].second.toFloat())}"
-                    binding.tvTextCategoriesList3.text = text3
-                    val text4 = "${expensePerCategoryList[3].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[3].second.toFloat())}"
-                    binding.tvTextCategoriesList4.text = text4
-                }
-                5 -> {
-                    //Visibility
-                    binding.ivIconCategoriesLegend1.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList1.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend2.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList2.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend3.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList3.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend4.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList4.visibility = View.VISIBLE
-                    binding.ivIconCategoriesLegend5.visibility = View.VISIBLE
-                    binding.tvTextCategoriesList5.visibility = View.VISIBLE
-
-                    //Colors
-                    binding.ivIconCategoriesLegend1.setColorFilter(colors[0])
-                    binding.ivIconCategoriesLegend2.setColorFilter(colors[1])
-                    binding.ivIconCategoriesLegend3.setColorFilter(colors[2])
-                    binding.ivIconCategoriesLegend4.setColorFilter(colors[3])
-                    binding.ivIconCategoriesLegend5.setColorFilter(colors[4])
-
-                    //Text
-                    val text1 = "${expensePerCategoryList[0].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[0].second.toFloat())}"
-                    binding.tvTextCategoriesList1.text = text1
-                    val text2 = "${expensePerCategoryList[1].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[1].second.toFloat())}"
-                    binding.tvTextCategoriesList2.text = text2
-                    val text3 = "${expensePerCategoryList[2].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[2].second.toFloat())}"
-                    binding.tvTextCategoriesList3.text = text3
-                    val text4 = "${expensePerCategoryList[3].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[3].second.toFloat())}"
-                    binding.tvTextCategoriesList4.text = text4
-                    val text5 = "${expensePerCategoryList[4].first}\n${NumberFormat.getCurrencyInstance().format(expensePerCategoryList[4].second.toFloat())}"
-                    binding.tvTextCategoriesList5.text = text5
-                }
+        viewModel.expenseBarChartParams.observe(viewLifecycleOwner){ barChartParams ->
+            if(barChartParams.entries.isNotEmpty()){
+                initExpenseEachMonthChart(barChartParams)
             }
         }
 
@@ -557,6 +525,117 @@ class ExpenseMonthInfoHomeFragment : Fragment() {
             binding.rvExpenseMonths.scrollToPosition(monthFocusPosition)
         }
         adapter.selectItem(monthFocusPosition)
+    }
+
+    private fun initExpenseEachMonthChartEmpty(){
+        val barChart = binding.bcExpenseEachMonth
+
+        val entries = ArrayList<BarEntry>()
+        entries.add(BarEntry(0f, 0f))
+        entries.add(BarEntry(0f, 0f))
+        entries.add(BarEntry(0f, 0f))
+        entries.add(BarEntry(0f, 0f))
+        entries.add(BarEntry(0f, 0f))
+
+        // Crie um conjunto de dados com a lista de entradas
+        val dataSet = BarDataSet(entries, "Label") // "Label" é o nome da legenda
+
+        //dataSet.valueTextColor = Color.WHITE
+        dataSet.valueTextSize = 12f
+        dataSet.color = Color.BLUE
+        dataSet.setDrawValues(false)
+
+        // Crie um objeto BarData e defina o conjunto de dados
+        val barData = BarData(dataSet)
+
+        // Configure o espaçamento entre as barras
+        barData.barWidth = 0.5f
+
+        // Defina os dados para o gráfico de barras
+        barChart.data = barData
+        barChart.legend.isEnabled = false
+        barChart.description.isEnabled = false
+        val xAxis = barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawLabels(false)
+
+        // Atualize o gráfico
+        barChart.invalidate()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initExpenseEachMonthChart(barChartParams : BarChartParams){
+        val barChart = binding.bcExpenseEachMonth
+
+        // Create a data set with entry list
+        val dataSet = BarDataSet(barChartParams.entries, "Label")
+        dataSet.valueTextSize = 12f
+        dataSet.color = Color.BLUE
+
+        //Customize values that appear on top of the bars
+        val valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return NumberFormat.getCurrencyInstance().format(value)
+            }
+        }
+        dataSet.valueFormatter = valueFormatter
+
+        // Create an object BarData and define data set
+        val barData = BarData(dataSet)
+
+        // Define data to bar chart
+        barChart.data = barData
+        barChart.legend.isEnabled = false
+        barChart.description.isEnabled = false
+        val xAxis = barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawLabels(true)
+        xAxis.setDrawAxisLine(false)
+        xAxis.granularity = 1f
+        xAxis.valueFormatter = IndexAxisValueFormatter(barChartParams.xBarLabels)
+        barChart.axisLeft.setDrawGridLines(false)
+        barChart.axisRight.setDrawGridLines(false)
+
+        // Format text color based on theme
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                xAxis.textColor = Color.WHITE
+                dataSet.valueTextColor = Color.WHITE
+                barChart.axisLeft.textColor = Color.WHITE
+                barChart.axisRight.textColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                xAxis.textColor = Color.BLACK
+                dataSet.valueTextColor = Color.BLACK
+                barChart.axisLeft.textColor = Color.BLACK
+                barChart.axisRight.textColor = Color.BLACK
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
+        // Configure bar width
+        barData.barWidth = 0.35f
+
+        // Define number of visible bar
+        barChart.setVisibleXRangeMaximum(3f)
+
+        // Get current month position on chart and move chart to it
+        val currentDateIndex = viewModel.getCurrentDatePositionBarChart().toFloat()
+
+        barChart.moveViewToX(currentDateIndex)
+
+        // Add animation of increasing bars
+        barChart.animateY(1500, Easing.EaseInOutQuad)
+
+        barChart.renderer = RoundedBarChartRenderer(barChart, barChart.animator, barChart.viewPortHandler)
+        barChart.renderer.initBuffers()
+
+        // Update chart
+        barChart.invalidate()
+
     }
 
 }
