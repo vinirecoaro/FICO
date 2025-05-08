@@ -247,5 +247,7 @@
     <string name="security">Segurança</string>
     <string name="block_app_with_phone_password">Bloquear app com senha do celular</string>
     <string name="authenticate">Autenticar</string>
+    <string name="balance_title">Balanço</string>
+
 
 </resources>

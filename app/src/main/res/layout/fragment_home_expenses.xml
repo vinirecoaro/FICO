@@ -57,7 +57,7 @@
         tools:visibility="gone"
         >
 
-        <TextView
+        <!--<TextView
             android:id="@+id/tv_expenses_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_expense_months"
@@ -74,7 +74,7 @@
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/tv_expenses_title"
+            app:layout_constraintTop_toTopOf="parent"
             app:spanCount="1" />
 
         <com.github.mikephil.charting.charts.PieChart

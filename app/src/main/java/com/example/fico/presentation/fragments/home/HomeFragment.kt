@@ -36,11 +36,25 @@ class HomeFragment : Fragment(){
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val viewModel : HomeViewModel by inject()
+    private lateinit var underline : View
+    private lateinit var bntExpenses : TextView
+    private lateinit var bntBalance : TextView
+    private lateinit var bntEarnings : TextView
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
+
+        underline = binding.underline
+        bntExpenses = binding.tvBtnExpenses
+        bntBalance = binding.tvBtnBalance
+        bntEarnings = binding.tvBtnEarnings
+
+        // Inicialmente posiciona a underline sob o primeiro botão
+        binding.llButtonsLayout.post {
+            moveUnderlineTo(bntExpenses)
+        }
 
         setUpListeners()
 
@@ -59,8 +73,30 @@ class HomeFragment : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
+        bntExpenses.setOnClickListener { moveUnderlineTo(bntExpenses) }
+        bntBalance.setOnClickListener { moveUnderlineTo(bntBalance) }
+        bntEarnings.setOnClickListener { moveUnderlineTo(bntEarnings) }
 
     }
 
-    
+    private fun moveUnderlineTo(button: TextView) {
+        val parentOffset = IntArray(2)
+        val buttonOffset = IntArray(2)
+
+        binding.clButtonContainer.getLocationOnScreen(parentOffset)
+        button.getLocationOnScreen(buttonOffset)
+
+        val relativeX = buttonOffset[0] - parentOffset[0]
+
+        underline.animate()
+            .translationX(relativeX.toFloat())
+            .setDuration(200)
+            .start()
+
+        underline.layoutParams.width = button.width
+        underline.requestLayout()
+    }
+
+
+
 }
