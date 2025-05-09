@@ -51,12 +51,15 @@ class HomeFragment : Fragment(){
         bntBalance = binding.tvBtnBalance
         bntEarnings = binding.tvBtnEarnings
 
-        // Inicialmente posiciona a underline sob o primeiro botão
+        // Set underline position on the first button
         binding.llButtonsLayout.post {
             moveUnderlineTo(bntExpenses)
         }
 
         setUpListeners()
+
+        // Show default fragment on initialization
+        replaceChildFragment(HomeExpensesFragment())
 
         return rootView
     }
@@ -73,9 +76,18 @@ class HomeFragment : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpListeners(){
-        bntExpenses.setOnClickListener { moveUnderlineTo(bntExpenses) }
-        bntBalance.setOnClickListener { moveUnderlineTo(bntBalance) }
-        bntEarnings.setOnClickListener { moveUnderlineTo(bntEarnings) }
+        bntExpenses.setOnClickListener {
+            moveUnderlineTo(bntExpenses)
+            replaceChildFragment(HomeExpensesFragment())
+        }
+        bntBalance.setOnClickListener {
+            moveUnderlineTo(bntBalance)
+            replaceChildFragment(HomeBalanceFragment())
+        }
+        bntEarnings.setOnClickListener {
+            moveUnderlineTo(bntEarnings)
+            replaceChildFragment(HomeEarningsFragment())
+        }
 
     }
 
@@ -95,6 +107,12 @@ class HomeFragment : Fragment(){
 
         underline.layoutParams.width = button.width
         underline.requestLayout()
+    }
+
+    private fun replaceChildFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction()
+            .replace(binding.fragmentMonthInfo.id, fragment)
+            .commit()
     }
 
 

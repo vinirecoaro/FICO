@@ -76,13 +76,14 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_month_info"
-            android:name="com.example.fico.presentation.fragments.home.HomeExpensesFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginBottom="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_button_container" />
+            app:layout_constraintTop_toBottomOf="@id/cl_button_container"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
