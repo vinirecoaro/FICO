@@ -14,7 +14,7 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.BarChartParams
 import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.presentation.fragments.home.HomeExpensesFragmentState
+import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.utils.DateFunctions
 import com.github.mikephil.charting.data.BarEntry
 import kotlinx.coroutines.Deferred
@@ -49,9 +49,9 @@ class HomeViewModel(
         Color.rgb(168, 135, 50),
         Color.rgb(107, 50, 168)
     )
-    private val _uiState = MutableStateFlow<HomeExpensesFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(
-        HomeExpensesFragmentState.Loading)
-    val uiState : StateFlow<HomeExpensesFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(
+        HomeFragmentState.Loading)
+    val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
     private val _isBlurred = MutableLiveData<Boolean>(true)
     val isBlurred : LiveData<Boolean> = _isBlurred
     private val _isFirstLoad = MutableLiveData<Boolean>(true)
@@ -180,7 +180,7 @@ class HomeViewModel(
 
     fun getExpenseBarChartParams(){
 
-        _uiState.value = HomeExpensesFragmentState.Loading
+        _uiState.value = HomeFragmentState.Loading
 
         viewModelScope.async(Dispatchers.IO){
 
@@ -198,7 +198,7 @@ class HomeViewModel(
                     }
                 }
                 if(monthWithExpenses.isEmpty()){
-                    _uiState.value = HomeExpensesFragmentState.Empty
+                    _uiState.value = HomeFragmentState.Empty
                 }else{
                     val sortedMonthWithExpensesList = monthWithExpenses.sortedBy { it.date }
 
@@ -232,11 +232,11 @@ class HomeViewModel(
 
                     _expenseBarChartParams.postValue(barChartParams)
 
-                    _uiState.value = HomeExpensesFragmentState.Success(Pair(formattedInfoPerMonthLabel, formattedInfoPerMonthLabel))
+                    _uiState.value = HomeFragmentState.Success(Pair(formattedInfoPerMonthLabel, formattedInfoPerMonthLabel))
                 }
 
             }catch (error : Exception){
-                _uiState.value = HomeExpensesFragmentState.Error(error.message.toString())
+                _uiState.value = HomeFragmentState.Error(error.message.toString())
             }
         }
     }

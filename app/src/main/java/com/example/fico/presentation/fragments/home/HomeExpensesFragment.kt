@@ -92,20 +92,20 @@ class HomeExpensesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collectLatest { state ->
                 when(state){
-                    is HomeExpensesFragmentState.Loading -> {
+                    is HomeFragmentState.Loading -> {
                         binding.clInfo.visibility = View.GONE
                         binding.clHomeExpensesEmptyState.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.VISIBLE
                     }
-                    is HomeExpensesFragmentState.Empty ->{
+                    is HomeFragmentState.Empty ->{
                         binding.clInfo.visibility = View.GONE
                         binding.clHomeExpensesEmptyState.visibility = View.VISIBLE
                         binding.pbExpensePerMonth.visibility = View.GONE
                     }
-                    is HomeExpensesFragmentState.Error -> {
+                    is HomeFragmentState.Error -> {
 
                     }
-                    is HomeExpensesFragmentState.Success -> {
+                    is HomeFragmentState.Success -> {
                         binding.clInfo.visibility = View.VISIBLE
                         binding.clHomeExpensesEmptyState.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.GONE
