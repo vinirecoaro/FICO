@@ -16,7 +16,7 @@ import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
-import com.example.fico.presentation.viewmodel.HomeViewModel
+import com.example.fico.presentation.viewmodel.HomeExpensesViewModel
 import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.example.fico.presentation.viewmodel.LogoViewModel
 import com.example.fico.presentation.viewmodel.MainViewModel
@@ -61,6 +61,12 @@ val appModule = module {
 
     single<DataStoreManager>(){
         DataStoreManager(androidContext())
+    }
+
+    factory<HomeExpensesViewModel> {
+        HomeExpensesViewModel(
+            dataStore = get(),
+        )
     }
 
     factory<RemoteDatabaseViewModel> {
@@ -173,13 +179,6 @@ val appModule = module {
             dataStore = get()
         )
     }
-
-    factory<HomeViewModel> {
-            HomeViewModel(
-                firebaseAPI = get(),
-                dataStore = get()
-            )
-        }
 
     factory<DefaultPaymentDateConfigurationViewModel> {
         DefaultPaymentDateConfigurationViewModel(

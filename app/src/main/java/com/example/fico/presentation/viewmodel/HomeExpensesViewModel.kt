@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
-import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.BarChartParams
@@ -27,9 +26,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 
-@RequiresApi(Build.VERSION_CODES.N)
-class HomeViewModel(
-    private val firebaseAPI : FirebaseAPI,
+class HomeExpensesViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
@@ -54,8 +51,6 @@ class HomeViewModel(
     val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
     private val _isBlurred = MutableLiveData<Boolean>(true)
     val isBlurred : LiveData<Boolean> = _isBlurred
-    private val _isFirstLoad = MutableLiveData<Boolean>(true)
-    val isFirstLoad : LiveData<Boolean> = _isFirstLoad
     private val _expenseBarChartParams = MutableLiveData<BarChartParams>(BarChartParams.empty())
     val expenseBarChartParams : LiveData<BarChartParams> = _expenseBarChartParams
 
@@ -65,7 +60,7 @@ class HomeViewModel(
         }
     }
 
-    fun getAvailableNow(date : String, formatted: Boolean = true) : Deferred<String>{
+    fun getAvailableNow(date : String, formatted: Boolean = true) : Deferred<String> {
         return viewModelScope.async(Dispatchers.IO){
             var availableNowString = "---"
             val informationPerMonthExpense = dataStore.getExpenseInfoPerMonth()
@@ -83,7 +78,7 @@ class HomeViewModel(
         }
     }
 
-    fun getMonthExpense(date : String, formatted: Boolean = true) : Deferred<String>{
+    fun getMonthExpense(date : String, formatted: Boolean = true) : Deferred<String> {
         return viewModelScope.async(Dispatchers.IO){
             var monthExpense = "---"
             val informationPerMonthExpense = dataStore.getExpenseInfoPerMonth()
@@ -193,7 +188,8 @@ class HomeViewModel(
                 val infoPerMonthList = dataStore.getExpenseInfoPerMonth()
                 val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
                 for(infoPerMonth in infoPerMonthList){
-                    if (BigDecimal(infoPerMonth.monthExpense).setScale(2,RoundingMode.HALF_UP) != BigDecimal("0").setScale(2,RoundingMode.HALF_UP)){
+                    if (BigDecimal(infoPerMonth.monthExpense).setScale(2,
+                            RoundingMode.HALF_UP) != BigDecimal("0").setScale(2, RoundingMode.HALF_UP)){
                         monthWithExpenses.add(infoPerMonth)
                     }
                 }

@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.model.BarChartParams
-import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.utils.custom_component.RoundedBarChartRenderer
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
@@ -35,7 +34,6 @@ class HomeFragment : Fragment(){
 
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : HomeViewModel by inject()
     private lateinit var underline : View
     private lateinit var bntExpenses : TextView
     private lateinit var bntBalance : TextView

@@ -21,7 +21,7 @@ import com.example.fico.databinding.FragmentHomeExpensesBinding
 import com.example.fico.presentation.adapters.ExpenseMonthsListAdapter
 import com.example.fico.interfaces.OnExpenseMonthSelectedListener
 import com.example.fico.model.BarChartParams
-import com.example.fico.presentation.viewmodel.HomeViewModel
+import com.example.fico.presentation.viewmodel.HomeExpensesViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.custom_component.RoundedBarChartRenderer
 import com.github.mikephil.charting.animation.Easing
@@ -46,7 +46,7 @@ class HomeExpensesFragment : Fragment() {
 
     private var _binding : FragmentHomeExpensesBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : HomeViewModel by inject()
+    private val viewModel : HomeExpensesViewModel by inject()
     private lateinit var adapter : ExpenseMonthsListAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)
