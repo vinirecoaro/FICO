@@ -164,11 +164,12 @@
     <string name="personal_data">Dados pessoais</string>
     <string name="expenses_title">Despesas</string>
     <string name="categories">Categorias</string>
-    <string name="expense_per_category_ranking_title">Ranking de despesas por categoria</string>
+    <string name="expense_per_category">Despesas por categoria</string>
     <string name="update_info_per_month_and_total_expense_success_message">Dados atualizados com sucesso</string>
     <string name="update_info_per_month_and_total_expense_failure_message">Falha ao atualizar dados</string>
     <string name="update_database_info_per_month_and_total_expense">Atualizar Dados do Banco de Dados</string>
-    <string name="no_info_to_show_add_info">Sem informações para exibir. Adicione despesas e receitas.</string>
+    <string name="no_info_to_show_add_expenses">Sem informações para exibir. Adicione despesas.</string>
+    <string name="no_info_to_show_add_earnings">Sem informações para exibir. Adicione receitas.</string>
     <string name="add_expense_success_message">Despesa adicionada com sucesso</string>
     <string name="add_expense_failure_message">Falha ao adicionar despesa</string>
     <string name="add_earning_success_message">Receita adicionada com sucesso</string>
@@ -248,6 +249,7 @@
     <string name="block_app_with_phone_password">Bloquear app com senha do celular</string>
     <string name="authenticate">Autenticar</string>
     <string name="balance_title">Balanço</string>
+    <string name="earning_this_month">Receita este mês</string>
 
 
 </resources>
