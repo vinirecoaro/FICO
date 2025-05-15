@@ -1,7 +1,6 @@
 package com.example.fico.utils
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
@@ -11,10 +10,15 @@ import java.time.format.DateTimeFormatter
 
 class DateFunctions {
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentlyDate() : String{
+    fun getCurrentDate(formatted : Boolean = true) : String{
         val currentDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        return currentDate.format(formatter) // EX: 20/04/2024
+            val formatter =
+                if(formatted){
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy") // EX: 20/04/2024
+                }else{
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                }
+        return currentDate.format(formatter)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

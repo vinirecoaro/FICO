@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.fragments.home.HomeExpensesFragment">
+    tools:context=".presentation.fragments.home.HomeEarningsFragment">
 
     <ProgressBar
-        android:id="@+id/pb_expense_per_month"
+        android:id="@+id/pb_home_earnings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

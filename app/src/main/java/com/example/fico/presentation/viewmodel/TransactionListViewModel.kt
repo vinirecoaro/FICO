@@ -290,7 +290,7 @@ class TransactionListViewModel(
         operation.value = StringConstants.OPERATIONS.UNDO_DELETE
         viewModelScope.async(Dispatchers.IO) {
             val formattedInputDate =
-                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(
                 FormatValuesFromDatabase().price(deletedExpense.price), nOfInstallments

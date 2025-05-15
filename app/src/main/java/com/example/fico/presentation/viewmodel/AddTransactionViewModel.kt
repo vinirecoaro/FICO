@@ -70,7 +70,7 @@ class AddTransactionViewModel(
             val formattedPurchaseDate = FormatValuesToDatabase().expenseDate(purchaseDate)
 
             val formattedInputDate =
-                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
 
@@ -195,7 +195,7 @@ class AddTransactionViewModel(
             val formattedDate = FormatValuesToDatabase().expenseDate(date)
 
             val formattedInputDate =
-                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
 
             val formattedValue = FormatValuesToDatabase().expensePrice(value, 1)
 
@@ -236,7 +236,7 @@ class AddTransactionViewModel(
     ){
         viewModelScope.async(Dispatchers.IO){
             val formattedInputDate =
-                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentlyDate())}-${FormatValuesToDatabase().timeNow()}"
+                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(price, 1)
 

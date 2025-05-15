@@ -41,8 +41,6 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.components.Dialogs
@@ -51,10 +49,8 @@ import com.example.fico.databinding.FragmentAddTransactionBinding
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
-import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.interfaces.OnCategorySelectedListener
 import com.example.fico.utils.internet.ConnectionFunctions
-import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.*
 import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
@@ -78,7 +74,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     )
     private lateinit var adapter: CategoryListAdapter
     @RequiresApi(Build.VERSION_CODES.O)
-    private val currentDate = DateFunctions().getCurrentlyDate()
+    private val currentDate = DateFunctions().getCurrentDate()
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             // Action when receive Broadcast
