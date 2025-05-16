@@ -2,37 +2,41 @@ package com.example.fico.presentation.adapters
 
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
+import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.interfaces.OnExpenseMonthSelectedListener
+import com.example.fico.utils.DateFunctions
 
-class ExpenseMonthsListAdapter(private val context : Context, private var expenseMonthList : List<String>) : RecyclerView.Adapter<ExpenseMonthsListAdapter.ViewHolder>() {
+class MonthsForHorizontalRecyclerViewAdapter(private val context : Context, private var monthsList : List<String>) : RecyclerView.Adapter<MonthsForHorizontalRecyclerViewAdapter.ViewHolder>() {
 
     private var listener: OnExpenseMonthSelectedListener? = null
     private var selectedItemIndex: Int = -1
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val cardView : CardView = itemView.findViewById(R.id.cv_expense_month)
-        val date : TextView = itemView.findViewById(R.id.tv_expense_month_eml_adapter)
+        val cardView : CardView = itemView.findViewById(R.id.cv_month_for_horizontal_recycler_view)
+        val date : TextView = itemView.findViewById(R.id.tv_month_for_horizontal_recycler_view)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.expense_month_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_month_for_horizontal_recycler_view, parent, false)
         return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return expenseMonthList.size
+        return monthsList.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = expenseMonthList[position]
+        val item = monthsList[position]
         holder.date.text = item
 
 
@@ -59,7 +63,7 @@ class ExpenseMonthsListAdapter(private val context : Context, private var expens
     }
 
     fun updateExpenseMonths(newExpenseMonths: List<String>){
-        expenseMonthList = newExpenseMonths
+        monthsList = newExpenseMonths
         notifyDataSetChanged()
     }
 
@@ -70,6 +74,29 @@ class ExpenseMonthsListAdapter(private val context : Context, private var expens
 
     fun setOnItemClickListener(listener: OnExpenseMonthSelectedListener) {
         this.listener = listener
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun focusOnCurrentMonth(recyclerView : RecyclerView){
+        val currentDate = DateFunctions().getCurrentlyDateYearMonthToDatabase()
+        val currentDateFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(currentDate)
+        val monthFocusPosition = getCurrentMonthPositionOnList(currentDateFormatted)
+        if(monthFocusPosition != RecyclerView.NO_POSITION){
+            recyclerView.scrollToPosition(monthFocusPosition)
+        }
+        selectItem(monthFocusPosition)
+    }
+
+    private fun getCurrentMonthPositionOnList(date : String) : Int{
+        monthsList.let{
+            val position = it.indexOf(date)
+            return if (position != -1){
+                position
+            }else{
+                RecyclerView.NO_POSITION
+            }
+        }
+        return RecyclerView.NO_POSITION
     }
 
 }

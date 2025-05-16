@@ -18,7 +18,7 @@ import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentHomeExpensesBinding
-import com.example.fico.presentation.adapters.ExpenseMonthsListAdapter
+import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAdapter
 import com.example.fico.interfaces.OnExpenseMonthSelectedListener
 import com.example.fico.model.BarChartParams
 import com.example.fico.presentation.viewmodel.HomeExpensesViewModel
@@ -47,7 +47,7 @@ class HomeExpensesFragment : Fragment() {
     private var _binding : FragmentHomeExpensesBinding? = null
     private val binding get() = _binding!!
     private val viewModel : HomeExpensesViewModel by inject()
-    private lateinit var adapter : ExpenseMonthsListAdapter
+    private lateinit var adapter : MonthsForHorizontalRecyclerViewAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -57,7 +57,7 @@ class HomeExpensesFragment : Fragment() {
         _binding = FragmentHomeExpensesBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        adapter = ExpenseMonthsListAdapter(requireContext(),emptyList())
+        adapter = MonthsForHorizontalRecyclerViewAdapter(requireContext(),emptyList())
         binding.rvExpenseMonths.adapter = adapter
 
         initExpenseEachMonthChartEmpty()

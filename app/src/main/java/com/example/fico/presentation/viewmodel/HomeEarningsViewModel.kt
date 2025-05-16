@@ -5,8 +5,9 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
+import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
-import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.utils.DateFunctions
 import kotlinx.coroutines.Dispatchers
@@ -21,28 +22,67 @@ class HomeEarningsViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<HomeFragmentState<String>>(HomeFragmentState.Loading)
-    val uiState : StateFlow<HomeFragmentState<String>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<HomeFragmentState<InfoForEarningFragment>>(HomeFragmentState.Loading)
+    val uiState : StateFlow<HomeFragmentState<InfoForEarningFragment>> = _uiState.asStateFlow()
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getEarningsInfo(date : String = DateFunctions().getCurrentDate(false)){
         _uiState.value = HomeFragmentState.Loading
         viewModelScope.async(Dispatchers.IO){
             val earningList = dataStore.getEarningsList()
-            val totalEarningOfMonth = totalEarningOfMonth(date, earningList)
-            _uiState.value = HomeFragmentState.Success(totalEarningOfMonth)
+            val totalEarningOfMonthAndEarningMonths = totalEarningOfMonthAndEarningMonths(date, earningList)
+            val earningMonths = totalEarningOfMonthAndEarningMonths.second
+            val totalEarningOfMonth = totalEarningOfMonthAndEarningMonths.first
+            val topFiveEarningByCategoryList = getCategoriesWithMoreExpense(date, earningList)
+            val infoForEarningFragment = InfoForEarningFragment(
+                earningMonths,
+                totalEarningOfMonth,
+                topFiveEarningByCategoryList
+            )
+            _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
         }
     }
 
-    private fun totalEarningOfMonth(date : String, earningList : List<Earning>) : String{
-        var totalEarning = BigDecimal(0)
+    private fun totalEarningOfMonthAndEarningMonths(date : String, earningList : List<Earning>) : Pair<String, List<String>>{
+        var totalEarningOfMonth = BigDecimal(0)
+        val earningMonths = mutableListOf<String>()
         earningList.forEach { earning ->
+            //Total earning of month
             if(DateFunctions().YYYYmmDDtoYYYYmm(earning.date) == DateFunctions().YYYYmmDDtoYYYYmm(date)){
                 val earningValue = BigDecimal(earning.value)
-                totalEarning = totalEarning.add(earningValue)
+                totalEarningOfMonth = totalEarningOfMonth.add(earningValue)
+            }
+            //Earning months
+            val formattedDate = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(DateFunctions().YYYYmmDDtoYYYYmm(earning.date))
+            if(!earningMonths.contains(formattedDate)){
+                earningMonths.add(formattedDate)
             }
         }
-        return totalEarning.toString()
+        val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
+        val result = Pair(formattedTotalEarningOfMonth,earningMonths)
+        return result
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getCategoriesWithMoreExpense(date : String, earningList : List<Earning>) : List<Pair<String, Double>>{
+        val earningListFromMonth = earningList.filter { DateFunctions().YYYYmmDDtoYYYYmm(it.date) == DateFunctions().YYYYmmDDtoYYYYmm(date) }
+        val topFiveEarningByCategoryList = earningListFromMonth
+            .groupBy { it.category }
+            .mapValues { entry ->
+                entry.value.sumOf { it.value.toDouble() }
+            }.toList().sortedByDescending { it.second }
+        if(topFiveEarningByCategoryList.size < 5){
+            return topFiveEarningByCategoryList
+        }else{
+            val topFive = topFiveEarningByCategoryList.take(5)
+            return topFive
+        }
+    }
+
+    data class InfoForEarningFragment(
+        var earningMonths : List<String>,
+        var totalEarningOfMonth : String,
+        var topFiveEarningByCategoryList : List<Pair<String, Double>>
+    )
 
 }
