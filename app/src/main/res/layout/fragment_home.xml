@@ -40,7 +40,9 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:paddingBottom="8dp"
-                    android:layout_marginEnd="24dp" />
+                    android:layout_marginEnd="24dp"
+                    android:textColor="?attr/colorOnSecondary"
+                    />
 
                 <TextView
                     android:id="@+id/tv_btn_balance"
@@ -50,7 +52,9 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:paddingBottom="8dp"
-                    android:layout_marginEnd="24dp" />
+                    android:layout_marginEnd="24dp"
+                    android:textColor="?attr/colorOnSecondary"
+                    />
 
                 <TextView
                     android:id="@+id/tv_btn_earnings"
@@ -59,7 +63,9 @@
                     android:text="@string/earnings_2"
                     android:textStyle="bold"
                     android:textSize="24sp"
-                    android:paddingBottom="8dp" />
+                    android:paddingBottom="8dp"
+                    android:textColor="?attr/colorOnSecondary"
+                    />
             </LinearLayout>
 
             <!-- Underline -->
