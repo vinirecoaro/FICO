@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
+import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentHomeEarningsBinding
 import com.example.fico.databinding.FragmentHomeExpensesBinding
+import com.example.fico.interfaces.OnMonthSelectedListener
 import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAdapter
 import com.example.fico.presentation.viewmodel.HomeEarningsViewModel
 import com.example.fico.presentation.viewmodel.HomeExpensesViewModel
@@ -75,12 +77,23 @@ class HomeEarningsFragment : Fragment() {
                         val earningsInfo = state.info
                         //Earning months
                         adapter.updateExpenseMonths(earningsInfo.earningMonths)
-                        adapter.focusOnCurrentMonth(binding.rvEarningMonths)
+                        adapter.focusOnCurrentMonth(binding.rvEarningMonths, earningsInfo.month)
                         //Total earning of month
                         binding.tvMonthTotalEarningValue.text = earningsInfo.totalEarningOfMonth
                     }
                 }
             }
         }
+
+        adapter.setOnItemClickListener(object : OnMonthSelectedListener {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun onExpenseMonthSelected(date: String) {
+                val formattedDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(date)
+                viewModel.getEarningsInfo(formattedDate)
+            }
+        })
+
     }
+
+
 }

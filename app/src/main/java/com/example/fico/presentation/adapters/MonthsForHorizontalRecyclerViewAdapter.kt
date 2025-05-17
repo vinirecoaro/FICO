@@ -13,12 +13,12 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.interfaces.OnExpenseMonthSelectedListener
+import com.example.fico.interfaces.OnMonthSelectedListener
 import com.example.fico.utils.DateFunctions
 
 class MonthsForHorizontalRecyclerViewAdapter(private val context : Context, private var monthsList : List<String>) : RecyclerView.Adapter<MonthsForHorizontalRecyclerViewAdapter.ViewHolder>() {
 
-    private var listener: OnExpenseMonthSelectedListener? = null
+    private var listener: OnMonthSelectedListener? = null
     private var selectedItemIndex: Int = -1
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
@@ -72,14 +72,14 @@ class MonthsForHorizontalRecyclerViewAdapter(private val context : Context, priv
         notifyDataSetChanged()
     }
 
-    fun setOnItemClickListener(listener: OnExpenseMonthSelectedListener) {
+    fun setOnItemClickListener(listener: OnMonthSelectedListener) {
         this.listener = listener
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun focusOnCurrentMonth(recyclerView : RecyclerView){
-        val currentDate = DateFunctions().getCurrentlyDateYearMonthToDatabase()
-        val currentDateFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(currentDate)
+    fun focusOnCurrentMonth(recyclerView : RecyclerView, date : String){
+        val currentYearMonth = DateFunctions().YYYYmmDDtoYYYYmm(date)
+        val currentDateFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(currentYearMonth)
         val monthFocusPosition = getCurrentMonthPositionOnList(currentDateFormatted)
         if(monthFocusPosition != RecyclerView.NO_POSITION){
             recyclerView.scrollToPosition(monthFocusPosition)

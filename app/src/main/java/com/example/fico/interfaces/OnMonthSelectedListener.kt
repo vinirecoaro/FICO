@@ -1,6 +1,6 @@
 package com.example.fico.interfaces
 
-interface OnExpenseMonthSelectedListener {
+interface OnMonthSelectedListener {
     fun onExpenseMonthSelected(date : String)
 
 }

@@ -19,7 +19,7 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentHomeExpensesBinding
 import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAdapter
-import com.example.fico.interfaces.OnExpenseMonthSelectedListener
+import com.example.fico.interfaces.OnMonthSelectedListener
 import com.example.fico.model.BarChartParams
 import com.example.fico.presentation.viewmodel.HomeExpensesViewModel
 import com.example.fico.utils.DateFunctions
@@ -119,7 +119,7 @@ class HomeExpensesFragment : Fragment() {
             focusOnCurrentMonth()
         }
 
-        adapter.setOnItemClickListener(object : OnExpenseMonthSelectedListener {
+        adapter.setOnItemClickListener(object : OnMonthSelectedListener {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onExpenseMonthSelected(date: String) {
                 val formattedDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(date)

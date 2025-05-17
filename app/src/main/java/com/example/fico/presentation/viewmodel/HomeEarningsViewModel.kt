@@ -35,6 +35,7 @@ class HomeEarningsViewModel(
             val totalEarningOfMonth = totalEarningOfMonthAndEarningMonths.first
             val topFiveEarningByCategoryList = getCategoriesWithMoreExpense(date, earningList)
             val infoForEarningFragment = InfoForEarningFragment(
+                date,
                 earningMonths,
                 totalEarningOfMonth,
                 topFiveEarningByCategoryList
@@ -80,6 +81,7 @@ class HomeEarningsViewModel(
     }
 
     data class InfoForEarningFragment(
+        var month : String,
         var earningMonths : List<String>,
         var totalEarningOfMonth : String,
         var topFiveEarningByCategoryList : List<Pair<String, Double>>
