@@ -250,6 +250,7 @@
     <string name="authenticate">Autenticar</string>
     <string name="balance_title">Balanço</string>
     <string name="earning_this_month">Receita este mês</string>
+    <string name="earnings_per_category">Receitas por categoria</string>
 
 
 </resources>

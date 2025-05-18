@@ -10,18 +10,17 @@
         android:id="@+id/pb_home_earnings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_home_expenses_empty_state"
+        android:id="@+id/cl_home_earnings_empty_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_no_info_available"
@@ -52,7 +51,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_info"
+        android:id="@+id/cl_home_earnings_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:visibility="visible">
@@ -68,10 +67,10 @@
             app:spanCount="1" />
 
         <androidx.cardview.widget.CardView
-            android:layout_marginTop="36dp"
             android:id="@+id/cv_month_total_earning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,8 +95,8 @@
                     android:id="@+id/tv_month_total_earning_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="R$ 550,00"
                     android:layout_marginTop="12dp"
+                    android:text="R$ 550,00"
                     android:textSize="30sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_month_total_earning_title" />
@@ -107,218 +106,206 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!--<TextView
-            android:id="@+id/tv_categories_chart_title"
+        <TextView
+            android:id="@+id/tv_home_expenses_categories_chart_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="@string/expense_per_category"
+            android:text="@string/earnings_per_category"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_month_total_earning" />
 
         <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pc_expense_per_category"
+            android:id="@+id/pc_earnings_per_category"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="18dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_categories_chart_title" />
+            app:layout_constraintTop_toBottomOf="@id/tv_home_expenses_categories_chart_title" />
 
         <ImageView
-            android:id="@+id/iv_icon_categories_legend_1"
+            android:id="@+id/iv_icon_categories_legend_1_home_earnings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/square_rounded_black"
-            app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
-            app:layout_constraintTop_toTopOf="@id/pc_expense_per_category" />
+            app:layout_constraintStart_toEndOf="@id/pc_earnings_per_category"
+            app:layout_constraintTop_toTopOf="@id/pc_earnings_per_category" />
 
         <TextView
-            android:id="@+id/tv_text_categories_list_1"
+            android:id="@+id/tv_text_categories_list_1_home_earnings"
             style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_1"
-            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_1"
-            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_1"
+            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_1_home_earnings"
+            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_1_home_earnings"
+            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_1_home_earnings"
             tools:text="Saque de Dinheiro" />
 
 
         <ImageView
-            android:id="@+id/iv_icon_categories_legend_2"
+            android:id="@+id/iv_icon_categories_legend_2_home_earnings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:src="@drawable/square_rounded_black"
-            app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
-            app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_1" />
+            app:layout_constraintStart_toEndOf="@id/pc_earnings_per_category"
+            app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_1_home_earnings" />
 
         <TextView
-            android:id="@+id/tv_text_categories_list_2"
+            android:id="@+id/tv_text_categories_list_2_home_earnings"
             style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_2"
-            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_2"
-            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_2"
+            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_2_home_earnings"
+            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_2_home_earnings"
+            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_2_home_earnings"
             tools:text="Entretenimento" />
 
         <ImageView
-            android:id="@+id/iv_icon_categories_legend_3"
+            android:id="@+id/iv_icon_categories_legend_3_home_earnings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:src="@drawable/square_rounded_black"
-
-            app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
-            app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_2" />
+            app:layout_constraintStart_toEndOf="@id/pc_earnings_per_category"
+            app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_2_home_earnings" />
 
         <TextView
-            android:id="@+id/tv_text_categories_list_3"
+            android:id="@+id/tv_text_categories_list_3_home_earnings"
             style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_3"
-            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_3"
-            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_3"
+            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_3_home_earnings"
+            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_3_home_earnings"
+            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_3_home_earnings"
             tools:text="Entretenimento" />
 
 
         <ImageView
-            android:id="@+id/iv_icon_categories_legend_4"
+            android:id="@+id/iv_icon_categories_legend_4_home_earnings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:src="@drawable/square_rounded_black"
-            app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
-            app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_3" />
+            app:layout_constraintStart_toEndOf="@id/pc_earnings_per_category"
+            app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_3_home_earnings" />
 
         <TextView
-            android:id="@+id/tv_text_categories_list_4"
+            android:id="@+id/tv_text_categories_list_4_home_earnings"
             style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_4"
-            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_4"
-            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_4"
+            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_4_home_earnings"
+            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_4_home_earnings"
+            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_4_home_earnings"
             tools:text="Entretenimento" />
 
         <ImageView
-            android:id="@+id/iv_icon_categories_legend_5"
+            android:id="@+id/iv_icon_categories_legend_5_home_earnings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:src="@drawable/square_rounded_black"
-            app:layout_constraintStart_toEndOf="@id/pc_expense_per_category"
-            app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_4" />
+            app:layout_constraintStart_toEndOf="@id/pc_earnings_per_category"
+            app:layout_constraintTop_toBottomOf="@id/iv_icon_categories_legend_4_home_earnings" />
 
         <TextView
-            android:id="@+id/tv_text_categories_list_5"
+            android:id="@+id/tv_text_categories_list_5_home_earnings"
             style="@style/DefaultTextSizeForCategoriesChartLegend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_5"
-            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_5"
-            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_5"
+            app:layout_constraintBottom_toBottomOf="@id/iv_icon_categories_legend_5_home_earnings"
+            app:layout_constraintStart_toEndOf="@id/iv_icon_categories_legend_5_home_earnings"
+            app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_5_home_earnings"
             tools:text="Entretenimento" />
 
-        <View
-            android:id="@+id/fragmnet_home_expenses_line_separator_01"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="32dp"
-            android:background="?attr/colorOnSecondary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pc_expense_per_category" />
+        <!-- <androidx.cardview.widget.CardView
+             android:id="@+id/cv_expense_each_month"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="20dp"
+             app:cardBackgroundColor="?attr/android:windowBackground"
+             app:cardCornerRadius="10dp"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@id/fragmnet_home_expenses_line_separator_01">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_expense_each_month"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:cardBackgroundColor="?attr/android:windowBackground"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragmnet_home_expenses_line_separator_01">
+             <androidx.constraintlayout.widget.ConstraintLayout
+                 android:id="@+id/cl_expense_per_month"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:padding="16dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_expense_per_month"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
+                 <TextView
+                     android:id="@+id/tv_expense_each_month"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:gravity="center"
+                     android:text="@string/expense_per_month"
+                     android:textSize="18sp"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tv_expense_each_month"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/expense_per_month"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                 <com.github.mikephil.charting.charts.BarChart
+                     android:id="@+id/bc_expense_each_month"
+                     android:layout_width="300dp"
+                     android:layout_height="300dp"
+                     android:layout_marginTop="18dp"
+                     android:visibility="visible"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/tv_expense_each_month" />
 
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/bc_expense_each_month"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="18dp"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_expense_each_month" />
+             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+         </androidx.cardview.widget.CardView>
 
-        </androidx.cardview.widget.CardView>
+         <TextView
+             android:id="@+id/tv_total_expenses"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="32dp"
+             android:text="@string/total_expenses"
+             android:textSize="18sp"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@id/cv_expense_each_month" />
 
-        <TextView
-            android:id="@+id/tv_total_expenses"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/total_expenses"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cv_expense_each_month" />
+         <TextView
+             android:id="@+id/tv_total_expenses_value"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="8dp"
+             android:drawablePadding="8dp"
+             android:textSize="16sp"
+             app:drawableEndCompat="@drawable/ic_visibility_off_24"
+             app:layout_constraintEnd_toEndOf="@id/tv_total_expenses"
+             app:layout_constraintStart_toStartOf="@id/tv_total_expenses"
+             app:layout_constraintTop_toBottomOf="@id/tv_total_expenses"
+             tools:text="R$45975,00" />
 
-        <TextView
-            android:id="@+id/tv_total_expenses_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:drawablePadding="8dp"
-            android:textSize="16sp"
-            app:drawableEndCompat="@drawable/ic_visibility_off_24"
-            app:layout_constraintEnd_toEndOf="@id/tv_total_expenses"
-            app:layout_constraintStart_toStartOf="@id/tv_total_expenses"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_expenses"
-            tools:text="R$45975,00" />
-
-        <View
-            android:id="@+id/view_space"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_expenses_value" />-->
+         <View
+             android:id="@+id/view_space"
+             android:layout_width="match_parent"
+             android:layout_height="24dp"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toBottomOf="@id/tv_total_expenses_value" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,5 +1,6 @@
 package com.example.fico.presentation.viewmodel
 
+import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -24,6 +25,13 @@ class HomeEarningsViewModel(
 
     private val _uiState = MutableStateFlow<HomeFragmentState<InfoForEarningFragment>>(HomeFragmentState.Loading)
     val uiState : StateFlow<HomeFragmentState<InfoForEarningFragment>> = _uiState.asStateFlow()
+    private val earningPerCategoryPaletteColors = listOf(
+        Color.rgb(50, 111, 168),
+        Color.rgb(168, 83, 50),
+        Color.rgb(0,150,0),
+        Color.rgb(168, 135, 50),
+        Color.rgb(107, 50, 168)
+    )
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getEarningsInfo(date : String = DateFunctions().getCurrentDate(false)){
@@ -78,6 +86,10 @@ class HomeEarningsViewModel(
             val topFive = topFiveEarningByCategoryList.take(5)
             return topFive
         }
+    }
+
+    fun getPieChartCategoriesColors() : List<Int>{
+        return earningPerCategoryPaletteColors
     }
 
     data class InfoForEarningFragment(
