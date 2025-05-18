@@ -40,14 +40,13 @@ class HomeExpensesViewModel(
     private val _expensePerCategory = MutableLiveData<List<Pair<String, Double>>>()
     val expensePerCategory : LiveData<List<Pair<String, Double>>> = _expensePerCategory
     private val pieChartPaletteColors = listOf(
-        Color.rgb(50, 111, 168),
-        Color.rgb(168, 83, 50),
-        Color.rgb(0,150,0),
-        Color.rgb(168, 135, 50),
-        Color.rgb(107, 50, 168)
+        Color.rgb(203, 24, 29),
+        Color.rgb(217, 72, 1),
+        Color.rgb(241,105,19),
+        Color.rgb(253, 141, 60),
+        Color.rgb(253, 174, 107)
     )
-    private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(
-        HomeFragmentState.Loading)
+    private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(HomeFragmentState.Loading)
     val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
     private val _isBlurred = MutableLiveData<Boolean>(true)
     val isBlurred : LiveData<Boolean> = _isBlurred

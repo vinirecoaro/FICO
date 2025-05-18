@@ -26,11 +26,11 @@ class HomeEarningsViewModel(
     private val _uiState = MutableStateFlow<HomeFragmentState<InfoForEarningFragment>>(HomeFragmentState.Loading)
     val uiState : StateFlow<HomeFragmentState<InfoForEarningFragment>> = _uiState.asStateFlow()
     private val earningPerCategoryPaletteColors = listOf(
-        Color.rgb(50, 111, 168),
-        Color.rgb(168, 83, 50),
-        Color.rgb(0,150,0),
-        Color.rgb(168, 135, 50),
-        Color.rgb(107, 50, 168)
+        Color.rgb(0,109,44),
+        Color.rgb(35, 139, 69),
+        Color.rgb(65, 171, 93),
+        Color.rgb(116, 196, 118),
+        Color.rgb(161, 217, 155),
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
