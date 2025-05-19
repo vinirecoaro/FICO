@@ -38,18 +38,43 @@ class HomeEarningsViewModel(
         _uiState.value = HomeFragmentState.Loading
         viewModelScope.async(Dispatchers.IO){
             val earningList = dataStore.getEarningsList()
-            val totalEarningOfMonthAndEarningMonths = totalEarningOfMonthAndEarningMonths(date, earningList)
-            val earningMonths = totalEarningOfMonthAndEarningMonths.second
-            val totalEarningOfMonth = totalEarningOfMonthAndEarningMonths.first
-            val topFiveEarningByCategoryList = getCategoriesWithMoreExpense(date, earningList)
-            val infoForEarningFragment = InfoForEarningFragment(
-                date,
-                earningMonths,
-                totalEarningOfMonth,
-                topFiveEarningByCategoryList
-            )
-            _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
+            if(earningList.isEmpty()){
+                _uiState.value = HomeFragmentState.Empty
+            }else{
+                if(checkIfMonthHasInfo(date, earningList)){
+                    val totalEarningOfMonthAndEarningMonths = totalEarningOfMonthAndEarningMonths(date, earningList)
+                    val earningMonths = totalEarningOfMonthAndEarningMonths.second
+                    val totalEarningOfMonth = totalEarningOfMonthAndEarningMonths.first
+                    val topFiveEarningByCategoryList = getCategoriesWithMoreExpense(date, earningList)
+                    val infoForEarningFragment = InfoForEarningFragment(
+                        date,
+                        earningMonths,
+                        totalEarningOfMonth,
+                        topFiveEarningByCategoryList
+                    )
+                    _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
+                }
+                else{
+                    val lastMonthWithInfo = earningList.maxByOrNull { it.date }!!.date
+                    val totalEarningOfMonthAndEarningMonths = totalEarningOfMonthAndEarningMonths(lastMonthWithInfo, earningList)
+                    val earningMonths = totalEarningOfMonthAndEarningMonths.second
+                    val totalEarningOfMonth = totalEarningOfMonthAndEarningMonths.first
+                    val topFiveEarningByCategoryList = getCategoriesWithMoreExpense(lastMonthWithInfo, earningList)
+                    val infoForEarningFragment = InfoForEarningFragment(
+                        lastMonthWithInfo,
+                        earningMonths,
+                        totalEarningOfMonth,
+                        topFiveEarningByCategoryList
+                    )
+                    _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
+                }
+            }
         }
+    }
+
+    private fun checkIfMonthHasInfo(date : String, earningList : List<Earning>) : Boolean{
+        val hasInfoMonth = earningList.any { DateFunctions().YYYYmmDDtoYYYYmm(it.date) == DateFunctions().YYYYmmDDtoYYYYmm(date) }
+        return hasInfoMonth
     }
 
     private fun totalEarningOfMonthAndEarningMonths(date : String, earningList : List<Earning>) : Pair<String, List<String>>{

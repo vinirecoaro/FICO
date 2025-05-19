@@ -93,10 +93,9 @@ class MonthsForHorizontalRecyclerViewAdapter(private val context : Context, priv
             return if (position != -1){
                 position
             }else{
-                RecyclerView.NO_POSITION
+                monthsList.size - 1
             }
         }
-        return RecyclerView.NO_POSITION
     }
 
 }
