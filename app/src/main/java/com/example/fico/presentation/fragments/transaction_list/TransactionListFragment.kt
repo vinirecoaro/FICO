@@ -237,26 +237,26 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val expensesList: MutableList<Expense> = ArrayList()
         val earningsList: MutableList<Earning> = ArrayList()
         viewModel.showListLiveData.observe(viewLifecycleOwner, Observer { transactions ->
-            for (transation in transactions) {
-                if(transation.type == StringConstants.DATABASE.EXPENSE){
+            for (transaction in transactions) {
+                if(transaction.type == StringConstants.DATABASE.EXPENSE){
                     val modifiedExpense = Expense(
-                        transation.id,
-                        FormatValuesFromDatabase().priceToFile(transation.price),
-                        transation.description,
-                        transation.category,
-                        transation.paymentDate,
-                        transation.purchaseDate,
-                        transation.inputDateTime
+                        transaction.id,
+                        FormatValuesFromDatabase().priceToFile(transaction.price),
+                        transaction.description,
+                        transaction.category,
+                        transaction.paymentDate,
+                        transaction.purchaseDate,
+                        transaction.inputDateTime
                     )
                     expensesList.add(modifiedExpense)
-                }else if(transation.type == StringConstants.DATABASE.EARNING){
+                }else if(transaction.type == StringConstants.DATABASE.EARNING){
                     val modifiedEarning = Earning(
-                        transation.id,
-                        FormatValuesFromDatabase().priceToFile(transation.price),
-                        transation.description,
-                        transation.category,
-                        transation.paymentDate,
-                        transation.inputDateTime
+                        transaction.id,
+                        FormatValuesFromDatabase().priceToFile(transaction.price),
+                        transaction.description,
+                        transaction.category,
+                        transaction.paymentDate,
+                        transaction.inputDateTime
                     )
                     earningsList.add(modifiedEarning)
                 }

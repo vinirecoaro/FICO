@@ -64,8 +64,9 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
                 }
             }
 
-            if(item.description.contains("Parcela") || item.description.contains("parcela")){
-
+            //Verify if it is a installment expense
+            val expenseIdLength = item.id.length
+            if(expenseIdLength == 41){
                 val numOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(item.id).replace("0","")
                 val currentInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(item.id).replace("0","")
                 holder.installmentField.visibility = View.VISIBLE
@@ -74,7 +75,6 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
 
                 val descriptionFormatted = FormatValuesFromDatabase().installmentExpenseDescription(item.description)
                 holder.description.text = descriptionFormatted
-
             }
 
             holder.price.setTextColor(Color.RED)
