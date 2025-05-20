@@ -165,6 +165,7 @@ class HomeMonthExpensesViewModel(
                 val topFive = sumTotalExpenseByCategory.take(5)
                 _expensePerCategory.postValue(topFive)
             }
+            _uiState.value = HomeFragmentState.Success(Pair(emptyList(), emptyList()))
         }
     }
 

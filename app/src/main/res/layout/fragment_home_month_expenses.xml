@@ -19,7 +19,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_home_expenses_empty_state"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:visibility="gone"
+        >
 
         <TextView
             android:id="@+id/tv_no_info_available"
@@ -53,7 +55,7 @@
         android:id="@+id/cl_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_expense_months"
@@ -260,7 +262,7 @@
             app:layout_constraintTop_toTopOf="@id/iv_icon_categories_legend_5"
             tools:text="Entretenimento" />
 
-        <View
+        <!--<View
             android:id="@+id/fragmnet_home_expenses_line_separator_01"
             android:layout_marginTop="32dp"
             android:layout_width="match_parent"
@@ -343,7 +345,7 @@
             android:layout_height="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_expenses_value" />
+            app:layout_constraintTop_toBottomOf="@id/tv_total_expenses_value" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -61,14 +61,16 @@ class HomeMonthExpensesFragment : Fragment() {
         adapter = MonthsForHorizontalRecyclerViewAdapter(requireContext(),emptyList())
         binding.rvExpenseMonths.adapter = adapter
 
-        initExpenseEachMonthChartEmpty()
+        //TODO - CHANGE TO ANOTHER FRAGMENT
+        //initExpenseEachMonthChartEmpty()
 
         setUpListeners()
 
         initEmptyChart(binding.pcExpensePerCategory, binding.pcMonthExpense, binding.pcAvailableNow)
 
-        // Blur total value field configuration
-        binding.tvTotalExpensesValue.setLayerType(TextView.LAYER_TYPE_SOFTWARE, null)
+        //TODO - CHANGE TO ANOTHER FRAGMENT
+        /*// Blur total value field configuration
+        binding.tvTotalExpensesValue.setLayerType(TextView.LAYER_TYPE_SOFTWARE, null)*/
 
         return rootView
     }
@@ -83,8 +85,9 @@ class HomeMonthExpensesFragment : Fragment() {
         initAvailableNowChart()
         viewModel.getCategoriesWithMoreExpense()
         viewModel.getExpenseMonths()
-        viewModel.getTotalExpense()
-        viewModel.getExpenseBarChartParams()
+        //TODO - CHANGE TO ANOTHER FRAGMENT
+        /*viewModel.getTotalExpense()
+        viewModel.getExpenseBarChartParams()*/
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -126,9 +129,9 @@ class HomeMonthExpensesFragment : Fragment() {
                 val formattedDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(date)
                 getAvailableNow(formattedDate)
                 getMonthExpense(formattedDate)
-                initMonthExpenseChart(formattedDate)
                 initAvailableNowChart(formattedDate)
                 viewModel.getCategoriesWithMoreExpense(formattedDate)
+                initMonthExpenseChart(formattedDate)
             }
         })
 
@@ -168,11 +171,13 @@ class HomeMonthExpensesFragment : Fragment() {
             }
         }
 
-        binding.tvTotalExpensesValue.setOnClickListener {
+        //TODO - CHANGE TO ANOTHER FRAGMENT
+        /*binding.tvTotalExpensesValue.setOnClickListener {
             viewModel.changeBlurState()
-        }
+        }*/
 
-        viewModel.isBlurred.observe(viewLifecycleOwner){ state ->
+        //TODO - CHANGE TO ANOTHER FRAGMENT
+        /*viewModel.isBlurred.observe(viewLifecycleOwner){ state ->
             if (state) {
                 val blurMaskFilter = BlurMaskFilter(30f, BlurMaskFilter.Blur.NORMAL) // Intensidade do desfoque
                 binding.tvTotalExpensesValue.paint.maskFilter = blurMaskFilter
@@ -182,17 +187,19 @@ class HomeMonthExpensesFragment : Fragment() {
                 binding.tvTotalExpensesValue.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_24, 0)
             }
             binding.tvTotalExpensesValue.invalidate()
-        }
+        }*/
 
-        viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
+        //TODO - CHANGE TO ANOTHER FRAGMENT
+        /*viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
             binding.tvTotalExpensesValue.text = totalExpense
-        }
+        }*/
 
-        viewModel.expenseBarChartParams.observe(viewLifecycleOwner){ barChartParams ->
+        //TODO - CHANGE TO ANOTHER FRAGMENT
+        /*viewModel.expenseBarChartParams.observe(viewLifecycleOwner){ barChartParams ->
             if(barChartParams.entries.isNotEmpty()){
                 initExpenseEachMonthChart(barChartParams)
             }
-        }
+        }*/
 
     }
 
@@ -476,7 +483,7 @@ class HomeMonthExpensesFragment : Fragment() {
 
     }
 
-    fun initEmptyChart(vararg charts : PieChart){
+    private fun initEmptyChart(vararg charts : PieChart){
         for (chart in charts){
             var holeColor = 1
 
@@ -528,7 +535,8 @@ class HomeMonthExpensesFragment : Fragment() {
         adapter.selectItem(monthFocusPosition)
     }
 
-    private fun initExpenseEachMonthChartEmpty(){
+    //TODO - CHANGE TO ANOTHER FRAGMENT
+    /*private fun initExpenseEachMonthChartEmpty(){
         val barChart = binding.bcExpenseEachMonth
 
         val entries = ArrayList<BarEntry>()
@@ -564,9 +572,10 @@ class HomeMonthExpensesFragment : Fragment() {
         // Atualize o gráfico
         barChart.invalidate()
 
-    }
+    }*/
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    //TODO - CHANGE TO ANOTHER FRAGMENT
+    /*@RequiresApi(Build.VERSION_CODES.O)
     private fun initExpenseEachMonthChart(barChartParams : BarChartParams){
         val barChart = binding.bcExpenseEachMonth
 
@@ -637,6 +646,6 @@ class HomeMonthExpensesFragment : Fragment() {
         // Update chart
         barChart.invalidate()
 
-    }
+    }*/
 
 }
