@@ -1,4 +1,4 @@
-package com.example.fico.presentation.fragments.home
+package com.example.fico.presentation.fragments.home.expenses
 
 import android.content.res.Configuration
 import android.graphics.BlurMaskFilter
@@ -17,11 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
-import com.example.fico.databinding.FragmentHomeExpensesBinding
+import com.example.fico.databinding.FragmentHomeMonthExpensesBinding
 import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAdapter
 import com.example.fico.interfaces.OnMonthSelectedListener
 import com.example.fico.model.BarChartParams
-import com.example.fico.presentation.viewmodel.HomeExpensesViewModel
+import com.example.fico.presentation.fragments.home.HomeFragmentState
+import com.example.fico.presentation.viewmodel.HomeMonthExpensesViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.custom_component.RoundedBarChartRenderer
 import com.github.mikephil.charting.animation.Easing
@@ -42,19 +43,19 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.text.NumberFormat
 
-class HomeExpensesFragment : Fragment() {
+class HomeMonthExpensesFragment : Fragment() {
 
-    private var _binding : FragmentHomeExpensesBinding? = null
+    private var _binding : FragmentHomeMonthExpensesBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : HomeExpensesViewModel by inject()
+    private val viewModel : HomeMonthExpensesViewModel by inject()
     private lateinit var adapter : MonthsForHorizontalRecyclerViewAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentHomeExpensesBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentHomeMonthExpensesBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
         adapter = MonthsForHorizontalRecyclerViewAdapter(requireContext(),emptyList())

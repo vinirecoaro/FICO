@@ -13,11 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentHomeEarningsBinding
-import com.example.fico.databinding.FragmentHomeExpensesBinding
 import com.example.fico.interfaces.OnMonthSelectedListener
 import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAdapter
 import com.example.fico.presentation.viewmodel.HomeEarningsViewModel
-import com.example.fico.presentation.viewmodel.HomeExpensesViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet

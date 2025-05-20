@@ -81,7 +81,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_month_info"
+            android:id="@+id/fragment_transactions_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="24dp"

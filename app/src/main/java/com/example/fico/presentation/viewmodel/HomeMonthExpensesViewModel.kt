@@ -26,7 +26,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 
-class HomeExpensesViewModel(
+class HomeMonthExpensesViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
