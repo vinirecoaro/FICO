@@ -15,57 +15,54 @@
             android:id="@+id/cl_button_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:paddingTop="12dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <!-- Botões -->
             <LinearLayout
                 android:id="@+id/ll_buttonsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center"
-                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/tv_btn_expenses"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/expenses_title"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp"
                     android:layout_marginEnd="24dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/expenses_title"
                     android:textColor="?attr/colorOnSecondary"
-                    />
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_btn_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/balance_title"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="8dp"
                     android:layout_marginEnd="24dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/balance_title"
                     android:textColor="?attr/colorOnSecondary"
-                    />
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_btn_earnings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/earnings_2"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
                     android:paddingBottom="8dp"
+                    android:text="@string/earnings_2"
                     android:textColor="?attr/colorOnSecondary"
-                    />
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Underline -->
@@ -75,21 +72,46 @@
                 android:layout_height="3dp"
                 android:layout_marginTop="4dp"
                 android:background="?attr/colorOnSecondary"
-                app:layout_constraintTop_toBottomOf="@id/ll_buttonsLayout"
+                android:translationX="0dp"
                 app:layout_constraintStart_toStartOf="parent"
-                android:translationX="0dp" />
+                app:layout_constraintTop_toBottomOf="@id/ll_buttonsLayout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/btg_expenses_data_range"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_button_container"
+            app:singleSelection="true">
+
+            <Button
+                android:id="@+id/bt_monthly_expenses"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/monthly" />
+
+            <Button
+                android:id="@+id/bt_general_expenses"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/general" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_transactions_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_button_container"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@id/btg_expenses_data_range" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -9,20 +9,28 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.fico.databinding.FragmentHomeBinding
-import com.example.fico.presentation.fragments.home.expenses.HomeExpensesFragment
+import com.example.fico.presentation.fragments.home.expenses.HomeAllExpensesFragment
 import com.example.fico.presentation.fragments.home.expenses.HomeMonthExpensesFragment
+import com.example.fico.presentation.viewmodel.HomeViewModel
+import com.example.fico.utils.constants.StringConstants
+import org.koin.android.ext.android.inject
 
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment() {
 
-    private var _binding : FragmentHomeBinding? = null
+    private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var underline : View
-    private lateinit var bntExpenses : TextView
-    private lateinit var bntBalance : TextView
-    private lateinit var bntEarnings : TextView
+    private val viewModel: HomeViewModel by inject()
+    private lateinit var underline: View
+    private lateinit var bntExpenses: TextView
+    private lateinit var bntBalance: TextView
+    private lateinit var bntEarnings: TextView
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
@@ -39,14 +47,15 @@ class HomeFragment : Fragment(){
         setUpListeners()
 
         // Show default fragment on initialization
-        replaceChildFragment(HomeExpensesFragment())
+        replaceChildFragment(HomeMonthExpensesFragment())
 
         return rootView
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+        binding.btgExpensesDataRange.check(binding.btMonthlyExpenses.id)
+        binding.btMonthlyExpenses.isClickable = false
     }
 
     override fun onDestroyView() {
@@ -55,18 +64,51 @@ class HomeFragment : Fragment(){
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun setUpListeners(){
+    private fun setUpListeners() {
         bntExpenses.setOnClickListener {
             moveUnderlineTo(bntExpenses)
-            replaceChildFragment(HomeExpensesFragment())
+            viewModel.setTransactionType(StringConstants.DATABASE.EXPENSE)
+            binding.btgExpensesDataRange.visibility = View.VISIBLE
+            binding.btgExpensesDataRange.check(binding.btMonthlyExpenses.id)
+            binding.btMonthlyExpenses.isClickable = false
+            replaceChildFragment(HomeMonthExpensesFragment())
         }
         bntBalance.setOnClickListener {
             moveUnderlineTo(bntBalance)
+            viewModel.setTransactionType(StringConstants.DATABASE.BALANCE)
+            binding.btgExpensesDataRange.visibility = View.GONE
             replaceChildFragment(HomeBalanceFragment())
         }
         bntEarnings.setOnClickListener {
             moveUnderlineTo(bntEarnings)
+            viewModel.setTransactionType(StringConstants.DATABASE.EARNING)
+            binding.btgExpensesDataRange.visibility = View.GONE
             replaceChildFragment(HomeEarningsFragment())
+        }
+        binding.btgExpensesDataRange.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    binding.btMonthlyExpenses.id -> {
+                        binding.btMonthlyExpenses.isClickable = false
+                        binding.btGeneralExpenses.isClickable = true
+                        if(viewModel.getTransactionType() != null){
+                            if(viewModel.getTransactionType() == StringConstants.DATABASE.EXPENSE){
+                                replaceChildFragment(HomeMonthExpensesFragment())
+                            }
+                        }
+                    }
+
+                    binding.btGeneralExpenses.id -> {
+                        binding.btMonthlyExpenses.isClickable = true
+                        binding.btGeneralExpenses.isClickable = false
+                        if(viewModel.getTransactionType() != null){
+                            if(viewModel.getTransactionType() == StringConstants.DATABASE.EXPENSE){
+                                replaceChildFragment(HomeAllExpensesFragment())
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }
@@ -94,7 +136,6 @@ class HomeFragment : Fragment(){
             .replace(binding.fragmentTransactionsInfo.id, fragment)
             .commit()
     }
-
 
 
 }

@@ -35,6 +35,7 @@ class StringConstants private constructor() {
         const val TRANSACTIONS = "transactions"
         const val EARNINGS_LIST = "earningsList"
         const val VALUE = "value"
+        const val BALANCE = "value"
     }
 
     object GENERAL_CONFIGURATION_LIST {
