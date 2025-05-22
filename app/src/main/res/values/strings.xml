@@ -27,6 +27,7 @@
     <string name="resent_email">Reeviar email</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="budget">Budget</string>
+    <string name="budget_2">Orçamento</string>
     <string name="set_month_budget">Defina o Budget para o mês</string>
     <string name="home">Home</string>
     <string name="configurations">Configurações</string>
