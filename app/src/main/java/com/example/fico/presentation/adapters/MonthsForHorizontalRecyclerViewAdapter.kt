@@ -62,7 +62,7 @@ class MonthsForHorizontalRecyclerViewAdapter(private val context : Context, priv
         }
     }
 
-    fun updateExpenseMonths(newExpenseMonths: List<String>){
+    fun updateMonths(newExpenseMonths: List<String>){
         monthsList = newExpenseMonths
         notifyDataSetChanged()
     }

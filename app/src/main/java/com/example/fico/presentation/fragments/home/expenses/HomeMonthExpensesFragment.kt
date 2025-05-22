@@ -1,7 +1,6 @@
 package com.example.fico.presentation.fragments.home.expenses
 
 import android.content.res.Configuration
-import android.graphics.BlurMaskFilter
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -9,7 +8,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -20,24 +18,15 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.databinding.FragmentHomeMonthExpensesBinding
 import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAdapter
 import com.example.fico.interfaces.OnMonthSelectedListener
-import com.example.fico.model.BarChartParams
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.presentation.viewmodel.HomeMonthExpensesViewModel
 import com.example.fico.utils.DateFunctions
-import com.example.fico.utils.custom_component.RoundedBarChartRenderer
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -71,13 +60,7 @@ class HomeMonthExpensesFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-
-        getAvailableNow()
-        getMonthExpense()
-        initMonthExpenseChart()
-        initAvailableNowChart()
-        viewModel.getCategoriesWithMoreExpense()
-        viewModel.getExpenseMonths()
+        viewModel.getExpensesInfo()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -100,6 +83,19 @@ class HomeMonthExpensesFragment : Fragment() {
 
                     }
                     is HomeFragmentState.Success -> {
+
+                        val expensesInfo = state.info
+
+                        adapter.updateMonths(expensesInfo.expenseMonths)
+                        adapter.focusOnCurrentMonth(binding.rvExpenseMonths, expensesInfo.month)
+
+                        setAvailableNow(expensesInfo.availableNow, expensesInfo.availableNowFormattedToLocalCurrency()!!)
+                        setMonthExpense(expensesInfo.monthExpenseFormattedToLocalCurrency()!!)
+                        initMonthExpenseChart(expensesInfo.monthExpense, expensesInfo.availableNow)
+                        initAvailableNowChart(expensesInfo.monthExpense, expensesInfo.availableNow)
+                        setExpensePerCategoryChart(expensesInfo.topFiveExpenseByCategoryList)
+                        setExpensePerCategoryChartLegend(expensesInfo.topFiveExpenseByCategoryList)
+
                         binding.clInfo.visibility = View.VISIBLE
                         binding.clHomeExpensesEmptyState.visibility = View.GONE
                         binding.pbExpensePerMonth.visibility = View.GONE
@@ -108,212 +104,152 @@ class HomeMonthExpensesFragment : Fragment() {
             }
         }
 
-        viewModel.expenseMonthsLiveData.observe(viewLifecycleOwner) { expenseMonths ->
-            adapter.updateExpenseMonths(expenseMonths)
-            focusOnCurrentMonth()
-        }
-
         adapter.setOnItemClickListener(object : OnMonthSelectedListener {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onExpenseMonthSelected(date: String) {
                 val formattedDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(date)
-                getAvailableNow(formattedDate)
-                getMonthExpense(formattedDate)
-                initAvailableNowChart(formattedDate)
-                viewModel.getCategoriesWithMoreExpense(formattedDate)
-                initMonthExpenseChart(formattedDate)
+                viewModel.getExpensesInfo(formattedDate)
             }
         })
 
-        viewModel.expensePerCategory.observe(viewLifecycleOwner) { expensePerCategoryList ->
-            initExpensePerCategoryChart(expensePerCategoryList)
-
-            val imageViews = listOf(
-                binding.ivIconCategoriesLegend1,
-                binding.ivIconCategoriesLegend2,
-                binding.ivIconCategoriesLegend3,
-                binding.ivIconCategoriesLegend4,
-                binding.ivIconCategoriesLegend5
-            )
-
-            val textViews = listOf(
-                binding.tvTextCategoriesList1,
-                binding.tvTextCategoriesList2,
-                binding.tvTextCategoriesList3,
-                binding.tvTextCategoriesList4,
-                binding.tvTextCategoriesList5
-            )
-
-            val colors = viewModel.getPieChartCategoriesColors()
-
-            for (i in imageViews.indices) {
-                if (i < expensePerCategoryList.size) {
-                    val (category, amount) = expensePerCategoryList[i]
-                    imageViews[i].visibility = View.VISIBLE
-                    textViews[i].visibility = View.VISIBLE
-                    imageViews[i].setColorFilter(colors[i])
-                    val text = "$category\n${NumberFormat.getCurrencyInstance().format(amount.toFloat())}"
-                    textViews[i].text = text
-                } else {
-                    imageViews[i].visibility = View.GONE
-                    textViews[i].visibility = View.GONE
-                }
-            }
-        }
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getAvailableNow(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()){
-        lifecycleScope.launch(Dispatchers.Main) {
-            try {
-                val availableNow = viewModel.getAvailableNow(date).await()
-                val availableNowJustNumber = viewModel.getAvailableNow(date, formatted = false).await()
-                var myColor = ContextCompat.getColor(requireContext(), R.color.red)
-                if(availableNow == "---"){
-                    binding.tvAvailableThisMonthValue.text = availableNow
-                } else if(availableNowJustNumber.toFloat() < 0){
-                    binding.tvAvailableThisMonthValue.setTextColor(myColor)
-                    binding.tvAvailableThisMonthValue.text = availableNow
-                } else {
-                    when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                        Configuration.UI_MODE_NIGHT_YES -> {
-                            myColor = ContextCompat.getColor(requireContext(), R.color.white)
-                        }
-                        Configuration.UI_MODE_NIGHT_NO -> {
-                            myColor = ContextCompat.getColor(requireContext(), R.color.black)
-                        }
-                        Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+    private fun setAvailableNow(availableNow : String, availableNowFormatted : String){
+        try {
+            var myColor = ContextCompat.getColor(requireContext(), R.color.red)
+            if(availableNowFormatted == "---"){
+                binding.tvAvailableThisMonthValue.text = availableNowFormatted
+            } else if(availableNow.toFloat() < 0){
+                binding.tvAvailableThisMonthValue.setTextColor(myColor)
+                binding.tvAvailableThisMonthValue.text = availableNowFormatted
+            } else {
+                when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                    Configuration.UI_MODE_NIGHT_YES -> {
+                        myColor = ContextCompat.getColor(requireContext(), R.color.white)
                     }
-                    binding.tvAvailableThisMonthValue.setTextColor(myColor)
-                    binding.tvAvailableThisMonthValue.text = availableNow
+                    Configuration.UI_MODE_NIGHT_NO -> {
+                        myColor = ContextCompat.getColor(requireContext(), R.color.black)
+                    }
+                    Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
                 }
-            }catch (exception:Exception){}
+                binding.tvAvailableThisMonthValue.setTextColor(myColor)
+                binding.tvAvailableThisMonthValue.text = availableNowFormatted
+            }
+        }catch (exception:Exception){}
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setMonthExpense(monthExpenseFormatted : String) {
+        try {
+            binding.tvTotalExpensesThisMonthValue.text = monthExpenseFormatted
+        } catch (exception: Exception) {
+
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getMonthExpense(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            try {
-                val monthExpense = viewModel.getMonthExpense(date).await()
-                binding.tvTotalExpensesThisMonthValue.text = monthExpense
-            } catch (exception: Exception) {
-            }
+    private fun initMonthExpenseChart(monthExpense : String, availableNow : String) {
+        val pieChart = binding.pcMonthExpense
+        var holeColor = 1
+
+        var monthExpenseValueFormatted = 0f
+        if (monthExpense != "---") {
+            monthExpenseValueFormatted = monthExpense.toFloat()
         }
+        var monthExpenseColor = ""
+
+        var availableNowValueFormatted = 1f
+        if (availableNow != "---") {
+            availableNowValueFormatted = availableNow.toFloat()
+        }
+
+        val budget = monthExpenseValueFormatted + availableNowValueFormatted
+
+        // Defining color of availableNow part
+        if(availableNowValueFormatted < 0){
+            monthExpenseColor = "#ed2b15" // Red
+        }else if(monthExpenseValueFormatted <= (budget/2)){
+            monthExpenseColor = "#19d14e" // Green
+        }else if(monthExpenseValueFormatted <= (budget*0.85)){
+            monthExpenseColor = "#ebe23b" // Yellow
+        }else if(monthExpenseValueFormatted > (budget*0.85)){
+            monthExpenseColor = "#ed2b15" // Red
+        }
+
+        // Defining chart inside hole color
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                holeColor = Color.rgb(104, 110, 106)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                holeColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
+        // Create a entries list for Pie Chart
+        val entries = mutableListOf<PieEntry>()
+        if(availableNowValueFormatted < 0){
+            entries.add(PieEntry(monthExpenseValueFormatted))
+            entries.add(PieEntry(0f))
+        }else{
+            entries.add(PieEntry(monthExpenseValueFormatted))
+            entries.add(PieEntry(availableNowValueFormatted))
+        }
+
+        // Colors for parts of chart
+        val colors = listOf(
+            Color.parseColor(monthExpenseColor), // FirstColor
+            Color.parseColor("#9aa19c")  // SecondColor
+        )
+
+        // Create a data set from entries
+        val dataSet = PieDataSet(entries, "Uso de Recursos")
+        dataSet.colors = colors
+
+        // Data set customizing
+        dataSet.sliceSpace = 2f
+
+        // Create an PieData object from data set
+        val pieData = PieData(dataSet)
+        pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
+
+        // Configure the PieChart
+        pieChart.data = pieData
+        pieChart.setUsePercentValues(false)
+        pieChart.description.isEnabled = false
+        pieChart.setHoleRadius(80f) // middle chart hole size
+        pieChart.setTransparentCircleRadius(85f) // Transparent area size
+        pieChart.setHoleColor(holeColor)
+        pieChart.legend.isEnabled = false
+
+        // Ocult label values
+        pieData.setDrawValues(false)
+
+        // Circular animation on create chart
+        pieChart.animateY(1400, Easing.EaseInOutQuad)
+
+        // Update the chart
+        pieChart.invalidate()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initMonthExpenseChart(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
-
-        lifecycleScope.launch{
-
-            val pieChart = binding.pcMonthExpense
-            var holeColor = 1
-
-            val monthExpenseValue = viewModel.getMonthExpense(date, formatted = false).await()
-            var monthExpenseValueFormatted = 0f
-            if(monthExpenseValue != "---"){
-                monthExpenseValueFormatted = monthExpenseValue.toFloat()
-            }
-            var monthExpenseColor = ""
-
-            val availableNowValue = viewModel.getAvailableNow(date, formatted = false).await()
-            var availableNowValueFormatted = 1f
-            if(availableNowValue != "---"){
-                availableNowValueFormatted = availableNowValue.toFloat()
-            }
-
-            val budget = monthExpenseValueFormatted + availableNowValueFormatted
-
-            // Defining color of availableNow part
-            if(availableNowValueFormatted < 0){
-                monthExpenseColor = "#ed2b15" // Red
-            }else if(monthExpenseValueFormatted <= (budget/2)){
-                monthExpenseColor = "#19d14e" // Green
-            }else if(monthExpenseValueFormatted <= (budget*0.85)){
-                monthExpenseColor = "#ebe23b" // Yellow
-            }else if(monthExpenseValueFormatted > (budget*0.85)){
-                monthExpenseColor = "#ed2b15" // Red
-            }
-
-            // Defining chart inside hole color
-            when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    holeColor = Color.rgb(104, 110, 106)
-                }
-                Configuration.UI_MODE_NIGHT_NO -> {
-                    holeColor = Color.WHITE
-                }
-                Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-            }
-
-            // Create a entries list for Pie Chart
-            val entries = mutableListOf<PieEntry>()
-            if(availableNowValueFormatted < 0){
-                entries.add(PieEntry(monthExpenseValueFormatted))
-                entries.add(PieEntry(0f))
-            }else{
-                entries.add(PieEntry(monthExpenseValueFormatted))
-                entries.add(PieEntry(availableNowValueFormatted))
-            }
-
-            // Colors for parts of chart
-            val colors = listOf(
-                Color.parseColor(monthExpenseColor), // FirstColor
-                Color.parseColor("#9aa19c")  // SecondColor
-            )
-
-            // Create a data set from entries
-            val dataSet = PieDataSet(entries, "Uso de Recursos")
-            dataSet.colors = colors
-
-            // Data set customizing
-            dataSet.sliceSpace = 2f
-
-            // Create an PieData object from data set
-            val pieData = PieData(dataSet)
-            pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
-
-            // Configure the PieChart
-            pieChart.data = pieData
-            pieChart.setUsePercentValues(false)
-            pieChart.description.isEnabled = false
-            pieChart.setHoleRadius(80f) // middle chart hole size
-            pieChart.setTransparentCircleRadius(85f) // Transparent area size
-            pieChart.setHoleColor(holeColor)
-            pieChart.legend.isEnabled = false
-
-            // Ocult label values
-            pieData.setDrawValues(false)
-
-            // Circular animation on create chart
-            pieChart.animateY(1400, Easing.EaseInOutQuad)
-
-            // Update the chart
-            pieChart.invalidate()
-        }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun initAvailableNowChart(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) {
+    private fun initAvailableNowChart(monthExpense : String, availableNow : String) {
 
         lifecycleScope.launch{
 
             val pieChart = binding.pcAvailableNow
             var holeColor = 1
 
-            val monthExpenseValue = viewModel.getMonthExpense(date, formatted = false).await()
             var monthExpenseValueFormatted = 0f
-            if(monthExpenseValue != "---"){
-                monthExpenseValueFormatted = monthExpenseValue.toFloat()
+            if (monthExpense != "---") {
+                monthExpenseValueFormatted = monthExpense.toFloat()
             }
 
-            val availableNowValue = viewModel.getAvailableNow(date, formatted = false).await()
             var availableNowValueFormatted = 1f
-            if(availableNowValue != "---"){
-                availableNowValueFormatted = availableNowValue.toFloat()
+            if (availableNow != "---") {
+                availableNowValueFormatted = availableNow.toFloat()
             }
             var availableNowColor = ""
             val budget = monthExpenseValueFormatted + availableNowValueFormatted
@@ -386,7 +322,7 @@ class HomeMonthExpensesFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initExpensePerCategoryChart(categoriesList : List<Pair<String, Double>>) {
+    private fun setExpensePerCategoryChart(categoriesList : List<Pair<String, Double>>) {
 
         val pieChart = binding.pcExpensePerCategory
         var holeColor = 1
@@ -443,6 +379,40 @@ class HomeMonthExpensesFragment : Fragment() {
 
     }
 
+    private fun setExpensePerCategoryChartLegend(expensePerCategoryList :  List<Pair<String, Double>>){
+        val imageViews = listOf(
+            binding.ivIconCategoriesLegend1,
+            binding.ivIconCategoriesLegend2,
+            binding.ivIconCategoriesLegend3,
+            binding.ivIconCategoriesLegend4,
+            binding.ivIconCategoriesLegend5
+        )
+
+        val textViews = listOf(
+            binding.tvTextCategoriesList1,
+            binding.tvTextCategoriesList2,
+            binding.tvTextCategoriesList3,
+            binding.tvTextCategoriesList4,
+            binding.tvTextCategoriesList5
+        )
+
+        val colors = viewModel.getPieChartCategoriesColors()
+
+        for (i in imageViews.indices) {
+            if (i < expensePerCategoryList.size) {
+                val (category, amount) = expensePerCategoryList[i]
+                imageViews[i].visibility = View.VISIBLE
+                textViews[i].visibility = View.VISIBLE
+                imageViews[i].setColorFilter(colors[i])
+                val text = "$category\n${NumberFormat.getCurrencyInstance().format(amount.toFloat())}"
+                textViews[i].text = text
+            } else {
+                imageViews[i].visibility = View.GONE
+                textViews[i].visibility = View.GONE
+            }
+        }
+    }
+
     private fun initEmptyChart(vararg charts : PieChart){
         for (chart in charts){
             var holeColor = 1
@@ -482,17 +452,6 @@ class HomeMonthExpensesFragment : Fragment() {
 
             chart.invalidate()
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun focusOnCurrentMonth(){
-        val currentDate = DateFunctions().getCurrentlyDateYearMonthToDatabase()
-        val currentDateFormatted = FormatValuesFromDatabase().formatDateForFilterOnExpenseList(currentDate)
-        val monthFocusPosition = viewModel.getCurrentMonthPositionOnList(currentDateFormatted)
-        if(monthFocusPosition != RecyclerView.NO_POSITION){
-            binding.rvExpenseMonths.scrollToPosition(monthFocusPosition)
-        }
-        adapter.selectItem(monthFocusPosition)
     }
 
 }

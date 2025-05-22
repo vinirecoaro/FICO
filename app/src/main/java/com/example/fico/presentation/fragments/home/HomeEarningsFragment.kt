@@ -79,7 +79,7 @@ class HomeEarningsFragment : Fragment() {
 
                         val earningsInfo = state.info
                         //Earning months
-                        adapter.updateExpenseMonths(earningsInfo.earningMonths)
+                        adapter.updateMonths(earningsInfo.earningMonths)
                         adapter.focusOnCurrentMonth(binding.rvEarningMonths, earningsInfo.month)
                         //Total earning of month
                         binding.tvMonthTotalEarningValue.text = earningsInfo.totalEarningOfMonth

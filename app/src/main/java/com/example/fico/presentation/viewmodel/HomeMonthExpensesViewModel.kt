@@ -12,6 +12,7 @@ import com.example.fico.DataStoreManager
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.BarChartParams
+import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.utils.DateFunctions
@@ -30,10 +31,6 @@ class HomeMonthExpensesViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
-    private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
-    val expenseMonthsLiveData: LiveData<List<String>> = _expenseMonthsLiveData
-    private val _expensePerCategory = MutableLiveData<List<Pair<String, Double>>>()
-    val expensePerCategory : LiveData<List<Pair<String, Double>>> = _expensePerCategory
     private val pieChartPaletteColors = listOf(
         Color.rgb(203, 24, 29),
         Color.rgb(217, 72, 1),
@@ -41,74 +38,86 @@ class HomeMonthExpensesViewModel(
         Color.rgb(253, 141, 60),
         Color.rgb(253, 174, 107)
     )
-    private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(HomeFragmentState.Loading)
-    val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<HomeFragmentState<InfoForExpensesFragment>>(HomeFragmentState.Loading)
+    val uiState : StateFlow<HomeFragmentState<InfoForExpensesFragment>> = _uiState.asStateFlow()
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getExpensesInfo(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()){
+        viewModelScope.async(Dispatchers.IO){
+            _uiState.value = HomeFragmentState.Loading
+            val expenseMonths = getExpenseMonths().await()
+            if(expenseMonths.isEmpty()){
+                _uiState.value = HomeFragmentState.Empty
+            }else{
+                val expenseMonthsFormatted = mutableListOf<String>()
+                expenseMonths.forEach { month ->
+                    expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(month))
+                }
+                if(checkIfHasCurrentMonth(date, expenseMonths)){
+                    val monthExpense = getMonthExpense(date).await()
+                    val availableNow = getAvailableNow(date).await()
+                    val categoriesWithMoreExpense = getCategoriesWithMoreExpense(date).await()
+                    val infoForExpensesFragment = InfoForExpensesFragment(
+                        date,
+                        expenseMonthsFormatted,
+                        monthExpense,
+                        availableNow,
+                        categoriesWithMoreExpense
+                    )
+                    _uiState.value = HomeFragmentState.Success(infoForExpensesFragment)
+                }else{
+                    val lastMonthWithInfo = expenseMonths.maxByOrNull{it}!!
+                    val monthExpense = getMonthExpense(lastMonthWithInfo).await()
+                    val availableNow = getAvailableNow(lastMonthWithInfo).await()
+                    val categoriesWithMoreExpense = getCategoriesWithMoreExpense(lastMonthWithInfo).await()
+                    val infoForExpensesFragment = InfoForExpensesFragment(
+                        lastMonthWithInfo,
+                        expenseMonthsFormatted,
+                        monthExpense,
+                        availableNow,
+                        categoriesWithMoreExpense
+                    )
+                    _uiState.value = HomeFragmentState.Success(infoForExpensesFragment)
+                }
+            }
+        }
+    }
 
-    fun getAvailableNow(date : String, formatted: Boolean = true) : Deferred<String> {
+    private fun getAvailableNow(date : String) : Deferred<String> {
         return viewModelScope.async(Dispatchers.IO){
             var availableNowString = "---"
             val informationPerMonthExpense = dataStore.getExpenseInfoPerMonth()
             val informationPerMonthExpenseFromDate = informationPerMonthExpense.find { it.date == date }
             if(informationPerMonthExpenseFromDate != null){
-                if(formatted){
-                    availableNowString = NumberFormat.getCurrencyInstance().format(informationPerMonthExpenseFromDate.availableNow.toFloat())
-                    availableNowString
-                }else{
-                    availableNowString = informationPerMonthExpenseFromDate.availableNow
-                    availableNowString
-                }
+                availableNowString = informationPerMonthExpenseFromDate.availableNow
             }
             availableNowString
         }
     }
 
-    fun getMonthExpense(date : String, formatted: Boolean = true) : Deferred<String> {
+    private fun getMonthExpense(date : String) : Deferred<String> {
         return viewModelScope.async(Dispatchers.IO){
             var monthExpense = "---"
             val informationPerMonthExpense = dataStore.getExpenseInfoPerMonth()
             val informationPerMonthExpenseFromDate = informationPerMonthExpense.find { it.date == date }
             if(informationPerMonthExpenseFromDate != null){
-                if(formatted){
-                    monthExpense = NumberFormat.getCurrencyInstance().format(informationPerMonthExpenseFromDate.monthExpense.toFloat())
-                    monthExpense
-                }else{
-                    monthExpense = informationPerMonthExpenseFromDate.monthExpense
-                    monthExpense
-                }
+                monthExpense = informationPerMonthExpenseFromDate.monthExpense
             }
             monthExpense
         }
     }
 
-    fun getExpenseMonths(){
-        viewModelScope.async {
+    private fun getExpenseMonths() : Deferred<List<String>> {
+        return viewModelScope.async(Dispatchers.IO){
             val expenseMonths = dataStore.getExpenseMonths()
             val sortedExpenseMonths = expenseMonths.sortedBy { it }
-            val expenseMonthsFormatted = mutableListOf<String>()
-            sortedExpenseMonths.forEach { month ->
-                expenseMonthsFormatted.add(FormatValuesFromDatabase().formatDateForFilterOnExpenseList(month))
-            }
-            _expenseMonthsLiveData.postValue(expenseMonthsFormatted)
+            sortedExpenseMonths
         }
-    }
-
-    fun getCurrentMonthPositionOnList(date : String) : Int{
-        val expenseMonthsList = _expenseMonthsLiveData.value
-        expenseMonthsList?.let{
-            val position = it.indexOf(date)
-            return if (position != -1){
-                position
-            }else{
-                RecyclerView.NO_POSITION
-            }
-        }
-        return RecyclerView.NO_POSITION
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getCategoriesWithMoreExpense(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()){
-        viewModelScope.async(Dispatchers.IO){
+    fun getCategoriesWithMoreExpense(date : String = DateFunctions().getCurrentlyDateYearMonthToDatabase()) : Deferred<List<Pair<String, Double>>>{
+        return viewModelScope.async(Dispatchers.IO){
             val expenseList = dataStore.getExpenseList()
             val expenseListFromMonth = expenseList.filter { FormatValuesToDatabase().expenseDateForInfoPerMonth(it.paymentDate) == date }
             val sumTotalExpenseByCategory = expenseListFromMonth
@@ -117,17 +126,37 @@ class HomeMonthExpensesViewModel(
                     entry.value.sumOf { it.price.toDouble() }
                 }.toList().sortedByDescending { it.second }
             if(sumTotalExpenseByCategory.size < 5){
-                _expensePerCategory.postValue(sumTotalExpenseByCategory)
+                sumTotalExpenseByCategory
             }else{
                 val topFive = sumTotalExpenseByCategory.take(5)
-                _expensePerCategory.postValue(topFive)
+                topFive
             }
-            _uiState.value = HomeFragmentState.Success(Pair(emptyList(), emptyList()))
         }
     }
 
     fun getPieChartCategoriesColors() : List<Int>{
         return pieChartPaletteColors
+    }
+
+    data class InfoForExpensesFragment(
+        var month : String,
+        var expenseMonths : List<String>,
+        var monthExpense : String,
+        var availableNow : String,
+        var topFiveExpenseByCategoryList : List<Pair<String, Double>>
+    ){
+        fun availableNowFormattedToLocalCurrency(): String? {
+            return NumberFormat.getCurrencyInstance().format(this.availableNow.toFloat())
+        }
+
+        fun monthExpenseFormattedToLocalCurrency(): String? {
+            return NumberFormat.getCurrencyInstance().format(this.monthExpense.toFloat())
+        }
+    }
+
+    private fun checkIfHasCurrentMonth(date : String, expenseMonths : List<String>) : Boolean{
+        val hasCurrentMonth = expenseMonths.any { it == DateFunctions().YYYYmmDDtoYYYYmm(date) }
+        return hasCurrentMonth
     }
 
 }
