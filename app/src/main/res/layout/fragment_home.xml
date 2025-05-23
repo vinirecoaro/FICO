@@ -77,31 +77,51 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_buttonsLayout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/btg_expenses_data_range"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_fg_home_button_arrow"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_button_container"
-            app:singleSelection="true">
+            app:layout_constraintTop_toBottomOf="@id/cl_button_container">
 
-            <Button
-                android:id="@+id/bt_monthly_expenses"
-                style="?attr/materialButtonOutlinedStyle"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/btg_expenses_data_range"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/monthly" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:singleSelection="true">
 
-            <Button
-                android:id="@+id/bt_general_expenses"
-                style="?attr/materialButtonOutlinedStyle"
+                <Button
+                    android:id="@+id/bt_monthly_expenses"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="@string/monthly" />
+
+                <Button
+                    android:id="@+id/bt_general_expenses"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="@string/general" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <ImageView
+                android:id="@+id/iv_fragment_home_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/general" />
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                android:layout_marginEnd="15dp"
+                android:src="@drawable/arrow_down"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:tint="?attr/colorOnSecondary" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_transactions_info"
@@ -111,7 +131,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btg_expenses_data_range" />
+            app:layout_constraintTop_toBottomOf="@id/cl_fg_home_button_arrow" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

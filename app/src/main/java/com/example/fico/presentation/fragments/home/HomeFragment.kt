@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
 import com.example.fico.presentation.fragments.home.expenses.HomeAllExpensesFragment
 import com.example.fico.presentation.fragments.home.expenses.HomeMonthExpensesFragment
 import com.example.fico.presentation.viewmodel.HomeViewModel
 import com.example.fico.utils.constants.StringConstants
+import com.example.fico.utils.ui_personalizations.Effects.Companion.fadeIn
+import com.example.fico.utils.ui_personalizations.Effects.Companion.fadeOut
 import org.koin.android.ext.android.inject
 
 class HomeFragment : Fragment() {
@@ -108,6 +111,25 @@ class HomeFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+
+        viewModel.arrowState.observe(viewLifecycleOwner){ state ->
+            if(state){
+                binding.btgExpensesDataRange.fadeIn()
+                binding.ivFragmentHomeArrow.animate().rotation(0f).setDuration(200).start()
+            }else{
+                binding.btgExpensesDataRange.fadeOut()
+                binding.ivFragmentHomeArrow.animate().rotation(90f).setDuration(200).start()
+            }
+        }
+
+        binding.ivFragmentHomeArrow.setOnClickListener {
+            val state = viewModel.arrowState.value
+            if(state!!){
+                viewModel.setArrowState(false)
+            }else{
+                viewModel.setArrowState(true)
             }
         }
 
