@@ -8,7 +8,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
+        android:paddingHorizontal="8dp"
+        android:paddingTop="8dp"
         tools:context=".presentation.activities.MainTransactionActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -93,7 +94,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:singleSelection="true">
+                app:singleSelection="true"
+                tools:visibility="gone"
+                >
 
                 <Button
                     android:id="@+id/bt_monthly_expenses"

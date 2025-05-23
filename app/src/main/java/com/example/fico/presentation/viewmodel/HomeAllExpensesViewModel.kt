@@ -31,9 +31,9 @@ class HomeAllExpensesViewModel(
     val totalExpenseLiveData : LiveData<String> = _totalExpense
     private val _informationPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
     val informationPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _informationPerMonth
-    private val _isBlurred = MutableLiveData<Boolean>(true)
+    private val _isBlurred = MutableLiveData(true)
     val isBlurred : LiveData<Boolean> = _isBlurred
-    private val _expenseBarChartParams = MutableLiveData<BarChartParams>(BarChartParams.empty())
+    private val _expenseBarChartParams = MutableLiveData(BarChartParams.empty())
     val expenseBarChartParams : LiveData<BarChartParams> = _expenseBarChartParams
     private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(HomeFragmentState.Loading)
     val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()

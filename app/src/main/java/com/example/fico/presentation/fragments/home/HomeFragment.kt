@@ -74,18 +74,21 @@ class HomeFragment : Fragment() {
             binding.btgExpensesDataRange.visibility = View.VISIBLE
             binding.btgExpensesDataRange.check(binding.btMonthlyExpenses.id)
             binding.btMonthlyExpenses.isClickable = false
+            binding.ivFragmentHomeArrow.visibility = View.VISIBLE
             replaceChildFragment(HomeMonthExpensesFragment())
         }
         bntBalance.setOnClickListener {
             moveUnderlineTo(bntBalance)
             viewModel.setTransactionType(StringConstants.DATABASE.BALANCE)
             binding.btgExpensesDataRange.visibility = View.GONE
+            binding.ivFragmentHomeArrow.visibility = View.GONE
             replaceChildFragment(HomeBalanceFragment())
         }
         bntEarnings.setOnClickListener {
             moveUnderlineTo(bntEarnings)
             viewModel.setTransactionType(StringConstants.DATABASE.EARNING)
             binding.btgExpensesDataRange.visibility = View.GONE
+            binding.ivFragmentHomeArrow.visibility = View.GONE
             replaceChildFragment(HomeEarningsFragment())
         }
         binding.btgExpensesDataRange.addOnButtonCheckedListener { group, checkedId, isChecked ->
