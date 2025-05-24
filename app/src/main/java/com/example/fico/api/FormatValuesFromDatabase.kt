@@ -85,61 +85,131 @@ class FormatValuesFromDatabase {
     fun formatDateForFilterOnExpenseList(date: String) : String{
         var formattedDate = ""
         val month = date.substring(5,7)
-        if(month == "01"){
-            formattedDate = "Janeiro - ${date.substring(0,4)}"
-        } else if(month == "02"){
-            formattedDate = "Fevereiro - ${date.substring(0,4)}"
-        } else if(month == "03"){
-            formattedDate = "Março - ${date.substring(0,4)}"
-        } else if(month == "04"){
-            formattedDate = "Abril - ${date.substring(0,4)}"
-        } else if(month == "05"){
-            formattedDate = "Maio - ${date.substring(0,4)}"
-        } else if(month == "06"){
-            formattedDate = "Junho - ${date.substring(0,4)}"
-        } else if(month == "07"){
-            formattedDate = "Julho - ${date.substring(0,4)}"
-        } else if(month == "08"){
-            formattedDate = "Agosto - ${date.substring(0,4)}"
-        } else if(month == "09"){
-            formattedDate = "Setembro - ${date.substring(0,4)}"
-        } else if(month == "10"){
-            formattedDate = "Outubro - ${date.substring(0,4)}"
-        } else if(month == "11"){
-            formattedDate = "Novembro - ${date.substring(0,4)}"
-        } else if(month == "12"){
-            formattedDate = "Dezembro - ${date.substring(0,4)}"
+        when (month) {
+            "01" -> {
+                formattedDate = "Janeiro - ${date.substring(0,4)}"
+            }
+            "02" -> {
+                formattedDate = "Fevereiro - ${date.substring(0,4)}"
+            }
+            "03" -> {
+                formattedDate = "Março - ${date.substring(0,4)}"
+            }
+            "04" -> {
+                formattedDate = "Abril - ${date.substring(0,4)}"
+            }
+            "05" -> {
+                formattedDate = "Maio - ${date.substring(0,4)}"
+            }
+            "06" -> {
+                formattedDate = "Junho - ${date.substring(0,4)}"
+            }
+            "07" -> {
+                formattedDate = "Julho - ${date.substring(0,4)}"
+            }
+            "08" -> {
+                formattedDate = "Agosto - ${date.substring(0,4)}"
+            }
+            "09" -> {
+                formattedDate = "Setembro - ${date.substring(0,4)}"
+            }
+            "10" -> {
+                formattedDate = "Outubro - ${date.substring(0,4)}"
+            }
+            "11" -> {
+                formattedDate = "Novembro - ${date.substring(0,4)}"
+            }
+            "12" -> {
+                formattedDate = "Dezembro - ${date.substring(0,4)}"
+            }
         }
         return formattedDate
     }
 
-    fun formatDateAbbreviated(date: String) : String{
+    fun formatMonthAbbreviatedWithDash(date: String) : String{
         var formattedDate = ""
         val month = date.substring(5,7)
-        if(month == "01"){
-            formattedDate = "Jan-${date.substring(2,4)}"
-        } else if(month == "02"){
-            formattedDate = "Fev-${date.substring(2,4)}"
-        } else if(month == "03"){
-            formattedDate = "Mar-${date.substring(2,4)}"
-        } else if(month == "04"){
-            formattedDate = "Abr-${date.substring(2,4)}"
-        } else if(month == "05"){
-            formattedDate = "Mai-${date.substring(2,4)}"
-        } else if(month == "06"){
-            formattedDate = "Jun-${date.substring(2,4)}"
-        } else if(month == "07"){
-            formattedDate = "Jul-${date.substring(2,4)}"
-        } else if(month == "08"){
-            formattedDate = "Ago-${date.substring(2,4)}"
-        } else if(month == "09"){
-            formattedDate = "Set-${date.substring(2,4)}"
-        } else if(month == "10"){
-            formattedDate = "Out-${date.substring(2,4)}"
-        } else if(month == "11"){
-            formattedDate = "Nov-${date.substring(2,4)}"
-        } else if(month == "12"){
-            formattedDate = "Dez-${date.substring(2,4)}"
+        when (month) {
+            "01" -> {
+                formattedDate = "Jan-${date.substring(2,4)}"
+            }
+            "02" -> {
+                formattedDate = "Fev-${date.substring(2,4)}"
+            }
+            "03" -> {
+                formattedDate = "Mar-${date.substring(2,4)}"
+            }
+            "04" -> {
+                formattedDate = "Abr-${date.substring(2,4)}"
+            }
+            "05" -> {
+                formattedDate = "Mai-${date.substring(2,4)}"
+            }
+            "06" -> {
+                formattedDate = "Jun-${date.substring(2,4)}"
+            }
+            "07" -> {
+                formattedDate = "Jul-${date.substring(2,4)}"
+            }
+            "08" -> {
+                formattedDate = "Ago-${date.substring(2,4)}"
+            }
+            "09" -> {
+                formattedDate = "Set-${date.substring(2,4)}"
+            }
+            "10" -> {
+                formattedDate = "Out-${date.substring(2,4)}"
+            }
+            "11" -> {
+                formattedDate = "Nov-${date.substring(2,4)}"
+            }
+            "12" -> {
+                formattedDate = "Dez-${date.substring(2,4)}"
+            }
+        }
+        return formattedDate
+    }
+
+    fun formatMonthAbbreviatedWithBar(date: String) : String{
+        var formattedDate = ""
+        val month = date.substring(5,7)
+        when (month) {
+            "01" -> {
+                formattedDate = "Jan/${date.substring(2,4)}"
+            }
+            "02" -> {
+                formattedDate = "Fev/${date.substring(2,4)}"
+            }
+            "03" -> {
+                formattedDate = "Mar/${date.substring(2,4)}"
+            }
+            "04" -> {
+                formattedDate = "Abr/${date.substring(2,4)}"
+            }
+            "05" -> {
+                formattedDate = "Mai/${date.substring(2,4)}"
+            }
+            "06" -> {
+                formattedDate = "Jun/${date.substring(2,4)}"
+            }
+            "07" -> {
+                formattedDate = "Jul/${date.substring(2,4)}"
+            }
+            "08" -> {
+                formattedDate = "Ago/${date.substring(2,4)}"
+            }
+            "09" -> {
+                formattedDate = "Set/${date.substring(2,4)}"
+            }
+            "10" -> {
+                formattedDate = "Out/${date.substring(2,4)}"
+            }
+            "11" -> {
+                formattedDate = "Nov/${date.substring(2,4)}"
+            }
+            "12" -> {
+                formattedDate = "Dez/${date.substring(2,4)}"
+            }
         }
         return formattedDate
     }
@@ -147,30 +217,43 @@ class FormatValuesFromDatabase {
     fun formatDateFromFilterToDatabaseForInfoPerMonth(date: String): String {
         var formattedDate = ""
         val month = date.substring(5,7)
-        if(month == "01"){
-            formattedDate = "Janeiro - ${date.substring(0,4)}"
-        } else if(month == "02"){
-            formattedDate = "Fevereiro - ${date.substring(0,4)}"
-        } else if(month == "03"){
-            formattedDate = "Março - ${date.substring(0,4)}"
-        } else if(month == "04"){
-            formattedDate = "Abril - ${date.substring(0,4)}"
-        } else if(month == "05"){
-            formattedDate = "Maio - ${date.substring(0,4)}"
-        } else if(month == "06"){
-            formattedDate = "Junho - ${date.substring(0,4)}"
-        } else if(month == "07"){
-            formattedDate = "Julho - ${date.substring(0,4)}"
-        } else if(month == "08"){
-            formattedDate = "Agosto - ${date.substring(0,4)}"
-        } else if(month == "09"){
-            formattedDate = "Setembro - ${date.substring(0,4)}"
-        } else if(month == "10"){
-            formattedDate = "Outubro - ${date.substring(0,4)}"
-        } else if(month == "11"){
-            formattedDate = "Novembro - ${date.substring(0,4)}"
-        } else if(month == "12"){
-            formattedDate = "Dezembro - ${date.substring(0,4)}"
+        when (month) {
+            "01" -> {
+                formattedDate = "Janeiro - ${date.substring(0,4)}"
+            }
+            "02" -> {
+                formattedDate = "Fevereiro - ${date.substring(0,4)}"
+            }
+            "03" -> {
+                formattedDate = "Março - ${date.substring(0,4)}"
+            }
+            "04" -> {
+                formattedDate = "Abril - ${date.substring(0,4)}"
+            }
+            "05" -> {
+                formattedDate = "Maio - ${date.substring(0,4)}"
+            }
+            "06" -> {
+                formattedDate = "Junho - ${date.substring(0,4)}"
+            }
+            "07" -> {
+                formattedDate = "Julho - ${date.substring(0,4)}"
+            }
+            "08" -> {
+                formattedDate = "Agosto - ${date.substring(0,4)}"
+            }
+            "09" -> {
+                formattedDate = "Setembro - ${date.substring(0,4)}"
+            }
+            "10" -> {
+                formattedDate = "Outubro - ${date.substring(0,4)}"
+            }
+            "11" -> {
+                formattedDate = "Novembro - ${date.substring(0,4)}"
+            }
+            "12" -> {
+                formattedDate = "Dezembro - ${date.substring(0,4)}"
+            }
         }
         return formattedDate
     }

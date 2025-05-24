@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
+import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.databinding.FragmentHomeAllExpensesBinding
 import com.example.fico.model.BarChartParams
 import com.example.fico.presentation.fragments.home.HomeFragmentState
@@ -56,9 +57,7 @@ class HomeAllExpensesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
-        viewModel.getTotalExpense()
-        viewModel.getExpenseBarChartParams()
+        viewModel.getExpensesInfo()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -81,6 +80,14 @@ class HomeAllExpensesFragment : Fragment() {
 
                     }
                     is HomeFragmentState.Success -> {
+
+                        val info = state.info
+
+                        initExpenseEachMonthChart(info.barChartParams)
+                        val totalCurrency = FormatValuesFromDatabase().price(info.totalExpense)
+                        binding.tvHomeAllExpensesTotalExpenseValue.text = totalCurrency
+                        binding.tvHomeAllExpensesTotalExpensePeriod.text = info.expensesPeriod
+
                         binding.clInfoAllExpenses.visibility = View.VISIBLE
                         binding.clHomeAllExpensesEmptyState.visibility = View.GONE
                         binding.pbHomeAllExpenses.visibility = View.GONE
@@ -105,15 +112,6 @@ class HomeAllExpensesFragment : Fragment() {
             binding.tvHomeAllExpensesTotalExpenseValue.invalidate()
         }
 
-        viewModel.totalExpenseLiveData.observe(viewLifecycleOwner){totalExpense ->
-            binding.tvHomeAllExpensesTotalExpenseValue.text = totalExpense
-        }
-
-        viewModel.expenseBarChartParams.observe(viewLifecycleOwner){ barChartParams ->
-            if(barChartParams.entries.isNotEmpty()){
-                initExpenseEachMonthChart(barChartParams)
-            }
-        }
     }
 
     private fun initExpenseEachMonthChartEmpty(){

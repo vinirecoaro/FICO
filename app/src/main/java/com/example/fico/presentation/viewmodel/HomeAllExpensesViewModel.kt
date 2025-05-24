@@ -20,42 +20,105 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.NumberFormat
 
 class HomeAllExpensesViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
     private val _infoPerMonthLabel = MutableLiveData<List<InformationPerMonthExpense>>()
-    private val _totalExpense = MutableLiveData<String>()
-    val totalExpenseLiveData : LiveData<String> = _totalExpense
-    private val _informationPerMonth = MutableLiveData<List<InformationPerMonthExpense>>()
-    val informationPerMonthLiveData : LiveData<List<InformationPerMonthExpense>> = _informationPerMonth
     private val _isBlurred = MutableLiveData(true)
     val isBlurred : LiveData<Boolean> = _isBlurred
-    private val _expenseBarChartParams = MutableLiveData(BarChartParams.empty())
-    val expenseBarChartParams : LiveData<BarChartParams> = _expenseBarChartParams
-    private val _uiState = MutableStateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>>(HomeFragmentState.Loading)
-    val uiState : StateFlow<HomeFragmentState<Pair<List<InformationPerMonthExpense>, List<InformationPerMonthExpense>>>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<HomeFragmentState<InfoForAllExpensesFragment>>(HomeFragmentState.Loading)
+    val uiState : StateFlow<HomeFragmentState<InfoForAllExpensesFragment>> = _uiState.asStateFlow()
 
-    fun changeBlurState(){
-        if(_isBlurred.value != null){
-            _isBlurred.postValue(!_isBlurred.value!!)
+    fun getExpensesInfo(){
+        viewModelScope.async(Dispatchers.IO){
+            _uiState.value = HomeFragmentState.Loading
+
+            val infoPerMonth = dataStore.getExpenseInfoPerMonth()
+            val monthWithExpenses = getMonthsWithExpenses(infoPerMonth)
+
+            if(monthWithExpenses.isEmpty()){
+                _uiState.value = HomeFragmentState.Empty
+            }else{
+                val barChartParams = getExpenseBarChartParams(monthWithExpenses)
+                val totalExpense = dataStore.getTotalExpense()
+                val expensesPeriod = getExpensesPeriod(monthWithExpenses)
+
+                val infoForAllExpensesFragment = InfoForAllExpensesFragment(
+                    barChartParams,
+                    totalExpense,
+                    expensesPeriod
+                )
+                _uiState.value = HomeFragmentState.Success(infoForAllExpensesFragment
+                )
+            }
         }
     }
 
-    fun getTotalExpense(){
-        viewModelScope.async(Dispatchers.IO){
-            val totalExpense = dataStore.getTotalExpense()
-            val price = totalExpense.toFloat()
-            val priceFormatted = NumberFormat.getCurrencyInstance().format(price)
-            _totalExpense.postValue(priceFormatted)
+    private fun getMonthsWithExpenses(infoPerMonthList : List<InformationPerMonthExpense>) : List<InformationPerMonthExpense> {
+        val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
+        for(infoPerMonth in infoPerMonthList){
+            if (BigDecimal(infoPerMonth.monthExpense).setScale(2,
+                    RoundingMode.HALF_UP) != BigDecimal("0").setScale(2, RoundingMode.HALF_UP)){
+                monthWithExpenses.add(infoPerMonth)
+            }
         }
+        return monthWithExpenses
+    }
+
+    private fun getExpenseBarChartParams(monthWithExpenses : List<InformationPerMonthExpense>) : BarChartParams{
+
+            val barChartEntries : ArrayList<BarEntry> = arrayListOf()
+            val formattedInfoPerMonthLabel = mutableListOf<InformationPerMonthExpense>()
+            val barChartMonthLabels : MutableSet<String> = mutableSetOf()
+            val barChartExpenseLabels : MutableSet<String> = mutableSetOf()
+
+            val sortedMonthWithExpensesList = monthWithExpenses.sortedBy { it.date }
+
+            _infoPerMonthLabel.postValue(sortedMonthWithExpensesList)
+
+            var i = 0f
+            for (infoPerMonth in sortedMonthWithExpensesList){
+
+                //Create entries
+                val monthExpense = infoPerMonth.monthExpense.toFloat()
+                barChartEntries.add(BarEntry(i, monthExpense))
+                i += 1f
+
+                // Create labels
+                formattedInfoPerMonthLabel.add(
+                    InformationPerMonthExpense(
+                        FormatValuesFromDatabase().formatMonthAbbreviatedWithDash(infoPerMonth.date),
+                        infoPerMonth.availableNow,
+                        infoPerMonth.budget,
+                        FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
+                    )
+                )
+            }
+
+            for(infoPerMonthLabel in formattedInfoPerMonthLabel){
+                barChartMonthLabels.add(infoPerMonthLabel.date)
+                barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
+            }
+
+            val barChartParams = BarChartParams(barChartEntries,barChartMonthLabels, barChartExpenseLabels)
+
+            return barChartParams
+
+        }
+
+    private fun getExpensesPeriod(monthWithExpenses : List<InformationPerMonthExpense>) : String{
+        val firstMonth = monthWithExpenses.first().date
+        val lastMonth = monthWithExpenses.last().date
+        val firstMonthFormatted = FormatValuesFromDatabase().formatMonthAbbreviatedWithBar(firstMonth)
+        val lastMonthFormatted = FormatValuesFromDatabase().formatMonthAbbreviatedWithBar(lastMonth)
+        return "($firstMonthFormatted - $lastMonthFormatted)"
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getCurrentDatePositionBarChart() : Int{
-        val currentDate = FormatValuesFromDatabase().formatDateAbbreviated(DateFunctions().getCurrentlyDateYearMonthToDatabase())
+        val currentDate = DateFunctions().getCurrentlyDateYearMonthToDatabase()
         if(_infoPerMonthLabel.value != null){
             _infoPerMonthLabel.value!!.forEachIndexed { index, informationPerMonthExpense ->
                 if(informationPerMonthExpense.date == currentDate){
@@ -73,68 +136,16 @@ class HomeAllExpensesViewModel(
 
     }
 
-    fun getExpenseBarChartParams(){
-
-        _uiState.value = HomeFragmentState.Loading
-
-        viewModelScope.async(Dispatchers.IO){
-
-            val barChartEntries : ArrayList<BarEntry> = arrayListOf()
-            val formattedInfoPerMonthLabel = mutableListOf<InformationPerMonthExpense>()
-            val barChartMonthLabels : MutableSet<String> = mutableSetOf()
-            val barChartExpenseLabels : MutableSet<String> = mutableSetOf()
-
-            try {
-                val infoPerMonthList = dataStore.getExpenseInfoPerMonth()
-                val monthWithExpenses = mutableListOf<InformationPerMonthExpense>()
-                for(infoPerMonth in infoPerMonthList){
-                    if (BigDecimal(infoPerMonth.monthExpense).setScale(2,
-                            RoundingMode.HALF_UP) != BigDecimal("0").setScale(2, RoundingMode.HALF_UP)){
-                        monthWithExpenses.add(infoPerMonth)
-                    }
-                }
-                if(monthWithExpenses.isEmpty()){
-                    _uiState.value = HomeFragmentState.Empty
-                }else{
-                    val sortedMonthWithExpensesList = monthWithExpenses.sortedBy { it.date }
-
-                    var i = 0f
-                    for (infoPerMonth in sortedMonthWithExpensesList){
-
-                        //Create entries
-                        val monthExpense = infoPerMonth.monthExpense.toFloat()
-                        barChartEntries.add(BarEntry(i, monthExpense))
-                        i += 1f
-
-                        // Create labels
-                        formattedInfoPerMonthLabel.add(
-                            InformationPerMonthExpense(
-                                FormatValuesFromDatabase().formatDateAbbreviated(infoPerMonth.date),
-                                infoPerMonth.availableNow,
-                                infoPerMonth.budget,
-                                FormatValuesFromDatabase().price(infoPerMonth.monthExpense)
-                            )
-                        )
-                    }
-
-                    _infoPerMonthLabel.postValue(formattedInfoPerMonthLabel)
-
-                    for(infoPerMonthLabel in formattedInfoPerMonthLabel){
-                        barChartMonthLabels.add(infoPerMonthLabel.date)
-                        barChartExpenseLabels.add(infoPerMonthLabel.monthExpense)
-                    }
-
-                    val barChartParams = BarChartParams(barChartEntries,barChartMonthLabels, barChartExpenseLabels)
-
-                    _expenseBarChartParams.postValue(barChartParams)
-
-                    _uiState.value = HomeFragmentState.Success(Pair(formattedInfoPerMonthLabel, formattedInfoPerMonthLabel))
-                }
-
-            }catch (error : Exception){
-                _uiState.value = HomeFragmentState.Error(error.message.toString())
-            }
+    fun changeBlurState(){
+        if(_isBlurred.value != null){
+            _isBlurred.postValue(!_isBlurred.value!!)
         }
     }
+
+    class InfoForAllExpensesFragment(
+        val barChartParams : BarChartParams,
+        val totalExpense : String,
+        val expensesPeriod : String
+    )
 
 }
