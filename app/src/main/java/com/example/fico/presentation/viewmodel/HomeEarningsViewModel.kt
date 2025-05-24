@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 class HomeEarningsViewModel(
     private val dataStore : DataStoreManager
@@ -75,6 +77,15 @@ class HomeEarningsViewModel(
     private fun checkIfMonthHasInfo(date : String, earningList : List<Earning>) : Boolean{
         val hasInfoMonth = earningList.any { DateFunctions().YYYYmmDDtoYYYYmm(it.date) == DateFunctions().YYYYmmDDtoYYYYmm(date) }
         return hasInfoMonth
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getRelativeResultComparedWithLastMonth(date : String, totalMonthEarning : String){
+        val formatter = DateTimeFormatter.ofPattern(if (date.length == 7) "yyyy-MM" else "yyyy-MM-dd")
+        val yearMonth = YearMonth.parse(date, formatter)
+        val month = yearMonth.monthValue
+        val beforeMonth = month.minus(1)
+
     }
 
     private fun totalEarningOfMonthAndEarningMonths(date : String, earningList : List<Earning>) : Pair<String, List<String>>{

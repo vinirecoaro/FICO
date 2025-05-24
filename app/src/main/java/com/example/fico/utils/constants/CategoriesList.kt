@@ -370,6 +370,11 @@ class CategoriesList(private val context : Context) {
                 StringConstants.CATEGORY_LIST.ICON_NAME.BENEFITS,
                 false
             ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_income),
+                StringConstants.CATEGORY_LIST.ICON_NAME.INCOME,
+                false
+            ),
         )
     }
 }
