@@ -120,15 +120,12 @@ class HomeEarningsViewModel(
                     totalEarningLastMonth = totalEarningLastMonth.add(BigDecimal(earning.value))
                 }
             }
-            val result = BigDecimal(totalMonthEarning)
-            val result1 = result.divide(totalEarningLastMonth, 8, RoundingMode.HALF_UP)
-            val result2 = result1.subtract(BigDecimal(1))
-            val result3 = result2.multiply(BigDecimal(100))
-            if(result3.toFloat() > 0){
-                val resultFormatted = result3.setScale(0,RoundingMode.HALF_UP).toString()
+            val result = BigDecimal(totalMonthEarning).divide(totalEarningLastMonth, 8, RoundingMode.HALF_UP).subtract(BigDecimal(1)).multiply(BigDecimal(100))
+            if(result.toFloat() > 0){
+                val resultFormatted = result.setScale(0,RoundingMode.HALF_UP).toString()
                 return Pair(resultFormatted, StringConstants.HOME_FRAGMENT.INCREASE)
-            }else if(result3.toFloat() < 0){
-                val resultFormatted = result3.multiply(BigDecimal(-1)).setScale(0,RoundingMode.HALF_UP).toString()
+            }else if(result.toFloat() < 0){
+                val resultFormatted = result.multiply(BigDecimal(-1)).setScale(0,RoundingMode.HALF_UP).toString()
                 return Pair(resultFormatted, StringConstants.HOME_FRAGMENT.DECREASE)
             }else{
                 return Pair(result.toString(), StringConstants.HOME_FRAGMENT.EQUAL)

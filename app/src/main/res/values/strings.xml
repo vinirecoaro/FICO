@@ -255,6 +255,8 @@
     <string name="earnings_per_category">Receitas por categoria</string>
     <string name="monthly">Mensal</string>
     <string name="general">Geral</string>
+    <string name="relative_earning_increase_message">Aumento relativo ao mês anterior</string>
+    <string name="relative_earning_decrease_message">Decréscimo relativo ao mês anterior</string>
 
 
 </resources>

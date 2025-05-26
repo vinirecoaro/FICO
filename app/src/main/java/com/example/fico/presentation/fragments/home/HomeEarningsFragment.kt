@@ -93,6 +93,7 @@ class HomeEarningsFragment : Fragment() {
                                 binding.ivArrowRelativeIncomePercent.visibility = View.GONE
                             }
                             StringConstants.HOME_FRAGMENT.INCREASE -> {
+                                binding.tvRelativeIncomePercent.tooltipText = getString(R.string.relative_earning_increase_message)
                                 val result = "${earningsInfo.relativeResult.first}%"
                                 binding.tvRelativeIncomePercent.text = result
                                 binding.tvRelativeIncomePercent.setTextColor(Color.rgb(0,255,0))
@@ -101,6 +102,7 @@ class HomeEarningsFragment : Fragment() {
                                 binding.ivArrowRelativeIncomePercent.setImageResource(R.drawable.arrow_up_model_2)
                             }
                             StringConstants.HOME_FRAGMENT.DECREASE -> {
+                                binding.tvRelativeIncomePercent.tooltipText = getString(R.string.relative_earning_decrease_message)
                                 val result = "${earningsInfo.relativeResult.first}%"
                                 binding.tvRelativeIncomePercent.text = result
                                 binding.tvRelativeIncomePercent.setTextColor(Color.rgb(255,0,0))
