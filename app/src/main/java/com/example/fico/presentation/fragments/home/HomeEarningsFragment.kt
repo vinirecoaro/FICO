@@ -16,6 +16,7 @@ import com.example.fico.databinding.FragmentHomeEarningsBinding
 import com.example.fico.interfaces.OnMonthSelectedListener
 import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAdapter
 import com.example.fico.presentation.viewmodel.HomeEarningsViewModel
+import com.example.fico.utils.constants.StringConstants
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -85,6 +86,29 @@ class HomeEarningsFragment : Fragment() {
                         binding.tvMonthTotalEarningValue.text = earningsInfo.totalEarningOfMonth
                         //Earnings per category
                         setEarningsPerCategory(earningsInfo.topFiveEarningByCategoryList)
+                        //Relative earning result
+                        when (earningsInfo.relativeResult.second) {
+                            StringConstants.HOME_FRAGMENT.NO_BEFORE_MONTH, StringConstants.HOME_FRAGMENT.EQUAL -> {
+                                binding.tvRelativeIncomePercent.text = StringConstants.GENERAL.THREE_DASH
+                                binding.ivArrowRelativeIncomePercent.visibility = View.GONE
+                            }
+                            StringConstants.HOME_FRAGMENT.INCREASE -> {
+                                val result = "${earningsInfo.relativeResult.first}%"
+                                binding.tvRelativeIncomePercent.text = result
+                                binding.tvRelativeIncomePercent.setTextColor(Color.rgb(0,255,0))
+                                binding.ivArrowRelativeIncomePercent.visibility = View.VISIBLE
+                                binding.ivArrowRelativeIncomePercent.setColorFilter(Color.rgb(0,255,0))
+                                binding.ivArrowRelativeIncomePercent.setImageResource(R.drawable.arrow_up_model_2)
+                            }
+                            StringConstants.HOME_FRAGMENT.DECREASE -> {
+                                val result = "${earningsInfo.relativeResult.first}%"
+                                binding.tvRelativeIncomePercent.text = result
+                                binding.tvRelativeIncomePercent.setTextColor(Color.rgb(255,0,0))
+                                binding.ivArrowRelativeIncomePercent.visibility = View.VISIBLE
+                                binding.ivArrowRelativeIncomePercent.setColorFilter(Color.rgb(255,0,0))
+                                binding.ivArrowRelativeIncomePercent.setImageResource(R.drawable.arrow_down_model_2)
+                            }
+                        }
 
                         //Show components
                         binding.clHomeEarningsInfo.visibility = View.VISIBLE

@@ -194,6 +194,13 @@ class StringConstants private constructor() {
         const val ADD_RECURRING_EARNING = "recurring_earning"
     }
 
+    object HOME_FRAGMENT {
+        const val INCREASE = "increase"
+        const val DECREASE = "decrease"
+        const val EQUAL = "equal"
+        const val NO_BEFORE_MONTH = "no_before_month"
+    }
+
     object TRANSACTION_LIST {
         const val TRANSACTION = "transaction"
     }
@@ -235,6 +242,7 @@ class StringConstants private constructor() {
 
     object GENERAL {
         const val ZERO_STRING = "0"
+        const val THREE_DASH = "---"
     }
 
 }

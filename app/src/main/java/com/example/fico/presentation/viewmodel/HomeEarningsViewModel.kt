@@ -11,12 +11,14 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.utils.DateFunctions
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.NumberFormat
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -47,11 +49,18 @@ class HomeEarningsViewModel(
                     val totalEarningOfMonthAndEarningMonths = totalEarningOfMonthAndEarningMonths(date, earningList)
                     val earningMonths = totalEarningOfMonthAndEarningMonths.second
                     val totalEarningOfMonth = totalEarningOfMonthAndEarningMonths.first
+                    val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
                     val topFiveEarningByCategoryList = getCategoriesWithMoreExpense(date, earningList)
+                    val relativeResultComparedWithLastMonth = getRelativeResultComparedWithLastMonth(
+                        date,
+                        totalEarningOfMonth,
+                        earningList
+                    )
                     val infoForEarningFragment = InfoForEarningFragment(
                         date,
+                        relativeResultComparedWithLastMonth,
                         earningMonths,
-                        totalEarningOfMonth,
+                        formattedTotalEarningOfMonth,
                         topFiveEarningByCategoryList
                     )
                     _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
@@ -61,11 +70,18 @@ class HomeEarningsViewModel(
                     val totalEarningOfMonthAndEarningMonths = totalEarningOfMonthAndEarningMonths(lastMonthWithInfo, earningList)
                     val earningMonths = totalEarningOfMonthAndEarningMonths.second
                     val totalEarningOfMonth = totalEarningOfMonthAndEarningMonths.first
+                    val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
                     val topFiveEarningByCategoryList = getCategoriesWithMoreExpense(lastMonthWithInfo, earningList)
+                    val relativeResultComparedWithLastMonth = getRelativeResultComparedWithLastMonth(
+                        lastMonthWithInfo,
+                        totalEarningOfMonth,
+                        earningList
+                    )
                     val infoForEarningFragment = InfoForEarningFragment(
                         lastMonthWithInfo,
+                        relativeResultComparedWithLastMonth,
                         earningMonths,
-                        totalEarningOfMonth,
+                        formattedTotalEarningOfMonth,
                         topFiveEarningByCategoryList
                     )
                     _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
@@ -80,12 +96,46 @@ class HomeEarningsViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getRelativeResultComparedWithLastMonth(date : String, totalMonthEarning : String){
+    private fun getRelativeResultComparedWithLastMonth(
+        date : String,
+        totalMonthEarning : String,
+        earningList : List<Earning>)
+    : Pair<String,String>{
         val formatter = DateTimeFormatter.ofPattern(if (date.length == 7) "yyyy-MM" else "yyyy-MM-dd")
         val yearMonth = YearMonth.parse(date, formatter)
         val month = yearMonth.monthValue
         val beforeMonth = month.minus(1)
-
+        var totalEarningLastMonth = BigDecimal(0)
+        val formatterEarningDate = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val existEarningBeforeMonth = earningList.any{ earning ->
+            val earningDate = YearMonth.parse(earning.date, formatterEarningDate)
+            val earningMonth = earningDate.monthValue
+            earningMonth == beforeMonth
+        }
+        if(existEarningBeforeMonth){
+            earningList.forEach { earning ->
+                val earningDate = YearMonth.parse(earning.date, formatterEarningDate)
+                val earningMonth = earningDate.monthValue
+                if(earningMonth == beforeMonth){
+                    totalEarningLastMonth = totalEarningLastMonth.add(BigDecimal(earning.value))
+                }
+            }
+            val result = BigDecimal(totalMonthEarning)
+            val result1 = result.divide(totalEarningLastMonth, 8, RoundingMode.HALF_UP)
+            val result2 = result1.subtract(BigDecimal(1))
+            val result3 = result2.multiply(BigDecimal(100))
+            if(result3.toFloat() > 0){
+                val resultFormatted = result3.setScale(0,RoundingMode.HALF_UP).toString()
+                return Pair(resultFormatted, StringConstants.HOME_FRAGMENT.INCREASE)
+            }else if(result3.toFloat() < 0){
+                val resultFormatted = result3.multiply(BigDecimal(-1)).setScale(0,RoundingMode.HALF_UP).toString()
+                return Pair(resultFormatted, StringConstants.HOME_FRAGMENT.DECREASE)
+            }else{
+                return Pair(result.toString(), StringConstants.HOME_FRAGMENT.EQUAL)
+            }
+        }else{
+            return Pair(StringConstants.GENERAL.ZERO_STRING, StringConstants.HOME_FRAGMENT.NO_BEFORE_MONTH)
+        }
     }
 
     private fun totalEarningOfMonthAndEarningMonths(date : String, earningList : List<Earning>) : Pair<String, List<String>>{
@@ -103,8 +153,7 @@ class HomeEarningsViewModel(
                 earningMonths.add(formattedDate)
             }
         }
-        val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
-        val result = Pair(formattedTotalEarningOfMonth,earningMonths)
+        val result = Pair(totalEarningOfMonth.toString(),earningMonths)
         return result
     }
 
@@ -130,6 +179,7 @@ class HomeEarningsViewModel(
 
     data class InfoForEarningFragment(
         var month : String,
+        var relativeResult : Pair<String, String>,
         var earningMonths : List<String>,
         var totalEarningOfMonth : String,
         var topFiveEarningByCategoryList : List<Pair<String, Double>>
