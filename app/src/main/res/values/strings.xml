@@ -172,6 +172,7 @@
     <string name="update_database_info_per_month_and_total_expense">Atualizar Dados do Banco de Dados</string>
     <string name="no_info_to_show_add_expenses">Sem informações para exibir. Adicione despesas.</string>
     <string name="no_info_to_show_add_earnings">Sem informações para exibir. Adicione receitas.</string>
+    <string name="no_info_to_show_add_expense_earnings">Sem informações para exibir. Adicione despesas e receitas.</string>
     <string name="add_expense_success_message">Despesa adicionada com sucesso</string>
     <string name="add_expense_failure_message">Falha ao adicionar despesa</string>
     <string name="add_earning_success_message">Receita adicionada com sucesso</string>
@@ -196,7 +197,9 @@
     <string name="select_dates">Selecionar datas</string>
     <string name="all">Todas</string>
     <string name="expenses_2">Despesas</string>
+    <string name="expense">Despesa</string>
     <string name="earnings_2">Receitas</string>
+    <string name="earning">Receita</string>
     <string name="recurring_expense">Despesa Recorrente</string>
     <string name="dialog_recurring_expense_list_title">Lista de Despesas Recorrentes</string>
     <string name="dialog_recurring_earning_list_title">Lista de Receitas Recorrentes</string>
@@ -251,6 +254,7 @@
     <string name="block_app_with_phone_password">Bloquear app com senha do celular</string>
     <string name="authenticate">Autenticar</string>
     <string name="balance_title">Balanço</string>
+    <string name="balance_2">Saldo</string>
     <string name="earning_this_month">Receita este mês</string>
     <string name="earnings_per_category">Receitas por categoria</string>
     <string name="monthly">Mensal</string>
