@@ -106,25 +106,23 @@
                     android:id="@+id/tv_relative_income_percent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
                     android:text="50%"
                     android:textColor="@color/green"
-                    android:layout_marginEnd="8dp"
                     android:textSize="30sp"
-                    app:layout_constraintEnd_toStartOf="@id/iv_arrow_relative_income_percent"
-                    app:layout_constraintTop_toTopOf="@id/iv_arrow_relative_income_percent"
                     app:layout_constraintBottom_toBottomOf="@id/iv_arrow_relative_income_percent"
-                    />
+                    app:layout_constraintEnd_toStartOf="@id/iv_arrow_relative_income_percent"
+                    app:layout_constraintTop_toTopOf="@id/iv_arrow_relative_income_percent" />
 
                 <ImageView
                     android:id="@+id/iv_arrow_relative_income_percent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:tint="@color/green"
-                    android:src="@drawable/arrow_up_model_2"
                     android:layout_margin="8dp"
-                    />
+                    android:src="@drawable/arrow_up_model_2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:tint="@color/green" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
