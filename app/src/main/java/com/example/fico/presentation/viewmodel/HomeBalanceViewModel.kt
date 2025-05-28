@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.model.Earning
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
@@ -33,19 +34,16 @@ class HomeBalanceViewModel(
         _uiState.value = HomeFragmentState.Loading
         viewModelScope.async(Dispatchers.IO){
             val earningList = dataStore.getEarningsList()
+            val expenseMonths = dataStore.getExpenseInfoPerMonth()
             if(earningList.isEmpty()){
                 _uiState.value = HomeFragmentState.Empty
             }else{
-                if(checkIfMonthHasInfo(date, earningList)){
+                if(checkIfEarningMonthHasInfo(date, earningList) || checkIfExpenseMonthHasInfo(date, expenseMonths)){
                     val totalEarningOfMonth = totalEarningOfMonth(date, earningList)
                     val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
-                    val totalExpenseOfMonth = getMonthExpense(date).await()
+                    val totalExpenseOfMonth = getMonthExpense(date, expenseMonths)
                     val formattedTotalExpenseOfMonth = NumberFormat.getCurrencyInstance().format(totalExpenseOfMonth.toFloat())
-                    val relativeResultComparedWithLastMonth = getRelativeResultComparedWithLastMonth(
-                        date,
-                        totalEarningOfMonth,
-                        earningList
-                    )
+
                     val infoForEarningFragment = InfoForBalanceFragment(
                         formattedTotalEarningOfMonth,
                         formattedTotalExpenseOfMonth
@@ -56,13 +54,9 @@ class HomeBalanceViewModel(
                     val lastMonthWithInfo = earningList.maxByOrNull { it.date }!!.date
                     val totalEarningOfMonth = totalEarningOfMonth(lastMonthWithInfo, earningList)
                     val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
-                    val totalExpenseOfMonth = getMonthExpense(date).await()
+                    val totalExpenseOfMonth = getMonthExpense(date, expenseMonths)
                     val formattedTotalExpenseOfMonth = NumberFormat.getCurrencyInstance().format(totalExpenseOfMonth.toFloat())
-                    val relativeResultComparedWithLastMonth = getRelativeResultComparedWithLastMonth(
-                        lastMonthWithInfo,
-                        totalEarningOfMonth,
-                        earningList
-                    )
+
                     val infoForEarningFragment = InfoForBalanceFragment(
                         formattedTotalEarningOfMonth,
                         formattedTotalExpenseOfMonth
@@ -73,49 +67,14 @@ class HomeBalanceViewModel(
         }
     }
 
-    private fun checkIfMonthHasInfo(date : String, earningList : List<Earning>) : Boolean{
+    private fun checkIfEarningMonthHasInfo(date : String, earningList : List<Earning>) : Boolean{
         val hasInfoMonth = earningList.any { DateFunctions().YYYYmmDDtoYYYYmm(it.date) == DateFunctions().YYYYmmDDtoYYYYmm(date) }
         return hasInfoMonth
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getRelativeResultComparedWithLastMonth(
-        date : String,
-        totalMonthEarning : String,
-        earningList : List<Earning>)
-    : Pair<String,String>{
-        val formatter = DateTimeFormatter.ofPattern(if (date.length == 7) "yyyy-MM" else "yyyy-MM-dd")
-        val yearMonth = YearMonth.parse(date, formatter)
-        val month = yearMonth.monthValue
-        val beforeMonth = month.minus(1)
-        var totalEarningLastMonth = BigDecimal(0)
-        val formatterEarningDate = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val existEarningBeforeMonth = earningList.any{ earning ->
-            val earningDate = YearMonth.parse(earning.date, formatterEarningDate)
-            val earningMonth = earningDate.monthValue
-            earningMonth == beforeMonth
-        }
-        if(existEarningBeforeMonth){
-            earningList.forEach { earning ->
-                val earningDate = YearMonth.parse(earning.date, formatterEarningDate)
-                val earningMonth = earningDate.monthValue
-                if(earningMonth == beforeMonth){
-                    totalEarningLastMonth = totalEarningLastMonth.add(BigDecimal(earning.value))
-                }
-            }
-            val result = BigDecimal(totalMonthEarning).divide(totalEarningLastMonth, 8, RoundingMode.HALF_UP).subtract(BigDecimal(1)).multiply(BigDecimal(100))
-            if(result.toFloat() > 0){
-                val resultFormatted = result.setScale(0,RoundingMode.HALF_UP).toString()
-                return Pair(resultFormatted, StringConstants.HOME_FRAGMENT.INCREASE)
-            }else if(result.toFloat() < 0){
-                val resultFormatted = result.multiply(BigDecimal(-1)).setScale(0,RoundingMode.HALF_UP).toString()
-                return Pair(resultFormatted, StringConstants.HOME_FRAGMENT.DECREASE)
-            }else{
-                return Pair(result.toString(), StringConstants.HOME_FRAGMENT.EQUAL)
-            }
-        }else{
-            return Pair(StringConstants.GENERAL.ZERO_STRING, StringConstants.HOME_FRAGMENT.NO_BEFORE_MONTH)
-        }
+    private fun checkIfExpenseMonthHasInfo(date : String, expenseMonthsList : List<InformationPerMonthExpense>) : Boolean{
+        val hasInfoMonth = expenseMonthsList.any { DateFunctions().YYYYmmDDtoYYYYmm(it.date) == DateFunctions().YYYYmmDDtoYYYYmm(date) }
+        return hasInfoMonth
     }
 
     private fun totalEarningOfMonth(date : String, earningList : List<Earning>) : String{
@@ -130,29 +89,22 @@ class HomeBalanceViewModel(
         return totalEarningOfMonth.toString()
     }
 
-    private fun getMonthExpense(date : String) : Deferred<String> {
-        return viewModelScope.async(Dispatchers.IO){
+    private fun getMonthExpense(date : String, expenseMonthsList : List<InformationPerMonthExpense>) : String {
+            var monthExpense = "0"
             var dateFormatted = date
             if(date.length != 7){
                 dateFormatted = DateFunctions().YYYYmmDDtoYYYYmm(date)
             }
-            var monthExpense = "0"
-            val informationPerMonthExpense = dataStore.getExpenseInfoPerMonth()
-            val informationPerMonthExpenseFromDate = informationPerMonthExpense.find { it.date == dateFormatted }
+            val informationPerMonthExpenseFromDate = expenseMonthsList.find { it.date == dateFormatted }
             if(informationPerMonthExpenseFromDate != null){
                 monthExpense = informationPerMonthExpenseFromDate.monthExpense
             }
-            monthExpense
-        }
+            return monthExpense
     }
 
     data class InfoForBalanceFragment(
-        /*var month : String,
-        var relativeResult : Pair<String, String>,
-        var earningMonths : List<String>,*/
         var totalEarningOfMonth : String,
-        var totalExpenseOfMonth : String,
-        /*var topFiveEarningByCategoryList : List<Pair<String, Double>>*/
+        var totalExpenseOfMonth : String
     )
 
 }

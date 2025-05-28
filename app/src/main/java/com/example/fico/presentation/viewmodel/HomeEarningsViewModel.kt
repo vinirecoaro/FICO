@@ -138,7 +138,8 @@ class HomeEarningsViewModel(
     private fun totalEarningOfMonthAndEarningMonths(date : String, earningList : List<Earning>) : Pair<String, List<String>>{
         var totalEarningOfMonth = BigDecimal(0)
         val earningMonths = mutableListOf<String>()
-        earningList.forEach { earning ->
+        val sortedEarningList = earningList.sortedBy { it.date }
+        sortedEarningList.forEach { earning ->
             //Total earning of month
             if(DateFunctions().YYYYmmDDtoYYYYmm(earning.date) == DateFunctions().YYYYmmDDtoYYYYmm(date)){
                 val earningValue = BigDecimal(earning.value)

@@ -103,7 +103,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_balance_title"
                     tools:text="R$ 150,00" />
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/tv_relative_income_percent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                     android:src="@drawable/arrow_up_model_2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:tint="@color/green" />
+                    app:tint="@color/green" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
