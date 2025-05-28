@@ -39,7 +39,6 @@ class MonthsForHorizontalRecyclerViewAdapter(private val context : Context, priv
         val item = monthsList[position]
         holder.date.text = item
 
-
         val theme = holder.itemView.context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         if (theme == Configuration.UI_MODE_NIGHT_YES) {
             if (position == selectedItemIndex){
