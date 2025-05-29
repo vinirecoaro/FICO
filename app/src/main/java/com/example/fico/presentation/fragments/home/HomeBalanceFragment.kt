@@ -72,9 +72,9 @@ class HomeBalanceFragment : Fragment() {
                     is HomeFragmentState.Success -> {
 
                         val balanceInfo = state.info
-                        /*//Earning months
-                        adapter.updateMonths(earningsInfo.earningMonths)
-                        adapter.focusOnCurrentMonth(binding.rvEarningMonths, earningsInfo.month)*/
+                        //Balance months
+                        adapter.updateMonths(balanceInfo.balanceMonths)
+                        adapter.focusOnCurrentMonth(binding.rvBalanceMonths, balanceInfo.month)
                         //Total earning of month
                         binding.tvBalanceMonthTotalEarningValue.text = balanceInfo.totalEarningOfMonth
                         //Total expense of month
