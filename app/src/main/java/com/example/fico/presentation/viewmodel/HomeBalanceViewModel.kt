@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.home.HomeFragmentState
@@ -57,7 +58,7 @@ class HomeBalanceViewModel(
                     _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
                 }
                 else{
-                    val lastMonthWithInfo = balanceMonths.maxByOrNull { it }!!
+                    val lastMonthWithInfo = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(balanceMonths.maxByOrNull { FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(it) }!!)
                     val totalEarningOfLastMonth = getTotalEarningOfMonthAndEarningMonths(lastMonthWithInfo, earningList)
                     val totalEarningOfMonth = totalEarningOfLastMonth.first
                     val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
@@ -81,7 +82,10 @@ class HomeBalanceViewModel(
     }
 
     private fun checkIfExpenseMonthHasInfo(date : String, expenseMonthsList : List<InformationPerMonthExpense>) : Boolean{
-        val hasInfoMonth = expenseMonthsList.any { DateFunctions().YYYYmmDDtoYYYYmm(it.date) == DateFunctions().YYYYmmDDtoYYYYmm(date) }
+        val hasInfoMonth = expenseMonthsList.any {
+            DateFunctions().YYYYmmDDtoYYYYmm(it.date) == DateFunctions().YYYYmmDDtoYYYYmm(date) &&
+            BigDecimal(it.monthExpense) >= BigDecimal(0.009)
+        }
         return hasInfoMonth
     }
 
@@ -119,7 +123,7 @@ class HomeBalanceViewModel(
     }
 
     private fun getBalanceMonths(earningMonths: List<String>, expenseMonths : List<InformationPerMonthExpense>) : List<String> {
-        val balanceMonths = mutableListOf<String>()
+        val balanceMonths = mutableSetOf<String>()
         earningMonths.forEach { earningMonth ->
             balanceMonths.add(earningMonth)
         }
@@ -129,7 +133,8 @@ class HomeBalanceViewModel(
                 balanceMonths.add(formattedMonth)
             }
         }
-        return balanceMonths
+        val sortedBalanceMonths = balanceMonths.sortedBy { FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(it) }
+        return sortedBalanceMonths
     }
 
     data class InfoForBalanceFragment(
