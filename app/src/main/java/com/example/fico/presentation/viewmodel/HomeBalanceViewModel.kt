@@ -35,6 +35,7 @@ class HomeBalanceViewModel(
         Color.rgb(255,0, 0),
         Color.rgb(0, 255, 0)
     )
+    private var lineChartYAxisVisible = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getBalanceInfo(date : String = DateFunctions().getCurrentDate(false)){
@@ -173,6 +174,14 @@ class HomeBalanceViewModel(
 
     fun getPieChartTransactionsColors() : List<Int>{
         return earningPerCategoryPaletteColors
+    }
+
+    fun getLineChartYAxisVisible() : Boolean{
+        return lineChartYAxisVisible
+    }
+
+    fun setLineChartYAxisVisible(state : Boolean){
+        lineChartYAxisVisible = state
     }
 
     data class InfoForBalanceFragment(

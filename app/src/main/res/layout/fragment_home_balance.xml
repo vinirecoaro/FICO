@@ -245,6 +245,12 @@
 
         </androidx.cardview.widget.CardView>
 
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart"
+            app:layout_constraintTop_toBottomOf="@id/cv_balance_cash_flow"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
