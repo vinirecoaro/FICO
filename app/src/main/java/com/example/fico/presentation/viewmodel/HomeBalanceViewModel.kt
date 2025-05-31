@@ -1,5 +1,6 @@
 package com.example.fico.presentation.viewmodel
 
+import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -30,6 +31,10 @@ class HomeBalanceViewModel(
 
     private val _uiState = MutableStateFlow<HomeFragmentState<InfoForBalanceFragment>>(HomeFragmentState.Loading)
     val uiState : StateFlow<HomeFragmentState<InfoForBalanceFragment>> = _uiState.asStateFlow()
+    private val earningPerCategoryPaletteColors = listOf(
+        Color.rgb(255,0, 0),
+        Color.rgb(0, 255, 0)
+    )
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getBalanceInfo(date : String = DateFunctions().getCurrentDate(false)){
@@ -51,12 +56,14 @@ class HomeBalanceViewModel(
                     val formattedTotalExpenseOfMonth = NumberFormat.getCurrencyInstance().format(totalExpenseOfMonth.toFloat())
                     val monthBalance = getMonthBalance(totalEarningOfMonth, totalExpenseOfMonth)
                     val formattedMonthBalance = Pair(NumberFormat.getCurrencyInstance().format(monthBalance.first.toFloat()), monthBalance.second)
+                    val chartInfo = getInfoForCashFlowChart(totalExpenseOfMonth, totalEarningOfMonth)
                     val infoForEarningFragment = InfoForBalanceFragment(
                         date,
                         formattedMonthBalance,
                         balanceMonths,
                         formattedTotalEarningOfMonth,
-                        formattedTotalExpenseOfMonth
+                        formattedTotalExpenseOfMonth,
+                        chartInfo
                     )
                     _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
                 }
@@ -69,12 +76,14 @@ class HomeBalanceViewModel(
                     val formattedTotalExpenseOfMonth = NumberFormat.getCurrencyInstance().format(totalExpenseOfMonth.toFloat())
                     val monthBalance = getMonthBalance(totalEarningOfMonth, totalExpenseOfMonth)
                     val formattedMonthBalance = Pair(NumberFormat.getCurrencyInstance().format(monthBalance.first.toFloat()), monthBalance.second)
+                    val chartInfo = getInfoForCashFlowChart(totalExpenseOfMonth, totalEarningOfMonth)
                     val infoForEarningFragment = InfoForBalanceFragment(
                         lastMonthWithInfo,
                         formattedMonthBalance,
                         balanceMonths,
                         formattedTotalEarningOfMonth,
-                        formattedTotalExpenseOfMonth
+                        formattedTotalExpenseOfMonth,
+                        chartInfo
                     )
                     _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
                 }
@@ -155,12 +164,24 @@ class HomeBalanceViewModel(
         return sortedBalanceMonths
     }
 
+    private fun getInfoForCashFlowChart(monthExpense : String , monthEarning : String): List<Pair<String, Double>> {
+        val chartInfo = mutableListOf<Pair<String,Double>>()
+        chartInfo.add(Pair(StringConstants.DATABASE.EXPENSE, monthExpense.toDouble()))
+        chartInfo.add(Pair(StringConstants.DATABASE.EARNING, monthEarning.toDouble()))
+        return chartInfo
+    }
+
+    fun getPieChartTransactionsColors() : List<Int>{
+        return earningPerCategoryPaletteColors
+    }
+
     data class InfoForBalanceFragment(
         var month : String,
         var monthBalance : Pair<String,String>,
         var balanceMonths : List<String>,
         var totalEarningOfMonth : String,
-        var totalExpenseOfMonth : String
+        var totalExpenseOfMonth : String,
+        var chartInfo : List<Pair<String, Double>>
     )
 
 }

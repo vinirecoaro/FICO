@@ -1,5 +1,6 @@
 package com.example.fico.presentation.fragments.home
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +19,11 @@ import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAda
 import com.example.fico.presentation.viewmodel.HomeBalanceViewModel
 import com.example.fico.presentation.viewmodel.HomeEarningsViewModel
 import com.example.fico.utils.constants.StringConstants
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -75,10 +81,6 @@ class HomeBalanceFragment : Fragment() {
                         //Balance months
                         adapter.updateMonths(balanceInfo.balanceMonths)
                         adapter.focusOnCurrentMonth(binding.rvBalanceMonths, balanceInfo.month)
-                        //Total earning of month
-                        binding.tvBalanceMonthTotalEarningValue.text = balanceInfo.totalEarningOfMonth
-                        //Total expense of month
-                        binding.tvBalanceMonthTotalExpenseValue.text = balanceInfo.totalExpenseOfMonth
                         //Relative earning result
                         when (balanceInfo.monthBalance.second) {
                             StringConstants.GENERAL.POSITIVE_NUMBER -> {
@@ -90,6 +92,11 @@ class HomeBalanceFragment : Fragment() {
                                 binding.tvBalanceValue.setTextColor(Color.rgb(255,0,0))
                             }
                         }
+
+                        //Init chart
+                        initEarningsPerCategoryChart(balanceInfo.chartInfo)
+                        binding.tvMonthExpenseValue.text = balanceInfo.totalExpenseOfMonth
+                        binding.tvMonthEarningValue.text = balanceInfo.totalEarningOfMonth
 
                         //Show components
                         binding.clHomeBalanceInfo.visibility = View.VISIBLE
@@ -107,6 +114,64 @@ class HomeBalanceFragment : Fragment() {
                 viewModel.getBalanceInfo(formattedDate)
             }
         })
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initEarningsPerCategoryChart(monthTransactionsValue : List<Pair<String, Double>>) {
+
+        val pieChart = binding.pcCashFlow
+        var holeColor = 1
+
+        // Defining chart insede hole color
+        when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                holeColor = Color.rgb(104, 110, 106)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                holeColor = Color.WHITE
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+        }
+
+        // Create a entries list for Pie Chart and set a color for each entry
+        val entries = mutableListOf<PieEntry>()
+        val paletteColors = viewModel.getPieChartTransactionsColors()
+        val colors = mutableListOf<Int>()
+        monthTransactionsValue.forEachIndexed { index, category ->
+            entries.add(PieEntry(category.second.toFloat(), category.first))
+            colors.add(paletteColors[index])
+        }
+
+        // Create a data set from entries
+        val dataSet = PieDataSet(entries, getString(R.string.categories))
+        dataSet.colors = colors
+
+        // Data set customizing
+        dataSet.sliceSpace = 2f
+
+        // Create an PieData object from data set
+        val pieData = PieData(dataSet)
+        pieData.setValueFormatter(PercentFormatter(pieChart)) // Format value as percentage
+
+        // Configure the PieChart
+        pieChart.data = pieData
+        pieChart.setUsePercentValues(false)
+        pieChart.description.isEnabled = false
+        pieChart.holeRadius = 55f // middle chart hole size
+        pieChart.transparentCircleRadius = 60f // Transparent area size
+        pieChart.setHoleColor(holeColor)
+        pieChart.legend.isEnabled = false
+
+        // Ocult label values
+        pieData.setDrawValues(false)
+        pieChart.setDrawEntryLabels(false)
+
+        // Circular animation on create chart
+        pieChart.animateY(1400, Easing.EaseInOutQuad)
+
+        // Update the chart
+        pieChart.invalidate()
 
     }
 }

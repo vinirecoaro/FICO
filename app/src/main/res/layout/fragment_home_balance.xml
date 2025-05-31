@@ -133,95 +133,6 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cv_balance_month_total_earning"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="4dp"
-            android:backgroundTint="?attr/customCardBackgroundColor"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintEnd_toStartOf="@id/cv_balance_month_total_expense"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cv_month_balance">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_balance_month_total_earning"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="12dp">
-
-                <TextView
-                    android:id="@+id/tv_balance_month_total_earning_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/earning"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_balance_month_total_earning_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:textColor="@color/green"
-                    android:textSize="30sp"
-                    app:autoSizeTextType="uniform"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_balance_month_total_earning_title"
-                    tools:text="R$ 0.00" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_balance_month_total_expense"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="?attr/customCardBackgroundColor"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cv_balance_month_total_earning"
-            app:layout_constraintTop_toBottomOf="@id/cv_month_balance">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_balance_month_total_expense"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="12dp">
-
-                <TextView
-                    android:id="@+id/tv_balance_month_total_expense_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/expense"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_balance_month_total_expense_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:textColor="@color/red"
-                    android:textSize="30sp"
-                    app:autoSizeTextType="uniform"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_balance_month_total_expense_title"
-                    tools:text="R$ 650,00" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
             android:id="@+id/cv_balance_cash_flow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -272,6 +183,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:src="@drawable/square_rounded_black"
+                    app:tint="@color/red"
                     app:layout_constraintBottom_toTopOf="@id/tv_month_earning_value"
                     app:layout_constraintEnd_toStartOf="@id/tv_text_expense_legend_home_balance"
                     app:layout_constraintHorizontal_chainStyle="packed"
@@ -310,6 +222,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:src="@drawable/square_rounded_black"
+                    app:tint="@color/green"
                     app:layout_constraintBottom_toBottomOf="@id/pc_cash_flow"
                     app:layout_constraintEnd_toStartOf="@id/tv_text_earning_legend_home_balance"
                     app:layout_constraintHorizontal_chainStyle="packed"
