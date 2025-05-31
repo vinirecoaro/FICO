@@ -243,6 +243,8 @@ class StringConstants private constructor() {
     object GENERAL {
         const val ZERO_STRING = "0"
         const val THREE_DASH = "---"
+        const val NEGATIVE_NUMBER = "negative_number"
+        const val POSITIVE_NUMBER = "positive_number"
     }
 
 }

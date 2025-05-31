@@ -80,30 +80,16 @@ class HomeBalanceFragment : Fragment() {
                         //Total expense of month
                         binding.tvBalanceMonthTotalExpenseValue.text = balanceInfo.totalExpenseOfMonth
                         //Relative earning result
-                        /*when (earningsInfo.relativeResult.second) {
-                            StringConstants.HOME_FRAGMENT.NO_BEFORE_MONTH, StringConstants.HOME_FRAGMENT.EQUAL -> {
-                                binding.tvRelativeIncomePercent.text = StringConstants.GENERAL.THREE_DASH
-                                binding.ivArrowRelativeIncomePercent.visibility = View.GONE
+                        when (balanceInfo.monthBalance.second) {
+                            StringConstants.GENERAL.POSITIVE_NUMBER -> {
+                                binding.tvBalanceValue.text = balanceInfo.monthBalance.first
+                                binding.tvBalanceValue.setTextColor(Color.rgb(0,255,0))
                             }
-                            StringConstants.HOME_FRAGMENT.INCREASE -> {
-                                binding.tvRelativeIncomePercent.tooltipText = getString(R.string.relative_earning_increase_message)
-                                val result = "${earningsInfo.relativeResult.first}%"
-                                binding.tvRelativeIncomePercent.text = result
-                                binding.tvRelativeIncomePercent.setTextColor(Color.rgb(0,255,0))
-                                binding.ivArrowRelativeIncomePercent.visibility = View.VISIBLE
-                                binding.ivArrowRelativeIncomePercent.setColorFilter(Color.rgb(0,255,0))
-                                binding.ivArrowRelativeIncomePercent.setImageResource(R.drawable.arrow_up_model_2)
+                            StringConstants.GENERAL.NEGATIVE_NUMBER -> {
+                                binding.tvBalanceValue.text = balanceInfo.monthBalance.first
+                                binding.tvBalanceValue.setTextColor(Color.rgb(255,0,0))
                             }
-                            StringConstants.HOME_FRAGMENT.DECREASE -> {
-                                binding.tvRelativeIncomePercent.tooltipText = getString(R.string.relative_earning_decrease_message)
-                                val result = "${earningsInfo.relativeResult.first}%"
-                                binding.tvRelativeIncomePercent.text = result
-                                binding.tvRelativeIncomePercent.setTextColor(Color.rgb(255,0,0))
-                                binding.ivArrowRelativeIncomePercent.visibility = View.VISIBLE
-                                binding.ivArrowRelativeIncomePercent.setColorFilter(Color.rgb(255,0,0))
-                                binding.ivArrowRelativeIncomePercent.setImageResource(R.drawable.arrow_down_model_2)
-                            }
-                        }*/
+                        }
 
                         //Show components
                         binding.clHomeBalanceInfo.visibility = View.VISIBLE

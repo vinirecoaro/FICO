@@ -262,6 +262,7 @@
     <string name="relative_earning_increase_message">Aumento relativo ao mês anterior</string>
     <string name="relative_earning_decrease_message">Decréscimo relativo ao mês anterior</string>
     <string name="seta">arrow</string>
+    <string name="cash_flow">Fluxo de caixa</string>
 
 
 </resources>

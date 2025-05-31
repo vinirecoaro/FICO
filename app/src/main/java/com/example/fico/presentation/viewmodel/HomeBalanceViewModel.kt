@@ -49,8 +49,11 @@ class HomeBalanceViewModel(
                     val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
                     val totalExpenseOfMonth = getMonthExpense(date, expenseMonths)
                     val formattedTotalExpenseOfMonth = NumberFormat.getCurrencyInstance().format(totalExpenseOfMonth.toFloat())
+                    val monthBalance = getMonthBalance(totalEarningOfMonth, totalExpenseOfMonth)
+                    val formattedMonthBalance = Pair(NumberFormat.getCurrencyInstance().format(monthBalance.first.toFloat()), monthBalance.second)
                     val infoForEarningFragment = InfoForBalanceFragment(
                         date,
+                        formattedMonthBalance,
                         balanceMonths,
                         formattedTotalEarningOfMonth,
                         formattedTotalExpenseOfMonth
@@ -64,8 +67,11 @@ class HomeBalanceViewModel(
                     val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
                     val totalExpenseOfMonth = getMonthExpense(lastMonthWithInfo, expenseMonths)
                     val formattedTotalExpenseOfMonth = NumberFormat.getCurrencyInstance().format(totalExpenseOfMonth.toFloat())
+                    val monthBalance = getMonthBalance(totalEarningOfMonth, totalExpenseOfMonth)
+                    val formattedMonthBalance = Pair(NumberFormat.getCurrencyInstance().format(monthBalance.first.toFloat()), monthBalance.second)
                     val infoForEarningFragment = InfoForBalanceFragment(
                         lastMonthWithInfo,
+                        formattedMonthBalance,
                         balanceMonths,
                         formattedTotalEarningOfMonth,
                         formattedTotalExpenseOfMonth
@@ -73,6 +79,18 @@ class HomeBalanceViewModel(
                     _uiState.value = HomeFragmentState.Success(infoForEarningFragment)
                 }
             }
+        }
+    }
+
+    private fun getMonthBalance(totalEarning : String, totalExpense : String) : Pair<String,String>{
+        val totalBalance = BigDecimal(totalEarning).subtract(BigDecimal(totalExpense)).setScale(2, RoundingMode.HALF_UP)
+        val totalBalanceString = totalBalance.toString()
+        return if(totalBalance < BigDecimal(0)){
+            Pair(totalBalanceString, StringConstants.GENERAL.NEGATIVE_NUMBER)
+        }else if(totalBalance > BigDecimal(0)){
+            Pair(totalBalanceString, StringConstants.GENERAL.POSITIVE_NUMBER)
+        }else{
+            Pair(totalBalanceString, StringConstants.GENERAL.ZERO_STRING)
         }
     }
 
@@ -139,6 +157,7 @@ class HomeBalanceViewModel(
 
     data class InfoForBalanceFragment(
         var month : String,
+        var monthBalance : Pair<String,String>,
         var balanceMonths : List<String>,
         var totalEarningOfMonth : String,
         var totalExpenseOfMonth : String
