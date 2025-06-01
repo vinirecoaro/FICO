@@ -263,6 +263,7 @@
     <string name="relative_earning_decrease_message">Decréscimo relativo ao mês anterior</string>
     <string name="seta">arrow</string>
     <string name="cash_flow">Fluxo de caixa</string>
+    <string name="balance_per_month">Saldo por mês</string>
 
 
 </resources>

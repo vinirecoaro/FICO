@@ -49,16 +49,16 @@ class HomeAllBalanceFragment : Fragment() {
 
         // Dados fictícios do gráfico
         val entries = listOf(
-            Entry(0f, 7000f),
-            Entry(1f, -6000f),
-            Entry(2f, 6500f),
-            Entry(3f, -8000f),
-            Entry(4f, 7500f),
-            Entry(5f, -9000f),
-            Entry(6f, 12000f),
-            Entry(7f, -8500f),
+            Entry(0f, 6000f),
+            Entry(1f, 6000f),
+            Entry(2f, 6200f),
+            Entry(3f, 6400f),
+            Entry(4f, 6200f),
+            Entry(5f, 5800f),
+            Entry(6f, 6000f),
+            Entry(7f, 5900f),
             Entry(8f, 9500f),
-            Entry(9f, -11000f),
+            Entry(9f, 11000f),
             Entry(10f, 10000f)
         )
 
@@ -67,7 +67,6 @@ class HomeAllBalanceFragment : Fragment() {
             setDrawFilled(true)
             fillColor = Color.BLUE
             fillAlpha = 50
-            setDrawValues(false)
             valueTextSize = 14f
             setDrawCircles(false)
             lineWidth = 2f
@@ -81,52 +80,60 @@ class HomeAllBalanceFragment : Fragment() {
         }
 
         val lineData = LineData(dataSet)
-        binding.lineChart.data = lineData
+        binding.lcBalancePerMonth.data = lineData
 
         //Custom renderer for line chart
-        binding.lineChart.renderer = CustomLineChartRenderer(
-            binding.lineChart,
-            binding.lineChart.animator,
-            binding.lineChart.viewPortHandler
+        binding.lcBalancePerMonth.renderer = CustomLineChartRenderer(
+            binding.lcBalancePerMonth,
+            binding.lcBalancePerMonth.animator,
+            binding.lcBalancePerMonth.viewPortHandler
         )
+
+        binding.lcBalancePerMonth.apply {
+            isAutoScaleMinMaxEnabled = true
+            setPinchZoom(true)
+            setVisibleXRangeMaximum(4f) // você já usa isso
+            description.isEnabled = false
+            axisRight.isEnabled = false
+            legend.isEnabled = false
+        }
 
         //Axis X config (months)
         val months = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov")
-        binding.lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(months)
-        binding.lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        binding.lineChart.xAxis.granularity = 1f
-        binding.lineChart.xAxis.setDrawGridLines(false)
+        binding.lcBalancePerMonth.xAxis.valueFormatter = IndexAxisValueFormatter(months)
+        binding.lcBalancePerMonth.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        binding.lcBalancePerMonth.xAxis.granularity = 1f
+        binding.lcBalancePerMonth.xAxis.setDrawGridLines(false)
 
-        binding.lineChart.setDragEnabled(true)
-        binding.lineChart.setScaleEnabled(true) // Permite zoom (horizontal e vertical)
-        binding.lineChart.isScaleXEnabled = true // Zoom horizontal
-        binding.lineChart.isScaleYEnabled = false // (opcional) desativa zoom vertical
-        binding.lineChart.isDragXEnabled = true // Garante arrasto no eixo X
-        binding.lineChart.isHighlightPerDragEnabled = true
-        binding.lineChart.setVisibleXRangeMaximum(4f) // Mostra 6 meses por vez
+        binding.lcBalancePerMonth.setDragEnabled(true)
+        binding.lcBalancePerMonth.setScaleEnabled(true) // Permite zoom (horizontal e vertical)
+        binding.lcBalancePerMonth.isScaleXEnabled = true // Zoom horizontal
+        binding.lcBalancePerMonth.isScaleYEnabled = false // (opcional) desativa zoom vertical
+        binding.lcBalancePerMonth.isDragXEnabled = true // Garante arrasto no eixo X
+        binding.lcBalancePerMonth.isHighlightPerDragEnabled = true
 
         // Y Axis
-        binding.lineChart.axisLeft.setDrawGridLines(false)
-        binding.lineChart.axisRight.isEnabled = false
+        binding.lcBalancePerMonth.axisLeft.setDrawGridLines(false)
+        binding.lcBalancePerMonth.axisRight.isEnabled = false
 
         // Remove description and legend
-        binding.lineChart.description.isEnabled = false
-        binding.lineChart.legend.isEnabled = false
+        binding.lcBalancePerMonth.description.isEnabled = false
+        binding.lcBalancePerMonth.legend.isEnabled = false
 
-        binding.lineChart.animateX(1000)
-        binding.lineChart.invalidate()
+        binding.lcBalancePerMonth.animateX(1000)
+        binding.lcBalancePerMonth.invalidate()
 
-        binding.lineChart.onChartGestureListener = object : OnChartGestureListener {
+        binding.lcBalancePerMonth.onChartGestureListener = object : OnChartGestureListener {
             override fun onChartSingleTapped(me: MotionEvent?) {
                 // Change Y axis values visibility
                 if(viewModel.getLineChartYAxisVisible()){
                     viewModel.setLineChartYAxisVisible(false)
-                    (binding.lineChart.renderer as? CustomLineChartRenderer)?.shouldDrawHighlightedValues = false
-                    binding.lineChart.invalidate()
+                    (binding.lcBalancePerMonth.renderer as? CustomLineChartRenderer)?.shouldDrawHighlightedValues = false
+                    binding.lcBalancePerMonth.invalidate()
                 }else{
                     viewModel.setLineChartYAxisVisible(true)
-                    (binding.lineChart.renderer as? CustomLineChartRenderer)?.shouldDrawHighlightedValues = true
-                    binding.lineChart.invalidate()
+                    (binding.lcBalancePerMonth.renderer as? CustomLineChartRenderer)?.shouldDrawHighlightedValues = true
+                    binding.lcBalancePerMonth.invalidate()
                 }
             }
 
