@@ -13,7 +13,6 @@ import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,10 +21,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 
-class HomeBalanceViewModel(
+class HomeMonthBalanceViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 

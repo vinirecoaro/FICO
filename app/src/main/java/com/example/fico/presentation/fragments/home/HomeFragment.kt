@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import com.example.fico.R
 import com.example.fico.databinding.FragmentHomeBinding
+import com.example.fico.presentation.fragments.home.balance.HomeAllBalanceFragment
+import com.example.fico.presentation.fragments.home.balance.HomeMonthBalanceFragment
 import com.example.fico.presentation.fragments.home.expenses.HomeAllExpensesFragment
 import com.example.fico.presentation.fragments.home.expenses.HomeMonthExpensesFragment
 import com.example.fico.presentation.viewmodel.HomeViewModel
@@ -80,9 +81,11 @@ class HomeFragment : Fragment() {
         bntBalance.setOnClickListener {
             moveUnderlineTo(bntBalance)
             viewModel.setTransactionType(StringConstants.DATABASE.BALANCE)
-            binding.btgExpensesDataRange.visibility = View.GONE
-            binding.ivFragmentHomeArrow.visibility = View.GONE
-            replaceChildFragment(HomeBalanceFragment())
+            binding.btgExpensesDataRange.visibility = View.VISIBLE
+            binding.btgExpensesDataRange.check(binding.btMonthlyExpenses.id)
+            binding.btMonthlyExpenses.isClickable = false
+            binding.ivFragmentHomeArrow.visibility = View.VISIBLE
+            replaceChildFragment(HomeMonthBalanceFragment())
         }
         bntEarnings.setOnClickListener {
             moveUnderlineTo(bntEarnings)
@@ -100,6 +103,8 @@ class HomeFragment : Fragment() {
                         if(viewModel.getTransactionType() != null){
                             if(viewModel.getTransactionType() == StringConstants.DATABASE.EXPENSE){
                                 replaceChildFragment(HomeMonthExpensesFragment())
+                            }else if(viewModel.getTransactionType() == StringConstants.DATABASE.BALANCE){
+                                replaceChildFragment(HomeMonthBalanceFragment())
                             }
                         }
                     }
@@ -110,6 +115,8 @@ class HomeFragment : Fragment() {
                         if(viewModel.getTransactionType() != null){
                             if(viewModel.getTransactionType() == StringConstants.DATABASE.EXPENSE){
                                 replaceChildFragment(HomeAllExpensesFragment())
+                            }else if(viewModel.getTransactionType() == StringConstants.DATABASE.BALANCE){
+                                replaceChildFragment(HomeAllBalanceFragment())
                             }
                         }
                     }
