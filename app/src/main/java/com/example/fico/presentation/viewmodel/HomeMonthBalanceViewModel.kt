@@ -43,7 +43,7 @@ class HomeMonthBalanceViewModel(
             val earningMonths = totalEarningOfMonthAndEarningMonths.second
             val balanceMonths = getBalanceMonths(earningMonths, expenseMonths)
             val existExpenseMonthWithExpense = expenseMonths.any { BigDecimal(it.monthExpense) >= BigDecimal(0.009) }
-            if(earningList.isEmpty() && existExpenseMonthWithExpense){
+            if(earningList.isEmpty() && !existExpenseMonthWithExpense){
                 _uiState.value = HomeFragmentState.Empty
             }else{
                 if(checkIfEarningMonthHasInfo(date, earningList) || checkIfExpenseMonthHasInfo(date, expenseMonths)){

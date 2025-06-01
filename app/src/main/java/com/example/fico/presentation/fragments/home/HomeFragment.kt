@@ -59,6 +59,7 @@ class HomeFragment : Fragment() {
         }
 
         // Show default fragment on initialization
+        viewModel.setTransactionType(StringConstants.DATABASE.EXPENSE)
         replaceChildFragment(HomeMonthExpensesFragment())
     }
 

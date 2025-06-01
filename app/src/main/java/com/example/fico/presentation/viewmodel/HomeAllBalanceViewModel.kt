@@ -29,7 +29,7 @@ class HomeAllBalanceViewModel(
             val earningList = dataStore.getEarningsList()
             val expenseMonths = dataStore.getExpenseInfoPerMonth()
             val existExpenseMonthWithExpense = expenseMonths.any { BigDecimal(it.monthExpense) >= BigDecimal(0.009) }
-            if(earningList.isEmpty() && existExpenseMonthWithExpense){
+            if(earningList.isEmpty() && !existExpenseMonthWithExpense){
                 _uiState.value = HomeFragmentState.Empty
             }else{
                 val chartInfo = fetchChartInfo(earningList, expenseMonths)
