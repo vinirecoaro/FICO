@@ -1,10 +1,8 @@
-package com.example.fico.utils.custom_component
+package com.example.fico.utils.custom_component.chart.renderer
 
 import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.RectF
 import com.github.mikephil.charting.animation.ChartAnimator
-import com.github.mikephil.charting.buffer.BarBuffer
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.renderer.BarChartRenderer

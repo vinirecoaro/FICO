@@ -43,15 +43,7 @@ class HomeFragment : Fragment() {
         bntBalance = binding.tvBtnBalance
         bntEarnings = binding.tvBtnEarnings
 
-        // Set underline position on the first button
-        binding.llButtonsLayout.post {
-            moveUnderlineTo(bntExpenses)
-        }
-
         setUpListeners()
-
-        // Show default fragment on initialization
-        replaceChildFragment(HomeMonthExpensesFragment())
 
         return rootView
     }
@@ -60,6 +52,14 @@ class HomeFragment : Fragment() {
         super.onResume()
         binding.btgExpensesDataRange.check(binding.btMonthlyExpenses.id)
         binding.btMonthlyExpenses.isClickable = false
+
+        // Set underline position on the first button
+        binding.llButtonsLayout.post {
+            moveUnderlineTo(bntExpenses)
+        }
+
+        // Show default fragment on initialization
+        replaceChildFragment(HomeMonthExpensesFragment())
     }
 
     override fun onDestroyView() {

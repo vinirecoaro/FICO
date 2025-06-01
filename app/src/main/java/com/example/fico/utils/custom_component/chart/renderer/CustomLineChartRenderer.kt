@@ -1,4 +1,4 @@
-package com.example.fico.utils.custom_component
+package com.example.fico.utils.custom_component.chart.renderer
 
 import android.graphics.Canvas
 import com.github.mikephil.charting.animation.ChartAnimator
@@ -10,7 +10,7 @@ class CustomLineChartRenderer(
     chart: LineChart,
     animator: ChartAnimator,
     viewPortHandler: ViewPortHandler,
-    var shouldDrawHighlightedValues: Boolean = false
+    var shouldDrawHighlightedValues: Boolean = true
 ) : LineChartRenderer(chart, animator, viewPortHandler) {
 
     override fun drawValues(c: Canvas) {

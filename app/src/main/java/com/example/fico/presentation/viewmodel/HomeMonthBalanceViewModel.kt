@@ -26,16 +26,15 @@ class HomeMonthBalanceViewModel(
     private val dataStore : DataStoreManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<HomeFragmentState<InfoForBalanceFragment>>(HomeFragmentState.Loading)
-    val uiState : StateFlow<HomeFragmentState<InfoForBalanceFragment>> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<HomeFragmentState<InfoForMonthBalanceFragment>>(HomeFragmentState.Loading)
+    val uiState : StateFlow<HomeFragmentState<InfoForMonthBalanceFragment>> = _uiState.asStateFlow()
     private val earningPerCategoryPaletteColors = listOf(
         Color.rgb(255,0, 0),
         Color.rgb(0, 255, 0)
     )
-    private var lineChartYAxisVisible = false
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getBalanceInfo(date : String = DateFunctions().getCurrentDate(false)){
+    fun getMonthBalanceInfo(date : String = DateFunctions().getCurrentDate(false)){
         _uiState.value = HomeFragmentState.Loading
         viewModelScope.async(Dispatchers.IO){
             val earningList = dataStore.getEarningsList()
@@ -55,7 +54,7 @@ class HomeMonthBalanceViewModel(
                     val monthBalance = getMonthBalance(totalEarningOfMonth, totalExpenseOfMonth)
                     val formattedMonthBalance = Pair(NumberFormat.getCurrencyInstance().format(monthBalance.first.toFloat()), monthBalance.second)
                     val chartInfo = getInfoForCashFlowChart(totalExpenseOfMonth, totalEarningOfMonth)
-                    val infoForEarningFragment = InfoForBalanceFragment(
+                    val infoForEarningFragment = InfoForMonthBalanceFragment(
                         date,
                         formattedMonthBalance,
                         balanceMonths,
@@ -75,7 +74,7 @@ class HomeMonthBalanceViewModel(
                     val monthBalance = getMonthBalance(totalEarningOfMonth, totalExpenseOfMonth)
                     val formattedMonthBalance = Pair(NumberFormat.getCurrencyInstance().format(monthBalance.first.toFloat()), monthBalance.second)
                     val chartInfo = getInfoForCashFlowChart(totalExpenseOfMonth, totalEarningOfMonth)
-                    val infoForEarningFragment = InfoForBalanceFragment(
+                    val infoForEarningFragment = InfoForMonthBalanceFragment(
                         lastMonthWithInfo,
                         formattedMonthBalance,
                         balanceMonths,
@@ -173,15 +172,7 @@ class HomeMonthBalanceViewModel(
         return earningPerCategoryPaletteColors
     }
 
-    fun getLineChartYAxisVisible() : Boolean{
-        return lineChartYAxisVisible
-    }
-
-    fun setLineChartYAxisVisible(state : Boolean){
-        lineChartYAxisVisible = state
-    }
-
-    data class InfoForBalanceFragment(
+    data class InfoForMonthBalanceFragment(
         var month : String,
         var monthBalance : Pair<String,String>,
         var balanceMonths : List<String>,

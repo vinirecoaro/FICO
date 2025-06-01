@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -19,24 +18,14 @@ import com.example.fico.presentation.adapters.MonthsForHorizontalRecyclerViewAda
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.presentation.viewmodel.HomeMonthBalanceViewModel
 import com.example.fico.utils.constants.StringConstants
-import com.example.fico.utils.custom_component.CustomLineChartRenderer
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
-import com.github.mikephil.charting.listener.ChartTouchListener
-import com.github.mikephil.charting.listener.OnChartGestureListener
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import java.text.NumberFormat
 
 class HomeMonthBalanceFragment : Fragment() {
 
@@ -64,7 +53,7 @@ class HomeMonthBalanceFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        viewModel.getBalanceInfo()
+        viewModel.getMonthBalanceInfo()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -121,7 +110,7 @@ class HomeMonthBalanceFragment : Fragment() {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onExpenseMonthSelected(date: String) {
                 val formattedDate = FormatValuesToDatabase().formatDateFromFilterToDatabaseForInfoPerMonth(date)
-                viewModel.getBalanceInfo(formattedDate)
+                viewModel.getMonthBalanceInfo(formattedDate)
             }
         })
 

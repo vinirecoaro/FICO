@@ -16,6 +16,7 @@ import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.presentation.viewmodel.GeneralConfigurationViewModel
+import com.example.fico.presentation.viewmodel.HomeAllBalanceViewModel
 import com.example.fico.presentation.viewmodel.HomeAllExpensesViewModel
 import com.example.fico.presentation.viewmodel.HomeMonthBalanceViewModel
 import com.example.fico.presentation.viewmodel.HomeEarningsViewModel
@@ -79,6 +80,12 @@ val appModule = module {
 
     factory<HomeMonthBalanceViewModel> {
         HomeMonthBalanceViewModel(
+            dataStore = get(),
+        )
+    }
+
+    factory<HomeAllBalanceViewModel> {
+        HomeAllBalanceViewModel(
             dataStore = get(),
         )
     }
