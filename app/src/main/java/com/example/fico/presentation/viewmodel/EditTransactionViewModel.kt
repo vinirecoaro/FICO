@@ -235,6 +235,8 @@ class EditTransactionViewModel(
             firebaseAPI.editEarning(newEarning).fold(
                 onSuccess = {
                     dataStore.updateEarningList(newEarning)
+                    val earningList = dataStore.getEarningsList()
+                    dataStore.updateAndResetEarningMonthInfoList(earningList)
                     _editEarningResult.postValue(true)
                 },
                 onFailure = {

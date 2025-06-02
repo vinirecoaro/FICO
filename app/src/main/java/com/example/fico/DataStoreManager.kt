@@ -14,11 +14,13 @@ import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
 import com.example.fico.model.ValuePerMonth
+import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.math.BigDecimal
 
 class DataStoreManager (context: Context) {
     private val Context.dataStore : DataStore<Preferences> by preferencesDataStore(StringConstants.DATA_STORE.NAME)
@@ -205,6 +207,7 @@ class DataStoreManager (context: Context) {
         dataStore.edit { preferences ->
             preferences[earningsListKey] = earningListString
         }
+
     }
 
     suspend fun updateEarningList(earning : Earning){
@@ -218,6 +221,7 @@ class DataStoreManager (context: Context) {
                 existingEarningList.add(earning)
             }
             val earningListString = Gson().toJson(existingEarningList)
+
             preferences[earningsListKey] = earningListString
         }
     }
@@ -292,11 +296,26 @@ class DataStoreManager (context: Context) {
         return Gson().fromJson(earningsListString, object : TypeToken<List<Earning>>() {}.type)
     }
 
-    suspend fun updateAndResetEarningMonthInfoList(earningsMonths : List<ValuePerMonth>){
-        val earningMonthsListString = Gson().toJson(earningsMonths)
+    suspend fun updateAndResetEarningMonthInfoList(earningList : List<Earning>){
+        val earningMonthInfoList = calculateEarningMonthInfoList(earningList)
+        val earningMonthsListString = Gson().toJson(earningMonthInfoList)
         dataStore.edit { preferences ->
             preferences[earningMonthInfoListKey] = earningMonthsListString
         }
+    }
+
+    private fun calculateEarningMonthInfoList(earningList : List<Earning>) : List<ValuePerMonth> {
+        val earningMonthsList = mutableListOf<ValuePerMonth>()
+        for(earning in earningList){
+            val month = DateFunctions().YYYYmmDDtoYYYYmm(earning.date)
+            val existMonth = earningMonthsList.find { it.month == month }
+            if(existMonth != null){
+                existMonth.value = BigDecimal(existMonth.value).add(BigDecimal(earning.value)).toString()
+            }else{
+                earningMonthsList.add(ValuePerMonth(month, earning.value))
+            }
+        }
+        return earningMonthsList
     }
 
     suspend fun getEarningMonthInfoList() : List<ValuePerMonth>{

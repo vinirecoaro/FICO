@@ -41,7 +41,6 @@ class TransactionListViewModel(
     private val _transactionsListLiveData = MutableLiveData<List<Transaction>>()
     val transactionsListLiveData: LiveData<List<Transaction>> = _transactionsListLiveData
     private val _filteredTransactionsListLiveData = MutableLiveData<List<Transaction>>()
-    val filteredTransactionsListLiveData: LiveData<List<Transaction>> = _filteredTransactionsListLiveData
     private val _showListLiveData = MutableLiveData<List<Transaction>>()
     val showListLiveData : LiveData<List<Transaction>> = _showListLiveData
     private val _expenseMonthsLiveData = MutableLiveData<List<String>>()
@@ -419,6 +418,8 @@ class TransactionListViewModel(
             firebaseAPI.addEarning(deletedEarning).fold(
                 onSuccess = {
                     dataStore.updateEarningList(deletedEarning)
+                    val earningList = dataStore.getEarningsList()
+                    dataStore.updateAndResetEarningMonthInfoList(earningList)
                     updateShowFilteredList()
                     _addEarningResult.postValue(true)
                 },

@@ -117,8 +117,7 @@ class RemoteDatabaseViewModel(
         transactionsRepository.getEarningList().fold(
             onSuccess = { earningList ->
                 dataStore.updateAndResetEarningList(earningList)
-                val earningMonthInfoList = getEarningMonthInfoList(earningList)
-                dataStore.updateAndResetEarningMonthInfoList(earningMonthInfoList.toList())
+                dataStore.updateAndResetEarningMonthInfoList(earningList)
                 getRecurringExpensesList()
             },
             onFailure = {
