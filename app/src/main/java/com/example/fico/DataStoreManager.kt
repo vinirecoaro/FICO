@@ -13,6 +13,7 @@ import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
+import com.example.fico.model.ValuePerMonth
 import com.example.fico.utils.constants.StringConstants
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -34,7 +35,7 @@ class DataStoreManager (context: Context) {
         val paymentDateSwitchKey = stringPreferencesKey(StringConstants.DATA_STORE.PAYMENT_DATE_SWITCH)
         val earningsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNINGS_LIST_KEY)
         val recurringTransactionsListKey = stringPreferencesKey(StringConstants.DATA_STORE.RECURRING_TRANSACTIONS_LIST_KEY)
-        val earningMonthsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNING_MONTHS_LIST_KEY)
+        val earningMonthInfoListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNING_MONTHS_LIST_KEY)
         val userNameKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_NAME_KEY)
         val userEmailKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_EMAIL_KEY)
         val blockAppStateKey = stringPreferencesKey(StringConstants.DATA_STORE.BLOCK_APP_STATE_KEY)
@@ -291,18 +292,18 @@ class DataStoreManager (context: Context) {
         return Gson().fromJson(earningsListString, object : TypeToken<List<Earning>>() {}.type)
     }
 
-    suspend fun updateAndResetEarningMonths(earningsMonths : List<String>){
+    suspend fun updateAndResetEarningMonthInfoList(earningsMonths : List<ValuePerMonth>){
         val earningMonthsListString = Gson().toJson(earningsMonths)
         dataStore.edit { preferences ->
-            preferences[earningMonthsListKey] = earningMonthsListString
+            preferences[earningMonthInfoListKey] = earningMonthsListString
         }
     }
 
-    suspend fun getEarningMonths() : List<String>{
-        val earningMonthsString = dataStore.data.map { preferences ->
-            preferences[earningMonthsListKey]
+    suspend fun getEarningMonthInfoList() : List<ValuePerMonth>{
+        val earningMonthInfoListString = dataStore.data.map { preferences ->
+            preferences[earningMonthInfoListKey]
         }.first() ?: return emptyList()
-        return Gson().fromJson(earningMonthsString, object : TypeToken<List<String>>() {}.type)
+        return Gson().fromJson(earningMonthInfoListString, object : TypeToken<List<ValuePerMonth>>() {}.type)
     }
 
     suspend fun getTransactionList() : List<Transaction>{

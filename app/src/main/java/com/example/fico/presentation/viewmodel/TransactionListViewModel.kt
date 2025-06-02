@@ -124,9 +124,9 @@ class TransactionListViewModel(
             try {
                 val transactionMonthsList = mutableSetOf<String>()
                 val expenseMonths = dataStore.getExpenseMonths()
-                val earningMonths = dataStore.getEarningMonths()
+                val earningMonthInfoList = dataStore.getEarningMonthInfoList()
                 transactionMonthsList.addAll(expenseMonths)
-                transactionMonthsList.addAll(earningMonths)
+                transactionMonthsList.addAll(earningMonthInfoList.map { it.month })
                 val sortedTransactionMonthsList = transactionMonthsList.sortedByDescending{it}
                 if(sortedTransactionMonthsList.isNotEmpty()){
                     val transactionMonthsListFormatted = mutableListOf<String>()

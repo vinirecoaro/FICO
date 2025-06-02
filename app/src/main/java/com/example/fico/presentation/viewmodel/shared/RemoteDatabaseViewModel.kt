@@ -10,6 +10,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.ValuePerMonth
 import com.example.fico.repositories.TransactionsRepository
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
@@ -116,8 +117,8 @@ class RemoteDatabaseViewModel(
         transactionsRepository.getEarningList().fold(
             onSuccess = { earningList ->
                 dataStore.updateAndResetEarningList(earningList)
-                val earningMonthsList = getEarningMonthsList(earningList)
-                dataStore.updateAndResetEarningMonths(earningMonthsList.toList())
+                val earningMonthInfoList = getEarningMonthInfoList(earningList)
+                dataStore.updateAndResetEarningMonthInfoList(earningMonthInfoList.toList())
                 getRecurringExpensesList()
             },
             onFailure = {
@@ -126,10 +127,16 @@ class RemoteDatabaseViewModel(
         )
     }
 
-    private fun getEarningMonthsList(earningList : List<Earning>) : Set<String> {
-        val earningMonthsList = mutableSetOf<String>()
+    private fun getEarningMonthInfoList(earningList : List<Earning>) : List<ValuePerMonth> {
+        val earningMonthsList = mutableListOf<ValuePerMonth>()
         for(earning in earningList){
-            earningMonthsList.add(DateFunctions().YYYYmmDDtoYYYYmm(earning.date))
+            val month = DateFunctions().YYYYmmDDtoYYYYmm(earning.date)
+            val existMonth = earningMonthsList.find { it.month == month }
+            if(existMonth != null){
+                existMonth.value = BigDecimal(existMonth.value).add(BigDecimal(earning.value)).toString()
+            }else{
+                earningMonthsList.add(ValuePerMonth(month, earning.value))
+            }
         }
         return earningMonthsList
     }
