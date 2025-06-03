@@ -60,7 +60,14 @@ class HomeAllBalanceFragment : Fragment() {
 
                         val balanceInfo = state.info
 
-                        ChartsCreator.lineChart(binding.lcBalancePerMonth, balanceInfo.xyEntries, balanceInfo.yLabels, ::onChartSingleTapped)
+                        ChartsCreator.lineChart(
+                            requireActivity(),
+                            requireContext(),
+                            binding.lcBalancePerMonth,
+                            balanceInfo.xyEntries,
+                            balanceInfo.yLabels,
+                            ::onChartSingleTapped
+                        )
 
                         binding.clHomeAllBalanceInfo.visibility = View.VISIBLE
                         binding.clHomeAllBalanceEmptyState.visibility = View.GONE

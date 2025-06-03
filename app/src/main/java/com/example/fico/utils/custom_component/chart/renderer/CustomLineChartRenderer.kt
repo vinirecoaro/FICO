@@ -45,6 +45,7 @@ class CustomLineChartRenderer(
                 val valueOffset = if (yValue >= 0) -20f else 40f
 
                 val value = dataSet.valueFormatter.getPointLabel(entry)
+                mValuePaint.color = dataSet.valueTextColor
                 c.drawText(
                     value,
                     x,

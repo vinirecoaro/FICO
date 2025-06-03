@@ -10,11 +10,10 @@ import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.ValuePerMonth
 import com.example.fico.presentation.fragments.home.HomeFragmentState
-import com.example.fico.presentation.viewmodel.HomeAllBalanceViewModel.ValuePerMonth
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
-import com.github.mikephil.charting.data.Entry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,18 +41,18 @@ class HomeMonthBalanceViewModel(
         _uiState.value = HomeFragmentState.Loading
         viewModelScope.async(Dispatchers.IO){
             val earningList = dataStore.getEarningsList()
-            val expenseMonths = dataStore.getExpenseInfoPerMonth()
+            val expenseMonthInfoList = dataStore.getExpenseInfoPerMonth()
             val totalEarningOfMonthAndEarningMonths = getTotalEarningOfMonthAndEarningMonths(date, earningList)
             val earningMonths = totalEarningOfMonthAndEarningMonths.second
-            val balanceMonths = getBalanceMonths(earningMonths, expenseMonths)
-            val existExpenseMonthWithExpense = expenseMonths.any { BigDecimal(it.monthExpense) >= BigDecimal(0.009) }
+            val balanceMonths = getBalanceMonths(earningMonths, expenseMonthInfoList)
+            val existExpenseMonthWithExpense = expenseMonthInfoList.any { BigDecimal(it.monthExpense) >= BigDecimal(0.009) }
             if(earningList.isEmpty() && !existExpenseMonthWithExpense){
                 _uiState.value = HomeFragmentState.Empty
             }else{
-                if(checkIfEarningMonthHasInfo(date, earningList) || checkIfExpenseMonthHasInfo(date, expenseMonths)){
+                if(checkIfEarningMonthHasInfo(date, earningList) || checkIfExpenseMonthHasInfo(date, expenseMonthInfoList)){
                     val totalEarningOfMonth = totalEarningOfMonthAndEarningMonths.first
                     val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
-                    val totalExpenseOfMonth = getMonthExpense(date, expenseMonths)
+                    val totalExpenseOfMonth = getMonthExpense(date, expenseMonthInfoList)
                     val formattedTotalExpenseOfMonth = NumberFormat.getCurrencyInstance().format(totalExpenseOfMonth.toFloat())
                     val monthBalance = getMonthBalance(totalEarningOfMonth, totalExpenseOfMonth)
                     val formattedMonthBalance = Pair(NumberFormat.getCurrencyInstance().format(monthBalance.first.toFloat()), monthBalance.second)
@@ -73,7 +72,7 @@ class HomeMonthBalanceViewModel(
                     val totalEarningOfLastMonth = getTotalEarningOfMonthAndEarningMonths(lastMonthWithInfo, earningList)
                     val totalEarningOfMonth = totalEarningOfLastMonth.first
                     val formattedTotalEarningOfMonth = NumberFormat.getCurrencyInstance().format(totalEarningOfMonth.toFloat())
-                    val totalExpenseOfMonth = getMonthExpense(lastMonthWithInfo, expenseMonths)
+                    val totalExpenseOfMonth = getMonthExpense(lastMonthWithInfo, expenseMonthInfoList)
                     val formattedTotalExpenseOfMonth = NumberFormat.getCurrencyInstance().format(totalExpenseOfMonth.toFloat())
                     val monthBalance = getMonthBalance(totalEarningOfMonth, totalExpenseOfMonth)
                     val formattedMonthBalance = Pair(NumberFormat.getCurrencyInstance().format(monthBalance.first.toFloat()), monthBalance.second)
@@ -91,7 +90,7 @@ class HomeMonthBalanceViewModel(
             }
         }
     }
-
+    
     private fun getMonthBalance(totalEarning : String, totalExpense : String) : Pair<String,String>{
         val totalBalance = BigDecimal(totalEarning).subtract(BigDecimal(totalExpense)).setScale(2, RoundingMode.HALF_UP)
         val totalBalanceString = totalBalance.toString()

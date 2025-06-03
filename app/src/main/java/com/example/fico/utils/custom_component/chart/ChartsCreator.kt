@@ -1,7 +1,13 @@
 package com.example.fico.utils.custom_component.chart
 
+import android.app.Activity
+import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.MotionEvent
+import androidx.core.content.ContextCompat
+import com.example.fico.R
 import com.example.fico.utils.custom_component.chart.renderer.CustomLineChartRenderer
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -18,17 +24,22 @@ class ChartsCreator {
     companion object{
 
         fun lineChart(
+            activity : Activity,
+            context : Context,
             lineChart : LineChart,
             xyEntries : List<Entry>,
             xLabels : List<String>,
             onChartSingleTapped : () -> Boolean
         ){
 
+            val colorOnSecondary = getColorOnSecondary(activity,context)
+
             val dataSet = LineDataSet(xyEntries, "Net Income").apply {
                 color = Color.BLUE
                 setDrawFilled(true)
                 fillColor = Color.BLUE
                 fillAlpha = 50
+                valueTextColor = colorOnSecondary
                 valueTextSize = 14f
                 setDrawCircles(false)
                 lineWidth = 2f
@@ -54,7 +65,7 @@ class ChartsCreator {
             lineChart.apply {
                 isAutoScaleMinMaxEnabled = true
                 setPinchZoom(true)
-                setVisibleXRangeMaximum(4f) // você já usa isso
+                setVisibleXRangeMaximum(4f)
                 description.isEnabled = false
                 axisRight.isEnabled = false
                 legend.isEnabled = false
@@ -65,21 +76,20 @@ class ChartsCreator {
             lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
             lineChart.xAxis.granularity = 1f
             lineChart.xAxis.setDrawGridLines(false)
-
-            lineChart.setDragEnabled(true)
-            lineChart.setScaleEnabled(true) // Permite zoom (horizontal e vertical)
-            lineChart.isScaleXEnabled = true // Zoom horizontal
-            lineChart.isScaleYEnabled = false // (opcional) desativa zoom vertical
-            lineChart.isDragXEnabled = true // Garante arrasto no eixo X
-            lineChart.isHighlightPerDragEnabled = true
+            lineChart.xAxis.textColor = colorOnSecondary
+            lineChart.isDragXEnabled = true
 
             // Y Axis
             lineChart.axisLeft.setDrawGridLines(false)
+            lineChart.axisLeft.textColor = colorOnSecondary
             lineChart.axisRight.isEnabled = false
 
             // Remove description and legend
             lineChart.description.isEnabled = false
             lineChart.legend.isEnabled = false
+            lineChart.setDragEnabled(true)
+            lineChart.setScaleEnabled(true) // allow zoom (horizontal and vertical)
+            lineChart.isHighlightPerDragEnabled = true
 
             lineChart.animateX(1000)
 
@@ -100,6 +110,17 @@ class ChartsCreator {
                 override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
             }
 
+        }
+
+        private fun getColorOnSecondary(
+            activity : Activity,
+            context : Context
+        ) : Int{
+            val typedValue = TypedValue()
+            val theme: Resources.Theme = activity.theme
+            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSecondary, typedValue, true)
+            val colorOnSecondary = ContextCompat.getColor(context, typedValue.resourceId)
+            return colorOnSecondary
         }
     }
 }
