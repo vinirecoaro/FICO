@@ -159,7 +159,7 @@ class HomeAllExpensesFragment : Fragment() {
         // Create a data set with entry list
         val dataSet = BarDataSet(barChartParams.entries, "Label")
         dataSet.valueTextSize = 12f
-        dataSet.color = Color.BLUE
+        dataSet.color = Color.rgb(203, 24, 29)
 
         //Customize values that appear on top of the bars
         val valueFormatter = object : ValueFormatter() {
