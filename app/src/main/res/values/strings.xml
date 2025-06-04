@@ -83,9 +83,11 @@
     <string name="set_default_payment_date_success_message">Data de pagamento padrão definido com sucesso</string>
     <string name="set_default_payment_date_fail_message">Falha ao definir data de pagamento padrão</string>
     <string name="default_payment_date">Data de Pagamento Padrão</string>
+    <string name="credit_card">Cartão de crédito</string>
+    <string name="credit_card_list">Lista de cartões</string>
     <string name="default_payment_day">Dia de Pagamento Padrão</string>
     <string name="define_default_payment_day">Definir dia padrão</string>
-    <string name="define_default_payment_day_switch_state">Usar dia padrão?</string>
+    <string name="use_credit_card_as_default">Usar cartão de crédito como padrão</string>
     <string name="default_day">Dia Padrão:</string>
     <string name="default_day_default_message">Dados Atuais: A definir</string>
     <string name="type_the_day">Digite o dia</string>

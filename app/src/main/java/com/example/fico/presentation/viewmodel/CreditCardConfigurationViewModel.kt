@@ -9,7 +9,7 @@ import com.example.fico.api.FirebaseAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
-class DefaultPaymentDateConfigurationViewModel(
+class CreditCardConfigurationViewModel(
     private val firebaseAPI: FirebaseAPI,
     private val dataStore : DataStoreManager
 ) : ViewModel() {

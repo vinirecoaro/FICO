@@ -1,40 +1,31 @@
 package com.example.fico.presentation.activities
 
-import android.app.Dialog
 import android.content.SharedPreferences
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
-import android.util.TypedValue
-import android.view.LayoutInflater
-import android.widget.EditText
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.DataStoreManager
 import com.example.fico.R
 import com.example.fico.components.Dialogs
 import com.example.fico.components.PersonalizedSnackBars
-import com.example.fico.databinding.ActivityDefaultPaymentDateConfigurationBinding
-import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
+import com.example.fico.databinding.ActivityCreditCardConfigurationBinding
+import com.example.fico.presentation.viewmodel.CreditCardConfigurationViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
+class CreditCardConfigurationActivity : AppCompatActivity() {
 
-    private val binding by lazy{ActivityDefaultPaymentDateConfigurationBinding.inflate(layoutInflater)}
-    private val viewModel : DefaultPaymentDateConfigurationViewModel by inject()
+    private val binding by lazy{ActivityCreditCardConfigurationBinding.inflate(layoutInflater)}
+    private val viewModel : CreditCardConfigurationViewModel by inject()
     private val sharedPref : SharedPreferences by inject()
     private val dataStore : DataStoreManager by inject()
 
@@ -43,11 +34,11 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.defaultPaymentDateConfigurationToolbar.setTitle(getString(R.string.default_payment_date))
-        binding.defaultPaymentDateConfigurationToolbar.setTitleTextColor(Color.WHITE)
+        binding.creditCardConfigurationToolbar.setTitle(getString(R.string.credit_card))
+        binding.creditCardConfigurationToolbar.setTitleTextColor(Color.WHITE)
 
         //Insert a back button on Navigation bar
-        setSupportActionBar(binding.defaultPaymentDateConfigurationToolbar)
+        setSupportActionBar(binding.creditCardConfigurationToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setUpListeners()
@@ -55,24 +46,24 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpListeners(){
-        binding.defaultPaymentDateConfigurationToolbar.setNavigationOnClickListener {
+        binding.creditCardConfigurationToolbar.setNavigationOnClickListener {
             finish()
         }
 
-        binding.llDefineDefaultDay.setOnClickListener {
+        binding.llRegisterCreditCard.setOnClickListener {
             setDefaultPaymentDateAlertDialog()
         }
 
         viewModel.setDefaultPaymentDateLiveData.observe(this) { result ->
             if (result) {
                 Snackbar.make(
-                    binding.llDefineDefaultDay,
+                    binding.llRegisterCreditCard,
                     getString(R.string.set_default_payment_date_success_message),
                     Snackbar.LENGTH_LONG
                 ).show()
             }else{
                 Snackbar.make(
-                    binding.llDefineDefaultDay,
+                    binding.llRegisterCreditCard,
                     getString(R.string.set_default_payment_date_fail_message),
                     Snackbar.LENGTH_LONG
                 ).show()
@@ -81,11 +72,11 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
 
         viewModel.paymentDateSwitchInitialStateLiveData.observe(this){ state ->
             if(state != null){
-                binding.swtPaymentDateState.isChecked = state
+                binding.swtUseCreditCardAsDefault.isChecked = state
             }
         }
 
-        binding.swtPaymentDateState.setOnCheckedChangeListener{ _ , state ->
+        binding.swtUseCreditCardAsDefault.setOnCheckedChangeListener{ _ , state ->
             viewModel.setPaymentDateSwitchInitialState(state)
         }
     }
@@ -104,9 +95,9 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
             }
 
             val dialog = Dialogs.dialogModelFour(
-                this@DefaultPaymentDateConfigurationActivity,
-                this@DefaultPaymentDateConfigurationActivity,
-                binding.tvDefineDefaultDay,
+                this@CreditCardConfigurationActivity,
+                this@CreditCardConfigurationActivity,
+                binding.tvRegisterCreditCard,
                 getString(R.string.default_payment_day),
                 getString(R.string.expiration_day),
                 InputType.TYPE_CLASS_NUMBER,
@@ -146,13 +137,13 @@ class DefaultPaymentDateConfigurationActivity : AppCompatActivity() {
                 )
             } else {
                 Snackbar.make(
-                    binding.llDefineDefaultDay,
+                    binding.llRegisterCreditCard,
                     getString(R.string.invalid_day),
                     Snackbar.LENGTH_LONG
                 ).show()
             }
         }else{
-            PersonalizedSnackBars.noInternetConnection(binding.tvDefineDefaultDay, this@DefaultPaymentDateConfigurationActivity).show()
+            PersonalizedSnackBars.noInternetConnection(binding.tvRegisterCreditCard, this@CreditCardConfigurationActivity).show()
         }
     }
 

@@ -18,7 +18,7 @@ import com.example.fico.components.Dialogs
 import com.example.fico.databinding.FragmentConfigurationBinding
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.activities.BudgetConfigurationListActivity
-import com.example.fico.presentation.activities.DefaultPaymentDateConfigurationActivity
+import com.example.fico.presentation.activities.CreditCardConfigurationActivity
 import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
@@ -131,8 +131,8 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
             getString(R.string.budget_configuration_list) -> {
                 startActivity(Intent(requireContext(), BudgetConfigurationListActivity::class.java))
             }
-            getString(R.string.default_payment_date) -> {
-                startActivity(Intent(requireContext(), DefaultPaymentDateConfigurationActivity::class.java))
+            getString(R.string.credit_card) -> {
+                startActivity(Intent(requireContext(), CreditCardConfigurationActivity::class.java))
             }
             getString(R.string.update_database_info_per_month_and_total_expense) -> {
                 viewModel.updateInfoPerMonthAndTotalExpense()

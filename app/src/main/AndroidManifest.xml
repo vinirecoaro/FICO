@@ -28,7 +28,7 @@
             android:name=".presentation.activities.SecurityConfigurationActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.activities.DefaultPaymentDateConfigurationActivity"
+            android:name=".presentation.activities.CreditCardConfigurationActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.activities.LogoActivity"

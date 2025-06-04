@@ -11,7 +11,7 @@ import com.example.fico.interfaces.UserDataInterface
 import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
-import com.example.fico.presentation.viewmodel.DefaultPaymentDateConfigurationViewModel
+import com.example.fico.presentation.viewmodel.CreditCardConfigurationViewModel
 import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
@@ -213,8 +213,8 @@ val appModule = module {
         )
     }
 
-    factory<DefaultPaymentDateConfigurationViewModel> {
-        DefaultPaymentDateConfigurationViewModel(
+    factory<CreditCardConfigurationViewModel> {
+        CreditCardConfigurationViewModel(
             firebaseAPI = get(),
             dataStore = get()
         )

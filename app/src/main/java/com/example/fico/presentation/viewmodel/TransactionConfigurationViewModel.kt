@@ -29,7 +29,7 @@ class TransactionConfigurationViewModel(
     val recurringTransactionsList: LiveData<Pair<List<RecurringTransaction>, String>> = _recurringTransactionsList
 
     val configurationList: MutableList<String> = mutableListOf(
-        context.getString(R.string.default_payment_date),
+        context.getString(R.string.credit_card),
         context.getString(R.string.budget_configuration_list),
         context.getString(R.string.recurring_transactions_configuration_list),
         //context.getString(R.string.update_database_info_per_month_and_total_expense),
