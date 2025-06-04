@@ -1,4 +1,4 @@
-package com.example.fico.utils.ui_personalizations
+package com.example.fico.components.inputs
 
 import android.app.Activity
 import android.content.Context

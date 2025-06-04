@@ -25,6 +25,9 @@
         android:theme="@style/Theme.FICO"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.activities.AddCreditCardActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.activities.SecurityConfigurationActivity"
             android:exported="false" />
         <activity
@@ -79,8 +82,7 @@
             android:name=".presentation.activities.LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            />
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".presentation.activities.RegisterActivity" />
 
         <provider

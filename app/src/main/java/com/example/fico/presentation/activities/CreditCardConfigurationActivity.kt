@@ -1,5 +1,6 @@
 package com.example.fico.presentation.activities
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
@@ -10,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.DataStoreManager
 import com.example.fico.R
-import com.example.fico.components.Dialogs
+import com.example.fico.components.dialogs.Dialogs
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityCreditCardConfigurationBinding
 import com.example.fico.presentation.viewmodel.CreditCardConfigurationViewModel
@@ -51,7 +52,7 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
         }
 
         binding.llRegisterCreditCard.setOnClickListener {
-            setDefaultPaymentDateAlertDialog()
+            startActivity(Intent(this, AddCreditCardActivity::class.java))
         }
 
         viewModel.setDefaultPaymentDateLiveData.observe(this) { result ->
@@ -81,7 +82,7 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    /*@RequiresApi(Build.VERSION_CODES.M)
     private fun setDefaultPaymentDateAlertDialog(){
         lifecycleScope.launch(Dispatchers.Main){
 
@@ -111,9 +112,9 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
             
             dialog.show()
         }
-    }
+    }*/
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    /*@RequiresApi(Build.VERSION_CODES.M)
     private fun setDefaultPaymentDate(expirationDay : String, daysForClosingBill : String){
         if(hasInternetConnection()){
             if (DateFunctions().isValidMonthDay(
@@ -145,7 +146,7 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
         }else{
             PersonalizedSnackBars.noInternetConnection(binding.tvRegisterCreditCard, this@CreditCardConfigurationActivity).show()
         }
-    }
+    }*/
 
     private fun hasInternetConnection() : Boolean{
         return ConnectionFunctions().internetConnectionVerification(this)

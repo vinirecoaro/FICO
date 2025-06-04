@@ -1,4 +1,4 @@
-package com.example.fico.utils.custom_component.chart.renderer
+package com.example.fico.components.charts.renderer
 
 import android.graphics.Canvas
 import com.github.mikephil.charting.animation.ChartAnimator

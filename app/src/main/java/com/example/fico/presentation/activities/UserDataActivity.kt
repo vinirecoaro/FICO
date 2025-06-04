@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
-import com.example.fico.components.Dialogs
+import com.example.fico.components.dialogs.Dialogs
 import com.example.fico.components.ImagePickerBottomSheet
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityUserDataBinding

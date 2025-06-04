@@ -77,13 +77,15 @@
     <string name="purchase_date">Data da Compra</string>
     <string name="payment_date">Data de Pagamento</string>
     <string name="day">Dia</string>
-    <string name="expiration_day">Dia de Vencimento</string>
+    <string name="expiration_day">Dia de vencimento</string>
+    <string name="closing_day">Dia de fechamento</string>
     <string name="expiration">Vencimento</string>
     <string name="days_for_closing">Dias para o Fechamento</string>
     <string name="set_default_payment_date_success_message">Data de pagamento padrão definido com sucesso</string>
     <string name="set_default_payment_date_fail_message">Falha ao definir data de pagamento padrão</string>
     <string name="default_payment_date">Data de Pagamento Padrão</string>
     <string name="credit_card">Cartão de crédito</string>
+    <string name="credit_card_name_with_tip">Nome do cartão (apelido)</string>
     <string name="credit_card_list">Lista de cartões</string>
     <string name="default_payment_day">Dia de Pagamento Padrão</string>
     <string name="define_default_payment_day">Definir dia padrão</string>
@@ -266,6 +268,7 @@
     <string name="seta">arrow</string>
     <string name="cash_flow">Fluxo de caixa</string>
     <string name="balance_per_month">Saldo por mês</string>
+    <string name="card_color">Cor do cartão</string>
 
 
 </resources>

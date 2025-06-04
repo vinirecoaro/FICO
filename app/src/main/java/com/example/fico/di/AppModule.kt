@@ -8,6 +8,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.interfaces.AuthInterface
 import com.example.fico.interfaces.TransactionsInterface
 import com.example.fico.interfaces.UserDataInterface
+import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
 import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
@@ -115,6 +116,10 @@ val appModule = module {
             firebaseAPI = get(),
             authRepository = get()
         )
+    }
+
+    factory<AddCreditCardViewModel> {
+        AddCreditCardViewModel()
     }
 
     factory<MainViewModel> {

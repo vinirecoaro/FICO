@@ -18,7 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fico.R
-import com.example.fico.components.Dialogs
+import com.example.fico.components.dialogs.Dialogs
 import com.example.fico.databinding.ActivityMainBinding
 import com.example.fico.presentation.viewmodel.MainViewModel
 import com.example.fico.utils.constants.StringConstants

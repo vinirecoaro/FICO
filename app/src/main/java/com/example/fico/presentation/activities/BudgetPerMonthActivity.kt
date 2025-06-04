@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
-import com.example.fico.components.Dialogs
+import com.example.fico.components.dialogs.Dialogs
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityBudgetPerMonthBinding
 import com.example.fico.model.Budget

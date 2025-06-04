@@ -1,6 +1,5 @@
 package com.example.fico.presentation.fragments.home.balance
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,8 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.FragmentHomeAllBalanceBinding
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.presentation.viewmodel.HomeAllBalanceViewModel
-import com.example.fico.utils.constants.StringConstants
-import com.example.fico.utils.custom_component.chart.ChartsCreator
+import com.example.fico.components.charts.ChartsCreator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
