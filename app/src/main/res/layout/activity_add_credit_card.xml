@@ -14,10 +14,10 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/add_credit_card_configuration_toolbar"
             android:layout_width="match_parent"
-            app:title="Adicionar cartão de crédito"
-            app:titleTextColor="@color/white"
             android:layout_height="?attr/actionBarSize"
-            android:background="@drawable/rounded_toolbar_corner" />
+            android:background="@drawable/rounded_toolbar_corner"
+            app:title="Adicionar cartão de crédito"
+            app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,7 +41,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_price"
+                android:id="@+id/et_credit_card_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="20" />
@@ -95,9 +95,9 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:hint="@string/card_color"
             app:boxBackgroundMode="outline"
-            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_credit_card_closing_day">
@@ -109,16 +109,67 @@
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cv_credit_card_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@android:color/transparent"
+            android:visibility="gone"
+            card_view:cardCornerRadius="12dp"
+            card_view:cardElevation="4dp"
+            card_view:layout_constraintTop_toBottomOf="@+id/til_credit_card_color">
+
+            <LinearLayout
+                android:id="@+id/ll_credit_card_preview"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="#196482"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/chip" />
+
+                <TextView
+                    android:id="@+id/tv_credit_card_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    tools:text="NuCard" />
+
+                <TextView
+                    android:id="@+id/tv_payment_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    tools:text="20/05/2025" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
         <Button
             android:id="@+id/bt_credit_card_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginTop="32dp"
             android:backgroundTint="?attr/buttonColor"
             android:text="@string/save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_credit_card_color" />
+            app:layout_constraintTop_toBottomOf="@id/cv_credit_card_preview" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

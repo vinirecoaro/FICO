@@ -1,25 +1,19 @@
 package com.example.fico.presentation.viewmodel
 
 import android.graphics.Color
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.fico.DataStoreManager
-import com.example.fico.api.FirebaseAPI
-import com.example.fico.model.ColorOption
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import com.example.fico.model.CreditCardColors
 
 class AddCreditCardViewModel(
 ) : ViewModel() {
 
     val colorOptions = listOf(
-        ColorOption("Vermelho", Color.RED),
-        ColorOption("Verde", Color.GREEN),
-        ColorOption("Azul", Color.BLUE),
-        ColorOption("Amarelo", Color.YELLOW),
-        ColorOption("Magenta", Color.MAGENTA)
+        CreditCardColors("Vermelho Escuro",  Color.rgb(100, 0, 0), Color.WHITE),
+        CreditCardColors("Verde Escuro", Color.rgb(0, 100, 0), Color.WHITE),
+        CreditCardColors("Azul Escuro", Color.rgb(0, 0, 100), Color.WHITE),
+        CreditCardColors("Amarelo Escuro", Color.rgb(255, 193, 7), Color.BLACK),
+        CreditCardColors("Magenta", Color.MAGENTA, Color.WHITE),
+        CreditCardColors("Roxo", Color.rgb(103, 58, 183), Color.WHITE)
     )
 
 

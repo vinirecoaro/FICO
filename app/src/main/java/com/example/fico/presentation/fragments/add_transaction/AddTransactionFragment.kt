@@ -507,7 +507,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
             override fun afterTextChanged(s: Editable?) {
                 val text = s.toString()
-                if (!text.isEmpty()) {
+                if (text.isNotEmpty()) {
                     val parsed = text.replace("[^\\d]".toRegex(), "").toLong()
                     val formatted = (
                             NumberFormat.getCurrencyInstance().format(parsed / 100.0)

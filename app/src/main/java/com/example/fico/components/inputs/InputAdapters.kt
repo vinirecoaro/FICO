@@ -1,7 +1,6 @@
 package com.example.fico.components.inputs
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +8,13 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import com.example.fico.R
-import com.example.fico.model.ColorOption
+import com.example.fico.model.CreditCardColors
 
 class InputAdapters {
     companion object{
 
-        fun colorAutoCompleteTextInputLayout(context : Context, colorOptions : List<ColorOption>): ArrayAdapter<ColorOption> {
-            val adapter = object : ArrayAdapter<ColorOption>(
+        fun colorAutoCompleteTextInputLayout(context : Context, colorOptions : List<CreditCardColors>): ArrayAdapter<CreditCardColors> {
+            val adapter = object : ArrayAdapter<CreditCardColors>(
                 context,
                 R.layout.item_color_option,
                 colorOptions
@@ -31,10 +30,10 @@ class InputAdapters {
                     item?.let {
                         // Aplicar a cor ao background do círculo
                         val drawable = AppCompatResources.getDrawable(context, R.drawable.circle_shape)?.mutate()
-                        drawable?.setTint(it.colorValue)
+                        drawable?.setTint(it.backgroundColor)
                         colorCircle.background = drawable
 
-                        colorName.text = it.name
+                        colorName.text = it.backgroundColorName
                     }
 
                     return view
