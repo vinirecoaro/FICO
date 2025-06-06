@@ -73,7 +73,7 @@ class SwipeToDeleteCallback(
     }
 
     private fun hasInternetConnection() : Boolean{
-        return ConnectionFunctions().internetConnectionVerification(activity)
+        return ConnectionFunctions.internetConnectionVerification(activity)
     }
 
 }

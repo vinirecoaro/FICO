@@ -4,5 +4,5 @@ data class CreditCard(
     val nickName : String,
     val expirationDay : Int,
     val closingDay : Int,
-    val color : CreditCardColors
+    val colors : CreditCardColors
 )

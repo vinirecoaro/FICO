@@ -1,17 +1,21 @@
 package com.example.fico.presentation.activities
 
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.components.inputs.InputAdapters
 import com.example.fico.components.inputs.InputFieldFunctions
 import com.example.fico.components.inputs.InputValueHandle
 import com.example.fico.databinding.ActivityAddCreditCardBinding
 import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
+import com.example.fico.utils.internet.ConnectionFunctions
 import org.koin.android.ext.android.inject
 
 class AddCreditCardActivity : AppCompatActivity() {
@@ -20,6 +24,7 @@ class AddCreditCardActivity : AppCompatActivity() {
     private val viewModel : AddCreditCardViewModel by inject()
     lateinit var adapter : ArrayAdapter<CreditCardColors>
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -42,6 +47,7 @@ class AddCreditCardActivity : AppCompatActivity() {
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpListeners(){
         binding.addCreditCardConfigurationToolbar.setNavigationOnClickListener {
             finish()
@@ -123,13 +129,19 @@ class AddCreditCardActivity : AppCompatActivity() {
 
         binding.btCreditCardSave.setOnClickListener {
             it.isEnabled = false
-            InputFieldFunctions.isFilled(
+            if(InputFieldFunctions.isFilled(
                 this,
                 binding.btCreditCardSave,
                 binding.etCreditCardName,
                 binding.etCreditCardExpirationDay,
                 binding.etCreditCardClosingDay
-            )
+            )){
+                if(ConnectionFunctions.internetConnectionVerification(this)){
+
+                }else{
+                    PersonalizedSnackBars.noInternetConnection(binding.btCreditCardSave, this).show()
+                }
+            }
             it.isEnabled = true
         }
 

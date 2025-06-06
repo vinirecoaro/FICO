@@ -1,14 +1,24 @@
 package com.example.fico.presentation.viewmodel
 
-import android.content.Context
 import android.graphics.Color
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.fico.DataStoreManager
 import com.example.fico.R
+import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
+import com.example.fico.repositories.CreditCardRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AddCreditCardViewModel(
+    private val dataStore : DataStoreManager,
+    private val creditCardRepository : CreditCardRepository,
 ) : ViewModel() {
 
+    private val _addCreditCardResult = MutableLiveData<Boolean>()
+    val addCreditCardResult : LiveData<Boolean> = _addCreditCardResult
 
     fun getCreditCardColorOptions() : List<CreditCardColors>{
         val colorOptions = listOf(
@@ -26,5 +36,36 @@ class AddCreditCardViewModel(
         )
 
         return colorOptions
+    }
+
+    suspend fun addCreditCard(
+        cardNickName : String,
+        expirationDay : Int,
+        closingDay : Int,
+        backgroundColorNameRes: Int,
+        backgroundColor: Int,
+        textColor: Int
+    ){
+
+        val creditCard = CreditCard(
+            cardNickName,
+            expirationDay,
+            closingDay,
+            CreditCardColors(
+                backgroundColorNameRes,
+                backgroundColor,
+                textColor
+            )
+        )
+
+        creditCardRepository.addCreditCard(creditCard).fold(
+            onSuccess = {
+                _addCreditCardResult.postValue(true)
+            },
+            onFailure = {
+                _addCreditCardResult.postValue(false)
+            }
+        )
+
     }
 }

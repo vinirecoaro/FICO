@@ -170,7 +170,7 @@ class UserDataActivity : AppCompatActivity() {
     }
 
     private fun hasInternetConnection() : Boolean{
-        return ConnectionFunctions().internetConnectionVerification(this)
+        return ConnectionFunctions.internetConnectionVerification(this)
     }
 
     private fun saveImageToInternalStorage(bitmap: Bitmap) {

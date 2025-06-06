@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.interfaces.AuthInterface
+import com.example.fico.interfaces.CreditCardInterface
 import com.example.fico.interfaces.TransactionsInterface
 import com.example.fico.interfaces.UserDataInterface
 import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
@@ -34,6 +35,7 @@ import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.presentation.viewmodel.VerifyEmailViewModel
 import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.repositories.AuthRepository
+import com.example.fico.repositories.CreditCardRepository
 import com.example.fico.repositories.TransactionsRepository
 import com.example.fico.repositories.UserDataRepository
 import com.example.fico.utils.constants.CategoriesList
@@ -64,6 +66,9 @@ val appModule = module {
 
     single<TransactionsInterface> { get<FirebaseAPI>() }
     single { TransactionsRepository(get()) }
+
+    single<CreditCardInterface> { get<FirebaseAPI>() }
+    single { CreditCardRepository(get()) }
 
     single<DataStoreManager>(){
         DataStoreManager(androidContext())
@@ -119,7 +124,10 @@ val appModule = module {
     }
 
     factory<AddCreditCardViewModel> {
-        AddCreditCardViewModel()
+        AddCreditCardViewModel(
+            dataStore = get(),
+            creditCardRepository = get()
+        )
     }
 
     factory<MainViewModel> {

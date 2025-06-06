@@ -1162,7 +1162,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
 
     private fun hasInternetConnection() : Boolean{
-        return ConnectionFunctions().internetConnectionVerification(requireContext())
+        return ConnectionFunctions.internetConnectionVerification(requireContext())
     }
 
     private fun changeToCommonExpense(){

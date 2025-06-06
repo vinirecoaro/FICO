@@ -661,7 +661,7 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
     }
 
     private fun hasInternetConnection() : Boolean{
-        return ConnectionFunctions().internetConnectionVerification(this)
+        return ConnectionFunctions.internetConnectionVerification(this)
     }
 
 }

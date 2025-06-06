@@ -61,7 +61,7 @@ class LogoActivity : AppCompatActivity() {
                 showBiometricPrompt()
             }else{
                 lifecycleScope.launch(Dispatchers.Main) {
-                    if(ConnectionFunctions().internetConnectionVerification(this@LogoActivity)){
+                    if(ConnectionFunctions.internetConnectionVerification(this@LogoActivity)){
                         remoteDatabaseViewModel.getDataFromDatabase()
                     }
                     startActivity(Intent(this@LogoActivity, MainTransactionActivity::class.java))
@@ -111,7 +111,7 @@ class LogoActivity : AppCompatActivity() {
                         }
                     }
                     BiometricResult.AuthenticationSuccess -> {
-                        if(ConnectionFunctions().internetConnectionVerification(this@LogoActivity)){
+                        if(ConnectionFunctions.internetConnectionVerification(this@LogoActivity)){
                             remoteDatabaseViewModel.getDataFromDatabase()
                         }
                         startActivity(Intent(this@LogoActivity, MainTransactionActivity::class.java))

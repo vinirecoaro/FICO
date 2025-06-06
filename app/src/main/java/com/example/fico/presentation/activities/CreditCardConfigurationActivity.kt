@@ -149,6 +149,6 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
     }*/
 
     private fun hasInternetConnection() : Boolean{
-        return ConnectionFunctions().internetConnectionVerification(this)
+        return ConnectionFunctions.internetConnectionVerification(this)
     }
 }

@@ -3,8 +3,10 @@ package com.example.fico.api
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.fico.interfaces.AuthInterface
+import com.example.fico.interfaces.CreditCardInterface
 import com.example.fico.interfaces.TransactionsInterface
 import com.example.fico.interfaces.UserDataInterface
+import com.example.fico.model.CreditCard
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
@@ -12,18 +14,12 @@ import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.model.User
 import com.example.fico.utils.constants.StringConstants
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.database.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -35,7 +31,7 @@ import kotlin.coroutines.suspendCoroutine
 class FirebaseAPI(
     private val auth : FirebaseAuth,
     private val database : FirebaseDatabase
-) : AuthInterface, UserDataInterface, TransactionsInterface {
+) : AuthInterface, UserDataInterface, TransactionsInterface, CreditCardInterface {
     private val rootRef = database.getReference(StringConstants.DATABASE.USERS)
     private lateinit var user_root : DatabaseReference
     private lateinit var user_info : DatabaseReference
@@ -48,6 +44,7 @@ class FirebaseAPI(
     private lateinit var default_expense_values : DatabaseReference
     private lateinit var earnings : DatabaseReference
     private lateinit var earningsList : DatabaseReference
+    private lateinit var credit_card_list : DatabaseReference
 
     fun updateReferences() {
         user_root = rootRef.child(auth.currentUser?.uid.toString())
@@ -61,6 +58,7 @@ class FirebaseAPI(
         default_expense_values = expenses.child(StringConstants.DATABASE.DEFAULT_VALUES)
         earnings = user_root.child(StringConstants.DATABASE.EARNINGS)
         earningsList = earnings.child(StringConstants.DATABASE.EARNINGS_LIST)
+        credit_card_list = expenses.child(StringConstants.DATABASE.CREDIT_CARD_LIST)
     }
 
     suspend fun updateExpensesPath(){
@@ -576,6 +574,20 @@ class FirebaseAPI(
         return updatesOfEarningList
     }
 
+    private fun generateMapToUpdateCreditCardList(creditCard: CreditCard): MutableMap<String, Any> {
+        val updatesOfEarningList = mutableMapOf<String, Any>()
+        val creditCardId = credit_card_list.push()
+
+        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.NAME}"] = creditCard.nickName
+        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.EXPIRATION_DAY}"] = creditCard.expirationDay
+        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.CLOSING_DAY}"] = creditCard.closingDay
+        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.BACKGROUND_COLOR_NAME_RES}"] = creditCard.colors.backgroundColorNameRes
+        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.BACKGROUND_COLOR}"] = creditCard.colors.backgroundColor
+        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.TEXT_COLOR}"] = creditCard.colors.textColor
+
+        return updatesOfEarningList
+    }
+
     private fun generateMapToUpdateUserRecurringExpenses(recurringExpense : RecurringTransaction): MutableMap<String, Any> {
         val updatesOfRecurringExpensesList = mutableMapOf<String, Any>()
 
@@ -858,7 +870,7 @@ class FirebaseAPI(
     }
 
     //Function created to fix data that was updated before new information about expense
-    suspend fun updateExpensePerListInformationPath() = withContext(Dispatchers.IO) {
+    private suspend fun updateExpensePerListInformationPath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
             rootRef.child(auth.currentUser?.uid.toString())
                 .child(StringConstants.DATABASE.EXPENSES_LIST)
@@ -893,7 +905,7 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun updateDefaultValuesPath() = withContext(Dispatchers.IO) {
+    private suspend fun updateDefaultValuesPath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
             user_root.child(StringConstants.DATABASE.DEFAULT_VALUES)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -915,7 +927,7 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun updateInformationPerMonthPath() = withContext(Dispatchers.IO) {
+    private suspend fun updateInformationPerMonthPath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
             user_root.child(StringConstants.DATABASE.INFORMATION_PER_MONTH)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -945,7 +957,7 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun updateTotalExpensePath() = withContext(Dispatchers.IO) {
+    private suspend fun updateTotalExpensePath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
             user_root.child(StringConstants.DATABASE.TOTAL_EXPENSE)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -1028,6 +1040,21 @@ class FirebaseAPI(
             }catch (error : Exception){
                 continuation.resume(Result.failure(error))
             }
+        }
+    }
+
+    override suspend fun addCreditCard(
+        creditCard: CreditCard
+    ): Result<CreditCard> = withContext(Dispatchers.IO) {
+        val updates = mutableMapOf<String, Any>()
+        return@withContext try {
+            updates.putAll(generateMapToUpdateCreditCardList(creditCard))
+
+            credit_card_list.updateChildren(updates)
+
+            Result.success(creditCard)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

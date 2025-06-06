@@ -130,7 +130,7 @@ class SetDefaultBudgetActivity : AppCompatActivity() {
     }
 
     private fun hasInternetConnection() : Boolean{
-        return ConnectionFunctions().internetConnectionVerification(this)
+        return ConnectionFunctions.internetConnectionVerification(this)
     }
 
 }
