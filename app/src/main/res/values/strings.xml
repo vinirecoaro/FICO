@@ -167,6 +167,7 @@
     <string name="category_list_description_income">Rendimentos</string>
     <string name="payment_date_field_installment_hint">Data de Pagamento Inicial</string>
     <string name="define_payment_day">Definir data de pagamento</string>
+    <string name="payment_day">Dia de pagamento</string>
     <string name="personal_data">Dados pessoais</string>
     <string name="expenses_title">Despesas</string>
     <string name="categories">Categorias</string>
@@ -269,6 +270,17 @@
     <string name="cash_flow">Fluxo de caixa</string>
     <string name="balance_per_month">Saldo por mês</string>
     <string name="card_color">Cor do cartão</string>
+    <string name="dark_red">Vermelho escuro</string>
+    <string name="dark_green">Verde escuro</string>
+    <string name="dark_blue">Azul escuro</string>
+    <string name="dark_yellow">Amarelo escuro</string>
+    <string name="magenta">Magenta</string>
+    <string name="purple">Roxo</string>
+    <string name="black">Preto</string>
+    <string name="white">Branco</string>
+    <string name="orange">Laranja</string>
+    <string name="light_pink">Rosa claro</string>
+    <string name="light_blue">Azul claro</string>
 
 
 </resources>

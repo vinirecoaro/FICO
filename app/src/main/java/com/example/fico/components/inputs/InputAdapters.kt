@@ -33,7 +33,7 @@ class InputAdapters {
                         drawable?.setTint(it.backgroundColor)
                         colorCircle.background = drawable
 
-                        colorName.text = it.backgroundColorName
+                        colorName.text = context.getString(it.backgroundColorNameRes)
                     }
 
                     return view

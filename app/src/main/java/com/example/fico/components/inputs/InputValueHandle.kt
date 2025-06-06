@@ -12,13 +12,13 @@ import android.view.View
 class InputValueHandle {
     companion object{
 
-        fun circleColorfulWithText(autoCompleteTextView : View, selectedColor : Int, colorName : String): SpannableString {
+        fun circleColorfulWithText(autoCompleteTextView : View, selectedColor : Int, colorNameRes : Int): SpannableString {
 
             // Create a colored circle as a drawable
             val circleDrawable = createColorCircleDrawable(autoCompleteTextView.context, selectedColor)
 
             // Create a SpannableString with placeholder for the circle
-            val spannable = SpannableString("  $colorName") // espaço inicial para o ícone
+            val spannable = SpannableString("  ${autoCompleteTextView.context.getString(colorNameRes)}") // espaço inicial para o ícone
 
             // Set drawable size and position
             circleDrawable.setBounds(0, 0, circleDrawable.intrinsicWidth, circleDrawable.intrinsicHeight)

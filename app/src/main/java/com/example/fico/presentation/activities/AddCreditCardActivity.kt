@@ -28,7 +28,7 @@ class AddCreditCardActivity : AppCompatActivity() {
         setSupportActionBar(binding.addCreditCardConfigurationToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        adapter = InputAdapters.colorAutoCompleteTextInputLayout(this, viewModel.colorOptions)
+        adapter = InputAdapters.colorAutoCompleteTextInputLayout(this, viewModel.getCreditCardColorOptions())
 
         initComponents()
 
@@ -51,12 +51,13 @@ class AddCreditCardActivity : AppCompatActivity() {
             val selected = adapter.getItem(position) ?: return@setOnItemClickListener
 
             //Create string with circle and color name
-            val spannable = InputValueHandle.circleColorfulWithText(binding.actvColors, selected.backgroundColor, selected.backgroundColorName)
+            val spannable = InputValueHandle.circleColorfulWithText(binding.actvColors, selected.backgroundColor, selected.backgroundColorNameRes)
 
             //Show credit card preview
             binding.cvCreditCardPreview.visibility = View.VISIBLE
             binding.llCreditCardPreview.setBackgroundColor(selected.backgroundColor)
             binding.tvCreditCardName.setTextColor(selected.textColor)
+            binding.tvPaymentDate.setTextColor(selected.textColor)
 
             //Enable save button
             binding.btCreditCardSave.visibility = View.VISIBLE

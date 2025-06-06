@@ -1,7 +1,7 @@
 package com.example.fico.model
 
 data class CreditCardColors(
-    val backgroundColorName: String,
+    val backgroundColorNameRes: Int,
     val backgroundColor: Int,
     val textColor: Int
 )
