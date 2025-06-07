@@ -1,6 +1,7 @@
 package com.example.fico.components
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -28,6 +29,17 @@ class PersonalizedSnackBars {
                 "${activity.getString(R.string.fill_field)} $fieldName",
                 Snackbar.LENGTH_LONG
             ).show()
+        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        fun successMessage(view: View, message : String): Snackbar {
+            return Snackbar.make(
+                view,
+                message,
+                Snackbar.LENGTH_LONG
+            )
+                .setBackgroundTint(Color.GREEN)
+                .setTextColor(Color.BLACK)
         }
     }
 }

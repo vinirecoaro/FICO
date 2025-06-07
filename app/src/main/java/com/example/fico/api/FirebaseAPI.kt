@@ -576,7 +576,7 @@ class FirebaseAPI(
 
     private fun generateMapToUpdateCreditCardList(creditCard: CreditCard): MutableMap<String, Any> {
         val updatesOfEarningList = mutableMapOf<String, Any>()
-        val creditCardId = credit_card_list.push()
+        val creditCardId = credit_card_list.push().key
 
         updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.NAME}"] = creditCard.nickName
         updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.EXPIRATION_DAY}"] = creditCard.expirationDay

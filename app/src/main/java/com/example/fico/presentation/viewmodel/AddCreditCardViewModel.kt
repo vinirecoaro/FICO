@@ -4,12 +4,14 @@ import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
 import com.example.fico.R
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.repositories.CreditCardRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AddCreditCardViewModel(
@@ -19,6 +21,7 @@ class AddCreditCardViewModel(
 
     private val _addCreditCardResult = MutableLiveData<Boolean>()
     val addCreditCardResult : LiveData<Boolean> = _addCreditCardResult
+    private val _creditCardColors = MutableLiveData<CreditCardColors>()
 
     fun getCreditCardColorOptions() : List<CreditCardColors>{
         val colorOptions = listOf(
@@ -38,34 +41,36 @@ class AddCreditCardViewModel(
         return colorOptions
     }
 
+    fun setCreditCardColors(backgroundColorNameRes: Int, backgroundColor: Int, textColor: Int){
+        _creditCardColors.value = CreditCardColors(backgroundColorNameRes, backgroundColor, textColor)
+    }
+
+    fun getCreditCardColors() : CreditCardColors{
+        return _creditCardColors.value ?: CreditCardColors(R.string.white, Color.WHITE, Color.BLACK)
+    }
+
     suspend fun addCreditCard(
         cardNickName : String,
         expirationDay : Int,
         closingDay : Int,
-        backgroundColorNameRes: Int,
-        backgroundColor: Int,
-        textColor: Int
+        creditCardColors : CreditCardColors
     ){
-
-        val creditCard = CreditCard(
-            cardNickName,
-            expirationDay,
-            closingDay,
-            CreditCardColors(
-                backgroundColorNameRes,
-                backgroundColor,
-                textColor
+        viewModelScope.launch(Dispatchers.IO){
+            val creditCard = CreditCard(
+                cardNickName,
+                expirationDay,
+                closingDay,
+                creditCardColors
             )
-        )
 
-        creditCardRepository.addCreditCard(creditCard).fold(
-            onSuccess = {
-                _addCreditCardResult.postValue(true)
-            },
-            onFailure = {
-                _addCreditCardResult.postValue(false)
-            }
-        )
-
+            creditCardRepository.addCreditCard(creditCard).fold(
+                onSuccess = {
+                    _addCreditCardResult.postValue(true)
+                },
+                onFailure = {
+                    _addCreditCardResult.postValue(false)
+                }
+            )
+        }
     }
 }

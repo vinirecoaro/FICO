@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.fico.R
 import com.example.fico.components.PersonalizedSnackBars
 import com.example.fico.components.inputs.InputAdapters
 import com.example.fico.components.inputs.InputFieldFunctions
@@ -16,6 +18,9 @@ import com.example.fico.databinding.ActivityAddCreditCardBinding
 import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
 import com.example.fico.utils.internet.ConnectionFunctions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class AddCreditCardActivity : AppCompatActivity() {
@@ -64,6 +69,7 @@ class AddCreditCardActivity : AppCompatActivity() {
             binding.llCreditCardPreview.setBackgroundColor(selected.backgroundColor)
             binding.tvCreditCardName.setTextColor(selected.textColor)
             binding.tvPaymentDate.setTextColor(selected.textColor)
+            binding.tvPaymentDateTitle.setTextColor(selected.textColor)
 
             //Enable save button
             binding.btCreditCardSave.visibility = View.VISIBLE
@@ -137,12 +143,27 @@ class AddCreditCardActivity : AppCompatActivity() {
                 binding.etCreditCardClosingDay
             )){
                 if(ConnectionFunctions.internetConnectionVerification(this)){
-
+                    lifecycleScope.launch{
+                        viewModel.addCreditCard(
+                            binding.etCreditCardName.text.toString(),
+                            binding.etCreditCardExpirationDay.text.toString().toInt(),
+                            binding.etCreditCardClosingDay.text.toString().toInt(),
+                            viewModel.getCreditCardColors()
+                        )
+                    }
                 }else{
                     PersonalizedSnackBars.noInternetConnection(binding.btCreditCardSave, this).show()
                 }
             }
             it.isEnabled = true
+        }
+
+        viewModel.addCreditCardResult.observe(this){ result ->
+            if(result){
+                PersonalizedSnackBars.successMessage(binding.btCreditCardSave, getString(R.string.credit_card)).show()
+            }else{
+
+            }
         }
 
     }
