@@ -574,18 +574,17 @@ class FirebaseAPI(
         return updatesOfEarningList
     }
 
-    private fun generateMapToUpdateCreditCardList(creditCard: CreditCard): MutableMap<String, Any> {
-        val updatesOfEarningList = mutableMapOf<String, Any>()
-        val creditCardId = credit_card_list.push().key
+    private fun generateMapToUpdateCreditCardList(creditCard : CreditCard): MutableMap<String, Any> {
+        val updatesOfCreditCardList = mutableMapOf<String, Any>()
 
-        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.NAME}"] = creditCard.nickName
-        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.EXPIRATION_DAY}"] = creditCard.expirationDay
-        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.CLOSING_DAY}"] = creditCard.closingDay
-        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.BACKGROUND_COLOR_NAME_RES}"] = creditCard.colors.backgroundColorNameRes
-        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.BACKGROUND_COLOR}"] = creditCard.colors.backgroundColor
-        updatesOfEarningList["${creditCardId}/${StringConstants.DATABASE.TEXT_COLOR}"] = creditCard.colors.textColor
+        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.NAME}"] = creditCard.nickName
+        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.EXPIRATION_DAY}"] = creditCard.expirationDay
+        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.CLOSING_DAY}"] = creditCard.closingDay
+        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.BACKGROUND_COLOR_NAME_RES}"] = creditCard.colors.backgroundColorNameRes
+        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.BACKGROUND_COLOR}"] = creditCard.colors.backgroundColor
+        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.TEXT_COLOR}"] = creditCard.colors.textColor
 
-        return updatesOfEarningList
+        return updatesOfCreditCardList
     }
 
     private fun generateMapToUpdateUserRecurringExpenses(recurringExpense : RecurringTransaction): MutableMap<String, Any> {
@@ -1048,7 +1047,14 @@ class FirebaseAPI(
     ): Result<CreditCard> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any>()
         return@withContext try {
-            updates.putAll(generateMapToUpdateCreditCardList(creditCard))
+
+            val creditCardId = credit_card_list.push().key
+
+            var creditCardWithId = creditCard
+
+            creditCardWithId.id = creditCardId.toString()
+
+            updates.putAll(generateMapToUpdateCreditCardList(creditCardWithId))
 
             credit_card_list.updateChildren(updates)
 
@@ -1057,4 +1063,10 @@ class FirebaseAPI(
             Result.failure(e)
         }
     }
+
+    override suspend fun getCreditCardList(): Result<List<CreditCard>> {
+        TODO("Not yet implemented")
+    }
+
+
 }

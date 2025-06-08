@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
+import com.example.fico.model.CreditCard
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
@@ -42,6 +43,7 @@ class DataStoreManager (context: Context) {
         val userEmailKey = stringPreferencesKey(StringConstants.DATA_STORE.USER_EMAIL_KEY)
         val blockAppStateKey = stringPreferencesKey(StringConstants.DATA_STORE.BLOCK_APP_STATE_KEY)
         val firebaseDatabaseFixingVersionKey = stringPreferencesKey(StringConstants.DATA_STORE.FIREBASE_DATABASE_FIXING_VERSION_KEY)
+        val creditCardListKey = stringPreferencesKey(StringConstants.DATA_STORE.CREDIT_CARD_LIST_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -428,6 +430,22 @@ class DataStoreManager (context: Context) {
             preferences[firebaseDatabaseFixingVersionKey]
         }.first()
         return firebaseDatabaseFixingVersion ?: StringConstants.VERSION.V0
+    }
+
+    suspend fun updateCreditCardList(creditCard : CreditCard){
+        dataStore.edit { preferences ->
+            val currentCreditCardListString = preferences[creditCardListKey] ?: "[]"
+            val currentCreditCardList = Gson().fromJson(currentCreditCardListString, Array<CreditCard>::class.java).toMutableList()
+            if(currentCreditCardList.find { it.id == creditCard.id } != null){
+                currentCreditCardList.removeAll { it.id == creditCard.id }
+                currentCreditCardList.add(creditCard)
+            }else{
+                currentCreditCardList.add(creditCard)
+            }
+            val creditCardListString = Gson().toJson(currentCreditCardList)
+
+            preferences[creditCardListKey] = creditCardListString
+        }
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.fico.model
 
 data class CreditCard(
+    var id : String = "",
     val nickName : String,
     val expirationDay : Int,
     val closingDay : Int,

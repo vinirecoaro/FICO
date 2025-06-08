@@ -57,14 +57,17 @@ class AddCreditCardViewModel(
     ){
         viewModelScope.launch(Dispatchers.IO){
             val creditCard = CreditCard(
-                cardNickName,
-                expirationDay,
-                closingDay,
-                creditCardColors
+                nickName = cardNickName,
+                expirationDay = expirationDay,
+                closingDay = closingDay,
+                colors = creditCardColors
             )
 
             creditCardRepository.addCreditCard(creditCard).fold(
                 onSuccess = {
+
+                    dataStore.updateCreditCardList(creditCard)
+
                     _addCreditCardResult.postValue(true)
                 },
                 onFailure = {

@@ -38,7 +38,18 @@ class PersonalizedSnackBars {
                 message,
                 Snackbar.LENGTH_LONG
             )
-                .setBackgroundTint(Color.GREEN)
+                .setBackgroundTint(Color.rgb(164,213,166))
+                .setTextColor(Color.BLACK)
+        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        fun failureMessage(view: View, message : String): Snackbar {
+            return Snackbar.make(
+                view,
+                message,
+                Snackbar.LENGTH_LONG
+            )
+                .setBackgroundTint(Color.rgb(248,184,179))
                 .setTextColor(Color.BLACK)
         }
     }

@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.components.PersonalizedSnackBars
@@ -17,6 +19,7 @@ import com.example.fico.components.inputs.InputValueHandle
 import com.example.fico.databinding.ActivityAddCreditCardBinding
 import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
+import com.example.fico.utils.UiFunctions
 import com.example.fico.utils.internet.ConnectionFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -71,6 +74,9 @@ class AddCreditCardActivity : AppCompatActivity() {
             binding.tvPaymentDate.setTextColor(selected.textColor)
             binding.tvPaymentDateTitle.setTextColor(selected.textColor)
 
+            //Save credit card colors on viewModel
+            viewModel.setCreditCardColors(selected.backgroundColorNameRes, selected.backgroundColor, selected.textColor)
+
             //Enable save button
             binding.btCreditCardSave.visibility = View.VISIBLE
 
@@ -99,6 +105,13 @@ class AddCreditCardActivity : AppCompatActivity() {
                 val text = s.toString()
                 if (text.isNotEmpty()) {
                     var day = text.toIntOrNull()
+
+                    //Check and define max possible day on input field
+                    if(day != null && day > 31){
+                        binding.etCreditCardExpirationDay.setText(31.toString())
+                    }
+
+                    //Check and define payment date simulation on credit card preview
                     val calendar = java.util.Calendar.getInstance()
 
                     // Obtem o ano e mês atuais
@@ -126,9 +139,9 @@ class AddCreditCardActivity : AppCompatActivity() {
                         // Formata a data para exibição
                         val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
                         val formattedDate = dateFormat.format(calendar.time)
-                        binding.etCreditCardExpirationDay.setText(day.toString())
                         binding.tvPaymentDate.text = formattedDate
                     }
+
                 }
             }
         })
@@ -160,11 +173,22 @@ class AddCreditCardActivity : AppCompatActivity() {
 
         viewModel.addCreditCardResult.observe(this){ result ->
             if(result){
-                PersonalizedSnackBars.successMessage(binding.btCreditCardSave, getString(R.string.credit_card)).show()
+                UiFunctions.clearEditText(binding.etCreditCardName, binding.etCreditCardExpirationDay, binding.etCreditCardClosingDay, binding.actvColors)
+                UiFunctions.hideKeyboard(this, binding.root)
+                binding.cvCreditCardPreview.visibility = View.GONE
+                binding.btCreditCardSave.visibility = View.GONE
+                PersonalizedSnackBars.successMessage(binding.main, getString(R.string.add_credit_card_success_message)).show()
             }else{
-
+                PersonalizedSnackBars.failureMessage(binding.main, getString(R.string.add_credit_card_fail_message)).show()
             }
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+            view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, bottomInset)
+            insets
+        }
+
 
     }
 
