@@ -173,7 +173,7 @@ class AddCreditCardActivity : AppCompatActivity() {
 
         viewModel.addCreditCardResult.observe(this){ result ->
             if(result){
-                UiFunctions.clearEditText(binding.etCreditCardName, binding.etCreditCardExpirationDay, binding.etCreditCardClosingDay, binding.actvColors)
+                //UiFunctions.clearEditText(binding.etCreditCardName, binding.etCreditCardExpirationDay, binding.etCreditCardClosingDay, binding.actvColors)
                 UiFunctions.hideKeyboard(this, binding.root)
                 binding.cvCreditCardPreview.visibility = View.GONE
                 binding.btCreditCardSave.visibility = View.GONE
