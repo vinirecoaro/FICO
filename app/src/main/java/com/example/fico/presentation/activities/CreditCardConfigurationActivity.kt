@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -13,7 +14,10 @@ import com.example.fico.DataStoreManager
 import com.example.fico.R
 import com.example.fico.components.dialogs.Dialogs
 import com.example.fico.components.PersonalizedSnackBars
+import com.example.fico.components.dialogs.ComposeDialogs
 import com.example.fico.databinding.ActivityCreditCardConfigurationBinding
+import com.example.fico.model.CreditCard
+import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.viewmodel.CreditCardConfigurationViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
@@ -55,6 +59,52 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
             startActivity(Intent(this, AddCreditCardActivity::class.java))
         }
 
+        binding.llCreditCardList.setOnClickListener {
+            val mockCreditCards = listOf(
+                CreditCard(
+                    id = "1",
+                    nickName = "Nubank",
+                    expirationDay = 20,
+                    closingDay = 10,
+                    colors = CreditCardColors(
+                        backgroundColorNameRes = android.R.color.holo_blue_dark,
+                        backgroundColor = Color.rgb(100, 0, 0),
+                        textColor = 0xFFFFFFFF.toInt()
+                    )
+                ),
+                CreditCard(
+                    id = "2",
+                    nickName = "Bradescofhgfdhgfhfghgfhgfgfhfg",
+                    expirationDay = 20,
+                    closingDay = 5,
+                    colors = CreditCardColors(
+                        backgroundColorNameRes = android.R.color.holo_red_dark,
+                        backgroundColor = Color.rgb(0, 0, 100),
+                        textColor = 0xFFFFFFFF.toInt()
+                    )
+                ),
+                CreditCard(
+                    id = "3",
+                    nickName = "C6 Bank",
+                    expirationDay = 20,
+                    closingDay = 15,
+                    colors = CreditCardColors(
+                        backgroundColorNameRes = android.R.color.holo_green_dark,
+                        backgroundColor = Color.rgb(255, 152, 0),
+                        textColor = 0xFFFFFFFF.toInt()
+                    )
+                )
+            )
+
+            ComposeDialogs.showComposeDialog(
+                composeView = binding.composeDialogHost,
+                items = mockCreditCards,
+                contextView = binding.root
+            ) { selected ->
+                Toast.makeText(this, "Selecionado: $selected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         viewModel.setDefaultPaymentDateLiveData.observe(this) { result ->
             if (result) {
                 Snackbar.make(
@@ -82,73 +132,5 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
         }
     }
 
-    /*@RequiresApi(Build.VERSION_CODES.M)
-    private fun setDefaultPaymentDateAlertDialog(){
-        lifecycleScope.launch(Dispatchers.Main){
 
-            val paymentDay = dataStore.getDefaultPaymentDay()
-            val daysForClosingBill = dataStore.getDaysForClosingBill()
-
-            val currentInfo = if(paymentDay != null && daysForClosingBill != null){
-                "${getString(R.string.current_data)}:\n\n${getString(R.string.expiration)} - $paymentDay\n${getString(R.string.days_for_closing)} - $daysForClosingBill"
-            }else{
-                getString(R.string.default_day_default_message)
-            }
-
-            val dialog = Dialogs.dialogModelFour(
-                this@CreditCardConfigurationActivity,
-                this@CreditCardConfigurationActivity,
-                binding.tvRegisterCreditCard,
-                getString(R.string.default_payment_day),
-                getString(R.string.expiration_day),
-                InputType.TYPE_CLASS_NUMBER,
-                getString(R.string.days_for_closing),
-                InputType.TYPE_CLASS_NUMBER,
-                getString(R.string.payment_day_info_message),
-                currentInfo,
-                getString(R.string.save),
-                function = ::setDefaultPaymentDate
-            )
-            
-            dialog.show()
-        }
-    }*/
-
-    /*@RequiresApi(Build.VERSION_CODES.M)
-    private fun setDefaultPaymentDate(expirationDay : String, daysForClosingBill : String){
-        if(hasInternetConnection()){
-            if (DateFunctions().isValidMonthDay(
-                    expirationDay.toInt()
-                )
-            ) {
-                with(sharedPref.edit()) {
-                    putString(
-                        StringConstants.DATABASE.PAYMENT_DAY,
-                        expirationDay
-                    )
-                    putString(
-                        StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL,
-                        daysForClosingBill
-                    )
-                    commit()
-                }
-                viewModel.setDefaultPaymentDate(
-                    expirationDay,
-                    daysForClosingBill
-                )
-            } else {
-                Snackbar.make(
-                    binding.llRegisterCreditCard,
-                    getString(R.string.invalid_day),
-                    Snackbar.LENGTH_LONG
-                ).show()
-            }
-        }else{
-            PersonalizedSnackBars.noInternetConnection(binding.tvRegisterCreditCard, this@CreditCardConfigurationActivity).show()
-        }
-    }*/
-
-    private fun hasInternetConnection() : Boolean{
-        return ConnectionFunctions.internetConnectionVerification(this)
-    }
 }
