@@ -38,8 +38,8 @@ class PersonalizedSnackBars {
                 message,
                 Snackbar.LENGTH_LONG
             )
-                .setBackgroundTint(Color.rgb(223,255,223))
-                .setTextColor(Color.BLACK)
+                .setBackgroundTint(Color.rgb(29,67,30))
+                .setTextColor(Color.WHITE)
         }
 
         @RequiresApi(Build.VERSION_CODES.M)
@@ -49,8 +49,8 @@ class PersonalizedSnackBars {
                 message,
                 Snackbar.LENGTH_LONG
             )
-                .setBackgroundTint(Color.rgb(255,223,223))
-                .setTextColor(Color.BLACK)
+                .setBackgroundTint(Color.rgb(152,17,20))
+                .setTextColor(Color.WHITE)
         }
     }
 }
