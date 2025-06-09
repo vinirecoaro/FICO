@@ -31,7 +31,6 @@ class PersonalizedSnackBars {
             ).show()
         }
 
-        @RequiresApi(Build.VERSION_CODES.M)
         fun successMessage(view: View, message : String): Snackbar {
             return Snackbar.make(
                 view,
@@ -42,7 +41,18 @@ class PersonalizedSnackBars {
                 .setTextColor(Color.WHITE)
         }
 
-        @RequiresApi(Build.VERSION_CODES.M)
+        fun successMessageWithAction(view: View, message : String, actionText : String, action : () -> Unit): Snackbar {
+            return Snackbar.make(
+                view,
+                message,
+                Snackbar.LENGTH_LONG
+            )
+                .setBackgroundTint(Color.rgb(29,67,30))
+                .setTextColor(Color.WHITE)
+                .setActionTextColor(Color.WHITE)
+                .setAction(actionText){action()}
+        }
+
         fun failureMessage(view: View, message : String): Snackbar {
             return Snackbar.make(
                 view,

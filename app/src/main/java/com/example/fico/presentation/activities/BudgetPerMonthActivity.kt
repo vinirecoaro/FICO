@@ -69,9 +69,9 @@ class BudgetPerMonthActivity : AppCompatActivity() {
         viewModel.editBudgetResult.observe(this){ result ->
             if(result){
                 viewModel.getBudgetPerMonth()
-                Snackbar.make(binding.rvBudgetPerMonth, getString(R.string.redefine_month_budget_success_message), Snackbar.LENGTH_LONG).show()
+                PersonalizedSnackBars.successMessage(binding.root, getString(R.string.redefine_month_budget_success_message)).show()
             }else{
-                Snackbar.make(binding.rvBudgetPerMonth, getString(R.string.redefine_month_budget_failure_message), Snackbar.LENGTH_LONG).show()
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.redefine_month_budget_failure_message)).show()
             }
         }
     }

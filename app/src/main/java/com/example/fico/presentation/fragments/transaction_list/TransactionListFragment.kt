@@ -329,33 +329,20 @@ class TransactionListFragment : Fragment(), XLSInterface {
         viewModel.deleteExpenseResult.observe(viewLifecycleOwner){result ->
             if(result){
                 //Show snackbar to undo the action
-                val snackbar = Snackbar.make(binding.rvExpenseList, getString(R.string.excluded_item), Snackbar.LENGTH_SHORT)
-                snackbar.setAction(getString(R.string.undo)) {
-                    lifecycleScope.launch {
-                        val deletedExpesense = viewModel.getDeletedItem().toExpense()
-                        viewModel.undoDeleteExpense(deletedExpesense, false, 1)
-                    }
-
-                }.show()
+                PersonalizedSnackBars.successMessageWithAction(binding.root, getString(R.string.excluded_item), getString(R.string.undo), ::undoDeleteExpense).show()
             }else{
                 //Show snackbar with failure message
-                Snackbar.make(binding.rvExpenseList, getString(R.string.exclude_item_fail_message), Snackbar.LENGTH_SHORT).show()
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.exclude_item_fail_message)).show()
             }
         }
 
         viewModel.deleteEarningResult.observe(viewLifecycleOwner){ result ->
             if(result){
                 //Show snackbar to undo the action
-                val snackbar = Snackbar.make(binding.rvExpenseList, getString(R.string.excluded_item), Snackbar.LENGTH_SHORT)
-                snackbar.setAction(getString(R.string.undo)) {
-                    lifecycleScope.launch {
-                        viewModel.undoDeleteEarning(viewModel.getDeletedItem().toEarning())
-                    }
-
-                }.show()
+                PersonalizedSnackBars.successMessageWithAction(binding.root, getString(R.string.excluded_item), getString(R.string.undo), ::undoDeleteEarning).show()
             }else{
                 //Show snackbar with failure message
-                Snackbar.make(binding.rvExpenseList, getString(R.string.exclude_item_fail_message), Snackbar.LENGTH_SHORT).show()
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.exclude_item_fail_message)).show()
             }
         }
 
@@ -473,17 +460,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         viewModel.addEarningResult.observe(viewLifecycleOwner){ result ->
             if (result) {
-                Snackbar.make(
-                    binding.rvExpenseList,
-                    getString(R.string.add_earning_success_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                PersonalizedSnackBars.successMessage(binding.root, getString(R.string.add_earning_success_message)).show()
+
             } else {
-                Snackbar.make(
-                    binding.rvExpenseList,
-                    getString(R.string.add_earning_failure_message),
-                    Snackbar.LENGTH_LONG)
-                    .show()
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.add_earning_failure_message)).show()
             }
         }
 
@@ -521,93 +501,53 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
                 Activity.RESULT_OK -> {
                     viewModel.updateOperation(StringConstants.OPERATIONS.UPDATE)
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.update_expense_success_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.successMessage(binding.root, getString(R.string.update_expense_success_message)).show()
                 }
 
                 Activity.RESULT_CANCELED -> {
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.update_expense_fail_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.update_expense_fail_message)).show()
                 }
 
                 StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_OK -> {
                     viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
                     val deletedItem = viewModel.getEditingTransaction()
                     viewModel.updateDeletedItem(deletedItem)
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.delete_expense_success_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.successMessage(binding.root, getString(R.string.delete_expense_success_message)).show()
                 }
 
                 StringConstants.RESULT_CODES.DELETE_INSTALLMENT_EXPENSE_RESULT_FAILURE -> {
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.delete_expense_fail_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.delete_expense_fail_message)).show()
                 }
 
                 StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_OK -> {
                     viewModel.updateOperation(StringConstants.OPERATIONS.UPDATE)
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.edit_earning_success_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.successMessage(binding.root, getString(R.string.edit_earning_success_message)).show()
                 }
 
                 StringConstants.RESULT_CODES.EDIT_EARNING_EXPENSE_RESULT_FAILURE -> {
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.edit_earning_failure_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.edit_earning_failure_message)).show()
                 }
 
                 StringConstants.RESULT_CODES.DELETE_EXPENSE_RESULT_OK -> {
                     viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
                     val deletedItem = viewModel.getEditingTransaction()
                     viewModel.updateDeletedItem(deletedItem)
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.delete_expense_success_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.successMessage(binding.root, getString(R.string.delete_expense_success_message)).show()
                 }
 
                 StringConstants.RESULT_CODES.DELETE_EXPENSE_RESULT_FAILURE -> {
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.delete_expense_fail_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.delete_expense_fail_message)).show()
                 }
 
                 StringConstants.RESULT_CODES.DELETE_EARNING_RESULT_OK -> {
                     viewModel.updateOperation(StringConstants.OPERATIONS.DELETE)
                     val deletedItem = viewModel.getEditingTransaction()
                     viewModel.updateDeletedItem(deletedItem)
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.delete_earning_success_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.successMessage(binding.root, getString(R.string.delete_earning_success_message)).show()
                 }
 
                 StringConstants.RESULT_CODES.DELETE_EARNING_RESULT_FAILURE -> {
-                    Snackbar.make(
-                        binding.rvExpenseList,
-                        getString(R.string.delete_earning_fail_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.delete_earning_fail_message)).show()
                 }
             }
         }
@@ -929,6 +869,19 @@ class TransactionListFragment : Fragment(), XLSInterface {
         sdf.timeZone = TimeZone.getTimeZone("GMT")
         val date = Date(timestamp)
         return sdf.format(date)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun undoDeleteExpense(){
+        lifecycleScope.launch {
+            val deletedExpense = viewModel.getDeletedItem().toExpense()
+            viewModel.undoDeleteExpense(deletedExpense, false, 1)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun undoDeleteEarning(){
+        viewModel.undoDeleteEarning(viewModel.getDeletedItem().toEarning())
     }
 
 }

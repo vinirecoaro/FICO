@@ -233,7 +233,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 if(viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_EXPENSE){
                     if (binding.tilInstallments.visibility == View.GONE) {
                         if(binding.swtPaymentDay.isChecked){
-                            if (verifyFields(
+                            if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                                     binding.etPrice,
                                     binding.etDescription,
                                     binding.actvCategory,
@@ -260,7 +260,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                 }
                             }
                         }else{
-                            if (verifyFields(
+                            if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                                     binding.etPrice,
                                     binding.etDescription,
                                     binding.actvCategory,
@@ -289,7 +289,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
                     } else if (binding.tilInstallments.visibility == View.VISIBLE) {
                         if(binding.swtPaymentDay.isChecked){
-                            if (verifyFields(
+                            if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                                     binding.etPrice,
                                     binding.etDescription,
                                     binding.actvCategory,
@@ -325,7 +325,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                                 }
                             }
                         }else{
-                            if (verifyFields(
+                            if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                                     binding.etPrice,
                                     binding.etDescription,
                                     binding.actvCategory,
@@ -363,7 +363,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     }
                 }
                 else if(viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_EARNING){
-                    if (verifyFields(
+                    if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                             binding.etPrice,
                             binding.etDescription,
                             binding.actvCategory,
@@ -383,7 +383,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     }
                 }
                 else if (viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_RECURRING_EXPENSE){
-                    if (verifyFields(
+                    if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                             binding.etPrice,
                             binding.etDescription,
                             binding.actvCategory,
@@ -417,7 +417,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     }
                 }
                 else if (viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_RECURRING_EARNING){
-                    if (verifyFields(
+                    if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                             binding.etPrice,
                             binding.etDescription,
                             binding.actvCategory,
@@ -541,26 +541,18 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             hideKeyboard(requireContext(), binding.btSave)
             clearUserInputs()
             if (result) {
-                Snackbar.make(
-                    binding.rvCategory,
-                    getString(R.string.add_expense_success_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                PersonalizedSnackBars.successMessage(binding.root, getString(R.string.add_expense_success_message)).show()
             } else {
-                Snackbar.make(
-                    binding.rvCategory,
-                    getString(R.string.add_expense_failure_message),
-                    Snackbar.LENGTH_LONG)
-                    .show()
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.add_expense_failure_message)).show()
             }
         }
 
         viewModel.setDefaultBudgetResult.observe(requireActivity()){ result ->
             if(result){
-                Snackbar.make(binding.btSave, getString(R.string.change_default_budget_success_message),Snackbar.LENGTH_SHORT).show()
+                PersonalizedSnackBars.successMessage(binding.root, getString(R.string.change_default_budget_success_message)).show()
             }
             else{
-                Snackbar.make(binding.btSave, getString(R.string.change_default_budget_failure_message),Snackbar.LENGTH_LONG).show()
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.change_default_budget_failure_message)).show()
             }
         }
 
@@ -584,17 +576,9 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             hideKeyboard(requireContext(), binding.btSave)
             clearUserInputs()
             if (result) {
-                Snackbar.make(
-                    binding.rvCategory,
-                    getString(R.string.add_earning_success_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                PersonalizedSnackBars.successMessage(binding.root, getString(R.string.add_earning_success_message)).show()
             } else {
-                Snackbar.make(
-                    binding.rvCategory,
-                    getString(R.string.add_earning_failure_message),
-                    Snackbar.LENGTH_LONG)
-                    .show()
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.add_earning_failure_message)).show()
             }
         }
 
@@ -611,17 +595,9 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             hideKeyboard(requireContext(), binding.btSave)
             clearUserInputs()
             if (result) {
-                Snackbar.make(
-                    binding.btSave,
-                    getString(R.string.add_recurring_transaction_success_message),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                PersonalizedSnackBars.successMessage(binding.root, getString(R.string.add_recurring_transaction_success_message)).show()
             } else {
-                Snackbar.make(
-                    binding.btSave,
-                    getString(R.string.add_recurring_transaction_failure_message),
-                    Snackbar.LENGTH_LONG)
-                    .show()
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.add_recurring_transaction_failure_message)).show()
             }
         }
 
@@ -660,18 +636,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         val formattedDate = formatDate(dateInMillis)
         editText.setText(formattedDate)
         editText.isEnabled = true
-    }
-
-    private fun verifyFields(vararg text: EditText): Boolean {
-        for (i in text) {
-            if (i.text.toString() == "" || i == null) {
-                Snackbar.make(
-                    binding.btSave, "${getString(R.string.fill_field)} ${i.hint}", Snackbar.LENGTH_LONG
-                ).show()
-                return false
-            }
-        }
-        return true
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
