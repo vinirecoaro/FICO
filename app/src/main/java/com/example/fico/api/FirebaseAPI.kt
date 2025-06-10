@@ -1067,13 +1067,24 @@ class FirebaseAPI(
     override suspend fun getCreditCardList(): Result<List<CreditCard>>  = withContext(Dispatchers.IO) {
         suspendCoroutine { continuation ->
             try {
+                val creditCardList = mutableListOf<CreditCard>()
                 credit_card_list.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        FormatValuesFromDatabase().dataSnapshotToCreditCardList(snapshot)
+                        if(snapshot.exists()){
+                            for(creditCardSnapshot in snapshot.children){
+                                val creditCard =  FormatValuesFromDatabase().dataSnapshotToCreditCardList(creditCardSnapshot)
+                                creditCardList.add(creditCard)
+                            }
+                            continuation.resume(Result.success(creditCardList))
+                        }else{
+                            continuation.resume(Result.success(emptyList()))
+                        }
                     }
-                    override fun onCancelled(error: DatabaseError) {}
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resume(Result.failure(error.toException()))
+                    }
                 })
-                continuation.resume(Result.success(emptyList()))
+
             }catch (e : Exception){
                 continuation.resume(Result.failure(e))
             }

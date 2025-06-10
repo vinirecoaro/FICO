@@ -2,6 +2,7 @@ package com.example.fico.api
 
 import android.util.Log
 import com.example.fico.model.CreditCard
+import com.example.fico.model.CreditCardColors
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
@@ -344,8 +345,17 @@ class FormatValuesFromDatabase {
         )
     }
 
-    fun dataSnapshotToCreditCardList(dataSnapShot : DataSnapshot) : List<CreditCard> {
-        print(dataSnapShot)
-        return emptyList()
+    fun dataSnapshotToCreditCardList(dataSnapShot : DataSnapshot) : CreditCard {
+        return CreditCard(
+            id = dataSnapShot.key.toString(),
+            nickName = dataSnapShot.child(StringConstants.DATABASE.NAME).value.toString(),
+            expirationDay = dataSnapShot.child(StringConstants.DATABASE.EXPIRATION_DAY).value.toString().toInt(),
+            closingDay = dataSnapShot.child(StringConstants.DATABASE.CLOSING_DAY).value.toString().toInt(),
+            colors = CreditCardColors(
+                backgroundColorNameRes = dataSnapShot.child(StringConstants.DATABASE.BACKGROUND_COLOR_NAME_RES).value.toString().toInt(),
+                backgroundColor = dataSnapShot.child(StringConstants.DATABASE.BACKGROUND_COLOR).value.toString().toInt(),
+                textColor = dataSnapShot.child(StringConstants.DATABASE.TEXT_COLOR).value.toString().toInt()
+            )
+        )
     }
 }

@@ -11,21 +11,36 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.ValuePerMonth
+import com.example.fico.repositories.CreditCardRepository
 import com.example.fico.repositories.TransactionsRepository
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 class RemoteDatabaseViewModel(
     private val firebaseAPI: FirebaseAPI,
     private val dataStore : DataStoreManager,
-    private val transactionsRepository: TransactionsRepository
+    private val transactionsRepository: TransactionsRepository,
+    private val creditCardRepository: CreditCardRepository
 ) : ViewModel() {
 
     suspend fun getDataFromDatabase(){
+        mainThread()
+        secondaryThread()
+    }
+
+    private suspend fun mainThread(){
         getExpenseList()
+    }
+
+    private suspend fun secondaryThread(){
+        withContext(Dispatchers.IO){
+            getCreditCardList()
+        }
     }
 
     private suspend fun getExpenseList(){
@@ -239,5 +254,16 @@ class RemoteDatabaseViewModel(
 
             }
         }
+    }
+
+    private suspend fun getCreditCardList(){
+        creditCardRepository.getCreditCardList().fold(
+            onSuccess = { creditCardList ->
+                dataStore.updateAndResetCreditCardList(creditCardList)
+            },
+            onFailure = {
+                Log.e("LogoViewModel", "Error updating credit card list: ${it.message}")
+            }
+        )
     }
 }

@@ -448,5 +448,18 @@ class DataStoreManager (context: Context) {
         }
     }
 
+    suspend fun updateAndResetCreditCardList(creditCardList : List<CreditCard>){
+        val creditCardListString = Gson().toJson(creditCardList)
+        dataStore.edit { preferences ->
+            preferences[creditCardListKey] = creditCardListString
+        }
+    }
+
+    suspend fun getCreditCardList() : List<CreditCard>{
+        val creditCardListString = dataStore.data.map { preferences ->
+            preferences[creditCardListKey]
+        }.first() ?: return emptyList()
+        return Gson().fromJson(creditCardListString, object : TypeToken<List<CreditCard>>() {}.type)
+    }
 
 }

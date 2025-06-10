@@ -112,7 +112,8 @@ val appModule = module {
         RemoteDatabaseViewModel(
             firebaseAPI = get(),
             dataStore = get(),
-            transactionsRepository = get()
+            transactionsRepository = get(),
+            creditCardRepository = get()
         )
     }
 
@@ -228,7 +229,6 @@ val appModule = module {
 
     factory<CreditCardConfigurationViewModel> {
         CreditCardConfigurationViewModel(
-            firebaseAPI = get(),
             dataStore = get()
         )
     }

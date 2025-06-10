@@ -93,6 +93,7 @@ class ComposeDialogs {
         @Composable
         private fun CreditCardDialog(
             items: List<CreditCard>,
+            contextView: View,
             onDismissRequest: () -> Unit,
             onItemClick: (CreditCard) -> Unit
         ) {
@@ -113,7 +114,7 @@ class ComposeDialogs {
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = "Selecione o Cartão",
+                            text = contextView.context.getString(R.string.cards),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -126,7 +127,7 @@ class ComposeDialogs {
                                     backgroundColor = item.colors.backgroundColor,
                                     textColor = item.colors.textColor,
                                     cardName = item.nickName,
-                                    paymentDayLabel = "Dia de Vencimento",
+                                    paymentDayLabel = contextView.context.getString(R.string.expiration_day),
                                     paymentDayValue = item.expirationDay.toString(),
                                     chipIconResId = R.drawable.chip,
                                     modifier = Modifier
@@ -143,12 +144,14 @@ class ComposeDialogs {
         fun showComposeDialog(
             composeView: ComposeView,
             items: List<CreditCard>,
+            contextView: View,
             onItemSelected: (CreditCard) -> Unit
         ) {
             composeView.setContent {
                 Theme {
                     CreditCardDialog(
                         items = items,
+                        contextView = contextView,
                         onDismissRequest = {
                             composeView.setContent {}
                             composeView.visibility = View.GONE
