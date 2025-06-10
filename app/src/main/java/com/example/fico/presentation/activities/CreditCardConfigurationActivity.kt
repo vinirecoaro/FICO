@@ -1,38 +1,25 @@
 package com.example.fico.presentation.activities
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.text.InputType
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import com.example.fico.DataStoreManager
 import com.example.fico.R
-import com.example.fico.components.dialogs.Dialogs
-import com.example.fico.components.PersonalizedSnackBars
-import com.example.fico.components.dialogs.ComposeDialogs
+import com.example.fico.presentation.compose.components.ComposeDialogs
 import com.example.fico.databinding.ActivityCreditCardConfigurationBinding
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.viewmodel.CreditCardConfigurationViewModel
-import com.example.fico.utils.DateFunctions
-import com.example.fico.utils.constants.StringConstants
-import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class CreditCardConfigurationActivity : AppCompatActivity() {
 
     private val binding by lazy{ActivityCreditCardConfigurationBinding.inflate(layoutInflater)}
     private val viewModel : CreditCardConfigurationViewModel by inject()
-    private val sharedPref : SharedPreferences by inject()
-    private val dataStore : DataStoreManager by inject()
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +83,8 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
                 )
             )
 
+
+
             ComposeDialogs.showComposeDialog(
                 composeView = binding.composeDialogHost,
                 items = mockCreditCards,
@@ -121,7 +110,7 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.paymentDateSwitchInitialStateLiveData.observe(this){ state ->
+        viewModel.payWithCreditCardSwitchInitialState.observe(this){ state ->
             if(state != null){
                 binding.swtUseCreditCardAsDefault.isChecked = state
             }

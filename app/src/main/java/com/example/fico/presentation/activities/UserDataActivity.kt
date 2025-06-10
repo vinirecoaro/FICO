@@ -1,5 +1,7 @@
 package com.example.fico.presentation.activities
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -15,9 +17,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
-import com.example.fico.components.dialogs.Dialogs
-import com.example.fico.components.ImagePickerBottomSheet
-import com.example.fico.components.PersonalizedSnackBars
+import com.example.fico.presentation.components.dialogs.Dialogs
+import com.example.fico.presentation.components.ImagePickerBottomSheet
+import com.example.fico.presentation.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivityUserDataBinding
 import com.example.fico.presentation.viewmodel.UserDataViewModel
 import com.example.fico.utils.constants.StringConstants
@@ -102,10 +104,10 @@ class UserDataActivity : AppCompatActivity() {
         binding.cvEditProfileImage.setOnClickListener {
             val bottomSheet = ImagePickerBottomSheet{ isCamera ->
                 if(isCamera){
-                    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         openCamera()
                     } else {
-                        requestCameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                     }
                 }else{
                     galleryLauncher.launch("image/*")

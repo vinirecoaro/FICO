@@ -12,10 +12,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
-import com.example.fico.components.PersonalizedSnackBars
-import com.example.fico.components.inputs.InputAdapters
-import com.example.fico.components.inputs.InputFieldFunctions
-import com.example.fico.components.inputs.InputValueHandle
+import com.example.fico.presentation.components.PersonalizedSnackBars
+import com.example.fico.presentation.components.inputs.InputAdapters
+import com.example.fico.presentation.components.inputs.InputFieldFunctions
+import com.example.fico.presentation.components.inputs.InputValueHandle
 import com.example.fico.databinding.ActivityAddCreditCardBinding
 import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.viewmodel.AddCreditCardViewModel

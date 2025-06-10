@@ -1,4 +1,4 @@
-package com.example.fico.components.inputs
+package com.example.fico.presentation.components.inputs
 
 import android.content.Context
 import android.graphics.drawable.Drawable

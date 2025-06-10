@@ -1,4 +1,4 @@
-package com.example.fico.components
+package com.example.fico.presentation.components
 
 import android.app.Activity
 import android.graphics.Color

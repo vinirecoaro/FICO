@@ -1,4 +1,4 @@
-package com.example.fico.components.dialogs
+package com.example.fico.presentation.compose.components
 
 import android.view.View
 import androidx.compose.foundation.Image
@@ -18,8 +18,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.fico.R
 import com.example.fico.model.CreditCard
+import com.example.fico.presentation.compose.theme.Theme
 
 class ComposeDialogs {
     companion object{
@@ -80,7 +83,7 @@ class ComposeDialogs {
                             text = paymentDayValue,
                             color = Color(textColor),
                             fontSize = 14.sp,
-                            modifier = Modifier.padding(top = 3.dp)
+                            modifier = Modifier.padding(top = 0.dp)
                         )
                     }
                 }
@@ -93,45 +96,57 @@ class ComposeDialogs {
             onDismissRequest: () -> Unit,
             onItemClick: (CreditCard) -> Unit
         ) {
-            AlertDialog(
+            Dialog(
                 onDismissRequest = onDismissRequest,
-                title = {
-                    Text("Selecione o Cartão", style = MaterialTheme.typography.titleMedium)
-                },
-                text = {
-                    LazyColumn(
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 8.dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(16.dp)
                     ) {
-                        items(items) { item ->
-                            CreditCardItem(
-                                backgroundColor = item.colors.backgroundColor,
-                                textColor = item.colors.textColor,
-                                cardName = item.nickName,
-                                paymentDayLabel = "Dia de Vencimento",
-                                paymentDayValue = item.expirationDay.toString(), // Exemplo fixo, pode ser dinâmico
-                                chipIconResId = R.drawable.chip, // Substitua pelo seu drawable
-                                modifier = Modifier
-                                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                                    .clickable { onItemClick(item) }
-                            )
+                        Text(
+                            text = "Selecione o Cartão",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        LazyColumn {
+                            items(items) { item ->
+                                CreditCardItem(
+                                    backgroundColor = item.colors.backgroundColor,
+                                    textColor = item.colors.textColor,
+                                    cardName = item.nickName,
+                                    paymentDayLabel = "Dia de Vencimento",
+                                    paymentDayValue = item.expirationDay.toString(),
+                                    chipIconResId = R.drawable.chip,
+                                    modifier = Modifier
+                                        .padding(vertical = 4.dp)
+                                        .clickable { onItemClick(item) }
+                                )
+                            }
                         }
                     }
-                },
-                confirmButton = {}
-            )
+                }
+            }
         }
-
 
         fun showComposeDialog(
             composeView: ComposeView,
             items: List<CreditCard>,
-            contextView: View,
             onItemSelected: (CreditCard) -> Unit
         ) {
             composeView.setContent {
-                MaterialTheme {
+                Theme {
                     CreditCardDialog(
                         items = items,
                         onDismissRequest = {

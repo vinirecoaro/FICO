@@ -23,6 +23,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -989,7 +990,6 @@ class FirebaseAPI(
         }
     }
 
-    //TODO do with addSingleListener
     override suspend fun getDefaultPaymentDay(): Result<String> = withContext(Dispatchers.IO){
         suspendCoroutine{ continuation ->
             try {
@@ -1064,8 +1064,21 @@ class FirebaseAPI(
         }
     }
 
-    override suspend fun getCreditCardList(): Result<List<CreditCard>> {
-        TODO("Not yet implemented")
+    override suspend fun getCreditCardList(): Result<List<CreditCard>>  = withContext(Dispatchers.IO) {
+        suspendCoroutine { continuation ->
+            try {
+                credit_card_list.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        FormatValuesFromDatabase().dataSnapshotToCreditCardList(snapshot)
+                    }
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+                continuation.resume(Result.success(emptyList()))
+            }catch (e : Exception){
+                continuation.resume(Result.failure(e))
+            }
+        }
+
     }
 
 

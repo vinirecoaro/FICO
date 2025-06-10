@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.components.dialogs.Dialogs
+import com.example.fico.presentation.components.dialogs.Dialogs
 import com.example.fico.databinding.FragmentConfigurationBinding
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.activities.BudgetConfigurationListActivity

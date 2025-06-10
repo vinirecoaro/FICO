@@ -54,7 +54,6 @@ class BudgetPerMonthViewModel(
     }
 
     suspend fun editBudget(newBudget: String, budget: Budget) {
-        //TODO test
         viewModelScope.async(Dispatchers.IO) {
             val formattedDate = firebaseAPI.formatDateFromFilterToDatabaseForInfoPerMonth(budget.date)
             val infoPerMonthDataStore = dataStore.getExpenseInfoPerMonth()

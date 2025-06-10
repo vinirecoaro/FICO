@@ -33,8 +33,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.components.dialogs.Dialogs
-import com.example.fico.components.PersonalizedSnackBars
+import com.example.fico.presentation.components.dialogs.Dialogs
+import com.example.fico.presentation.components.PersonalizedSnackBars
 import com.example.fico.databinding.FragmentTransactionListBinding
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense

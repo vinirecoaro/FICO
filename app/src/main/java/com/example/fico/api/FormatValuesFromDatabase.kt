@@ -1,5 +1,7 @@
 package com.example.fico.api
 
+import android.util.Log
+import com.example.fico.model.CreditCard
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
@@ -270,7 +272,7 @@ class FormatValuesFromDatabase {
             dataSnapShot.child(StringConstants.DATABASE.CATEGORY).value.toString()
         val paymentDateDatabase =
             dataSnapShot.child(StringConstants.DATABASE.PAYMENT_DATE).value.toString()
-        var paymentDateFormatted =
+        val paymentDateFormatted =
             "${paymentDateDatabase.substring(8, 10)}/" +
                     "${paymentDateDatabase.substring(5, 7)}/" +
                     paymentDateDatabase.substring(0, 4)
@@ -340,5 +342,10 @@ class FormatValuesFromDatabase {
             inputDateTime = dataSnapShot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString(),
             type = dataSnapShot.child(StringConstants.DATABASE.TYPE).value.toString()
         )
+    }
+
+    fun dataSnapshotToCreditCardList(dataSnapShot : DataSnapshot) : List<CreditCard> {
+        print(dataSnapShot)
+        return emptyList()
     }
 }

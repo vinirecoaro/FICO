@@ -16,36 +16,22 @@ class CreditCardConfigurationViewModel(
 
     private val _setDefaultPaymentDate = MutableLiveData<Boolean>()
     val setDefaultPaymentDateLiveData: LiveData<Boolean> = _setDefaultPaymentDate
-    private val _paymentDateSwitchInitialState = MutableLiveData<Boolean>()
-    val paymentDateSwitchInitialStateLiveData: LiveData<Boolean> = _paymentDateSwitchInitialState
+    private val _payWithCreditCardSwitchInitialState = MutableLiveData<Boolean>()
+    val payWithCreditCardSwitchInitialState: LiveData<Boolean> = _payWithCreditCardSwitchInitialState
 
     init {
         getPaymentDateSwitchState()
     }
 
-    fun setDefaultPaymentDate(expirationDate: String, daysForClosingBill : String) {
-        viewModelScope.async(Dispatchers.IO) {
-            firebaseAPI.setDefaultPaymentDay(expirationDate, daysForClosingBill).fold(
-                onSuccess = {
-                    dataStore.setDefaultPaymentDay(expirationDate)
-                    dataStore.setDaysForClosingBill(daysForClosingBill)
-                    _setDefaultPaymentDate.postValue(true)
-                },
-                onFailure = {
-                    _setDefaultPaymentDate.postValue(false)
-                }
-            )
-
-        }
-    }
-
+    //TODO Change to credit card
     private fun getPaymentDateSwitchState(){
         viewModelScope.async(Dispatchers.IO) {
             val state = dataStore.getPaymentDateSwitchInitialState()
-            _paymentDateSwitchInitialState.postValue(state)
+            _payWithCreditCardSwitchInitialState.postValue(state)
         }
     }
 
+    //TODO Change to credit card
     fun setPaymentDateSwitchInitialState(state : Boolean){
         viewModelScope.async(Dispatchers.IO) {
             dataStore.setPaymentDateSwitchInitialState(state)

@@ -1,4 +1,4 @@
-package com.example.fico.components.charts.renderer
+package com.example.fico.presentation.components.charts.renderer
 
 import android.graphics.Canvas
 import android.graphics.RectF

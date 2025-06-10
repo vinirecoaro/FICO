@@ -11,7 +11,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
-import com.example.fico.components.PersonalizedSnackBars
+import com.example.fico.presentation.components.PersonalizedSnackBars
 import com.example.fico.databinding.ActivitySetDefaultBudgetBinding
 import com.example.fico.presentation.viewmodel.SetDefaultBudgetViewModel
 import com.example.fico.utils.internet.ConnectionFunctions

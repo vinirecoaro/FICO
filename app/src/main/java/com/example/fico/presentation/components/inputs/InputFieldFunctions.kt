@@ -1,4 +1,4 @@
-package com.example.fico.components.inputs
+package com.example.fico.presentation.components.inputs
 
 import android.app.Activity
 import android.content.Context
@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.core.content.ContextCompat
 import com.example.fico.R
-import com.example.fico.components.PersonalizedSnackBars
+import com.example.fico.presentation.components.PersonalizedSnackBars
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 

@@ -1,4 +1,4 @@
-package com.example.fico.components.charts
+package com.example.fico.presentation.components.charts
 
 import android.app.Activity
 import android.content.Context
@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.util.TypedValue
 import android.view.MotionEvent
 import androidx.core.content.ContextCompat
-import com.example.fico.components.charts.renderer.CustomLineChartRenderer
+import com.example.fico.presentation.components.charts.renderer.CustomLineChartRenderer
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry

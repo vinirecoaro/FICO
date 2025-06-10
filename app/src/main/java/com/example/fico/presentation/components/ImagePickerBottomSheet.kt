@@ -1,4 +1,4 @@
-package com.example.fico.components
+package com.example.fico.presentation.components
 
 import android.content.res.Configuration
 import android.os.Bundle

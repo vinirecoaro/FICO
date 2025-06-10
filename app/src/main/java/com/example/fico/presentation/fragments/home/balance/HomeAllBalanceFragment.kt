@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.databinding.FragmentHomeAllBalanceBinding
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.presentation.viewmodel.HomeAllBalanceViewModel
-import com.example.fico.components.charts.ChartsCreator
+import com.example.fico.presentation.components.charts.ChartsCreator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject

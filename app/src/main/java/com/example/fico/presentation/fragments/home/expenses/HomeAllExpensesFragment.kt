@@ -18,7 +18,7 @@ import com.example.fico.databinding.FragmentHomeAllExpensesBinding
 import com.example.fico.model.BarChartParams
 import com.example.fico.presentation.fragments.home.HomeFragmentState
 import com.example.fico.presentation.viewmodel.HomeAllExpensesViewModel
-import com.example.fico.components.charts.renderer.RoundedBarChartRenderer
+import com.example.fico.presentation.components.charts.renderer.RoundedBarChartRenderer
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData

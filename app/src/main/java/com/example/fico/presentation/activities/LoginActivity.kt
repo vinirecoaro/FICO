@@ -14,7 +14,7 @@ import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.utils.UiFunctions
 import com.example.fico.utils.constants.StringConstants
-import com.example.fico.components.inputs.InputFieldFunctions
+import com.example.fico.presentation.components.inputs.InputFieldFunctions
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest

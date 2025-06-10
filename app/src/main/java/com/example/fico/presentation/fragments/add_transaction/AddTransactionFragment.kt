@@ -43,8 +43,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
-import com.example.fico.components.dialogs.Dialogs
-import com.example.fico.components.PersonalizedSnackBars
+import com.example.fico.presentation.components.dialogs.Dialogs
+import com.example.fico.presentation.components.PersonalizedSnackBars
 import com.example.fico.databinding.FragmentAddTransactionBinding
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
@@ -56,7 +56,7 @@ import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
-import com.example.fico.components.inputs.InputFieldFunctions
+import com.example.fico.presentation.components.inputs.InputFieldFunctions
 import java.math.BigDecimal
 import java.math.RoundingMode
 

@@ -1,4 +1,4 @@
-package com.example.fico.components.dialogs
+package com.example.fico.presentation.components.dialogs
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
-import com.example.fico.components.inputs.InputFieldFunctions
+import com.example.fico.presentation.components.inputs.InputFieldFunctions
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.TransactionListAdapter
