@@ -25,7 +25,7 @@ fun Theme(
             primary = colorResource(id = R.color.blue_400),
             onPrimary = colorResource(id = R.color.white),
             secondary = colorResource(id = R.color.teal_200),
-            surface = colorResource(id = R.color.white),
+            surface = colorResource(id = R.color.pearl),
             onSurface = colorResource(id = R.color.black),
             background = colorResource(id = R.color.blue_10),
         )

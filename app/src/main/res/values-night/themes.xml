@@ -12,6 +12,9 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/white</item>
 
+        <!-- Used on background color of dialogs -->
+        <item name="colorSurfaceContainerHigh">@color/black_100</item>
+
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Toolbar icons color -->
