@@ -189,7 +189,8 @@
             android:visibility="gone"
             android:layout_marginTop="32dp"
             android:backgroundTint="?attr/buttonColor"
-            android:text="@string/save"
+            android:text="@string/add"
+            tools:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_credit_card_preview" />

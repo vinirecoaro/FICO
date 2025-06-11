@@ -192,6 +192,10 @@ class StringConstants private constructor() {
         const val DELETE_EARNING_RESULT_FAILURE = 111121
         const val DELETE_RECURRING_TRANSACTION_RESULT_OK = 111122
         const val DELETE_RECURRING_TRANSACTION_RESULT_FAILURE = 111123
+        const val EDIT_CREDIT_CARD_RESULT_OK = 111124
+        const val EDIT_CREDIT_CARD_RESULT_FAILURE = 111125
+        const val DELETE_CREDIT_CARD_RESULT_OK = 111126
+        const val DELETE_CREDIT_CARD_RESULT_FAILURE = 111127
     }
 
     object ADD_TRANSACTION {
@@ -210,6 +214,11 @@ class StringConstants private constructor() {
 
     object TRANSACTION_LIST {
         const val TRANSACTION = "transaction"
+    }
+
+    object CREDIT_CARD_CONFIG {
+        const val CREDIT_CARD = "credit_card"
+        const val MODE = "mode"
     }
 
     object OPERATIONS {
@@ -252,6 +261,8 @@ class StringConstants private constructor() {
         const val THREE_DASH = "---"
         const val NEGATIVE_NUMBER = "negative_number"
         const val POSITIVE_NUMBER = "positive_number"
+        const val ADD_MODE = "add_mode"
+        const val EDIT_MODE = "edit_mode"
     }
 
 }

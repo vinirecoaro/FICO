@@ -86,7 +86,11 @@
     <string name="default_payment_date">Data de Pagamento Padrão</string>
     <string name="credit_card">Cartão de crédito</string>
     <string name="add_credit_card_success_message">Cartão de crédito adicionado com sucesso</string>
+    <string name="edit_credit_card_success_message">Cartão de crédito atualizado com sucesso</string>
+    <string name="delete_credit_card_success_message">Cartão de crédito excluído com sucesso</string>
     <string name="add_credit_card_fail_message">Falha ao adicionar cartão de crédito</string>
+    <string name="edit_credit_card_fail_message">Falha ao atualizar cartão de crédito</string>
+    <string name="delete_credit_card_fail_message">Falha ao excluir cartão de crédito</string>
     <string name="credit_card_name_with_tip">Nome do cartão (apelido)</string>
     <string name="credit_card_list">Lista de cartões</string>
     <string name="default_payment_day">Dia de Pagamento Padrão</string>
@@ -284,6 +288,8 @@
     <string name="light_pink">Rosa claro</string>
     <string name="light_blue">Azul claro</string>
     <string name="cards">Cartões</string>
+
+
 
 
 </resources>

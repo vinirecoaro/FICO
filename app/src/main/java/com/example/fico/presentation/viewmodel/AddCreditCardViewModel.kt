@@ -10,6 +10,7 @@ import com.example.fico.R
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.repositories.CreditCardRepository
+import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,6 +23,15 @@ class AddCreditCardViewModel(
     private val _addCreditCardResult = MutableLiveData<Boolean>()
     val addCreditCardResult : LiveData<Boolean> = _addCreditCardResult
     private val _creditCardColors = MutableLiveData<CreditCardColors>()
+    private var activityMode = StringConstants.GENERAL.ADD_MODE
+
+    fun setActivityMode(mode : String){
+        activityMode = mode
+    }
+
+    fun getActivityMode() : String {
+        return activityMode
+    }
 
     fun getCreditCardColorOptions() : List<CreditCardColors>{
         val colorOptions = listOf(

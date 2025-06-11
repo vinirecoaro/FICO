@@ -17,9 +17,12 @@ import com.example.fico.presentation.components.inputs.InputAdapters
 import com.example.fico.presentation.components.inputs.InputFieldFunctions
 import com.example.fico.presentation.components.inputs.InputValueHandle
 import com.example.fico.databinding.ActivityAddCreditCardBinding
+import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
+import com.example.fico.model.Transaction
 import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
 import com.example.fico.utils.UiFunctions
+import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -36,6 +39,25 @@ class AddCreditCardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val intent = intent
+        if(intent != null){
+            val activityMode = intent.getStringExtra(StringConstants.CREDIT_CARD_CONFIG.MODE)
+            if (activityMode != null) {
+                viewModel.setActivityMode(activityMode)
+            }
+            if(activityMode == StringConstants.GENERAL.EDIT_MODE){
+                val creditCard = intent.getSerializableExtra(StringConstants.CREDIT_CARD_CONFIG.CREDIT_CARD) as? CreditCard
+                if(creditCard != null){
+                    fillFieldsWithCreditCardInfo(creditCard)
+                    showCreditCardPreview(creditCard)
+                    changeComponentsToEditMode()
+                }else{
+                    setResult(StringConstants.RESULT_CODES.EDIT_CREDIT_CARD_RESULT_FAILURE)
+                    finish()
+                }
+            }
+        }
 
         //Insert a back button on Navigation bar
         setSupportActionBar(binding.addCreditCardConfigurationToolbar)
@@ -106,66 +128,57 @@ class AddCreditCardActivity : AppCompatActivity() {
                 if (text.isNotEmpty()) {
                     var day = text.toIntOrNull()
 
-                    //Check and define max possible day on input field
-                    if(day != null && day > 31){
-                        binding.etCreditCardExpirationDay.setText(31.toString())
+                    if(day != null){
+                        if(day > 31){
+                            binding.etCreditCardExpirationDay.setText(31.toString())
+                        }
+                        binding.tvPaymentDate.text = paymentDatePreview(day)
                     }
+                }
+            }
+        })
 
-                    //Check and define payment date simulation on credit card preview
-                    val calendar = java.util.Calendar.getInstance()
+        binding.etCreditCardClosingDay.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-                    // Obtem o ano e mês atuais
-                    val year = calendar.get(java.util.Calendar.YEAR)
-                    val month = calendar.get(java.util.Calendar.MONTH) // 0-based
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-                    // Define o dia no calendário, cuidando para não causar exceção
-                    val maxDayOfMonth = calendar.getActualMaximum(java.util.Calendar.DAY_OF_MONTH)
-                    if (day != null && day in 1..maxDayOfMonth) {
-                        calendar.set(java.util.Calendar.DAY_OF_MONTH, day)
-                        calendar.set(java.util.Calendar.MONTH, month)
-                        calendar.set(java.util.Calendar.YEAR, year)
+            override fun afterTextChanged(s: Editable?) {
+                val text = s.toString()
+                if (text.isNotEmpty()) {
+                    var day = text.toIntOrNull()
 
-                        // Formata a data para exibição
-                        val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-                        val formattedDate = dateFormat.format(calendar.time)
-
-                        binding.tvPaymentDate.text = formattedDate
-                    } else {
-                        day = maxDayOfMonth
-                        calendar.set(java.util.Calendar.DAY_OF_MONTH, day)
-                        calendar.set(java.util.Calendar.MONTH, month)
-                        calendar.set(java.util.Calendar.YEAR, year)
-
-                        // Formata a data para exibição
-                        val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-                        val formattedDate = dateFormat.format(calendar.time)
-                        binding.tvPaymentDate.text = formattedDate
+                    if(day != null){
+                        if(day > 31){
+                            binding.etCreditCardClosingDay.setText(31.toString())
+                        }
                     }
-
                 }
             }
         })
 
         binding.btCreditCardSave.setOnClickListener {
             it.isEnabled = false
-            if(InputFieldFunctions.isFilled(
-                this,
-                binding.btCreditCardSave,
-                binding.etCreditCardName,
-                binding.etCreditCardExpirationDay,
-                binding.etCreditCardClosingDay
-            )){
-                if(ConnectionFunctions.internetConnectionVerification(this)){
-                    lifecycleScope.launch{
-                        viewModel.addCreditCard(
-                            binding.etCreditCardName.text.toString(),
-                            binding.etCreditCardExpirationDay.text.toString().toInt(),
-                            binding.etCreditCardClosingDay.text.toString().toInt(),
-                            viewModel.getCreditCardColors()
-                        )
+            if(viewModel.getActivityMode() == StringConstants.GENERAL.ADD_MODE){
+                if(InputFieldFunctions.isFilled(
+                        this,
+                        binding.btCreditCardSave,
+                        binding.etCreditCardName,
+                        binding.etCreditCardExpirationDay,
+                        binding.etCreditCardClosingDay
+                    )){
+                    if(ConnectionFunctions.internetConnectionVerification(this)){
+                        lifecycleScope.launch{
+                            viewModel.addCreditCard(
+                                binding.etCreditCardName.text.toString(),
+                                binding.etCreditCardExpirationDay.text.toString().toInt(),
+                                binding.etCreditCardClosingDay.text.toString().toInt(),
+                                viewModel.getCreditCardColors()
+                            )
+                        }
+                    }else{
+                        PersonalizedSnackBars.noInternetConnection(binding.btCreditCardSave, this).show()
                     }
-                }else{
-                    PersonalizedSnackBars.noInternetConnection(binding.btCreditCardSave, this).show()
                 }
             }
             it.isEnabled = true
@@ -190,6 +203,64 @@ class AddCreditCardActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun paymentDatePreview(day : Int) : String{
+
+        var innerDay = day
+        //Check and define payment date simulation on credit card preview
+        val calendar = java.util.Calendar.getInstance()
+
+        // Obtem o ano e mês atuais
+        val year = calendar.get(java.util.Calendar.YEAR)
+        val month = calendar.get(java.util.Calendar.MONTH) // 0-based
+
+        // Define o dia no calendário, cuidando para não causar exceção
+        val maxDayOfMonth = calendar.getActualMaximum(java.util.Calendar.DAY_OF_MONTH)
+        if (innerDay in 1..maxDayOfMonth) {
+            calendar.set(java.util.Calendar.DAY_OF_MONTH, innerDay)
+            calendar.set(java.util.Calendar.MONTH, month)
+            calendar.set(java.util.Calendar.YEAR, year)
+
+            // Formata a data para exibição
+            val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            val formattedDate = dateFormat.format(calendar.time)
+
+            return formattedDate
+        } else {
+            innerDay = maxDayOfMonth
+            calendar.set(java.util.Calendar.DAY_OF_MONTH, innerDay)
+            calendar.set(java.util.Calendar.MONTH, month)
+            calendar.set(java.util.Calendar.YEAR, year)
+
+            // Formata a data para exibição
+            val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            val formattedDate = dateFormat.format(calendar.time)
+            return formattedDate
+        }
+    }
+
+    private fun showCreditCardPreview(creditCard : CreditCard){
+        binding.cvCreditCardPreview.visibility = View.VISIBLE
+        binding.tvCreditCardName.text = creditCard.nickName
+        binding.llCreditCardPreview.setBackgroundColor(creditCard.colors.backgroundColor)
+        binding.tvCreditCardName.setTextColor(creditCard.colors.textColor)
+        binding.tvPaymentDate.setTextColor(creditCard.colors.textColor)
+        binding.tvPaymentDateTitle.setTextColor(creditCard.colors.textColor)
+        binding.tvPaymentDate.text = paymentDatePreview(creditCard.expirationDay)
+    }
+
+    private fun fillFieldsWithCreditCardInfo(creditCard : CreditCard){
+        binding.etCreditCardName.setText(creditCard.nickName)
+        binding.etCreditCardExpirationDay.setText(creditCard.expirationDay.toString())
+        binding.etCreditCardClosingDay.setText(creditCard.closingDay.toString())
+        val spannable = InputValueHandle.circleColorfulWithText(binding.actvColors, creditCard.colors.backgroundColor, creditCard.colors.backgroundColorNameRes)
+        binding.actvColors.setText(spannable, false)
+    }
+
+    private fun changeComponentsToEditMode(){
+        binding.btCreditCardSave.setText(R.string.save)
+        binding.btCreditCardSave.visibility = View.VISIBLE
     }
 
 
