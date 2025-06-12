@@ -26,7 +26,8 @@ class AddCreditCardViewModel(
     val editCreditCardResult : LiveData<Boolean> = _editCreditCardResult
     private val _creditCardColors = MutableLiveData<CreditCardColors>()
     private var activityMode = StringConstants.GENERAL.ADD_MODE
-    private var editingEventId = ""
+    private val _editingCreditCard = MutableLiveData<CreditCard>()
+    val editingCreditCard : LiveData<CreditCard> = _editingCreditCard
 
     fun setActivityMode(mode : String){
         activityMode = mode
@@ -36,12 +37,12 @@ class AddCreditCardViewModel(
         return activityMode
     }
 
-    fun setEditingEventId(id : String){
-        editingEventId = id
+    fun setEditingCreditCard(creditCard : CreditCard){
+        _editingCreditCard.value = creditCard
     }
 
-    fun getEditingEventId() : String{
-        return editingEventId
+    fun getEditingCreditCard() : CreditCard{
+        return _editingCreditCard.value!!
     }
 
     fun getCreditCardColorOptions() : List<CreditCardColors>{

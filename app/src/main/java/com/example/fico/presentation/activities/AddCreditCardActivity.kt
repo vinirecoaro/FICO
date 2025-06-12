@@ -49,7 +49,7 @@ class AddCreditCardActivity : AppCompatActivity() {
             if(activityMode == StringConstants.GENERAL.EDIT_MODE){
                 val creditCard = intent.getSerializableExtra(StringConstants.CREDIT_CARD_CONFIG.CREDIT_CARD) as? CreditCard
                 if(creditCard != null){
-                    viewModel.setEditingEventId(creditCard.id)
+                    viewModel.setEditingCreditCard(creditCard)
                     fillFieldsWithCreditCardInfo(creditCard)
                     showCreditCardPreview(creditCard)
                     changeComponentsToEditMode()
@@ -178,7 +178,7 @@ class AddCreditCardActivity : AppCompatActivity() {
                                 )
                             }else if(viewModel.getActivityMode() == StringConstants.GENERAL.EDIT_MODE){
                                 viewModel.editCreditCard(
-                                    viewModel.getEditingEventId(),
+                                    viewModel.getEditingCreditCard().id,
                                     binding.etCreditCardName.text.toString(),
                                     binding.etCreditCardExpirationDay.text.toString().toInt(),
                                     binding.etCreditCardClosingDay.text.toString().toInt(),
@@ -265,6 +265,11 @@ class AddCreditCardActivity : AppCompatActivity() {
         binding.etCreditCardName.setText(creditCard.nickName)
         binding.etCreditCardExpirationDay.setText(creditCard.expirationDay.toString())
         binding.etCreditCardClosingDay.setText(creditCard.closingDay.toString())
+        viewModel.setCreditCardColors(
+            creditCard.colors.backgroundColorNameRes,
+            creditCard.colors.backgroundColor,
+            creditCard.colors.textColor
+        )
         val spannable = InputValueHandle.circleColorfulWithText(binding.actvColors, creditCard.colors.backgroundColor, creditCard.colors.backgroundColorNameRes)
         binding.actvColors.setText(spannable, false)
     }

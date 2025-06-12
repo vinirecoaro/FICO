@@ -10,4 +10,6 @@ interface CreditCardInterface {
 
     suspend fun editCreditCard(creditCard : CreditCard): Result<CreditCard>
 
+    suspend fun deleteCreditCard(creditCard : CreditCard): Result<Unit>
+
 }
