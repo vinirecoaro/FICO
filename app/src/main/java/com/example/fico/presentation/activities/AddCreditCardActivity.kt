@@ -49,6 +49,7 @@ class AddCreditCardActivity : AppCompatActivity() {
             if(activityMode == StringConstants.GENERAL.EDIT_MODE){
                 val creditCard = intent.getSerializableExtra(StringConstants.CREDIT_CARD_CONFIG.CREDIT_CARD) as? CreditCard
                 if(creditCard != null){
+                    viewModel.setEditingEventId(creditCard.id)
                     fillFieldsWithCreditCardInfo(creditCard)
                     showCreditCardPreview(creditCard)
                     changeComponentsToEditMode()
@@ -159,7 +160,6 @@ class AddCreditCardActivity : AppCompatActivity() {
 
         binding.btCreditCardSave.setOnClickListener {
             it.isEnabled = false
-            if(viewModel.getActivityMode() == StringConstants.GENERAL.ADD_MODE){
                 if(InputFieldFunctions.isFilled(
                         this,
                         binding.btCreditCardSave,
@@ -169,18 +169,27 @@ class AddCreditCardActivity : AppCompatActivity() {
                     )){
                     if(ConnectionFunctions.internetConnectionVerification(this)){
                         lifecycleScope.launch{
-                            viewModel.addCreditCard(
-                                binding.etCreditCardName.text.toString(),
-                                binding.etCreditCardExpirationDay.text.toString().toInt(),
-                                binding.etCreditCardClosingDay.text.toString().toInt(),
-                                viewModel.getCreditCardColors()
-                            )
+                            if(viewModel.getActivityMode() == StringConstants.GENERAL.ADD_MODE){
+                                viewModel.addCreditCard(
+                                    binding.etCreditCardName.text.toString(),
+                                    binding.etCreditCardExpirationDay.text.toString().toInt(),
+                                    binding.etCreditCardClosingDay.text.toString().toInt(),
+                                    viewModel.getCreditCardColors()
+                                )
+                            }else if(viewModel.getActivityMode() == StringConstants.GENERAL.EDIT_MODE){
+                                viewModel.editCreditCard(
+                                    viewModel.getEditingEventId(),
+                                    binding.etCreditCardName.text.toString(),
+                                    binding.etCreditCardExpirationDay.text.toString().toInt(),
+                                    binding.etCreditCardClosingDay.text.toString().toInt(),
+                                    viewModel.getCreditCardColors()
+                                )
+                            }
                         }
                     }else{
                         PersonalizedSnackBars.noInternetConnection(binding.btCreditCardSave, this).show()
                     }
                 }
-            }
             it.isEnabled = true
         }
 
@@ -196,13 +205,15 @@ class AddCreditCardActivity : AppCompatActivity() {
             }
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
-            view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, bottomInset)
-            insets
+        viewModel.editCreditCardResult.observe(this){ result ->
+            if(result){
+                setResult(StringConstants.RESULT_CODES.EDIT_CREDIT_CARD_RESULT_OK)
+                finish()
+            }else{
+                setResult(StringConstants.RESULT_CODES.EDIT_CREDIT_CARD_RESULT_FAILURE)
+                finish()
+            }
         }
-
-
     }
 
     private fun paymentDatePreview(day : Int) : String{

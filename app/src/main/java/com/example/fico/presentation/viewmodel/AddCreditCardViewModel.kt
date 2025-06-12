@@ -22,8 +22,11 @@ class AddCreditCardViewModel(
 
     private val _addCreditCardResult = MutableLiveData<Boolean>()
     val addCreditCardResult : LiveData<Boolean> = _addCreditCardResult
+    private val _editCreditCardResult = MutableLiveData<Boolean>()
+    val editCreditCardResult : LiveData<Boolean> = _editCreditCardResult
     private val _creditCardColors = MutableLiveData<CreditCardColors>()
     private var activityMode = StringConstants.GENERAL.ADD_MODE
+    private var editingEventId = ""
 
     fun setActivityMode(mode : String){
         activityMode = mode
@@ -31,6 +34,14 @@ class AddCreditCardViewModel(
 
     fun getActivityMode() : String {
         return activityMode
+    }
+
+    fun setEditingEventId(id : String){
+        editingEventId = id
+    }
+
+    fun getEditingEventId() : String{
+        return editingEventId
     }
 
     fun getCreditCardColorOptions() : List<CreditCardColors>{
@@ -82,6 +93,36 @@ class AddCreditCardViewModel(
                 },
                 onFailure = {
                     _addCreditCardResult.postValue(false)
+                }
+            )
+        }
+    }
+
+    suspend fun editCreditCard(
+        id : String,
+        cardNickName : String,
+        expirationDay : Int,
+        closingDay : Int,
+        creditCardColors : CreditCardColors
+    ){
+        viewModelScope.launch(Dispatchers.IO){
+            val creditCard = CreditCard(
+                id = id,
+                nickName = cardNickName,
+                expirationDay = expirationDay,
+                closingDay = closingDay,
+                colors = creditCardColors
+            )
+
+            creditCardRepository.editCreditCard(creditCard).fold(
+                onSuccess = {
+
+                    dataStore.updateCreditCardList(creditCard)
+
+                    _editCreditCardResult.postValue(true)
+                },
+                onFailure = {
+                    _editCreditCardResult.postValue(false)
                 }
             )
         }

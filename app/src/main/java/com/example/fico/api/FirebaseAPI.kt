@@ -1042,7 +1042,7 @@ class FirebaseAPI(
         }
     }
 
-    override suspend fun addCreditCard(
+    /*override suspend fun addCreditCard(
         creditCard: CreditCard
     ): Result<CreditCard> = withContext(Dispatchers.IO) {
         val updates = mutableMapOf<String, Any>()
@@ -1062,6 +1062,18 @@ class FirebaseAPI(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }*/
+
+    override suspend fun addCreditCard(
+        creditCard: CreditCard
+    ): Result<CreditCard> = withContext(Dispatchers.IO) {
+
+        val creditCardId = credit_card_list.push().key
+        var creditCardWithId = creditCard
+        creditCardWithId.id = creditCardId.toString()
+
+        saveCreditCard(creditCardWithId)
+       
     }
 
     override suspend fun getCreditCardList(): Result<List<CreditCard>>  = withContext(Dispatchers.IO) {
@@ -1090,6 +1102,27 @@ class FirebaseAPI(
             }
         }
 
+    }
+
+    override suspend fun editCreditCard(creditCard: CreditCard): Result<CreditCard> = withContext(Dispatchers.IO){
+        saveCreditCard(creditCard)
+    }
+
+    private suspend fun saveCreditCard(creditCard: CreditCard): Result<CreditCard> = withContext(Dispatchers.IO) {
+        val updates = mutableMapOf<String, Any>()
+        return@withContext try {
+
+            updates.putAll(generateMapToUpdateCreditCardList(creditCard))
+
+            credit_card_list.updateChildren(updates)
+
+            Result.success(creditCard)
+
+        } catch (e: Exception) {
+
+            Result.failure(e)
+
+        }
     }
 
 

@@ -8,4 +8,6 @@ interface CreditCardInterface {
 
     suspend fun getCreditCardList() : Result<List<CreditCard>>
 
+    suspend fun editCreditCard(creditCard : CreditCard): Result<CreditCard>
+
 }
