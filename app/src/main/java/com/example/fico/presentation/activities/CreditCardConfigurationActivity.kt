@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -18,6 +20,7 @@ import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.components.PersonalizedSnackBars
 import com.example.fico.presentation.viewmodel.CreditCardConfigurationViewModel
 import com.example.fico.utils.constants.StringConstants
+import com.example.fico.utils.internet.ConnectionFunctions
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,9 +40,14 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
             StringConstants.RESULT_CODES.EDIT_CREDIT_CARD_RESULT_FAILURE -> {
                 PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.edit_credit_card_fail_message)).show()
             }
+            StringConstants.RESULT_CODES.DELETE_CREDIT_CARD_RESULT_OK -> {
+                PersonalizedSnackBars.successMessage(binding.root, getString(R.string.delete_credit_card_success_message)).show()
+            }
+            StringConstants.RESULT_CODES.DELETE_CREDIT_CARD_RESULT_FAILURE -> {
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.delete_credit_card_fail_message)).show()
+            }
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {

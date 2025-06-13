@@ -4,6 +4,8 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
@@ -20,6 +22,7 @@ import com.example.fico.databinding.ActivityAddCreditCardBinding
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.model.Transaction
+import com.example.fico.presentation.components.dialogs.Dialogs
 import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
 import com.example.fico.utils.UiFunctions
 import com.example.fico.utils.constants.StringConstants
@@ -70,6 +73,37 @@ class AddCreditCardActivity : AppCompatActivity() {
 
         setUpListeners()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.add_credit_card_menu, menu)
+        return true
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.delete_credit_card -> {
+                if(ConnectionFunctions.internetConnectionVerification(this)){
+                    dialogDeleteExpense()
+                }else{
+                    PersonalizedSnackBars.noInternetConnection(binding.root, this).show()
+                }
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+
+        if(viewModel.getActivityMode() == StringConstants.GENERAL.EDIT_MODE){
+            val clearFilterItem = menu!!.findItem(R.id.delete_credit_card)
+            clearFilterItem.isVisible = true
+        }
+
+        return super.onPrepareOptionsMenu(menu)
     }
 
     private fun initComponents(){
@@ -214,6 +248,16 @@ class AddCreditCardActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        viewModel.deleteCreditCardResult.observe(this){ result ->
+            if(result){
+                setResult(StringConstants.RESULT_CODES.DELETE_CREDIT_CARD_RESULT_OK)
+                finish()
+            }else{
+                setResult(StringConstants.RESULT_CODES.DELETE_CREDIT_CARD_RESULT_FAILURE)
+                finish()
+            }
+        }
     }
 
     private fun paymentDatePreview(day : Int) : String{
@@ -279,6 +323,20 @@ class AddCreditCardActivity : AppCompatActivity() {
         binding.btCreditCardSave.visibility = View.VISIBLE
     }
 
-
+    private fun dialogDeleteExpense(){
+        val dialog = Dialogs.dialogModelOne(
+            this,
+            this,
+            getString(R.string.delete_credit_card),
+            getString(R.string.delete_credit_card_dialog_message),
+            getString(R.string.confirm)
+        ){
+            lifecycleScope.launch {
+                val expense = viewModel.getEditingCreditCard()
+                viewModel.deleteCreditCard(expense)
+            }
+        }
+        dialog.show()
+    }
 
 }

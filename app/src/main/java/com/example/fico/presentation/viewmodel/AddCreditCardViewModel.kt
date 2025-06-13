@@ -24,10 +24,11 @@ class AddCreditCardViewModel(
     val addCreditCardResult : LiveData<Boolean> = _addCreditCardResult
     private val _editCreditCardResult = MutableLiveData<Boolean>()
     val editCreditCardResult : LiveData<Boolean> = _editCreditCardResult
+    private val _deleteCreditCardResult = MutableLiveData<Boolean>()
+    val deleteCreditCardResult : LiveData<Boolean> = _deleteCreditCardResult
     private val _creditCardColors = MutableLiveData<CreditCardColors>()
     private var activityMode = StringConstants.GENERAL.ADD_MODE
     private val _editingCreditCard = MutableLiveData<CreditCard>()
-    val editingCreditCard : LiveData<CreditCard> = _editingCreditCard
 
     fun setActivityMode(mode : String){
         activityMode = mode
@@ -124,6 +125,20 @@ class AddCreditCardViewModel(
                 },
                 onFailure = {
                     _editCreditCardResult.postValue(false)
+                }
+            )
+        }
+    }
+
+    suspend fun deleteCreditCard(creditCard : CreditCard){
+        viewModelScope.launch(Dispatchers.IO){
+            creditCardRepository.deleteCreditCard(creditCard).fold(
+                onSuccess = {
+                    dataStore.deleteFromCreditCardList(creditCard)
+                    _deleteCreditCardResult.postValue(true)
+                },
+                onFailure = {
+                    _deleteCreditCardResult.postValue(false)
                 }
             )
         }

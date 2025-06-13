@@ -462,4 +462,15 @@ class DataStoreManager (context: Context) {
         return Gson().fromJson(creditCardListString, object : TypeToken<List<CreditCard>>() {}.type)
     }
 
+    suspend fun deleteFromCreditCardList(creditCard : CreditCard){
+        dataStore.edit { preferences ->
+            val existingCreditCardListString = preferences[creditCardListKey] ?: "[]"
+            val existingCreditCardList = Gson().fromJson(existingCreditCardListString, Array<CreditCard>::class.java).toMutableList()
+            if(existingCreditCardList.find { it.id == creditCard.id } != null){
+                existingCreditCardList.removeAll { it.id == creditCard.id }
+            }
+            val creditCardListString = Gson().toJson(existingCreditCardList)
+            preferences[creditCardListKey] = creditCardListString
+        }
+    }
 }
