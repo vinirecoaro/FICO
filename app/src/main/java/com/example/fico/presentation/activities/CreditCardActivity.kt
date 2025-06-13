@@ -10,34 +10,29 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
+import com.example.fico.databinding.ActivityCreditCardBinding
 import com.example.fico.presentation.components.PersonalizedSnackBars
 import com.example.fico.presentation.components.inputs.InputAdapters
 import com.example.fico.presentation.components.inputs.InputFieldFunctions
 import com.example.fico.presentation.components.inputs.InputValueHandle
-import com.example.fico.databinding.ActivityAddCreditCardBinding
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
-import com.example.fico.model.Transaction
 import com.example.fico.presentation.components.dialogs.Dialogs
 import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
 import com.example.fico.utils.UiFunctions
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class AddCreditCardActivity : AppCompatActivity() {
+class CreditCardActivity : AppCompatActivity() {
 
-    private val binding by lazy{ ActivityAddCreditCardBinding.inflate(layoutInflater)}
+    private val binding by lazy{ ActivityCreditCardBinding.inflate(layoutInflater)}
     private val viewModel : AddCreditCardViewModel by inject()
     lateinit var adapter : ArrayAdapter<CreditCardColors>
-    lateinit var setCardAsDefaultOptionGlobal : MenuItem
+    private lateinit var setCardAsDefaultOptionGlobal : MenuItem
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {

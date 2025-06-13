@@ -4,10 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -16,12 +12,9 @@ import com.example.fico.R
 import com.example.fico.presentation.compose.components.ComposeDialogs
 import com.example.fico.databinding.ActivityCreditCardConfigurationBinding
 import com.example.fico.model.CreditCard
-import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.components.PersonalizedSnackBars
 import com.example.fico.presentation.viewmodel.CreditCardConfigurationViewModel
 import com.example.fico.utils.constants.StringConstants
-import com.example.fico.utils.internet.ConnectionFunctions
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -71,7 +64,7 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
         }
 
         binding.llRegisterCreditCard.setOnClickListener {
-            startActivity(Intent(this, AddCreditCardActivity::class.java))
+            startActivity(Intent(this, CreditCardActivity::class.java))
         }
 
         binding.llCreditCardList.setOnClickListener {
@@ -104,7 +97,7 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
     }
 
     private fun editCreditCard(creditCard : CreditCard, defaultCreditCardId : String){
-        val intent = Intent(this, AddCreditCardActivity::class.java)
+        val intent = Intent(this, CreditCardActivity::class.java)
             .putExtra(StringConstants.CREDIT_CARD_CONFIG.CREDIT_CARD, creditCard)
             .putExtra(StringConstants.DATABASE.DEFAULT_CREDIT_CARD_ID, defaultCreditCardId)
             .putExtra(StringConstants.CREDIT_CARD_CONFIG.MODE, StringConstants.GENERAL.EDIT_MODE)
