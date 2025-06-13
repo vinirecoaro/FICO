@@ -40,6 +40,7 @@ class RemoteDatabaseViewModel(
     private suspend fun secondaryThread(){
         withContext(Dispatchers.IO){
             getCreditCardList()
+            getDefaultCreditCardId()
         }
     }
 
@@ -239,6 +240,17 @@ class RemoteDatabaseViewModel(
             },
             onFailure = {
                 Log.e("LogoViewModel", "Error updating credit card list: ${it.message}")
+            }
+        )
+    }
+
+    private suspend fun getDefaultCreditCardId(){
+        creditCardRepository.getDefaultCreditCard().fold(
+            onSuccess = { creditCardId ->
+                dataStore.setDefaultCreditCardId(creditCardId)
+            },
+            onFailure = {
+                Log.e("LogoViewModel", "Error updating default credit card id: ${it.message}")
             }
         )
     }

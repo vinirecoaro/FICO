@@ -37,6 +37,7 @@ class AddCreditCardActivity : AppCompatActivity() {
     private val binding by lazy{ ActivityAddCreditCardBinding.inflate(layoutInflater)}
     private val viewModel : AddCreditCardViewModel by inject()
     lateinit var adapter : ArrayAdapter<CreditCardColors>
+    lateinit var setCardAsDefaultOptionGlobal : MenuItem
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +53,11 @@ class AddCreditCardActivity : AppCompatActivity() {
             if(activityMode == StringConstants.GENERAL.EDIT_MODE){
                 val creditCard = intent.getSerializableExtra(StringConstants.CREDIT_CARD_CONFIG.CREDIT_CARD) as? CreditCard
                 if(creditCard != null){
+                    val defaultCreditCardId = intent.getStringExtra(StringConstants.DATABASE.DEFAULT_CREDIT_CARD_ID)
+                    viewModel.setDefaultCreditCardId(defaultCreditCardId!!)
+                    if(defaultCreditCardId == creditCard.id){
+                        binding.ivDefaultCardIcon.visibility = View.VISIBLE
+                    }
                     viewModel.setEditingCreditCard(creditCard)
                     fillFieldsWithCreditCardInfo(creditCard)
                     showCreditCardPreview(creditCard)
@@ -107,11 +113,20 @@ class AddCreditCardActivity : AppCompatActivity() {
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
 
         if(viewModel.getActivityMode() == StringConstants.GENERAL.EDIT_MODE){
-            val deleteCreditCardIcon = menu!!.findItem(R.id.delete_credit_card)
-            deleteCreditCardIcon.isVisible = true
-            val setCardAsDefaultOption = menu!!.findItem(R.id.set_credit_card_as_default)
-            setCardAsDefaultOption.isVisible = true
+            if(menu != null){
+                //Delete Icon
+                val deleteCreditCardIcon = menu.findItem(R.id.delete_credit_card)
+                deleteCreditCardIcon.isVisible = true
 
+                //Set default credit card option
+                val setCardAsDefaultOption = menu.findItem(R.id.set_credit_card_as_default)
+                setCardAsDefaultOptionGlobal = setCardAsDefaultOption
+                val editingCreditCard = viewModel.getEditingCreditCard()
+                val defaultCreditCardId = viewModel.getDefaultCreditCardId()
+                if(defaultCreditCardId != editingCreditCard.id){
+                    setCardAsDefaultOption.isVisible = true
+                }
+            }
         }
 
         return super.onPrepareOptionsMenu(menu)
@@ -273,6 +288,7 @@ class AddCreditCardActivity : AppCompatActivity() {
         viewModel.setCreditCardAsDefaultResult.observe(this){ result ->
             if(result){
                 PersonalizedSnackBars.successMessage(binding.root, getString(R.string.set_default_credit_card_success_message)).show()
+                changeComponentsToDefaultCreditCard()
             }else{
                 PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.set_default_credit_card_fail_message)).show()
             }
@@ -373,6 +389,11 @@ class AddCreditCardActivity : AppCompatActivity() {
             }
         }
         dialog.show()
+    }
+
+    private fun changeComponentsToDefaultCreditCard(){
+        setCardAsDefaultOptionGlobal.isVisible = false
+        binding.ivDefaultCardIcon.visibility = View.VISIBLE
     }
 
 }

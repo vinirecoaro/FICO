@@ -85,7 +85,9 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
                     items = creditCardList,
                     contextView = binding.root
                 ) { selected ->
-                    editCreditCard(selected)
+                    lifecycleScope.launch(Dispatchers.IO){
+                        editCreditCard(selected, viewModel.getDefaultCreditCardId().await())
+                    }
                 }
             }
         }
@@ -101,9 +103,10 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
         }
     }
 
-    private fun editCreditCard(creditCard : CreditCard){
+    private fun editCreditCard(creditCard : CreditCard, defaultCreditCardId : String){
         val intent = Intent(this, AddCreditCardActivity::class.java)
             .putExtra(StringConstants.CREDIT_CARD_CONFIG.CREDIT_CARD, creditCard)
+            .putExtra(StringConstants.DATABASE.DEFAULT_CREDIT_CARD_ID, defaultCreditCardId)
             .putExtra(StringConstants.CREDIT_CARD_CONFIG.MODE, StringConstants.GENERAL.EDIT_MODE)
         startAddCreditCardActivityForResult.launch(intent)
     }

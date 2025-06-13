@@ -8,9 +8,11 @@ import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.CreditCard
 import com.example.fico.repositories.CreditCardRepository
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CreditCardConfigurationViewModel(
     private val dataStore : DataStoreManager
@@ -46,4 +48,11 @@ class CreditCardConfigurationViewModel(
             _getCreditCardList.postValue(creditCardList)
         }
     }
+
+    fun getDefaultCreditCardId(): Deferred<String> {
+        return viewModelScope.async(Dispatchers.IO) {
+            dataStore.getDefaultCreditCardId()
+        }
+    }
+
 }

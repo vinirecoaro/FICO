@@ -44,7 +44,7 @@ class DataStoreManager (context: Context) {
         val blockAppStateKey = stringPreferencesKey(StringConstants.DATA_STORE.BLOCK_APP_STATE_KEY)
         val firebaseDatabaseFixingVersionKey = stringPreferencesKey(StringConstants.DATA_STORE.FIREBASE_DATABASE_FIXING_VERSION_KEY)
         val creditCardListKey = stringPreferencesKey(StringConstants.DATA_STORE.CREDIT_CARD_LIST_KEY)
-        val defaultCreditCardIdKey = stringPreferencesKey(StringConstants.DATA_STORE.CREDIT_CARD_LIST_KEY)
+        val defaultCreditCardIdKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_CREDIT_CARD_ID_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
