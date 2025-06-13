@@ -7,4 +7,9 @@
         android:icon="@drawable/delete_icon_24"
         android:visible="false"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/set_credit_card_as_default"
+        android:title="@string/set_credit_card_as_default"
+        android:visible="false"/>
 </menu>

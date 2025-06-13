@@ -12,4 +12,7 @@ interface CreditCardInterface {
 
     suspend fun deleteCreditCard(creditCard : CreditCard): Result<Unit>
 
+    suspend fun setCreditCardAsDefault(creditCardId : String): Result<Unit>
+
+    suspend fun getDefaultCreditCard(): Result<String>
 }

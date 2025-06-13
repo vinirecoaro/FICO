@@ -44,6 +44,7 @@ class DataStoreManager (context: Context) {
         val blockAppStateKey = stringPreferencesKey(StringConstants.DATA_STORE.BLOCK_APP_STATE_KEY)
         val firebaseDatabaseFixingVersionKey = stringPreferencesKey(StringConstants.DATA_STORE.FIREBASE_DATABASE_FIXING_VERSION_KEY)
         val creditCardListKey = stringPreferencesKey(StringConstants.DATA_STORE.CREDIT_CARD_LIST_KEY)
+        val defaultCreditCardIdKey = stringPreferencesKey(StringConstants.DATA_STORE.CREDIT_CARD_LIST_KEY)
     }
 
     suspend fun updateAndResetExpenseList(expenseList : List<Expense>){
@@ -471,6 +472,25 @@ class DataStoreManager (context: Context) {
             }
             val creditCardListString = Gson().toJson(existingCreditCardList)
             preferences[creditCardListKey] = creditCardListString
+        }
+    }
+
+    suspend fun setDefaultCreditCardId(creditCardId : String){
+        dataStore.edit { preferences ->
+            preferences[defaultCreditCardIdKey] = creditCardId
+        }
+    }
+
+    suspend fun getDefaultCreditCardId() : String {
+        val defaultCreditCardId = dataStore.data.map { preferences ->
+            preferences[defaultCreditCardIdKey]
+        }.first()
+        return defaultCreditCardId ?: ""
+    }
+
+    suspend fun clearDefaultCreditCardId(){
+        dataStore.edit { preferences ->
+            preferences[defaultCreditCardIdKey] = ""
         }
     }
 }

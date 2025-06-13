@@ -980,65 +980,12 @@ class FirebaseAPI(
         return checkIfExistsOnDatabse(expenses)
     }
 
-    suspend fun setDefaultPaymentDay(paymentDay: String, daysForClosingBill : String): Result<Unit> = withContext(Dispatchers.IO){
+    private suspend fun setDefaultExpenseValue(key : String, value : String): Result<Unit> = withContext(Dispatchers.IO){
         try{
-            default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY).setValue(paymentDay)
-            default_expense_values.child(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL).setValue(daysForClosingBill)
+            default_expense_values.child(key).setValue(value)
             Result.success(Unit)
         }catch (e : Exception){
             Result.failure(e)
-        }
-    }
-
-    override suspend fun getDefaultPaymentDay(): Result<String> = withContext(Dispatchers.IO){
-        suspendCoroutine{ continuation ->
-            try {
-                default_expense_values.child(StringConstants.DATABASE.PAYMENT_DAY)
-                    .addListenerForSingleValueEvent(object : ValueEventListener{
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if(snapshot.value != null){
-                            val day = snapshot.value.toString()
-                            continuation.resume(Result.success(day))
-                        }else{
-                            continuation.resume(Result.success(""))
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        continuation.resume(Result.failure(Exception(error.message)))
-                    }
-
-                })
-
-            }catch (error:Exception){
-                continuation.resume(Result.failure(error))
-            }
-        }
-    }
-
-    override suspend fun getDaysForClosingBill(): Result<String> = withContext(Dispatchers.IO){
-        suspendCoroutine{ continuation ->
-            try {
-                default_expense_values.child(StringConstants.DATABASE.DAYS_FOR_CLOSING_BILL)
-                    .addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if(snapshot.value != null){
-                                val daysForClosingBill = snapshot.value.toString()
-                                continuation.resume(Result.success(daysForClosingBill))
-                            }else{
-                                continuation.resume(Result.success(""))
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            continuation.resume(Result.failure(Exception(error.message)))
-                        }
-
-                    })
-
-            }catch (error : Exception){
-                continuation.resume(Result.failure(error))
-            }
         }
     }
 
@@ -1088,6 +1035,30 @@ class FirebaseAPI(
 
     override suspend fun deleteCreditCard(creditCard: CreditCard): Result<Unit> {
         return deleteItemFromNode(creditCard.id, credit_card_list)
+    }
+
+    override suspend fun setCreditCardAsDefault(creditCardId: String): Result<Unit> = withContext(Dispatchers.IO){
+        setDefaultExpenseValue(StringConstants.DATABASE.DEFAULT_CREDIT_CARD_ID, creditCardId)
+    }
+
+    override suspend fun getDefaultCreditCard(): Result<String> = withContext(Dispatchers.IO) {
+        suspendCoroutine{ continuation ->
+            try{
+                default_expense_values.child(StringConstants.DATABASE.DEFAULT_CREDIT_CARD_ID)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val value = snapshot.value.toString()
+                            continuation.resume(Result.success(value))
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            continuation.resume(Result.failure(Exception(error.message)))
+                        }
+                    })
+            }catch (error : Exception){
+                continuation.resume(Result.failure(error))
+            }
+        }
     }
 
     private suspend fun saveCreditCard(creditCard: CreditCard): Result<CreditCard> = withContext(Dispatchers.IO) {

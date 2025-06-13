@@ -10,8 +10,6 @@ class StringConstants private constructor() {
         const val PRICE = "price"
         const val TYPE = "type"
         const val PAYMENT_DATE = "payment_date"
-        const val PAYMENT_DAY = "payment_day"
-        const val DAYS_FOR_CLOSING_BILL = "days_for_closing_bill"
         const val PURCHASE_DATE = "purchase_date"
         const val INPUT_DATE_TIME = "input_date_time"
         const val DATE = "date"
@@ -42,6 +40,7 @@ class StringConstants private constructor() {
         const val CREDIT_CARD_LIST = "creditCardList"
         const val VALUE = "value"
         const val BALANCE = "value"
+        const val DEFAULT_CREDIT_CARD_ID = "default_credit_card_id"
     }
 
     object GENERAL_CONFIGURATION_LIST {
@@ -167,6 +166,7 @@ class StringConstants private constructor() {
         const val BLOCK_APP_STATE_KEY = "BlockAppStateKey"
         const val FIREBASE_DATABASE_FIXING_VERSION_KEY = "FirebaseDatabaseFixingVersionKey"
         const val CREDIT_CARD_LIST_KEY = "CreditCardListKey"
+        const val DEFAULT_CREDIT_CARD_ID_KEY = "default_credit_card_id_key"
     }
 
     object VERSION{

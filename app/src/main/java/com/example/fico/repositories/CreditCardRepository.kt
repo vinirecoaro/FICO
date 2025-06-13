@@ -16,4 +16,10 @@ class CreditCardRepository(private val creditCardInterface: CreditCardInterface)
     suspend fun deleteCreditCard(creditCard : CreditCard): Result<Unit> {
         return creditCardInterface.deleteCreditCard(creditCard)
     }
+    suspend fun setCreditCardAsDefault(creditCardId : String): Result<Unit> {
+        return creditCardInterface.setCreditCardAsDefault(creditCardId)
+    }
+    suspend fun getDefaultCreditCard(): Result<String> {
+        return creditCardInterface.getDefaultCreditCard()
+    }
 }

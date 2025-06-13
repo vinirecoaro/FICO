@@ -64,7 +64,7 @@ class AddCreditCardActivity : AppCompatActivity() {
         }
 
         //Insert a back button on Navigation bar
-        setSupportActionBar(binding.addCreditCardConfigurationToolbar)
+        setSupportActionBar(binding.addCreditCardToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         adapter = InputAdapters.colorAutoCompleteTextInputLayout(this, viewModel.getCreditCardColorOptions())
@@ -85,7 +85,15 @@ class AddCreditCardActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.delete_credit_card -> {
                 if(ConnectionFunctions.internetConnectionVerification(this)){
-                    dialogDeleteExpense()
+                    dialogDeleteCreditCard()
+                }else{
+                    PersonalizedSnackBars.noInternetConnection(binding.root, this).show()
+                }
+                return true
+            }
+            R.id.set_credit_card_as_default -> {
+                if(ConnectionFunctions.internetConnectionVerification(this)){
+                    dialogSetCardAsDefault()
                 }else{
                     PersonalizedSnackBars.noInternetConnection(binding.root, this).show()
                 }
@@ -99,8 +107,11 @@ class AddCreditCardActivity : AppCompatActivity() {
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
 
         if(viewModel.getActivityMode() == StringConstants.GENERAL.EDIT_MODE){
-            val clearFilterItem = menu!!.findItem(R.id.delete_credit_card)
-            clearFilterItem.isVisible = true
+            val deleteCreditCardIcon = menu!!.findItem(R.id.delete_credit_card)
+            deleteCreditCardIcon.isVisible = true
+            val setCardAsDefaultOption = menu!!.findItem(R.id.set_credit_card_as_default)
+            setCardAsDefaultOption.isVisible = true
+
         }
 
         return super.onPrepareOptionsMenu(menu)
@@ -114,7 +125,7 @@ class AddCreditCardActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setUpListeners(){
-        binding.addCreditCardConfigurationToolbar.setNavigationOnClickListener {
+        binding.addCreditCardToolbar.setNavigationOnClickListener {
             finish()
         }
 
@@ -258,6 +269,14 @@ class AddCreditCardActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        viewModel.setCreditCardAsDefaultResult.observe(this){ result ->
+            if(result){
+                PersonalizedSnackBars.successMessage(binding.root, getString(R.string.set_default_credit_card_success_message)).show()
+            }else{
+                PersonalizedSnackBars.failureMessage(binding.root, getString(R.string.set_default_credit_card_fail_message)).show()
+            }
+        }
     }
 
     private fun paymentDatePreview(day : Int) : String{
@@ -319,11 +338,12 @@ class AddCreditCardActivity : AppCompatActivity() {
     }
 
     private fun changeComponentsToEditMode(){
+        binding.addCreditCardToolbar.title = getString(R.string.edit_credit_card_actv_title)
         binding.btCreditCardSave.setText(R.string.save)
         binding.btCreditCardSave.visibility = View.VISIBLE
     }
 
-    private fun dialogDeleteExpense(){
+    private fun dialogDeleteCreditCard(){
         val dialog = Dialogs.dialogModelOne(
             this,
             this,
@@ -332,8 +352,24 @@ class AddCreditCardActivity : AppCompatActivity() {
             getString(R.string.confirm)
         ){
             lifecycleScope.launch {
-                val expense = viewModel.getEditingCreditCard()
-                viewModel.deleteCreditCard(expense)
+                val creditCard = viewModel.getEditingCreditCard()
+                viewModel.deleteCreditCard(creditCard)
+            }
+        }
+        dialog.show()
+    }
+
+    private fun dialogSetCardAsDefault(){
+        val dialog = Dialogs.dialogModelOne(
+            this,
+            this,
+            getString(R.string.default_card),
+            getString(R.string.set_default_credit_card_message),
+            getString(R.string.confirm)
+        ){
+            lifecycleScope.launch {
+                val creditCard = viewModel.getEditingCreditCard()
+                viewModel.setCreditCardAsDefault(creditCard.id)
             }
         }
         dialog.show()

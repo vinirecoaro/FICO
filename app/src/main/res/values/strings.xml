@@ -81,8 +81,8 @@
     <string name="closing_day">Dia de fechamento</string>
     <string name="expiration">Vencimento</string>
     <string name="days_for_closing">Dias para o Fechamento</string>
-    <string name="set_default_payment_date_success_message">Data de pagamento padrão definido com sucesso</string>
-    <string name="set_default_payment_date_fail_message">Falha ao definir data de pagamento padrão</string>
+    <string name="set_default_credit_card_success_message">Cartão de crédito padrão definido com sucesso</string>
+    <string name="set_default_credit_card_fail_message">Falha ao definir cartão de crédito padrão</string>
     <string name="default_payment_date">Data de Pagamento Padrão</string>
     <string name="credit_card">Cartão de crédito</string>
     <string name="add_credit_card_success_message">Cartão de crédito adicionado com sucesso</string>
@@ -103,8 +103,11 @@
     <string name="payment_day_info_message">Dados utilizados para facilitar a inclusão de compras feitas com cartão de crédito.\nInformar o dia de vencimento e quantos dias para o fechamento da fatura do cartão de crédito.</string>
     <string name="confirm">Confirmar</string>
     <string name="delete">Apagar</string>
+    <string name="set_credit_card_as_default">Definir Cartão como padrão</string>
     <string name="delete_expense">Apagar Despesa</string>
     <string name="delete_credit_card">Apagar Cartão de Crédito</string>
+    <string name="default_card">Cartão Padrão</string>
+    <string name="set_default_credit_card_message">Definir este cartão como padrão?</string>
     <string name="delete_recurring_expense">Apagar Despesa Recorrente</string>
     <string name="delete_recurring_earning">Apagar Receita Recorrente</string>
     <string name="delete_earning">Apagar Receita</string>
@@ -226,6 +229,7 @@
     <string name="edit_recurring_transaction_message_step_2">Selecione o recurso que deseja acessar</string>
     <string name="edit">Editar</string>
     <string name="edit_name">Editar Nome</string>
+    <string name="edit_credit_card_actv_title">Editar Cartão de Crédito</string>
     <string name="edit_name_success_message">Nome redefinido com sucesso</string>
     <string name="edit_name_failure_message">Falha ao redefinir o nome</string>
     <string name="edit_earning">Editar Receita</string>

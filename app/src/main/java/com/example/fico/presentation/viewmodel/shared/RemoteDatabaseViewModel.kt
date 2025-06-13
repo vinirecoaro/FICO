@@ -96,34 +96,10 @@ class RemoteDatabaseViewModel(
         transactionsRepository.getDefaultBudget().fold(
             onSuccess = { defaultBudget ->
                 dataStore.updateDefaultBudget(defaultBudget)
-                getDefaultPaymentDay()
+                getEarningList()
             },
             onFailure = {error ->
                 Log.e("LogoViewModel", "Error getting default budget: ${error.message}")
-            }
-        )
-    }
-
-    private suspend fun getDefaultPaymentDay(){
-        transactionsRepository.getDefaultPaymentDay().fold(
-            onSuccess = { defaultPaymentDay ->
-                dataStore.setDefaultPaymentDay(defaultPaymentDay)
-                getDaysForClosingBill()
-            },
-            onFailure = { error ->
-                Log.e("LogoViewModel", "Error getting default payment day: ${error.message}")
-            }
-        )
-    }
-
-    private suspend fun getDaysForClosingBill(){
-        transactionsRepository.getDaysForClosingBill().fold(
-            onSuccess = { daysForClosingBill ->
-                dataStore.setDaysForClosingBill(daysForClosingBill)
-                getEarningList()
-            },
-            onFailure = {
-                Log.e("LogoViewModel", "Error getting days for closing bill: ${it.message}")
             }
         )
     }
