@@ -35,7 +35,9 @@ class ComposeDialogs {
             cardName: String,
             paymentDayLabel: String,
             paymentDayValue: String,
-            chipIconResId: Int
+            chipIconResId: Int,
+            isDefault: Boolean = false,
+            defaultIconResId: Int? = null
         ) {
             Card(
                 modifier = modifier
@@ -44,46 +46,58 @@ class ComposeDialogs {
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                Row(
-                    modifier = Modifier
-                        .height(60.dp)
-                        .background(Color(backgroundColor))
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = chipIconResId),
-                        contentDescription = "Chip",
+                Box{
+                    Row(
                         modifier = Modifier
-                            .size(30.dp)
-                            .padding(start = 6.dp)
-                    )
-
-                    Text(
-                        text = cardName,
-                        color = Color(textColor),
-                        fontSize = 16.sp,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 12.dp, end = 12.dp)
-                    )
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(end = 12.dp)
+                            .height(60.dp)
+                            .background(Color(backgroundColor))
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = paymentDayLabel,
-                            color = Color(textColor),
-                            fontSize = 11.sp
+                        Image(
+                            painter = painterResource(id = chipIconResId),
+                            contentDescription = "Chip",
+                            modifier = Modifier
+                                .size(30.dp)
+                                .padding(start = 6.dp)
                         )
+
                         Text(
-                            text = paymentDayValue,
+                            text = cardName,
                             color = Color(textColor),
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(top = 0.dp)
+                            fontSize = 16.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 12.dp, end = 12.dp)
+                        )
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(end = 12.dp)
+                        ) {
+                            Text(
+                                text = paymentDayLabel,
+                                color = Color(textColor),
+                                fontSize = 11.sp
+                            )
+                            Text(
+                                text = paymentDayValue,
+                                color = Color(textColor),
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(top = 0.dp)
+                            )
+                        }
+                    }
+                    if (isDefault && defaultIconResId != null) {
+                        Image(
+                            painter = painterResource(id = defaultIconResId),
+                            contentDescription = "Cartão padrão",
+                            modifier = Modifier
+                                .size(20.dp)
+                                .align(Alignment.TopStart)
+                                .offset(x = 4.dp, y = 4.dp)
                         )
                     }
                 }
