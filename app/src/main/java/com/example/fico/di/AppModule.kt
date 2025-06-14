@@ -9,7 +9,7 @@ import com.example.fico.interfaces.AuthInterface
 import com.example.fico.interfaces.CreditCardInterface
 import com.example.fico.interfaces.TransactionsInterface
 import com.example.fico.interfaces.UserDataInterface
-import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
+import com.example.fico.presentation.viewmodel.CreditCardViewModel
 import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.example.fico.presentation.viewmodel.BudgetConfigurationListViewModel
 import com.example.fico.presentation.viewmodel.BudgetPerMonthViewModel
@@ -124,8 +124,8 @@ val appModule = module {
         )
     }
 
-    factory<AddCreditCardViewModel> {
-        AddCreditCardViewModel(
+    factory<CreditCardViewModel> {
+        CreditCardViewModel(
             dataStore = get(),
             creditCardRepository = get()
         )

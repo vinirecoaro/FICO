@@ -13,9 +13,8 @@ import com.example.fico.repositories.CreditCardRepository
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class AddCreditCardViewModel(
+class CreditCardViewModel(
     private val dataStore : DataStoreManager,
     private val creditCardRepository : CreditCardRepository,
 ) : ViewModel() {
@@ -145,6 +144,9 @@ class AddCreditCardViewModel(
         viewModelScope.launch(Dispatchers.IO){
             creditCardRepository.deleteCreditCard(creditCard).fold(
                 onSuccess = {
+                    if(creditCard.id == defaultCreditCardId.value){
+                        setCreditCardAsDefault("")
+                    }
                     dataStore.deleteFromCreditCardList(creditCard)
                     _deleteCreditCardResult.postValue(true)
                 },

@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.dataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityCreditCardBinding
@@ -20,7 +21,7 @@ import com.example.fico.presentation.components.inputs.InputValueHandle
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.components.dialogs.Dialogs
-import com.example.fico.presentation.viewmodel.AddCreditCardViewModel
+import com.example.fico.presentation.viewmodel.CreditCardViewModel
 import com.example.fico.utils.UiFunctions
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
@@ -30,11 +31,12 @@ import org.koin.android.ext.android.inject
 class CreditCardActivity : AppCompatActivity() {
 
     private val binding by lazy{ ActivityCreditCardBinding.inflate(layoutInflater)}
-    private val viewModel : AddCreditCardViewModel by inject()
+    private val viewModel : CreditCardViewModel by inject()
     lateinit var adapter : ArrayAdapter<CreditCardColors>
     private lateinit var setCardAsDefaultOptionGlobal : MenuItem
 
     @RequiresApi(Build.VERSION_CODES.M)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

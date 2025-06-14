@@ -10,18 +10,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.example.fico.R
 import com.example.fico.model.CreditCard
+import com.example.fico.model.CreditCardColors
 import com.example.fico.presentation.compose.theme.Theme
 
 class ComposeDialogs {
@@ -32,6 +35,7 @@ class ComposeDialogs {
             modifier: Modifier = Modifier,
             backgroundColor : Int,
             textColor: Int,
+
             cardName: String,
             paymentDayLabel: String,
             paymentDayValue: String,
@@ -91,9 +95,10 @@ class ComposeDialogs {
         }
 
         @Composable
-        private fun CreditCardDialog(
+        private fun CreditCardListDialog(
             items: List<CreditCard>,
-            contextView: View,
+            title: String,
+            paymentDayLabel: String,
             onDismissRequest: () -> Unit,
             onItemClick: (CreditCard) -> Unit
         ) {
@@ -114,7 +119,7 @@ class ComposeDialogs {
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = contextView.context.getString(R.string.cards),
+                            text = title,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -127,7 +132,7 @@ class ComposeDialogs {
                                     backgroundColor = item.colors.backgroundColor,
                                     textColor = item.colors.textColor,
                                     cardName = item.nickName,
-                                    paymentDayLabel = contextView.context.getString(R.string.expiration_day),
+                                    paymentDayLabel = paymentDayLabel,
                                     paymentDayValue = item.expirationDay.toString(),
                                     chipIconResId = R.drawable.chip,
                                     modifier = Modifier
@@ -149,9 +154,10 @@ class ComposeDialogs {
         ) {
             composeView.setContent {
                 Theme {
-                    CreditCardDialog(
+                    CreditCardListDialog(
                         items = items,
-                        contextView = contextView,
+                        title = contextView.context.getString(R.string.cards),
+                        paymentDayLabel = contextView.context.getString(R.string.expiration_day),
                         onDismissRequest = {
                             composeView.setContent {}
                             composeView.visibility = View.GONE
@@ -167,4 +173,5 @@ class ComposeDialogs {
             composeView.visibility = View.VISIBLE
         }
     }
+
 }
