@@ -487,10 +487,4 @@ class DataStoreManager (context: Context) {
         }.first()
         return defaultCreditCardId ?: ""
     }
-
-    suspend fun clearDefaultCreditCardId(){
-        dataStore.edit { preferences ->
-            preferences[defaultCreditCardIdKey] = ""
-        }
-    }
 }

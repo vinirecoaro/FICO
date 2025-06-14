@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.example.fico.R
 import com.example.fico.model.CreditCard
 import com.example.fico.presentation.compose.theme.Theme
@@ -108,6 +107,7 @@ class ComposeDialogs {
         private fun CreditCardDialog(
             items: List<CreditCard>,
             contextView: View,
+            defaultCreditCardId : String,
             onDismissRequest: () -> Unit,
             onItemClick: (CreditCard) -> Unit
         ) {
@@ -137,17 +137,33 @@ class ComposeDialogs {
 
                         LazyColumn {
                             items(items) { item ->
-                                CreditCardItem(
-                                    backgroundColor = item.colors.backgroundColor,
-                                    textColor = item.colors.textColor,
-                                    cardName = item.nickName,
-                                    paymentDayLabel = contextView.context.getString(R.string.expiration_day),
-                                    paymentDayValue = item.expirationDay.toString(),
-                                    chipIconResId = R.drawable.chip,
-                                    modifier = Modifier
-                                        .padding(vertical = 4.dp)
-                                        .clickable { onItemClick(item) }
-                                )
+                                if(defaultCreditCardId == item.id){
+                                    CreditCardItem(
+                                        backgroundColor = item.colors.backgroundColor,
+                                        textColor = item.colors.textColor,
+                                        cardName = item.nickName,
+                                        paymentDayLabel = contextView.context.getString(R.string.expiration_day),
+                                        paymentDayValue = item.expirationDay.toString(),
+                                        chipIconResId = R.drawable.chip,
+                                        modifier = Modifier
+                                            .padding(vertical = 4.dp)
+                                            .clickable { onItemClick(item) },
+                                        isDefault = true,
+                                        defaultIconResId = R.drawable.spark
+                                    )
+                                }else{
+                                    CreditCardItem(
+                                        backgroundColor = item.colors.backgroundColor,
+                                        textColor = item.colors.textColor,
+                                        cardName = item.nickName,
+                                        paymentDayLabel = contextView.context.getString(R.string.expiration_day),
+                                        paymentDayValue = item.expirationDay.toString(),
+                                        chipIconResId = R.drawable.chip,
+                                        modifier = Modifier
+                                            .padding(vertical = 4.dp)
+                                            .clickable { onItemClick(item) }
+                                    )
+                                }
                             }
                         }
                     }
@@ -158,6 +174,7 @@ class ComposeDialogs {
         fun showComposeDialog(
             composeView: ComposeView,
             items: List<CreditCard>,
+            defaultCreditCardId : String,
             contextView: View,
             onItemSelected: (CreditCard) -> Unit
         ) {
@@ -166,6 +183,7 @@ class ComposeDialogs {
                     CreditCardDialog(
                         items = items,
                         contextView = contextView,
+                        defaultCreditCardId = defaultCreditCardId,
                         onDismissRequest = {
                             composeView.setContent {}
                             composeView.visibility = View.GONE

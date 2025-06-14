@@ -17,6 +17,7 @@ import com.example.fico.presentation.viewmodel.CreditCardConfigurationViewModel
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 
 class CreditCardConfigurationActivity : AppCompatActivity() {
@@ -72,14 +73,20 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
         }
 
         viewModel.getCreditCardList.observe(this){ creditCardList ->
-            if(creditCardList != null){
-                ComposeDialogs.showComposeDialog(
-                    composeView = binding.composeDialogHost,
-                    items = creditCardList,
-                    contextView = binding.root
-                ) { selected ->
-                    lifecycleScope.launch(Dispatchers.IO){
-                        editCreditCard(selected, viewModel.getDefaultCreditCardId().await())
+            lifecycleScope.launch{
+
+                val defaultCreditCardId = withContext(Dispatchers.IO){
+                    viewModel.getDefaultCreditCardId().await()
+                }
+
+                if(creditCardList != null){
+                    ComposeDialogs.showComposeDialog(
+                        composeView = binding.composeDialogHost,
+                        items = creditCardList,
+                        defaultCreditCardId = defaultCreditCardId,
+                        contextView = binding.root
+                    ) { selected ->
+                        editCreditCard(selected, defaultCreditCardId)
                     }
                 }
             }
