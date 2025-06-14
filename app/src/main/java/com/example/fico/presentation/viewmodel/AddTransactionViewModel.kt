@@ -50,7 +50,7 @@ class AddTransactionViewModel(
     val recurringTransactionsList: LiveData<Pair<List<RecurringTransaction>, String>> = _recurringTransactionsList
 
     init {
-        getPaymentDateSwitchState()
+        getPayWithCreditCardSwitchState()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -350,9 +350,9 @@ class AddTransactionViewModel(
         return operation
     }
 
-    private fun getPaymentDateSwitchState(){
+    private fun getPayWithCreditCardSwitchState(){
         viewModelScope.async(Dispatchers.IO) {
-            val state = dataStore.getPaymentDateSwitchInitialState()
+            val state = dataStore.getPayWithCreditCardSwitchState()
             _paymentDateSwitchInitialState.postValue(state)
         }
     }

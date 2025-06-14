@@ -149,11 +149,11 @@
             android:id="@+id/tv_swt_payment_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/define_payment_day"
+            android:text="@string/pay_with_credit_card"
             app:layout_constraintBottom_toBottomOf="@id/swt_payment_day"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/swt_payment_day"
-            tools:text="Definir data de pagamento" />
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_payment_date"

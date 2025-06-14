@@ -157,7 +157,7 @@ class StringConstants private constructor() {
         const val DEFAULT_BUDGET_KEY = "DefaultBudgetKey"
         const val DEFAULT_PAYMENT_DAY_KEY = "DefaultPaymentDayKey"
         const val DAYS_FOR_CLOSING_BILL = "days_for_closing_bill"
-        const val PAYMENT_DATE_SWITCH = "PaymentDateSwitch"
+        const val PAY_WITH_CREDIT_CARD_SWITCH_STATE_KEY = "PayWithCreditCardSwitchStateKey"
         const val EARNINGS_LIST_KEY = "EarningsListKey"
         const val RECURRING_TRANSACTIONS_LIST_KEY = "RecurringTransactionsListKey"
         const val EARNING_MONTHS_LIST_KEY = "EarningMonthsListKey"

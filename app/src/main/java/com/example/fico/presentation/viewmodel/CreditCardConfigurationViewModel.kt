@@ -5,14 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
-import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.CreditCard
-import com.example.fico.repositories.CreditCardRepository
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CreditCardConfigurationViewModel(
     private val dataStore : DataStoreManager
@@ -24,21 +21,19 @@ class CreditCardConfigurationViewModel(
     val payWithCreditCardSwitchInitialState: LiveData<Boolean> = _payWithCreditCardSwitchInitialState
 
     init {
-        getPaymentDateSwitchState()
+        getPayWithCreditCardSwitchState()
     }
 
-    //TODO Change to credit card
-    private fun getPaymentDateSwitchState(){
+    private fun getPayWithCreditCardSwitchState(){
         viewModelScope.async(Dispatchers.IO) {
-            val state = dataStore.getPaymentDateSwitchInitialState()
+            val state = dataStore.getPayWithCreditCardSwitchState()
             _payWithCreditCardSwitchInitialState.postValue(state)
         }
     }
 
-    //TODO Change to credit card
-    fun setPaymentDateSwitchInitialState(state : Boolean){
+    fun setPayWithCreditCardSwitchState(state : Boolean){
         viewModelScope.async(Dispatchers.IO) {
-            dataStore.setPaymentDateSwitchInitialState(state)
+            dataStore.setPayWithCreditCardSwitchState(state)
         }
     }
 

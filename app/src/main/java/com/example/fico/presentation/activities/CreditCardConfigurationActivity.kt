@@ -99,7 +99,7 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
         }
 
         binding.swtUseCreditCardAsDefault.setOnCheckedChangeListener{ _ , state ->
-            viewModel.setPaymentDateSwitchInitialState(state)
+            viewModel.setPayWithCreditCardSwitchState(state)
         }
     }
 

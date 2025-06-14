@@ -35,7 +35,7 @@ class DataStoreManager (context: Context) {
         val defaultBudgetKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_BUDGET_KEY)
         val defaultPaymentDayKey = stringPreferencesKey(StringConstants.DATA_STORE.DEFAULT_PAYMENT_DAY_KEY)
         val daysForClosingBillKey = stringPreferencesKey(StringConstants.DATA_STORE.DAYS_FOR_CLOSING_BILL)
-        val paymentDateSwitchKey = stringPreferencesKey(StringConstants.DATA_STORE.PAYMENT_DATE_SWITCH)
+        val payWithCreditCardSwitchKey = stringPreferencesKey(StringConstants.DATA_STORE.PAY_WITH_CREDIT_CARD_SWITCH_STATE_KEY)
         val earningsListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNINGS_LIST_KEY)
         val recurringTransactionsListKey = stringPreferencesKey(StringConstants.DATA_STORE.RECURRING_TRANSACTIONS_LIST_KEY)
         val earningMonthInfoListKey = stringPreferencesKey(StringConstants.DATA_STORE.EARNING_MONTHS_LIST_KEY)
@@ -179,15 +179,15 @@ class DataStoreManager (context: Context) {
         return Gson().fromJson(defaultPaymentDay, object : TypeToken<String?>() {}.type)
     }
 
-    suspend fun setPaymentDateSwitchInitialState(active : Boolean){
+    suspend fun setPayWithCreditCardSwitchState(active : Boolean){
         dataStore.edit { preferences ->
-            preferences[paymentDateSwitchKey] = active.toString()
+            preferences[payWithCreditCardSwitchKey] = active.toString()
         }
     }
 
-    suspend fun getPaymentDateSwitchInitialState() : Boolean {
+    suspend fun getPayWithCreditCardSwitchState() : Boolean {
         val paymentDateSwitch = dataStore.data.map { preferences ->
-            preferences[paymentDateSwitchKey]
+            preferences[payWithCreditCardSwitchKey]
         }.first().toBoolean()
         return paymentDateSwitch
     }
