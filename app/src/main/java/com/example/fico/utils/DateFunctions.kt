@@ -47,24 +47,20 @@ class DateFunctions {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun paymentDate(expirationDay: String, daysForCLosingBill : String, purchaseDateString : String?) : String{
-        val day = expirationDay.toInt()
+    fun paymentDate(expirationDay: Int, closingDay: Int, purchaseDate: String): String {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        var purchaseDate = LocalDate.now()
-        if(purchaseDateString != null && purchaseDateString != ""){
-            purchaseDate = LocalDate.parse(purchaseDateString, formatter)
-        }
-        val closingDate = LocalDate.of(purchaseDate.year, purchaseDate.month, day).minusDays(daysForCLosingBill.toLong())
+        val parsedPurchaseDate = LocalDate.parse(purchaseDate, formatter)
 
-        val baseDate = if(purchaseDate.dayOfMonth < closingDate.dayOfMonth){
-            LocalDate.of(purchaseDate.year, purchaseDate.month, day)
-        }else{
-            val nextMonthDate = purchaseDate.plusMonths(1)
-            adjustToLastDayOfMonthIfNecessary(nextMonthDate.year, nextMonthDate.monthValue, day)
+        val baseDate = if (parsedPurchaseDate.dayOfMonth < closingDay) {
+            adjustToLastDayOfMonthIfNecessary(parsedPurchaseDate.year, parsedPurchaseDate.monthValue, expirationDay)
+        } else {
+            val nextMonthDate = parsedPurchaseDate.plusMonths(1)
+            adjustToLastDayOfMonthIfNecessary(nextMonthDate.year, nextMonthDate.monthValue, expirationDay)
         }
 
         return baseDate.format(formatter)
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun purchaseDateForRecurringExpense(day : String) : String{

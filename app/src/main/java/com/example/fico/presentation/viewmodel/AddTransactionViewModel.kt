@@ -13,6 +13,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.model.CreditCard
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
@@ -28,18 +29,14 @@ class AddTransactionViewModel(
     private val dataStore: DataStoreManager
 ) : ViewModel() {
 
-    private val _paymentDay = MutableLiveData<String>()
-    val paymentDayLiveData: LiveData<String> = _paymentDay
-    private val _daysForClosingBill = MutableLiveData<String>()
-    val daysForClosingBill: LiveData<String> = _daysForClosingBill
     private val _addExpenseResult = MutableLiveData<Boolean>()
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _setDefaultBudgetResult = MutableLiveData<Boolean>()
     val setDefaultBudgetResult : LiveData<Boolean> = _setDefaultBudgetResult
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
     private var operation : String = StringConstants.ADD_TRANSACTION.ADD_EXPENSE
-    private val _paymentDateSwitchInitialState = MutableLiveData<Boolean>()
-    val paymentDateSwitchInitialStateLiveData: LiveData<Boolean> = _paymentDateSwitchInitialState
+    private val _payWithCreditCardSwitchInitialState = MutableLiveData<Boolean>()
+    val payWithCreditCardSwitchInitialState: LiveData<Boolean> = _payWithCreditCardSwitchInitialState
     private val _addEarningResult = MutableLiveData<Boolean>()
     val addEarningResult: LiveData<Boolean> = _addEarningResult
     private val _recurringMode = MutableLiveData<String>()
@@ -48,6 +45,9 @@ class AddTransactionViewModel(
     val addRecurringTransactionResult: LiveData<Boolean> = _addRecurringTransactionResult
     private val _recurringTransactionsList = MutableLiveData<Pair<List<RecurringTransaction>, String>>()
     val recurringTransactionsList: LiveData<Pair<List<RecurringTransaction>, String>> = _recurringTransactionsList
+    private val _getCreditCardList = MutableLiveData<List<CreditCard>>()
+    val getCreditCardList : LiveData<List<CreditCard>> = _getCreditCardList
+    val _defaultCreditCardId = MutableLiveData<String>()
 
     init {
         getPayWithCreditCardSwitchState()
@@ -324,24 +324,6 @@ class AddTransactionViewModel(
         }
     }
 
-    fun getDefaultPaymentDay() {
-        viewModelScope.launch {
-            val result = dataStore.getDefaultPaymentDay()
-            if(result != null){
-                _paymentDay.value = result!!
-            }
-        }
-    }
-
-    fun getDaysForClosingBill() {
-        viewModelScope.launch {
-            val result = dataStore.getDaysForClosingBill()
-            if(result != null){
-                _daysForClosingBill.value = result!!
-            }
-        }
-    }
-
     fun changeOperation(operation : String){
         this.operation = operation
     }
@@ -353,13 +335,32 @@ class AddTransactionViewModel(
     private fun getPayWithCreditCardSwitchState(){
         viewModelScope.async(Dispatchers.IO) {
             val state = dataStore.getPayWithCreditCardSwitchState()
-            _paymentDateSwitchInitialState.postValue(state)
+            _payWithCreditCardSwitchInitialState.postValue(state)
         }
     }
 
     fun updateRecurringMode(mode : String){
         viewModelScope.async(Dispatchers.IO){
             _recurringMode.postValue(mode)
+        }
+    }
+
+    fun getCreditCardList(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val creditCardList = dataStore.getCreditCardList()
+            _getCreditCardList.postValue(creditCardList)
+        }
+    }
+
+    fun getDefaultCreditCardId(): Deferred<String> {
+        return viewModelScope.async(Dispatchers.IO) {
+            if(_defaultCreditCardId.value == null){
+                val defaultCreditCardId = dataStore.getDefaultCreditCardId()
+                _defaultCreditCardId.postValue(defaultCreditCardId)
+                defaultCreditCardId
+            }else{
+                _defaultCreditCardId.value!!
+            }
         }
     }
 }

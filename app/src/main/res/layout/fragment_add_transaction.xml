@@ -19,8 +19,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <RadioButton
                 android:id="@+id/rb_common_expense"
@@ -138,7 +137,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/swt_payment_day"
+            android:id="@+id/swt_pay_with_credit_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -146,14 +145,97 @@
             app:layout_constraintTop_toBottomOf="@id/til_installments" />
 
         <TextView
-            android:id="@+id/tv_swt_payment_day"
+            android:id="@+id/tv_swt_pay_with_credit_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pay_with_credit_card"
-            app:layout_constraintBottom_toBottomOf="@id/swt_payment_day"
+            app:layout_constraintBottom_toBottomOf="@id/swt_pay_with_credit_card"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/swt_payment_day"
-            />
+            app:layout_constraintTop_toTopOf="@id/swt_pay_with_credit_card" />
+
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cv_credit_card_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@android:color/transparent"
+            android:visibility="gone"
+            card_view:cardCornerRadius="12dp"
+            card_view:cardElevation="4dp"
+            card_view:layout_constraintTop_toBottomOf="@+id/tv_swt_pay_with_credit_card"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/ll_credit_card_preview"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="#196482"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/chip" />
+
+                <TextView
+                    android:id="@+id/tv_credit_card_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    tools:text="NuCard" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_payment_date_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="24dp"
+                        android:gravity="center"
+                        android:text="@string/payment_day"
+                        android:textColor="@android:color/white"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="24dp"
+                        android:gravity="center"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        tools:text="20/05/2025" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/iv_default_card_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/spark"
+            android:translationZ="5dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/cv_credit_card_preview"
+            app:layout_constraintTop_toTopOf="@id/cv_credit_card_preview"
+            tools:visibility="visible" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_payment_date"
@@ -166,8 +248,7 @@
             app:boxBackgroundMode="outline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/swt_payment_day">
-
+            app:layout_constraintTop_toBottomOf="@id/cv_credit_card_preview">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_payment_date"

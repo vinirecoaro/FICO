@@ -41,6 +41,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.components.dialogs.Dialogs
@@ -50,6 +51,7 @@ import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
 import com.example.fico.presentation.adapters.CategoryListAdapter
 import com.example.fico.interfaces.OnCategorySelectedListener
+import com.example.fico.model.CreditCard
 import com.example.fico.utils.internet.ConnectionFunctions
 import java.util.*
 import kotlin.collections.ArrayList
@@ -129,6 +131,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
         binding.etPurchaseDate.setText(currentDate)
         binding.etReceivedDate.setText(currentDate)
+        viewModel.getCreditCardList()
 
         val filter = IntentFilter().apply {
             addAction(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
@@ -232,7 +235,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             lifecycleScope.launch(Dispatchers.Main) {
                 if(viewModel.getOperation() == StringConstants.ADD_TRANSACTION.ADD_EXPENSE){
                     if (binding.tilInstallments.visibility == View.GONE) {
-                        if(binding.swtPaymentDay.isChecked){
+                        if(binding.swtPayWithCreditCard.isChecked){
                             if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                                     binding.etPrice,
                                     binding.etDescription,
@@ -288,7 +291,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                         }
 
                     } else if (binding.tilInstallments.visibility == View.VISIBLE) {
-                        if(binding.swtPaymentDay.isChecked){
+                        if(binding.swtPayWithCreditCard.isChecked){
                             if (InputFieldFunctions.isFilled(requireActivity(), binding.root,
                                     binding.etPrice,
                                     binding.etDescription,
@@ -458,27 +461,13 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.actvCategory.showDropDown()
         }
 
-        binding.ivPaymentDate.setOnClickListener {
-            binding.btSave.visibility = View.VISIBLE
-            binding.ivPaymentDate.isEnabled = false
-
-            val datePicker = Dialogs.datePicker(
-                requireContext(),
-                { dateInMillis -> setSelectedDate(dateInMillis, binding.etPaymentDate) },
-                { binding.ivPaymentDate.isEnabled = true },
-                { binding.ivPaymentDate.isEnabled = true },
-            )
-
-            datePicker.show(parentFragmentManager, "PaymentDate")
-        }
-
         binding.ivPurchaseDate.setOnClickListener {
             binding.btSave.visibility = View.VISIBLE
             binding.ivPurchaseDate.isEnabled = false
 
             val datePicker = Dialogs.datePicker(
                 requireContext(),
-                { dateInMillis -> setSelectedDate(dateInMillis, binding.etPurchaseDate) },
+                { dateInMillis -> onPurchaseDateChanged(dateInMillis, binding.etPurchaseDate) },
                 { binding.ivPurchaseDate.isEnabled = true },
                 { binding.ivPurchaseDate.isEnabled = true },
             )
@@ -520,23 +509,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             }
         })
 
-        viewModel.paymentDayLiveData.observe(viewLifecycleOwner) { paymentDay ->
-            if(paymentDay != null){
-                viewModel.getDaysForClosingBill()
-            }
-        }
-
-        viewModel.daysForClosingBill.observe(viewLifecycleOwner) { daysForClosingBill ->
-            if(daysForClosingBill != null){
-                val paymentDate = DateFunctions().paymentDate(
-                    viewModel.paymentDayLiveData.value!!,
-                    daysForClosingBill ,
-                    binding.etPurchaseDate.text.toString()
-                )
-                binding.etPaymentDate.setText(paymentDate)
-            }
-        }
-
         viewModel.addExpenseResult.observe(viewLifecycleOwner) { result ->
             hideKeyboard(requireContext(), binding.btSave)
             clearUserInputs()
@@ -556,20 +528,18 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             }
         }
 
-        binding.swtPaymentDay.setOnCheckedChangeListener { compoundButton, isChecked ->
+        binding.swtPayWithCreditCard.setOnCheckedChangeListener { compoundButton, isChecked ->
 
             if(isChecked){
-                viewModel.getDefaultPaymentDay()
-                binding.tilPaymentDate.visibility = View.VISIBLE
-                binding.ivPaymentDate.visibility = View.VISIBLE
-            }else{
-                binding.tilPaymentDate.visibility = View.GONE
-                binding.ivPaymentDate.visibility = View.GONE
+                viewModel.getCreditCardList()
             }
         }
 
-        viewModel.paymentDateSwitchInitialStateLiveData.observe(requireActivity()){ state ->
-            binding.swtPaymentDay.isChecked = state
+        viewModel.payWithCreditCardSwitchInitialState.observe(requireActivity()){ state ->
+            binding.swtPayWithCreditCard.isChecked = state
+            if(state){
+                viewModel.getCreditCardList()
+            }
         }
 
         viewModel.addEarningResult.observe(viewLifecycleOwner){ result ->
@@ -616,7 +586,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             Pair(binding.tilPrice, binding.etPrice),
             Pair(binding.tilDescription, binding.etDescription),
             Pair(binding.tilInstallments, binding.etInstallments),
-            Pair(binding.tilPaymentDate, binding.etPaymentDate),
             Pair(binding.tilPurchaseDate, binding.etPurchaseDate)
         )
 
@@ -630,6 +599,21 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 }
             }
         }
+
+        viewModel.getCreditCardList.observe(viewLifecycleOwner){creditCardList ->
+            lifecycleScope.launch {
+                if(creditCardList != null){
+                    val defaultCreditCardId = viewModel.getDefaultCreditCardId().await()
+                    showCreditCardPreview(creditCardList, defaultCreditCardId)
+                }
+            }
+        }
+    }
+
+    private fun onPurchaseDateChanged(dateInMillis : Long, editText : EditText){
+        setSelectedDate(dateInMillis, editText)
+        //Recalculate info from card
+        viewModel.getCreditCardList()
     }
 
     private fun setSelectedDate(dateInMillis : Long, editText : EditText){
@@ -989,13 +973,11 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilPurchaseDate.visibility = View.GONE
         binding.etPurchaseDate.visibility = View.GONE
         binding.ivPurchaseDate.visibility = View.GONE
-        binding.tilPaymentDate.visibility = View.GONE
-        binding.etPaymentDate.visibility = View.GONE
-        binding.ivPaymentDate.visibility = View.GONE
+        binding.cvCreditCardPreview.visibility = View.GONE
         binding.tilInstallments.visibility = View.GONE
         binding.etInstallments.visibility = View.GONE
-        binding.tvSwtPaymentDay.visibility = View.GONE
-        binding.swtPaymentDay.visibility = View.GONE
+        binding.tvSwtPayWithCreditCard.visibility = View.GONE
+        binding.swtPayWithCreditCard.visibility = View.GONE
         binding.tilReceivedDate.visibility = View.VISIBLE
         binding.etReceivedDate.visibility = View.VISIBLE
         binding.ivReceivedDate.visibility = View.VISIBLE
@@ -1015,11 +997,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilPurchaseDate.visibility = View.VISIBLE
         binding.etPurchaseDate.visibility = View.VISIBLE
         binding.ivPurchaseDate.visibility = View.VISIBLE
-        binding.tilPaymentDate.visibility = View.VISIBLE
-        binding.etPaymentDate.visibility = View.VISIBLE
-        binding.ivPaymentDate.visibility = View.VISIBLE
-        binding.tvSwtPaymentDay.visibility = View.VISIBLE
-        binding.swtPaymentDay.visibility = View.VISIBLE
+        binding.tvSwtPayWithCreditCard.visibility = View.VISIBLE
+        binding.swtPayWithCreditCard.visibility = View.VISIBLE
         binding.tilReceivedDate.visibility = View.GONE
         binding.etReceivedDate.visibility = View.GONE
         binding.ivReceivedDate.visibility = View.GONE
@@ -1038,13 +1017,11 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilPurchaseDate.visibility = View.GONE
         binding.etPurchaseDate.visibility = View.GONE
         binding.ivPurchaseDate.visibility = View.GONE
-        binding.tilPaymentDate.visibility = View.GONE
-        binding.etPaymentDate.visibility = View.GONE
-        binding.ivPaymentDate.visibility = View.GONE
+        binding.cvCreditCardPreview.visibility = View.GONE
         binding.tilInstallments.visibility = View.GONE
         binding.etInstallments.visibility = View.GONE
-        binding.tvSwtPaymentDay.visibility = View.GONE
-        binding.swtPaymentDay.visibility = View.GONE
+        binding.tvSwtPayWithCreditCard.visibility = View.GONE
+        binding.swtPayWithCreditCard.visibility = View.GONE
         binding.tilReceivedDate.visibility = View.GONE
         binding.etReceivedDate.visibility = View.GONE
         binding.ivReceivedDate.visibility = View.GONE
@@ -1063,13 +1040,11 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilPurchaseDate.visibility = View.GONE
         binding.etPurchaseDate.visibility = View.GONE
         binding.ivPurchaseDate.visibility = View.GONE
-        binding.tilPaymentDate.visibility = View.GONE
-        binding.etPaymentDate.visibility = View.GONE
-        binding.ivPaymentDate.visibility = View.GONE
+        binding.cvCreditCardPreview.visibility = View.GONE
         binding.tilInstallments.visibility = View.GONE
         binding.etInstallments.visibility = View.GONE
-        binding.tvSwtPaymentDay.visibility = View.GONE
-        binding.swtPaymentDay.visibility = View.GONE
+        binding.tvSwtPayWithCreditCard.visibility = View.GONE
+        binding.swtPayWithCreditCard.visibility = View.GONE
         binding.tilReceivedDate.visibility = View.GONE
         binding.etReceivedDate.visibility = View.GONE
         binding.ivReceivedDate.visibility = View.GONE
@@ -1106,8 +1081,9 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         if(recurringExpense.day != ""){
             val date = DateFunctions().purchaseDateForRecurringExpense(recurringExpense.day)
             binding.etPurchaseDate.setText(date)
-            if(binding.swtPaymentDay.isChecked){
-                viewModel.getDefaultPaymentDay()
+            if(binding.swtPayWithCreditCard.isChecked){
+                //TODO check behavior
+                viewModel.getCreditCardList()
             }
         }
     }
@@ -1132,13 +1108,38 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     private fun changeToCommonExpense(){
         binding.tilInstallments.visibility = View.GONE
         binding.etInstallments.visibility = View.GONE
-        binding.tilPaymentDate.hint = getString(R.string.payment_date)
     }
 
     private fun changeToInstallmentExpense(){
         binding.tilInstallments.visibility = View.VISIBLE
         binding.etInstallments.visibility = View.VISIBLE
         binding.tilPaymentDate.hint = getString(R.string.payment_date_field_installment_hint)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showCreditCardPreview(creditCardList : List<CreditCard>, defaultCreditCardId : String){
+        if(defaultCreditCardId != ""){
+            val defaultCreditCard = creditCardList.find { it.id == defaultCreditCardId }
+            if(defaultCreditCard != null){
+                //Colors
+                binding.llCreditCardPreview.setBackgroundColor(defaultCreditCard.colors.backgroundColor)
+                binding.tvCreditCardName.setTextColor(defaultCreditCard.colors.textColor)
+                binding.tvPaymentDate.setTextColor(defaultCreditCard.colors.textColor)
+                binding.tvPaymentDateTitle.setTextColor(defaultCreditCard.colors.textColor)
+                //Text
+                binding.tvCreditCardName.text = defaultCreditCard.nickName
+                val paymentDate = DateFunctions().paymentDate(
+                    defaultCreditCard.expirationDay,
+                    defaultCreditCard.closingDay,
+                    binding.etPurchaseDate.text.toString()
+                    )
+                binding.tvPaymentDate.text = paymentDate
+                //Show
+                binding.cvCreditCardPreview.visibility = View.VISIBLE
+                //Set payment day on textInput
+                binding.etPaymentDate.setText(paymentDate)
+            }
+        }
     }
 
 }
