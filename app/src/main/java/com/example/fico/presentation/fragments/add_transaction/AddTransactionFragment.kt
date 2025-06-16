@@ -613,6 +613,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     if(defaultCreditCardId != ""){
                         val defaultCreditCard = creditCardList.find { it.id == defaultCreditCardId }
                         if(defaultCreditCard != null){
+                            viewModel.setSelectedCreditCard(defaultCreditCard)
                             showCreditCardPreview(defaultCreditCard, true)
                         }
                     }
@@ -630,16 +631,28 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     defaultCreditCardId = defaultCreditCardId,
                     contextView = binding.root
                 ) { selected ->
+                    viewModel.setSelectedCreditCard(selected)
                     showCreditCardPreview(selected, false)
                 }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun onPurchaseDateChanged(dateInMillis : Long, editText : EditText){
         setSelectedDate(dateInMillis, editText)
-        //Recalculate info from card
-        viewModel.getCreditCardList()
+        //Recalculate payment date
+        val selectedCreditCard = viewModel.getSelectedCreditCard()
+        if(selectedCreditCard != null){
+            val paymentDate = DateFunctions().paymentDate(
+                selectedCreditCard.expirationDay,
+                selectedCreditCard.closingDay,
+                binding.etPurchaseDate.text.toString()
+            )
+            binding.tvPaymentDate.text = paymentDate
+            //Set payment day on textInput
+            binding.etPaymentDate.setText(paymentDate)
+        }
     }
 
     private fun setSelectedDate(dateInMillis : Long, editText : EditText){

@@ -3,6 +3,7 @@ package com.example.fico.presentation.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.CreditCard
+import com.example.fico.model.CreditCardColors
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
@@ -47,7 +49,8 @@ class AddTransactionViewModel(
     val recurringTransactionsList: LiveData<Pair<List<RecurringTransaction>, String>> = _recurringTransactionsList
     private val _getCreditCardList = MutableLiveData<List<CreditCard>>()
     val getCreditCardList : LiveData<List<CreditCard>> = _getCreditCardList
-    val _defaultCreditCardId = MutableLiveData<String>()
+    private val _defaultCreditCardId = MutableLiveData<String>()
+    private val _selectedCreditCard = MutableLiveData<CreditCard>()
 
     init {
         getPayWithCreditCardSwitchState()
@@ -362,5 +365,13 @@ class AddTransactionViewModel(
                 _defaultCreditCardId.value!!
             }
         }
+    }
+
+    fun getSelectedCreditCard(): CreditCard? {
+        return _selectedCreditCard.value
+    }
+
+    fun setSelectedCreditCard(creditCard: CreditCard){
+        _selectedCreditCard.value = creditCard
     }
 }
