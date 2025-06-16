@@ -57,10 +57,8 @@ class DateFunctions {
             val nextMonthDate = parsedPurchaseDate.plusMonths(1)
             adjustToLastDayOfMonthIfNecessary(nextMonthDate.year, nextMonthDate.monthValue, expirationDay)
         }
-
         return baseDate.format(formatter)
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun purchaseDateForRecurringExpense(day : String) : String{

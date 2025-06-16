@@ -295,8 +295,7 @@
     <string name="light_pink">Rosa claro</string>
     <string name="light_blue">Azul claro</string>
     <string name="cards">Cartões</string>
-
-
+    <string name="select_credit_card">Selecionar cartão</string>
 
 
 </resources>

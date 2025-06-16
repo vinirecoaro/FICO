@@ -59,6 +59,7 @@ import org.koin.android.ext.android.inject
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.presentation.components.inputs.InputFieldFunctions
+import com.example.fico.presentation.compose.components.ComposeDialogs
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -529,9 +530,10 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         }
 
         binding.swtPayWithCreditCard.setOnCheckedChangeListener { compoundButton, isChecked ->
-
             if(isChecked){
                 viewModel.getCreditCardList()
+            }else{
+                hideCreditCardComponents()
             }
         }
 
@@ -601,10 +603,34 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         }
 
         viewModel.getCreditCardList.observe(viewLifecycleOwner){creditCardList ->
+            //Show credit card selection button
+            binding.cvSelectCreditCard.visibility = View.VISIBLE
+
+            // Verify if have default credit card
             lifecycleScope.launch {
                 if(creditCardList != null){
                     val defaultCreditCardId = viewModel.getDefaultCreditCardId().await()
-                    showCreditCardPreview(creditCardList, defaultCreditCardId)
+                    if(defaultCreditCardId != ""){
+                        val defaultCreditCard = creditCardList.find { it.id == defaultCreditCardId }
+                        if(defaultCreditCard != null){
+                            showCreditCardPreview(defaultCreditCard, true)
+                        }
+                    }
+                }
+            }
+        }
+
+        binding.cvSelectCreditCard.setOnClickListener {
+            lifecycleScope.launch {
+                val creditCardList = viewModel.getCreditCardList.value ?: emptyList()
+                val defaultCreditCardId = viewModel.getDefaultCreditCardId().await()
+                ComposeDialogs.showComposeDialog(
+                    composeView = binding.composeDialogHost,
+                    items = creditCardList,
+                    defaultCreditCardId = defaultCreditCardId,
+                    contextView = binding.root
+                ) { selected ->
+                    showCreditCardPreview(selected, false)
                 }
             }
         }
@@ -1117,29 +1143,35 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun showCreditCardPreview(creditCardList : List<CreditCard>, defaultCreditCardId : String){
-        if(defaultCreditCardId != ""){
-            val defaultCreditCard = creditCardList.find { it.id == defaultCreditCardId }
-            if(defaultCreditCard != null){
-                //Colors
-                binding.llCreditCardPreview.setBackgroundColor(defaultCreditCard.colors.backgroundColor)
-                binding.tvCreditCardName.setTextColor(defaultCreditCard.colors.textColor)
-                binding.tvPaymentDate.setTextColor(defaultCreditCard.colors.textColor)
-                binding.tvPaymentDateTitle.setTextColor(defaultCreditCard.colors.textColor)
-                //Text
-                binding.tvCreditCardName.text = defaultCreditCard.nickName
-                val paymentDate = DateFunctions().paymentDate(
-                    defaultCreditCard.expirationDay,
-                    defaultCreditCard.closingDay,
-                    binding.etPurchaseDate.text.toString()
-                    )
-                binding.tvPaymentDate.text = paymentDate
-                //Show
-                binding.cvCreditCardPreview.visibility = View.VISIBLE
-                //Set payment day on textInput
-                binding.etPaymentDate.setText(paymentDate)
-            }
+    private fun showCreditCardPreview(creditCard : CreditCard, isDefaultCreditCard : Boolean){
+        if(isDefaultCreditCard){
+            binding.ivDefaultCardIcon.visibility = View.VISIBLE
+        }else{
+            binding.ivDefaultCardIcon.visibility = View.GONE
         }
+        //Colors
+        binding.llCreditCardPreview.setBackgroundColor(creditCard.colors.backgroundColor)
+        binding.tvCreditCardName.setTextColor(creditCard.colors.textColor)
+        binding.tvPaymentDate.setTextColor(creditCard.colors.textColor)
+        binding.tvPaymentDateTitle.setTextColor(creditCard.colors.textColor)
+        //Text
+        binding.tvCreditCardName.text = creditCard.nickName
+        val paymentDate = DateFunctions().paymentDate(
+            creditCard.expirationDay,
+            creditCard.closingDay,
+            binding.etPurchaseDate.text.toString()
+            )
+        binding.tvPaymentDate.text = paymentDate
+        //Set payment day on textInput
+        binding.etPaymentDate.setText(paymentDate)
+        //Show
+        binding.cvCreditCardPreview.visibility = View.VISIBLE
+    }
+
+    private fun hideCreditCardComponents(){
+        binding.cvCreditCardPreview.visibility = View.GONE
+        binding.cvSelectCreditCard.visibility = View.GONE
+        binding.ivDefaultCardIcon.visibility = View.GONE
     }
 
 }
