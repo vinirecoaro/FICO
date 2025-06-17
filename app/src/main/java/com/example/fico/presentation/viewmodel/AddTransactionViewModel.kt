@@ -52,10 +52,6 @@ class AddTransactionViewModel(
     private val _defaultCreditCardId = MutableLiveData<String>()
     private val _selectedCreditCard = MutableLiveData<CreditCard>()
 
-    init {
-        getPayWithCreditCardSwitchState()
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addExpense(
         price: String,
@@ -335,7 +331,7 @@ class AddTransactionViewModel(
         return operation
     }
 
-    private fun getPayWithCreditCardSwitchState(){
+     fun getPayWithCreditCardSwitchState(){
         viewModelScope.async(Dispatchers.IO) {
             val state = dataStore.getPayWithCreditCardSwitchState()
             _payWithCreditCardSwitchInitialState.postValue(state)

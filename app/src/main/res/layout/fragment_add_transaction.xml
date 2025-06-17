@@ -153,6 +153,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
+            android:visibility="gone"
             android:clickable="true"
             app:cardCornerRadius="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_swt_pay_with_credit_card"

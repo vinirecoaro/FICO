@@ -129,9 +129,10 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     override fun onResume() {
         super.onResume()
 
+        viewModel.getPayWithCreditCardSwitchState()
+
         binding.etPurchaseDate.setText(currentDate)
         binding.etReceivedDate.setText(currentDate)
-        viewModel.getCreditCardList()
 
         val filter = IntentFilter().apply {
             addAction(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
@@ -554,6 +555,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.swtPayWithCreditCard.isChecked = state
             if(state){
                 viewModel.getCreditCardList()
+            }else{
+                hideCreditCardComponents()
             }
         }
 
@@ -1202,6 +1205,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.cvCreditCardPreview.visibility = View.GONE
         binding.cvSelectCreditCard.visibility = View.GONE
         binding.ivDefaultCardIcon.visibility = View.GONE
+        binding.etPaymentDate.setText("")
     }
 
     private fun onPaymentDateChange(dateInMillis : Long){
