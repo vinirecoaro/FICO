@@ -29,6 +29,7 @@ class StringConstants private constructor() {
         const val NAME = "name"
         const val EXPIRATION_DAY = "expirationDay"
         const val CLOSING_DAY = "closingDay"
+        const val COLORS = "colors"
         const val BACKGROUND_COLOR_NAME_RES = "backgroundColorNameRes"
         const val BACKGROUND_COLOR = "backgroundColor"
         const val TEXT_COLOR = "textColor"

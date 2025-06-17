@@ -57,29 +57,15 @@ class CreditCardViewModel(
     }
 
     fun getCreditCardColorOptions() : List<CreditCardColors>{
-        val colorOptions = listOf(
-            CreditCardColors(R.string.dark_red, Color.rgb(100, 0, 0), Color.WHITE),
-            CreditCardColors(R.string.dark_green, Color.rgb(0, 100, 0), Color.WHITE),
-            CreditCardColors(R.string.dark_blue, Color.rgb(0, 0, 100), Color.WHITE),
-            CreditCardColors(R.string.dark_yellow, Color.rgb(255, 193, 7), Color.BLACK),
-            CreditCardColors(R.string.magenta, Color.MAGENTA, Color.WHITE),
-            CreditCardColors(R.string.purple, Color.rgb(103, 58, 183), Color.WHITE),
-            CreditCardColors(R.string.black, Color.BLACK, Color.WHITE),
-            CreditCardColors(R.string.white, Color.WHITE, Color.BLACK),
-            CreditCardColors(R.string.orange, Color.rgb(255, 152, 0), Color.WHITE),
-            CreditCardColors(R.string.light_pink, Color.rgb(255, 167, 197), Color.BLACK),
-            CreditCardColors(R.string.light_blue, Color.rgb(123, 194, 250), Color.BLACK)
-        )
-
-        return colorOptions
+        return CreditCardColors.entries
     }
 
-    fun setCreditCardColors(backgroundColorNameRes: Int, backgroundColor: Int, textColor: Int){
-        _creditCardColors.value = CreditCardColors(backgroundColorNameRes, backgroundColor, textColor)
+    fun setCreditCardColors(creditCardColors : CreditCardColors){
+        _creditCardColors.value = creditCardColors
     }
 
     fun getCreditCardColors() : CreditCardColors{
-        return _creditCardColors.value ?: CreditCardColors(R.string.white, Color.WHITE, Color.BLACK)
+        return _creditCardColors.value ?: CreditCardColors.WHITE
     }
 
     suspend fun addCreditCard(

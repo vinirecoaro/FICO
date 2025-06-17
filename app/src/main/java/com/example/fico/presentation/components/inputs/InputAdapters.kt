@@ -30,10 +30,10 @@ class InputAdapters {
                     item?.let {
                         // Aplicar a cor ao background do círculo
                         val drawable = AppCompatResources.getDrawable(context, R.drawable.circle_shape)?.mutate()
-                        drawable?.setTint(it.backgroundColor)
+                        drawable?.setTint(it.background)
                         colorCircle.background = drawable
 
-                        colorName.text = context.getString(it.backgroundColorNameRes)
+                        colorName.text = context.getString(it.labelRes)
                     }
 
                     return view

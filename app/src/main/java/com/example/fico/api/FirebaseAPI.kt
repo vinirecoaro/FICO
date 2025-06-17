@@ -23,7 +23,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -581,9 +580,7 @@ class FirebaseAPI(
         updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.NAME}"] = creditCard.nickName
         updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.EXPIRATION_DAY}"] = creditCard.expirationDay
         updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.CLOSING_DAY}"] = creditCard.closingDay
-        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.BACKGROUND_COLOR_NAME_RES}"] = creditCard.colors.backgroundColorNameRes
-        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.BACKGROUND_COLOR}"] = creditCard.colors.backgroundColor
-        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.TEXT_COLOR}"] = creditCard.colors.textColor
+        updatesOfCreditCardList["${creditCard.id}/${StringConstants.DATABASE.COLORS}"] = creditCard.colors.name
 
         return updatesOfCreditCardList
     }

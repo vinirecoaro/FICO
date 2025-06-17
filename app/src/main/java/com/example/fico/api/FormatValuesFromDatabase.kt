@@ -1,6 +1,5 @@
 package com.example.fico.api
 
-import android.util.Log
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.model.Earning
@@ -351,11 +350,7 @@ class FormatValuesFromDatabase {
             nickName = dataSnapShot.child(StringConstants.DATABASE.NAME).value.toString(),
             expirationDay = dataSnapShot.child(StringConstants.DATABASE.EXPIRATION_DAY).value.toString().toInt(),
             closingDay = dataSnapShot.child(StringConstants.DATABASE.CLOSING_DAY).value.toString().toInt(),
-            colors = CreditCardColors(
-                backgroundColorNameRes = dataSnapShot.child(StringConstants.DATABASE.BACKGROUND_COLOR_NAME_RES).value.toString().toInt(),
-                backgroundColor = dataSnapShot.child(StringConstants.DATABASE.BACKGROUND_COLOR).value.toString().toInt(),
-                textColor = dataSnapShot.child(StringConstants.DATABASE.TEXT_COLOR).value.toString().toInt()
-            )
+            colors = CreditCardColors.valueOf(dataSnapShot.child(StringConstants.DATABASE.COLORS).value.toString())
         )
     }
 }

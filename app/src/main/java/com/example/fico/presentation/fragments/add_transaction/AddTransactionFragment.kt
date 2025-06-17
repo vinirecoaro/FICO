@@ -41,7 +41,6 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doOnTextChanged
 import com.example.fico.DataStoreManager
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.presentation.components.dialogs.Dialogs
@@ -1177,10 +1176,10 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             binding.ivDefaultCardIcon.visibility = View.GONE
         }
         //Colors
-        binding.llCreditCardPreview.setBackgroundColor(creditCard.colors.backgroundColor)
-        binding.tvCreditCardName.setTextColor(creditCard.colors.textColor)
-        binding.tvPaymentDate.setTextColor(creditCard.colors.textColor)
-        binding.tvPaymentDateTitle.setTextColor(creditCard.colors.textColor)
+        binding.llCreditCardPreview.setBackgroundColor(creditCard.colors.background)
+        binding.tvCreditCardName.setTextColor(creditCard.colors.text)
+        binding.tvPaymentDate.setTextColor(creditCard.colors.text)
+        binding.tvPaymentDateTitle.setTextColor(creditCard.colors.text)
         //Text
         binding.tvCreditCardName.text = creditCard.nickName
         val paymentDate = DateFunctions().paymentDate(

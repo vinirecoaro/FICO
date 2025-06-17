@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.dataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.databinding.ActivityCreditCardBinding
@@ -145,17 +144,17 @@ class CreditCardActivity : AppCompatActivity() {
             val selected = adapter.getItem(position) ?: return@setOnItemClickListener
 
             //Create string with circle and color name
-            val spannable = InputValueHandle.circleColorfulWithText(binding.actvColors, selected.backgroundColor, selected.backgroundColorNameRes)
+            val spannable = InputValueHandle.circleColorfulWithText(binding.actvColors, selected.background, selected.labelRes)
 
             //Show credit card preview
             binding.cvCreditCardPreview.visibility = View.VISIBLE
-            binding.llCreditCardPreview.setBackgroundColor(selected.backgroundColor)
-            binding.tvCreditCardName.setTextColor(selected.textColor)
-            binding.tvPaymentDate.setTextColor(selected.textColor)
-            binding.tvPaymentDateTitle.setTextColor(selected.textColor)
+            binding.llCreditCardPreview.setBackgroundColor(selected.background)
+            binding.tvCreditCardName.setTextColor(selected.text)
+            binding.tvPaymentDate.setTextColor(selected.text)
+            binding.tvPaymentDateTitle.setTextColor(selected.text)
 
             //Save credit card colors on viewModel
-            viewModel.setCreditCardColors(selected.backgroundColorNameRes, selected.backgroundColor, selected.textColor)
+            viewModel.setCreditCardColors(selected)
 
             //Enable save button
             binding.btCreditCardSave.visibility = View.VISIBLE
@@ -330,10 +329,10 @@ class CreditCardActivity : AppCompatActivity() {
     private fun showCreditCardPreview(creditCard : CreditCard){
         binding.cvCreditCardPreview.visibility = View.VISIBLE
         binding.tvCreditCardName.text = creditCard.nickName
-        binding.llCreditCardPreview.setBackgroundColor(creditCard.colors.backgroundColor)
-        binding.tvCreditCardName.setTextColor(creditCard.colors.textColor)
-        binding.tvPaymentDate.setTextColor(creditCard.colors.textColor)
-        binding.tvPaymentDateTitle.setTextColor(creditCard.colors.textColor)
+        binding.llCreditCardPreview.setBackgroundColor(creditCard.colors.background)
+        binding.tvCreditCardName.setTextColor(creditCard.colors.text)
+        binding.tvPaymentDate.setTextColor(creditCard.colors.text)
+        binding.tvPaymentDateTitle.setTextColor(creditCard.colors.text)
         binding.tvPaymentDate.text = paymentDatePreview(creditCard.expirationDay)
     }
 
@@ -341,12 +340,8 @@ class CreditCardActivity : AppCompatActivity() {
         binding.etCreditCardName.setText(creditCard.nickName)
         binding.etCreditCardExpirationDay.setText(creditCard.expirationDay.toString())
         binding.etCreditCardClosingDay.setText(creditCard.closingDay.toString())
-        viewModel.setCreditCardColors(
-            creditCard.colors.backgroundColorNameRes,
-            creditCard.colors.backgroundColor,
-            creditCard.colors.textColor
-        )
-        val spannable = InputValueHandle.circleColorfulWithText(binding.actvColors, creditCard.colors.backgroundColor, creditCard.colors.backgroundColorNameRes)
+        viewModel.setCreditCardColors(creditCard.colors)
+        val spannable = InputValueHandle.circleColorfulWithText(binding.actvColors, creditCard.colors.background, creditCard.colors.labelRes)
         binding.actvColors.setText(spannable, false)
     }
 

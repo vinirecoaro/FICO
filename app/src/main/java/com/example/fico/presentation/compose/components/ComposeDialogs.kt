@@ -139,8 +139,8 @@ class ComposeDialogs {
                             items(items) { item ->
                                 if(defaultCreditCardId == item.id){
                                     CreditCardItem(
-                                        backgroundColor = item.colors.backgroundColor,
-                                        textColor = item.colors.textColor,
+                                        backgroundColor = item.colors.background,
+                                        textColor = item.colors.text,
                                         cardName = item.nickName,
                                         paymentDayLabel = contextView.context.getString(R.string.expiration_day),
                                         paymentDayValue = item.expirationDay.toString(),
@@ -153,8 +153,8 @@ class ComposeDialogs {
                                     )
                                 }else{
                                     CreditCardItem(
-                                        backgroundColor = item.colors.backgroundColor,
-                                        textColor = item.colors.textColor,
+                                        backgroundColor = item.colors.background,
+                                        textColor = item.colors.text,
                                         cardName = item.nickName,
                                         paymentDayLabel = contextView.context.getString(R.string.expiration_day),
                                         paymentDayValue = item.expirationDay.toString(),
