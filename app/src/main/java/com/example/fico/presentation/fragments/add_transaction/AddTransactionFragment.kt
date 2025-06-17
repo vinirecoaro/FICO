@@ -490,6 +490,20 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             datePicker.show(parentFragmentManager, "PurchaseDate")
         }
 
+        binding.tvPaymentDate.setOnClickListener {
+            binding.btSave.visibility = View.VISIBLE
+            binding.tvPaymentDate.isEnabled = false
+
+            val datePicker = Dialogs.datePicker(
+                requireContext(),
+                { dateInMillis -> onPaymentDateChange(dateInMillis) },
+                { binding.tvPaymentDate.isEnabled = true },
+                { binding.tvPaymentDate.isEnabled = true },
+            )
+
+            datePicker.show(parentFragmentManager, "PaymentDate")
+        }
+
         binding.etPrice.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -1185,6 +1199,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.cvCreditCardPreview.visibility = View.GONE
         binding.cvSelectCreditCard.visibility = View.GONE
         binding.ivDefaultCardIcon.visibility = View.GONE
+    }
+
+    private fun onPaymentDateChange(dateInMillis : Long){
+        setSelectedDate(dateInMillis, binding.etPaymentDate)
+        //Recalculate payment date
+        binding.tvPaymentDate.text = binding.etPaymentDate.text.toString()
     }
 
 }
