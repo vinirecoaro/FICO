@@ -645,7 +645,11 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     contextView = binding.root
                 ) { selected ->
                     viewModel.setSelectedCreditCard(selected)
-                    showCreditCardPreview(selected, false)
+                    if(selected.id == defaultCreditCardId){
+                        showCreditCardPreview(selected, true)
+                    }else{
+                        showCreditCardPreview(selected, false)
+                    }
                 }
             }
         }
