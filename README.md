@@ -44,6 +44,8 @@ financial control.
  * Firebase
  * Koin
  * MVVM Architecture
+ * Compose
+ * Flow
 
 ## ⏭️ Next Steps
 
