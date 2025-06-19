@@ -9,6 +9,7 @@
     <string name="add_description">Descrição</string>
     <string name="add_category">Categoria</string>
     <string name="add_date">Data</string>
+    <string name="date_range">Intervalo de Data</string>
     <string name="save">Salvar</string>
     <string name="this_month_expense">Gasto do Mês</string>
     <string name="email">E-mail</string>

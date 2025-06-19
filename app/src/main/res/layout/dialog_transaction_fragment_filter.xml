@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="8dp">
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:padding="24dp">
 
     <View
         android:id="@+id/v_dialog_transaction_fragment_separator_line_1"
@@ -12,118 +12,111 @@
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="?attr/colorOnSecondary"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioButton
+        android:id="@+id/rb_text_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="@id/tv_text_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_text_filter" />
 
     <TextView
         android:id="@+id/tv_text_filter"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
-        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="20sp"
-        android:text="@string/text"
-        android:textAlignment="center"
         android:gravity="center"
-        />
+        android:text="@string/add_description"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/v_dialog_transaction_fragment_separator_line_2"
+        app:layout_constraintStart_toEndOf="@+id/rb_text_filter"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_1" />
 
     <View
         android:id="@+id/v_dialog_transaction_fragment_separator_line_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?attr/colorOnSecondary"
-        app:layout_constraintTop_toBottomOf="@id/tv_text_filter"
         android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_text_filter"
+        tools:visibility="visible"
         />
 
     <TextView
         android:id="@+id/tv_text_filter_values"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="12sp"
-        tools:text="Filtros: eletrodomesticos - aloha - ahola - caperdiem"
-        android:textAlignment="textStart"
-        android:gravity="center"
         android:layout_marginStart="5dp"
+        android:gravity="center"
+        android:textAlignment="textStart"
+        android:textSize="12sp"
         android:visibility="gone"
-        />
-
-    <RadioButton
-        android:id="@+id/rb_text_filter"
-        app:layout_constraintTop_toTopOf="@id/tv_text_filter"
-        app:layout_constraintBottom_toBottomOf="@id/tv_text_filter"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="wrap_content"
-        android:clickable="false"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_2"
+        tools:text="Filtros: eletrodomesticos - aloha - ahola - caperdiem"
+        tools:visibility="visible"/>
 
     <View
         android:id="@+id/v_dialog_transaction_fragment_separator_line_3"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?attr/colorOnSecondary"
-        app:layout_constraintTop_toBottomOf="@id/tv_text_filter_values"
-        />
-
-    <TextView
-        android:id="@+id/tv_date_filter"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="20sp"
-        android:text="@string/add_date"
-        android:textAlignment="center"
-        android:gravity="center"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tv_text_filter_values" />
 
     <RadioButton
         android:id="@+id/rb_date_filter"
-        app:layout_constraintTop_toTopOf="@id/tv_date_filter"
-        app:layout_constraintBottom_toBottomOf="@id/tv_date_filter"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="false"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintBottom_toBottomOf="@id/tv_date_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_date_filter" />
+
+    <TextView
+        android:id="@+id/tv_date_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:text="@string/date_range"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/rb_date_filter"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_3" />
 
     <View
         android:id="@+id/v_dialog_transaction_fragment_separator_line_4"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?attr/colorOnSecondary"
-        app:layout_constraintTop_toBottomOf="@id/tv_date_filter"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tv_date_filter" />
 
     <TextView
         android:id="@+id/tv_date_filter_values"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="12sp"
-        tools:text="24/11/2024  -  24/12/2024"
-        android:textAlignment="textStart"
-        android:gravity="center"
         android:layout_marginStart="5dp"
+        android:gravity="center"
+        android:textAlignment="textStart"
+        android:textSize="12sp"
         android:visibility="gone"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_4"
+        tools:text="24/11/2024  -  24/12/2024"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/v_dialog_transaction_fragment_separator_line_5"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?attr/colorOnSecondary"
-        app:layout_constraintTop_toBottomOf="@id/tv_date_filter_values"
         android:visibility="gone"
-        />
-
+        app:layout_constraintTop_toBottomOf="@id/tv_date_filter_values"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
