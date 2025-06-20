@@ -208,18 +208,21 @@ class TransactionListFragment : Fragment(), XLSInterface {
                             clearAllFilter()
                             updateTransactionTotalValue(allList)
                             transactionListAdapter.updateTransactions(allList)
+                            viewModel.updateShowList(allList)
                         }
                         StringConstants.DATABASE.EXPENSE -> {
                             val expenseList = allList.filter { it.type == StringConstants.DATABASE.EXPENSE }
                             clearAllFilter()
                             updateTransactionTotalValue(expenseList)
                             transactionListAdapter.updateTransactions(expenseList)
+                            viewModel.updateShowList(expenseList)
                         }
                         StringConstants.DATABASE.EARNING -> {
                             val earningList = allList.filter { it.type == StringConstants.DATABASE.EARNING }
                             clearAllFilter()
                             updateTransactionTotalValue(earningList)
                             transactionListAdapter.updateTransactions(earningList)
+                            viewModel.updateShowList(earningList)
                         }
                     }
                 }

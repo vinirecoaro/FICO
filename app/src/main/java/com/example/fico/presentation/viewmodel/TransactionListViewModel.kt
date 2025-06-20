@@ -873,5 +873,9 @@ class TransactionListViewModel(
         _internetConnection.postValue(state)
     }
 
+    fun updateShowList(transactionList : List<Transaction>){
+        _showListLiveData.postValue(transactionList)
+    }
+
 }
 
