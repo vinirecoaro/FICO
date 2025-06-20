@@ -7,7 +7,7 @@
     android:padding="24dp">
 
     <View
-        android:id="@+id/v_dialog_transaction_fragment_separator_line_1"
+        android:id="@+id/v_dialog_transaction_fragment_separator_line_top"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
@@ -17,37 +17,36 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioButton
-        android:id="@+id/rb_text_filter"
+        android:id="@+id/rb_description_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
-        app:layout_constraintBottom_toBottomOf="@id/tv_text_filter"
+        app:layout_constraintBottom_toBottomOf="@id/tv_description_filter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_text_filter" />
+        app:layout_constraintTop_toTopOf="@id/tv_description_filter" />
 
     <TextView
-        android:id="@+id/tv_text_filter"
+        android:id="@+id/tv_description_filter"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:gravity="center"
         android:text="@string/add_description"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/v_dialog_transaction_fragment_separator_line_2"
-        app:layout_constraintStart_toEndOf="@+id/rb_text_filter"
-        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_1" />
+        app:layout_constraintBottom_toTopOf="@id/v_dialog_transaction_fragment_separator_line_description"
+        app:layout_constraintStart_toEndOf="@+id/rb_description_filter"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_top" />
 
     <View
-        android:id="@+id/v_dialog_transaction_fragment_separator_line_2"
+        android:id="@+id/v_dialog_transaction_fragment_separator_line_description"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?attr/colorOnSecondary"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tv_text_filter"
-        tools:visibility="visible"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tv_description_filter"
+        tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/tv_text_filter_values"
+        android:id="@+id/tv_description_filter_values"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_marginStart="5dp"
@@ -57,16 +56,16 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_2"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_description"
         tools:text="Filtros: eletrodomesticos - aloha - ahola - caperdiem"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <View
-        android:id="@+id/v_dialog_transaction_fragment_separator_line_3"
+        android:id="@+id/v_dialog_transaction_fragment_separator_line_description_values"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?attr/colorOnSecondary"
-        app:layout_constraintTop_toBottomOf="@id/tv_text_filter_values" />
+        app:layout_constraintTop_toBottomOf="@id/tv_description_filter_values" />
 
     <RadioButton
         android:id="@+id/rb_date_filter"
@@ -85,14 +84,16 @@
         android:text="@string/date_range"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@id/rb_date_filter"
-        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_3" />
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_description_values" />
 
     <View
-        android:id="@+id/v_dialog_transaction_fragment_separator_line_4"
+        android:id="@+id/v_dialog_transaction_fragment_separator_line_date"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?attr/colorOnSecondary"
-        app:layout_constraintTop_toBottomOf="@id/tv_date_filter" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_date_filter"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/tv_date_filter_values"
@@ -105,18 +106,67 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_4"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_date"
         tools:text="24/11/2024  -  24/12/2024"
         tools:visibility="visible" />
 
     <View
-        android:id="@+id/v_dialog_transaction_fragment_separator_line_5"
+        android:id="@+id/v_dialog_transaction_fragment_separator_line_date_values"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/colorOnSecondary"
+        app:layout_constraintTop_toBottomOf="@id/tv_date_filter_values"
+        tools:visibility="visible" />
+
+    <RadioButton
+        android:id="@+id/rb_category_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="@id/tv_category_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_category_filter" />
+
+    <TextView
+        android:id="@+id/tv_category_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:text="@string/add_category"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/rb_category_filter"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_date_values" />
+
+    <View
+        android:id="@+id/v_dialog_transaction_fragment_separator_line_category"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?attr/colorOnSecondary"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tv_date_filter_values"
+        app:layout_constraintTop_toBottomOf="@id/tv_category_filter"
         tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_category_filter_values"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginStart="5dp"
+        android:gravity="center"
+        android:textAlignment="textStart"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_dialog_transaction_fragment_separator_line_category"
+        tools:text="Comida - Farmácia"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/v_dialog_transaction_fragment_separator_line_category_values"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/colorOnSecondary"
+        app:layout_constraintTop_toBottomOf="@id/tv_category_filter_values" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

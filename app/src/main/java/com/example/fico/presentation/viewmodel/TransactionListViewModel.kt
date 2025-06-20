@@ -62,16 +62,20 @@ class TransactionListViewModel(
     private val _uiState = MutableStateFlow<TransactionFragmentState<Nothing>>(
         TransactionFragmentState.Loading)
     val uiState : StateFlow<TransactionFragmentState<Nothing>> = _uiState.asStateFlow()
-    private val _textFilterState = MutableLiveData<Boolean>()
-    val textFilterState : LiveData<Boolean> = _textFilterState
-    private val _textFilterValues = MutableLiveData<MutableList<String>>()
-    val textFilterValues : LiveData<MutableList<String>> = _textFilterValues
     private val _isFiltered = MutableLiveData<Boolean>()
     val isFiltered : LiveData<Boolean> = _isFiltered
+    private val _descriptionFilterState = MutableLiveData<Boolean>()
+    val descriptionFilterState : LiveData<Boolean> = _descriptionFilterState
+    private val _descriptionFilterValues = MutableLiveData<MutableList<String>>()
+    val descriptionFilterValues : LiveData<MutableList<String>> = _descriptionFilterValues
     private val _dateFilterState = MutableLiveData<Boolean>()
     val dateFilterState : LiveData<Boolean> = _dateFilterState
     private val _dateFilterValue = MutableLiveData<Pair<String,String>>()
     val dateFilterValue : LiveData<Pair<String,String>> = _dateFilterValue
+    private val _categoryFilterState = MutableLiveData<Boolean>()
+    val categoryFilterState : LiveData<Boolean> = _categoryFilterState
+    private val _categoryFilterValues = MutableLiveData<MutableList<String>>()
+    val categoryFilterValues : LiveData<MutableList<String>> = _categoryFilterValues
     private val _returningFromEdit = MutableLiveData<Boolean>()
     val returningFromEdit : LiveData<Boolean> = _returningFromEdit
     private val _editingTransaction = MutableLiveData<Transaction>()
@@ -475,14 +479,14 @@ class TransactionListViewModel(
         var currentList = mutableListOf<Transaction>()
         if(_showListLiveData.value != null){
             _isFiltered.postValue(true)
-            _textFilterState.value = true
+            _descriptionFilterState.value = true
             currentList.addAll(_showListLiveData.value!!)
         }
         val filteredList = mutableListOf<Transaction>()
         filteredList.addAll(currentList.filter { it.description.lowercase().contains(filter.lowercase()) })
         _filteredTransactionsListLiveData.postValue(filteredList)
         _showListLiveData.postValue(filteredList)
-        _textFilterValues.postValue((_textFilterValues.value ?: mutableListOf()).apply {
+        _descriptionFilterValues.postValue((_descriptionFilterValues.value ?: mutableListOf()).apply {
             add(filter)
         })
     }
@@ -499,16 +503,16 @@ class TransactionListViewModel(
         return total
     }
 
-    fun setTextFilterState(state : Boolean){
-        _textFilterState.value = state
+    fun setDescriptionFilterState(state : Boolean){
+        _descriptionFilterState.value = state
     }
 
     fun setIsFilteredState(state : Boolean) {
         _isFiltered.postValue(state)
     }
 
-    fun clearTextFilterValues(){
-        _textFilterValues.value = mutableListOf()
+    fun clearDescriptionFilterValues(){
+        _descriptionFilterValues.value = mutableListOf()
     }
 
     fun setDateFilterState(state : Boolean){
@@ -559,10 +563,10 @@ class TransactionListViewModel(
                 val textFilteredList = mutableListOf<Transaction>()
                 val dateFilteredList = mutableListOf<Transaction>()
                 val finalFilteredList = mutableListOf<Transaction>()
-                if (_textFilterState.value == true) {
+                if (_descriptionFilterState.value == true) {
                     textFilteredList.addAll(
                         allTransactionList.filter { transaction ->
-                            _textFilterValues.value!!.all { textFilter ->
+                            _descriptionFilterValues.value!!.all { textFilter ->
                                 transaction.description.contains(textFilter, ignoreCase = true)
                             }
                         }
@@ -606,10 +610,10 @@ class TransactionListViewModel(
                 val textFilteredList = mutableListOf<Transaction>()
                 val dateFilteredList = mutableListOf<Transaction>()
                 val finalFilteredList = mutableListOf<Transaction>()
-                if (_textFilterState.value == true) {
+                if (_descriptionFilterState.value == true) {
                     textFilteredList.addAll(
                         allTransactionList.filter { transaction ->
-                            _textFilterValues.value!!.all { textFilter ->
+                            _descriptionFilterValues.value!!.all { textFilter ->
                                 transaction.description.contains(textFilter, ignoreCase = true)
                             }
                         }
@@ -654,10 +658,10 @@ class TransactionListViewModel(
                 val textFilteredList = mutableListOf<Transaction>()
                 val dateFilteredList = mutableListOf<Transaction>()
                 val finalFilteredList = mutableListOf<Transaction>()
-                if (_textFilterState.value == true) {
+                if (_descriptionFilterState.value == true) {
                     textFilteredList.addAll(
                         allTransactionList.filter { transaction ->
-                            _textFilterValues.value!!.all { textFilter ->
+                            _descriptionFilterValues.value!!.all { textFilter ->
                                 transaction.description.contains(textFilter, ignoreCase = true)
                             }
                         }
@@ -868,8 +872,6 @@ class TransactionListViewModel(
     fun updateInternetConnectionState(state : Boolean){
         _internetConnection.postValue(state)
     }
-
-
 
 }
 

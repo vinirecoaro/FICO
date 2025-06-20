@@ -50,7 +50,6 @@ import com.example.fico.utils.constants.CategoriesList
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
@@ -711,21 +710,27 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val inflater = LayoutInflater.from(requireContext())
         val dialogView = inflater.inflate(R.layout.dialog_transaction_fragment_filter, null)
 
-        val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_text_filter)
-        val tvTextFilterValues = dialogView.findViewById<TextView>(R.id.tv_text_filter_values)
-        val vSeparatorTextFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_2)
-        val rdTextFilter = dialogView.findViewById<RadioButton>(R.id.rb_text_filter)
+        val tvTextFilter = dialogView.findViewById<TextView>(R.id.tv_description_filter)
+        val tvTextFilterValues = dialogView.findViewById<TextView>(R.id.tv_description_filter_values)
+        val vSeparatorTextFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_description)
+        val rdTextFilter = dialogView.findViewById<RadioButton>(R.id.rb_description_filter)
         val tvDateFilter = dialogView.findViewById<TextView>(R.id.tv_date_filter)
         val tvDateFilterValues = dialogView.findViewById<TextView>(R.id.tv_date_filter_values)
-        val vSeparatorDateFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_5)
+        val vSeparatorDateFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_date)
         val rdDateFilter = dialogView.findViewById<RadioButton>(R.id.rb_date_filter)
+        val tvCategoryFilter = dialogView.findViewById<TextView>(R.id.tv_category_filter)
+        val tvCategoryFilterValues = dialogView.findViewById<TextView>(R.id.tv_category_filter_values)
+        val vSeparatorCategoryFilterValues = dialogView.findViewById<View>(R.id.v_dialog_transaction_fragment_separator_line_category)
+        val rdCategoryFilter = dialogView.findViewById<RadioButton>(R.id.rb_category_filter)
 
         //verify radio state and set value
-        val textFilterState = viewModel.textFilterState.value
+
+        //Description Filter
+        val textFilterState = viewModel.descriptionFilterState.value
         if(textFilterState != null && textFilterState != false){
             rdTextFilter.isChecked = textFilterState
             var filterTextValuesString = ""
-            viewModel.textFilterValues.value!!.forEachIndexed { index, filter ->
+            viewModel.descriptionFilterValues.value!!.forEachIndexed { index, filter ->
                 if (index == 0){
                     filterTextValuesString = getString(R.string.filterValues) + " $filter"
                 }else{
@@ -739,6 +744,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
             tvTextFilterValues.visibility = View.GONE
             vSeparatorTextFilterValues.visibility = View.GONE
         }
+
+        //Date Filter
         val dateFilterState = viewModel.dateFilterState.value
         if(dateFilterState != null && dateFilterState != false){
             rdDateFilter.isChecked = dateFilterState
@@ -750,6 +757,27 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }else{
             tvDateFilterValues.visibility = View.GONE
             vSeparatorDateFilterValues.visibility = View.GONE
+        }
+
+        //Category Filter
+        val categoryFilterState = viewModel.categoryFilterState.value
+        if(categoryFilterState != null && categoryFilterState != false){
+            rdCategoryFilter.isChecked = categoryFilterState
+            var categoryFilterValues = ""
+            viewModel.categoryFilterValues.value!!.forEachIndexed { index, filter ->
+                if (index == 0){
+                    categoryFilterValues = getString(R.string.filterValues) + " $filter"
+                }else{
+                    categoryFilterValues += " - $filter"
+                }
+            }
+            val categoryFilterValuesString = categoryFilterValues
+            tvCategoryFilterValues.text = categoryFilterValuesString
+            tvCategoryFilter.visibility = View.VISIBLE
+            vSeparatorCategoryFilterValues.visibility = View.VISIBLE
+        }else{
+            tvCategoryFilterValues.visibility = View.GONE
+            vSeparatorCategoryFilterValues.visibility = View.GONE
         }
 
         builder.setView(dialogView)
@@ -845,8 +873,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
     }
 
     private fun clearTextFilter(){
-        viewModel.setTextFilterState(false)
-        viewModel.clearTextFilterValues()
+        viewModel.setDescriptionFilterState(false)
+        viewModel.clearDescriptionFilterValues()
     }
 
     private fun clearDateFilter(){
