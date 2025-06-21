@@ -30,9 +30,6 @@ class StringConstants private constructor() {
         const val EXPIRATION_DAY = "expirationDay"
         const val CLOSING_DAY = "closingDay"
         const val COLORS = "colors"
-        const val BACKGROUND_COLOR_NAME_RES = "backgroundColorNameRes"
-        const val BACKGROUND_COLOR = "backgroundColor"
-        const val TEXT_COLOR = "textColor"
         const val EARNINGS = "earnings"
         const val EARNING = "earning"
         const val TRANSACTION = "transaction"
@@ -264,6 +261,8 @@ class StringConstants private constructor() {
         const val POSITIVE_NUMBER = "positive_number"
         const val ADD_MODE = "add_mode"
         const val EDIT_MODE = "edit_mode"
+        const val ASCENDING = "ascending"
+        const val DESCENDING = "descending"
     }
 
 }

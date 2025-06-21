@@ -86,6 +86,7 @@ class TransactionListViewModel(
     private val operation = MutableLiveData<String>("")
     private val _internetConnection = MutableLiveData<Boolean>()
     val internetConnection: LiveData<Boolean> = _internetConnection
+    private val _showListOrderingType = MutableLiveData<String>(StringConstants.GENERAL.ASCENDING)
 
     fun updateFilter(filter: String) {
         _monthFilterLiveData.value = filter
@@ -875,6 +876,16 @@ class TransactionListViewModel(
 
     fun updateShowList(transactionList : List<Transaction>){
         _showListLiveData.postValue(transactionList)
+    }
+
+    fun orderShowListByValue(){
+        if(_showListOrderingType.value == StringConstants.GENERAL.ASCENDING){
+            _showListOrderingType.value = StringConstants.GENERAL.DESCENDING
+            _showListLiveData.postValue(_showListLiveData.value!!.sortedByDescending { BigDecimal(it.price) })
+        }else if(_showListOrderingType.value == StringConstants.GENERAL.DESCENDING){
+            _showListOrderingType.value = StringConstants.GENERAL.ASCENDING
+            _showListLiveData.postValue(_showListLiveData.value!!.sortedBy { BigDecimal(it.price) })
+        }
     }
 
 }

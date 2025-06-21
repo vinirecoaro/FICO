@@ -229,6 +229,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
                 return true
             }
 
+            R.id.transaction_list_menu_order_by_value -> {
+                viewModel.orderShowListByValue()
+                return true
+            }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }

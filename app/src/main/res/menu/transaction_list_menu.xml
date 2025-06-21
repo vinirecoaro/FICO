@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/transaction_list_menu_generate_excel_file"
         android:icon="@drawable/config_image_dark"
@@ -18,6 +19,15 @@
         android:icon="@drawable/clear_filter"
         app:showAsAction="always"
         android:visible="false"
+        tools:visible="true"
+        />
+
+    <item
+        android:id="@+id/transaction_list_menu_order_by_value"
+        android:title="@string/filter"
+        android:icon="@drawable/up_down_arrow"
+        app:showAsAction="always"
+        android:visible="true"
         />
 
 </menu>
