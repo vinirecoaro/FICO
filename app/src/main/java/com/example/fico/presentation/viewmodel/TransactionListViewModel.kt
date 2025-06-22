@@ -825,7 +825,6 @@ class TransactionListViewModel(
                         filteredTransactionList.addAll(currentList)
                     }
                 }
-
             }
 
             val sortedList = filteredTransactionList.sortedByDescending { FormatValuesToDatabase().expenseDate(it.purchaseDate) }
@@ -887,6 +886,4 @@ class TransactionListViewModel(
             _showListLiveData.postValue(_showListLiveData.value!!.sortedBy { BigDecimal(it.price) })
         }
     }
-
 }
-

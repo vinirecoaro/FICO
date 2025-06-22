@@ -7,7 +7,7 @@ import androidx.compose.ui.res.colorResource
 import com.example.fico.R
 
 @Composable
-fun Theme(
+    fun Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
