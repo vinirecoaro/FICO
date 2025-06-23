@@ -2,11 +2,13 @@ package com.example.fico.presentation.adapters
 
 import android.graphics.Color
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
@@ -24,6 +26,7 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
     private var transactionList = listOf<Transaction>()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+        val card: CardView = itemView.findViewById(R.id.cv_expense_list_item)
         val description: TextView = itemView.findViewById(R.id.tv_description)
         val price: TextView = itemView.findViewById(R.id.tv_price)
         val date: TextView = itemView.findViewById(R.id.tv_date)
@@ -116,6 +119,15 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
             }
         }
 
+        //Set card background color
+        val color = getCardBackgroundColor(holder, item.type)
+        holder.card.setCardBackgroundColor(color)
+
+        //LOG to fetch card color
+        /*val colorInt = holder.card.cardBackgroundColor.defaultColor
+        val hexColor = String.format("#%08X", colorInt)
+        Log.d("CARD_COLOR", "Resolved color: $hexColor")*/
+
     }
 
     override fun getItemCount(): Int {
@@ -133,6 +145,20 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
     fun updateTransactions(transactionsList : List<Transaction>){
         transactionList = transactionsList
         notifyDataSetChanged()
+    }
+
+    fun getCardBackgroundColor(holder : ViewHolder, type : String) : Int{
+        val typedValue = TypedValue()
+        val theme = holder.itemView.context.theme
+
+        if(type == StringConstants.DATABASE.RECURRING_EARNING || type == StringConstants.DATABASE.RECURRING_EXPENSE){
+            theme.resolveAttribute(R.attr.customCardBackgroundColorSecondary, typedValue, true)
+            return typedValue.data
+        }else{
+            theme.resolveAttribute(R.attr.customCardBackgroundColor, typedValue, true)
+            return typedValue.data
+        }
+
     }
 
 }

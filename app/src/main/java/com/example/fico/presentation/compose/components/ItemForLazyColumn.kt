@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fico.R
+import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CategoryFilterItem
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CreditCardItem
 import com.example.fico.presentation.compose.theme.Theme
 
@@ -109,7 +111,27 @@ class ItemForLazyColumn {
             }
         }
 
-        
+        @Composable
+        fun CategoryFilterItem(){
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                shape = RoundedCornerShape(12.dp)
+            ){
+                Row(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                    ,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text("Categoria 1")
+                }
+            }
+        }
 
     }
 }
@@ -129,5 +151,13 @@ fun CreditCardPreview(){
             defaultIconResId = null // Substitua com seu recurso real
         )
 
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CategoryForFilterPreview(){
+    Theme {
+        CategoryFilterItem()
     }
 }

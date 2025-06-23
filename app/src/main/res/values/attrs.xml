@@ -5,6 +5,7 @@
         <attr name="bottomAppBarItemIconTint" format="color"/>
         <attr name="bottomAppBarItemTextColor" format="color"/>
         <attr name="customCardBackgroundColor" format="color" />
+        <attr name="customCardBackgroundColorSecondary" format="color" />
         <attr name="alertDialogTextButtonColor" format="color" />
         <attr name="boxStrokeColor" format="color" />
         <attr name="buttonColor" format="color" />

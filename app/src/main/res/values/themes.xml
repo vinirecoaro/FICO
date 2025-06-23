@@ -26,6 +26,8 @@
         <item name="colorSecondaryContainer">@color/blue_30</item>
         <!-- Card background Color -->
         <item name="customCardBackgroundColor">@color/white</item>
+        <!-- Custom card background Color for dialog -->
+        <item name="customCardBackgroundColorSecondary">@color/grey_100</item>
         <!-- Dialog button text color -->
         <item name="alertDialogTextButtonColor">@color/blue_400</item>
         <!-- Box Stroke color / input text layout -->
