@@ -53,7 +53,6 @@ import com.example.fico.interfaces.OnCategorySelectedListener
 import com.example.fico.model.CreditCard
 import com.example.fico.utils.internet.ConnectionFunctions
 import java.util.*
-import kotlin.collections.ArrayList
 import org.koin.android.ext.android.inject
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
@@ -641,11 +640,12 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             lifecycleScope.launch {
                 val creditCardList = viewModel.getCreditCardList.value ?: emptyList()
                 val defaultCreditCardId = viewModel.getDefaultCreditCardId().await()
-                ComposeDialogs.showComposeDialog(
+                ComposeDialogs.showCreditCardListDialog(
                     composeView = binding.composeDialogHost,
                     items = creditCardList,
                     defaultCreditCardId = defaultCreditCardId,
-                    contextView = binding.root
+                    title = getString(R.string.cards),
+                    paymentDayLabel = getString(R.string.payment_day)
                 ) { selected ->
                     viewModel.setSelectedCreditCard(selected)
                     if(selected.id == defaultCreditCardId){

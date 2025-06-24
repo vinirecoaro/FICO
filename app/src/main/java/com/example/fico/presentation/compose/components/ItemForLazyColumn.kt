@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.example.fico.R
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CategoryFilterItem
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CreditCardItem
+import com.example.fico.presentation.compose.theme.LocalExtendedColors
 import com.example.fico.presentation.compose.theme.Theme
 
 class ItemForLazyColumn {
@@ -112,9 +113,15 @@ class ItemForLazyColumn {
         }
 
         @Composable
-        fun CategoryFilterItem(){
+        fun CategoryFilterItem(
+            modifier: Modifier = Modifier,
+            categoryDescription : String,
+            categoryIconResId : Int,
+            isSelected : Boolean
+        ){
+            val extendedColors = LocalExtendedColors.current
             Card(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(12.dp)
@@ -122,13 +129,27 @@ class ItemForLazyColumn {
                 Row(
                     modifier = Modifier
                         .height(60.dp)
-                        .background(MaterialTheme.colorScheme.background)
+                        .background(extendedColors.customCardBackgroundColorSecondary)
                         .padding(8.dp)
                         .fillMaxWidth()
                     ,
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    Text("Categoria 1")
+                    RadioButton(
+                        selected = isSelected,
+                        onClick = {}
+                    )
+                    Image(
+                        painter = painterResource(id = categoryIconResId),
+                        contentDescription = "Chip",
+                        modifier = modifier
+                            .size(40.dp)
+                            .padding(start = 8.dp)
+                    )
+                    Text(
+                        categoryDescription,
+                        modifier = modifier.padding(start = 12.dp)
+                    )
                 }
             }
         }
@@ -158,6 +179,11 @@ fun CreditCardPreview(){
 @Composable
 fun CategoryForFilterPreview(){
     Theme {
-        CategoryFilterItem()
+        CategoryFilterItem(
+            Modifier,
+            "Categoria 2",
+            R.drawable.category_icon_entertainment,
+            true
+        )
     }
 }

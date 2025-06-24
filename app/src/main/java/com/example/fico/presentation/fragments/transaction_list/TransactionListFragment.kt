@@ -44,6 +44,8 @@ import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.interfaces.OnListItemClick
 import com.example.fico.interfaces.XLSInterface
+import com.example.fico.model.TransactionCategory
+import com.example.fico.presentation.compose.components.ComposeDialogs
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
@@ -804,6 +806,10 @@ class TransactionListFragment : Fragment(), XLSInterface {
             dialog.cancel()
         }
 
+        tvCategoryFilter.setOnClickListener {
+            categoryFilterDialog()
+            dialog.cancel()
+        }
 
     }
 
@@ -872,6 +878,20 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val dialog = builder.create()
 
         dialog.show()
+    }
+
+    private fun categoryFilterDialog(){
+        ComposeDialogs.showCategoryListDialog(
+            composeView = binding.cmpViewTransactionList,
+            items = listOf(
+                TransactionCategory("","",false),
+                TransactionCategory("","",false),
+                TransactionCategory("","",false),
+            ),
+            title = getString(R.string.categories),
+        ) { selected ->
+
+        }
     }
 
     private fun clearAllFilter(){

@@ -80,11 +80,12 @@ class CreditCardConfigurationActivity : AppCompatActivity() {
                 }
 
                 if(creditCardList != null){
-                    ComposeDialogs.showComposeDialog(
+                    ComposeDialogs.showCreditCardListDialog(
                         composeView = binding.composeDialogHost,
                         items = creditCardList,
                         defaultCreditCardId = defaultCreditCardId,
-                        contextView = binding.root
+                        title = getString(R.string.cards),
+                        paymentDayLabel = getString(R.string.expiration_day)
                     ) { selected ->
                         editCreditCard(selected, defaultCreditCardId)
                     }
