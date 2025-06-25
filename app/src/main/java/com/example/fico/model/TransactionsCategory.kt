@@ -6,8 +6,7 @@ import com.example.fico.R
 
 enum class TransactionsCategory(
     @StringRes val descriptionResId: Int,
-    @DrawableRes val iconResId: Int,
-    var selected: Boolean = false
+    @DrawableRes val iconResId: Int
 ) {
     FOOD(R.string.category_list_description_food, R.drawable.category_icon_food),
     TRANSPORT(R.string.category_list_description_transport, R.drawable.category_icon_transport),
@@ -53,9 +52,14 @@ enum class TransactionsCategory(
     INCOME(R.string.category_list_description_income, R.drawable.category_icon_income);
 
     companion object {
-        fun getExpenseCategoryList(): List<TransactionsCategory> = values().filter {
-            it.ordinal <= SERVICES.ordinal
-        }
+
+        fun getExpenseCategoryList(): List<TransactionsCategory> = listOf(
+            FOOD, TRANSPORT, ENTERTAINMENT_1,
+            MARKET, EDUCATION_1, GIFT, HEALTHY, GAMES, INVESTMENT,
+            ELETRONICS_1, REPAIR, ACESSORIES, CLOTHING, CAR, MOTORCYCLE,
+            TRIP, HOUSE, DONATION, BET, PETS, FEES, GYM, CELLPHONE,
+            PERSONAL_HYGIENE_1, PHARMACY, CASH_WITHDRAWAL_1, RIDE, PAYMENT, SERVICES
+        )
 
         fun getExpenseCategoryListFull(): List<TransactionsCategory> = listOf(
             FOOD, TRANSPORT, ENTERTAINMENT_1, ENTERTAINMENT_2,
@@ -69,6 +73,16 @@ enum class TransactionsCategory(
         fun getEarningCategoryList(): List<TransactionsCategory> = listOf(
             SALE_OF_SHARES, SALARY, CASHBACK, FREELANCE,
             OTHER, DIVIDEND, BENEFITS, INCOME
+        )
+
+        fun getTransactionCategoryList(): List<TransactionsCategory> = listOf(
+            FOOD, TRANSPORT, ENTERTAINMENT_1, ENTERTAINMENT_2,
+            MARKET, EDUCATION_1, EDUCATION_2, GIFT, HEALTHY, GAMES, INVESTMENT,
+            ELETRONICS_1, ELETRONICS_2, REPAIR, ACESSORIES, CLOTHING, CAR, MOTORCYCLE,
+            TRIP, HOUSE, DONATION, BET, PETS, FEES, GYM, CELLPHONE,
+            PERSONAL_HYGIENE_1, PERSONAL_HYGIENE_2, PHARMACY, CASH_WITHDRAWAL_1,
+            CASH_WITHDRAWAL_2, RIDE, PAYMENT, SERVICES, SALE_OF_SHARES, SALARY, CASHBACK,
+            FREELANCE, OTHER, DIVIDEND, BENEFITS, INCOME
         )
     }
 }

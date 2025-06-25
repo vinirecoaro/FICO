@@ -1,5 +1,6 @@
 package com.example.fico.presentation.viewmodel
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
@@ -15,6 +16,7 @@ import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.Transaction
+import com.example.fico.model.TransactionsCategory
 import com.example.fico.presentation.fragments.transaction_list.TransactionFragmentState
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
@@ -884,6 +886,26 @@ class TransactionListViewModel(
         }else if(_showListOrderingType.value == StringConstants.GENERAL.DESCENDING){
             _showListOrderingType.value = StringConstants.GENERAL.ASCENDING
             _showListLiveData.postValue(_showListLiveData.value!!.sortedBy { BigDecimal(it.price) })
+        }
+    }
+
+    fun getShowListCategories(context : Context) : List<TransactionsCategory>{
+        if(_showListLiveData.value != null){
+            val transactionsCategoryList = mutableListOf<TransactionsCategory>()
+            val categoriesList = mutableSetOf<String>()
+            _showListLiveData.value!!.forEach { transaction ->
+                categoriesList.add(transaction.category)
+            }
+            val allTransactionsCategoryList = TransactionsCategory.getTransactionCategoryList()
+            categoriesList.forEach { description ->
+                val category = allTransactionsCategoryList.find { context.getString(it.descriptionResId) == description }
+                if(category != null){
+                    transactionsCategoryList.add(category)
+                }
+            }
+            return transactionsCategoryList.sortedBy { context.getString(it.descriptionResId) }
+        }else{
+            return emptyList()
         }
     }
 }

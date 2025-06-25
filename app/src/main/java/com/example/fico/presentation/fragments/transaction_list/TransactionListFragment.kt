@@ -45,6 +45,7 @@ import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.interfaces.OnListItemClick
 import com.example.fico.interfaces.XLSInterface
 import com.example.fico.model.TransactionCategory
+import com.example.fico.model.TransactionsCategory
 import com.example.fico.presentation.compose.components.ComposeDialogs
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.utils.DateFunctions
@@ -883,11 +884,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
     private fun categoryFilterDialog(){
         ComposeDialogs.showCategoryListDialog(
             composeView = binding.cmpViewTransactionList,
-            items = listOf(
-                TransactionCategory("","",false),
-                TransactionCategory("","",false),
-                TransactionCategory("","",false),
-            ),
+            items = viewModel.getShowListCategories(requireContext()),
             title = getString(R.string.categories),
         ) { selected ->
 

@@ -9,8 +9,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -18,6 +21,7 @@ import com.example.fico.R
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.model.TransactionCategory
+import com.example.fico.model.TransactionsCategory
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CategoryFilterItem
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CreditCardItem
 import com.example.fico.presentation.compose.theme.Theme
@@ -52,7 +56,7 @@ class ComposeDialogs {
                     ) {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -126,9 +130,9 @@ class ComposeDialogs {
 
         fun showCategoryListDialog(
             composeView: ComposeView,
-            items: List<TransactionCategory>,
+            items: List<TransactionsCategory>,
             title: String,
-            onItemSelected: (TransactionCategory) -> Unit
+            onItemSelected: (TransactionsCategory) -> Unit
         ) {
             composeView.setContent {
                 Theme {
@@ -140,7 +144,8 @@ class ComposeDialogs {
                             composeView.visibility = View.GONE
                         },
                         onItemClick = { selected ->
-                            //composeView.setContent {}
+                            composeView.setContent {}
+                            composeView.visibility = View.GONE
                             onItemSelected(selected)
                         }
                     )
@@ -151,11 +156,12 @@ class ComposeDialogs {
 
         @Composable
         fun CategoryListFilterDialog(
-            items: List<TransactionCategory>,
+            items: List<TransactionsCategory>,
             title: String,
             onDismissRequest: () -> Unit,
-            onItemClick: (TransactionCategory) -> Unit
+            onItemClick: (TransactionsCategory) -> Unit
         ) {
+            val selectedCategory = remember { mutableStateOf<TransactionsCategory?>(null) }
             Dialog(
                 onDismissRequest = onDismissRequest,
             ) {
@@ -174,7 +180,7 @@ class ComposeDialogs {
                     ) {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -183,12 +189,13 @@ class ComposeDialogs {
                         LazyColumn {
                             items(items) { item ->
                                 CategoryFilterItem(
-                                    categoryDescription = item.description,
-                                    categoryIconResId = R.drawable.category_icon_entertainment,
-                                    isSelected = item.selected,
+                                    categoryDescription = stringResource(id = item.descriptionResId),
+                                    categoryIconResId = item.iconResId,
                                     modifier = Modifier
                                         .padding(vertical = 4.dp)
-                                        .clickable { onItemClick(item) },
+                                        .clickable {
+                                            onItemClick(item)
+                                       }
                                 )
                             }
                         }
@@ -204,7 +211,11 @@ class ComposeDialogs {
 @Composable
 fun CategoryListFilterDialogPreview(){
     ComposeDialogs.CategoryListFilterDialog(
-        items = List(5){ TransactionCategory("Teste", "Teste", false)},
+        items = listOf(
+            TransactionsCategory.BET,
+            TransactionsCategory.ELETRONICS_1,
+            TransactionsCategory.CAR,
+        ),
         title = "Categorias",
         onDismissRequest = {},
         onItemClick = {}

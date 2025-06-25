@@ -117,7 +117,6 @@ class ItemForLazyColumn {
             modifier: Modifier = Modifier,
             categoryDescription : String,
             categoryIconResId : Int,
-            isSelected : Boolean
         ){
             val extendedColors = LocalExtendedColors.current
             Card(
@@ -135,10 +134,6 @@ class ItemForLazyColumn {
                     ,
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    RadioButton(
-                        selected = isSelected,
-                        onClick = {}
-                    )
                     Image(
                         painter = painterResource(id = categoryIconResId),
                         contentDescription = "Chip",
@@ -182,8 +177,7 @@ fun CategoryForFilterPreview(){
         CategoryFilterItem(
             Modifier,
             "Categoria 2",
-            R.drawable.category_icon_entertainment,
-            true
+            R.drawable.category_icon_entertainment
         )
     }
 }
