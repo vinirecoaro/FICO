@@ -76,8 +76,8 @@ class TransactionListViewModel(
     val dateFilterValue : LiveData<Pair<String,String>> = _dateFilterValue
     private val _categoryFilterState = MutableLiveData<Boolean>()
     val categoryFilterState : LiveData<Boolean> = _categoryFilterState
-    private val _categoryFilterValues = MutableLiveData<MutableList<String>>()
-    val categoryFilterValues : LiveData<MutableList<String>> = _categoryFilterValues
+    private val _categoryFilterValue = MutableLiveData<MutableList<String>>()
+    val categoryFilterValue : LiveData<MutableList<String>> = _categoryFilterValue
     private val _returningFromEdit = MutableLiveData<Boolean>()
     val returningFromEdit : LiveData<Boolean> = _returningFromEdit
     private val _editingTransaction = MutableLiveData<Transaction>()
@@ -478,7 +478,7 @@ class TransactionListViewModel(
         _transactionsListLiveData.postValue(transactionListSorted)
     }
 
-    fun applyTextFilter (filter : String){
+    fun applyDescriptionFilter (filter : String){
         var currentList = mutableListOf<Transaction>()
         if(_showListLiveData.value != null){
             _isFiltered.postValue(true)
@@ -491,6 +491,22 @@ class TransactionListViewModel(
         _showListLiveData.postValue(filteredList)
         _descriptionFilterValues.postValue((_descriptionFilterValues.value ?: mutableListOf()).apply {
             add(filter)
+        })
+    }
+
+    fun applyCategoryFilter(categoryDescription : String){
+        var currentList = mutableListOf<Transaction>()
+        if(_showListLiveData.value != null){
+            _isFiltered.postValue(true)
+            _categoryFilterState.value = true
+            currentList.addAll(_showListLiveData.value!!)
+        }
+        val filteredList = mutableListOf<Transaction>()
+        filteredList.addAll(currentList.filter { it.category == categoryDescription })
+        _filteredTransactionsListLiveData.postValue(filteredList)
+        _showListLiveData.postValue(filteredList)
+        _categoryFilterValue.postValue((_descriptionFilterValues.value ?: mutableListOf()).apply {
+            add(categoryDescription)
         })
     }
 
@@ -526,6 +542,14 @@ class TransactionListViewModel(
         _dateFilterValue.value = Pair("","")
     }
 
+    fun setCategoryFilterState(state : Boolean){
+        _categoryFilterState.value = state
+    }
+
+    fun clearCategoryFilterValues(){
+        _categoryFilterValue.value = mutableListOf()
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun applyDateFilter(dates : Pair<String,String>){
         var currentList = mutableListOf<Transaction>()
@@ -557,7 +581,7 @@ class TransactionListViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun showAllTransactions(){
+    fun showTransactionsBasedOnType(transactionType : String){
         if(transactionsListLiveData.value != null) {
             val allTransactionList = _transactionsListLiveData.value!!
             if (_isFiltered.value == false || _isFiltered.value == null) {
@@ -565,7 +589,10 @@ class TransactionListViewModel(
             } else {
                 val textFilteredList = mutableListOf<Transaction>()
                 val dateFilteredList = mutableListOf<Transaction>()
+                val categoryFilteredList = mutableListOf<Transaction>()
                 val finalFilteredList = mutableListOf<Transaction>()
+
+                //Apply description filter
                 if (_descriptionFilterState.value == true) {
                     textFilteredList.addAll(
                         allTransactionList.filter { transaction ->
@@ -579,6 +606,7 @@ class TransactionListViewModel(
                 }else{
                     finalFilteredList.addAll(allTransactionList)
                 }
+                //Apply date filter
                 if (_dateFilterState.value == true) {
                     val dateFilter = _dateFilterValue.value!!
                     dateFilteredList.addAll(
@@ -593,107 +621,33 @@ class TransactionListViewModel(
                     finalFilteredList.clear()
                     finalFilteredList.addAll(dateFilteredList)
                 }
-
-                _showListLiveData.postValue(finalFilteredList)
-            }
-        }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun showEarningTransactions(){
-        if(transactionsListLiveData.value != null) {
-            val allTransactionList = _transactionsListLiveData.value!!
-            if(_isFiltered.value == false || _isFiltered.value == null){
-                if(transactionsListLiveData.value != null){
-                    val justEarningList = allTransactionList.filter { it.type == StringConstants.DATABASE.EARNING }
-                    _showListLiveData.postValue(justEarningList)
-                }
-            }else{
-                val textFilteredList = mutableListOf<Transaction>()
-                val dateFilteredList = mutableListOf<Transaction>()
-                val finalFilteredList = mutableListOf<Transaction>()
-                if (_descriptionFilterState.value == true) {
-                    textFilteredList.addAll(
-                        allTransactionList.filter { transaction ->
-                            _descriptionFilterValues.value!!.all { textFilter ->
-                                transaction.description.contains(textFilter, ignoreCase = true)
-                            }
+                //Apply category filter
+                if (_categoryFilterState.value == true){
+                    val categoryFilter = _categoryFilterValue.value!!
+                    categoryFilteredList.addAll(
+                        finalFilteredList.filter { transaction ->
+                            transaction.category in categoryFilter
                         }
                     )
                     finalFilteredList.clear()
-                    finalFilteredList.addAll(textFilteredList)
+                    finalFilteredList.addAll(categoryFilteredList)
+                }
+
+                val typeFilteredList = mutableListOf<Transaction>()
+
+                if(transactionType == StringConstants.DATABASE.EXPENSE){
+                    typeFilteredList.addAll(finalFilteredList.filter { it.type == StringConstants.DATABASE.EXPENSE })
+                }else if(transactionType == StringConstants.DATABASE.EARNING){
+                    typeFilteredList.addAll(finalFilteredList.filter { it.type == StringConstants.DATABASE.EARNING })
                 }else{
-                    finalFilteredList.addAll(allTransactionList)
+                    typeFilteredList.addAll(finalFilteredList)
                 }
-                if (_dateFilterState.value == true) {
-                    val dateFilter = _dateFilterValue.value!!
-                    dateFilteredList.addAll(
-                        finalFilteredList.filter {
-                            isDateInRange(
-                                it.paymentDate,
-                                dateFilter.first,
-                                dateFilter.second
-                            )
-                        }
-                    )
-                    finalFilteredList.clear()
-                    finalFilteredList.addAll(dateFilteredList)
-                }
-
-                val typeFilteredList = finalFilteredList.filter { it.type == StringConstants.DATABASE.EARNING }
 
                 _showListLiveData.postValue(typeFilteredList)
+
             }
         }
-    }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun showExpenseTransactions(){
-        if(transactionsListLiveData.value != null) {
-            val allTransactionList = _transactionsListLiveData.value!!
-            if(_isFiltered.value == false || _isFiltered.value == null){
-                if(transactionsListLiveData.value != null){
-                    val justEarningList = allTransactionList.filter { it.type == StringConstants.DATABASE.EXPENSE }
-                    _showListLiveData.postValue(justEarningList)
-                }
-            }else{
-                val textFilteredList = mutableListOf<Transaction>()
-                val dateFilteredList = mutableListOf<Transaction>()
-                val finalFilteredList = mutableListOf<Transaction>()
-                if (_descriptionFilterState.value == true) {
-                    textFilteredList.addAll(
-                        allTransactionList.filter { transaction ->
-                            _descriptionFilterValues.value!!.all { textFilter ->
-                                transaction.description.contains(textFilter, ignoreCase = true)
-                            }
-                        }
-                    )
-                    finalFilteredList.clear()
-                    finalFilteredList.addAll(textFilteredList)
-                }else{
-                    finalFilteredList.addAll(allTransactionList)
-                }
-                if (_dateFilterState.value == true) {
-                    val dateFilter = _dateFilterValue.value!!
-                    dateFilteredList.addAll(
-                        finalFilteredList.filter {
-                            isDateInRange(
-                                it.paymentDate,
-                                dateFilter.first,
-                                dateFilter.second
-                            )
-                        }
-                    )
-                    finalFilteredList.clear()
-                    finalFilteredList.addAll(dateFilteredList)
-                }
-
-                val typeFilteredList = finalFilteredList.filter { it.type == StringConstants.DATABASE.EXPENSE }
-
-                _showListLiveData.postValue(typeFilteredList)
-            }
-        }
     }
 
     fun changeReturningFromEditState(state : Boolean){
@@ -908,4 +862,5 @@ class TransactionListViewModel(
             return emptyList()
         }
     }
+
 }

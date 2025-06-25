@@ -44,8 +44,6 @@ import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.interfaces.OnListItemClick
 import com.example.fico.interfaces.XLSInterface
-import com.example.fico.model.TransactionCategory
-import com.example.fico.model.TransactionsCategory
 import com.example.fico.presentation.compose.components.ComposeDialogs
 import com.example.fico.presentation.viewmodel.TransactionListViewModel
 import com.example.fico.utils.DateFunctions
@@ -438,21 +436,21 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         binding.btExpensesTransacList.isClickable = true
                         binding.btEarningsTransacList.isClickable = true
                         viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.TRANSACTION)
-                        viewModel.showAllTransactions()
+                        viewModel.showTransactionsBasedOnType(StringConstants.DATABASE.TRANSACTION)
                     }
                     binding.btExpensesTransacList.id -> {
                         binding.btAllTransacList.isClickable = true
                         binding.btExpensesTransacList.isClickable = false
                         binding.btEarningsTransacList.isClickable = true
                         viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.EXPENSE)
-                        viewModel.showExpenseTransactions()
+                        viewModel.showTransactionsBasedOnType(StringConstants.DATABASE.EXPENSE)
                     }
                     binding.btEarningsTransacList.id -> {
                         binding.btAllTransacList.isClickable = true
                         binding.btExpensesTransacList.isClickable = true
                         binding.btEarningsTransacList.isClickable = false
                         viewModel.updateTransactionTypeFilter(StringConstants.DATABASE.EARNING)
-                        viewModel.showEarningTransactions()
+                        viewModel.showTransactionsBasedOnType(StringConstants.DATABASE.EARNING)
                     }
                 }
             }
@@ -714,7 +712,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun filterDialog(){
-        //TODO Create a default dialog
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(getString(R.string.select_filter))
 
@@ -774,17 +771,16 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val categoryFilterState = viewModel.categoryFilterState.value
         if(categoryFilterState != null && categoryFilterState != false){
             rdCategoryFilter.isChecked = categoryFilterState
-            var categoryFilterValues = ""
-            viewModel.categoryFilterValues.value!!.forEachIndexed { index, filter ->
+            var categoryFilterValueString = ""
+            viewModel.categoryFilterValue.value!!.forEachIndexed { index, filter ->
                 if (index == 0){
-                    categoryFilterValues = getString(R.string.filterValues) + " $filter"
+                    categoryFilterValueString = getString(R.string.filterValues) + " $filter"
                 }else{
-                    categoryFilterValues += " - $filter"
+                    categoryFilterValueString += " - $filter"
                 }
             }
-            val categoryFilterValuesString = categoryFilterValues
-            tvCategoryFilterValues.text = categoryFilterValuesString
-            tvCategoryFilter.visibility = View.VISIBLE
+            tvCategoryFilterValues.text = categoryFilterValueString
+            tvCategoryFilterValues.visibility = View.VISIBLE
             vSeparatorCategoryFilterValues.visibility = View.VISIBLE
         }else{
             tvCategoryFilterValues.visibility = View.GONE
@@ -872,7 +868,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         builder.setPositiveButton(getString(R.string.to_filter)){dialog, which ->
             if(!etTextFilter.text.isNullOrEmpty()){
                 val filter = etTextFilter.text.toString()
-                viewModel.applyTextFilter(filter)
+                viewModel.applyDescriptionFilter(filter)
             }
         }
 
@@ -887,7 +883,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
             items = viewModel.getShowListCategories(requireContext()),
             title = getString(R.string.categories),
         ) { selected ->
-
+            viewModel.applyCategoryFilter(getString(selected.descriptionResId))
         }
     }
 
@@ -895,6 +891,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         viewModel.setIsFilteredState(false)
         clearTextFilter()
         clearDateFilter()
+        clearCategoryFilter()
     }
 
     private fun clearTextFilter(){
@@ -905,6 +902,11 @@ class TransactionListFragment : Fragment(), XLSInterface {
     private fun clearDateFilter(){
         viewModel.setDateFilterState(false)
         viewModel.clearDateFilterValues()
+    }
+
+    private fun clearCategoryFilter(){
+        viewModel.setCategoryFilterState(false)
+        viewModel.clearCategoryFilterValues()
     }
 
     private fun updateTransactionTotalValue(transactionList : List<Transaction>){
