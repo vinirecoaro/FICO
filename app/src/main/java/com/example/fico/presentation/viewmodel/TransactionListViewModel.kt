@@ -494,7 +494,7 @@ class TransactionListViewModel(
         })
     }
 
-    fun applyCategoryFilter(categoryDescription : String){
+    fun applyCategoryFilter(categoriesList : List<String>){
         var currentList = mutableListOf<Transaction>()
         if(_showListLiveData.value != null){
             _isFiltered.postValue(true)
@@ -502,11 +502,11 @@ class TransactionListViewModel(
             currentList.addAll(_showListLiveData.value!!)
         }
         val filteredList = mutableListOf<Transaction>()
-        filteredList.addAll(currentList.filter { it.category == categoryDescription })
+        filteredList.addAll(currentList.filter { it.category in categoriesList })
         _filteredTransactionsListLiveData.postValue(filteredList)
         _showListLiveData.postValue(filteredList)
         _categoryFilterValue.postValue((_descriptionFilterValues.value ?: mutableListOf()).apply {
-            add(categoryDescription)
+            addAll(categoriesList)
         })
     }
 

@@ -882,8 +882,9 @@ class TransactionListFragment : Fragment(), XLSInterface {
             composeView = binding.cmpViewTransactionList,
             items = viewModel.getShowListCategories(requireContext()),
             title = getString(R.string.categories),
-        ) { selected ->
-            viewModel.applyCategoryFilter(getString(selected.descriptionResId))
+        ) { categoriesListRes ->
+            val categoryNames = categoriesListRes.map { getString(it) }
+            viewModel.applyCategoryFilter(categoryNames)
         }
     }
 

@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -117,6 +119,7 @@ class ItemForLazyColumn {
             modifier: Modifier = Modifier,
             categoryDescription : String,
             categoryIconResId : Int,
+            selected : Boolean
         ){
             val extendedColors = LocalExtendedColors.current
             Card(
@@ -134,6 +137,15 @@ class ItemForLazyColumn {
                     ,
                     verticalAlignment = Alignment.CenterVertically
                 ){
+                    RadioButton(
+                        selected = selected,
+                        onClick = {},
+                        enabled = false,
+                        colors = RadioButtonDefaults.colors(
+                            disabledSelectedColor = MaterialTheme.colorScheme.primary,
+                            disabledUnselectedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    )
                     Image(
                         painter = painterResource(id = categoryIconResId),
                         contentDescription = "Chip",
@@ -177,7 +189,8 @@ fun CategoryForFilterPreview(){
         CategoryFilterItem(
             Modifier,
             "Categoria 2",
-            R.drawable.category_icon_entertainment
+            R.drawable.category_icon_entertainment,
+            true
         )
     }
 }

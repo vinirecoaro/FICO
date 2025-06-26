@@ -48,7 +48,7 @@ import com.example.fico.R
         LocalExtendedColors provides extendedColors
     ) {
         MaterialTheme(
-            colorScheme = colorScheme,
+            colorScheme = colors,
             typography = Typography(),
             shapes = Shapes(),
             content = content

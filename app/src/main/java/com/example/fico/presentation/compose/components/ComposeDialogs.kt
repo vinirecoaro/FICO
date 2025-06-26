@@ -9,8 +9,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -132,7 +135,7 @@ class ComposeDialogs {
             composeView: ComposeView,
             items: List<TransactionsCategory>,
             title: String,
-            onItemSelected: (TransactionsCategory) -> Unit
+            onFilterButtonClick: (List<Int>) -> Unit
         ) {
             composeView.setContent {
                 Theme {
@@ -143,10 +146,10 @@ class ComposeDialogs {
                             composeView.setContent {}
                             composeView.visibility = View.GONE
                         },
-                        onItemClick = { selected ->
+                        onFilterButtonClick = { descriptionResId ->
                             composeView.setContent {}
                             composeView.visibility = View.GONE
-                            onItemSelected(selected)
+                            onFilterButtonClick(descriptionResId)
                         }
                     )
                 }
@@ -159,9 +162,9 @@ class ComposeDialogs {
             items: List<TransactionsCategory>,
             title: String,
             onDismissRequest: () -> Unit,
-            onItemClick: (TransactionsCategory) -> Unit
+            onFilterButtonClick: (List<Int>) -> Unit
         ) {
-            val selectedCategory = remember { mutableStateOf<TransactionsCategory?>(null) }
+            val selectedCategories = mutableListOf<Int>()
             Dialog(
                 onDismissRequest = onDismissRequest,
             ) {
@@ -188,15 +191,36 @@ class ComposeDialogs {
 
                         LazyColumn {
                             items(items) { item ->
+                                var selected by rememberSaveable { mutableStateOf(false) }
                                 CategoryFilterItem(
                                     categoryDescription = stringResource(id = item.descriptionResId),
                                     categoryIconResId = item.iconResId,
+                                    selected = selected,
                                     modifier = Modifier
                                         .padding(vertical = 4.dp)
                                         .clickable {
-                                            onItemClick(item)
+                                            selectedCategories.add(item.descriptionResId)
+                                            selected = !selected
                                        }
                                 )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = onDismissRequest) {
+                                Text("Cancelar")
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Button(
+                                onClick = {
+                                onFilterButtonClick(selectedCategories)
+                            }) {
+                                Text("Filtrar")
                             }
                         }
                     }
@@ -210,16 +234,18 @@ class ComposeDialogs {
 @Preview(showBackground = true)
 @Composable
 fun CategoryListFilterDialogPreview(){
-    ComposeDialogs.CategoryListFilterDialog(
-        items = listOf(
-            TransactionsCategory.BET,
-            TransactionsCategory.ELETRONICS_1,
-            TransactionsCategory.CAR,
-        ),
-        title = "Categorias",
-        onDismissRequest = {},
-        onItemClick = {}
-    )
+    Theme {
+        ComposeDialogs.CategoryListFilterDialog(
+            items = listOf(
+                TransactionsCategory.BET,
+                TransactionsCategory.ELETRONICS_1,
+                TransactionsCategory.CAR,
+            ),
+            title = "Categorias",
+            onDismissRequest = {},
+            onFilterButtonClick = {}
+        )
+    }
 }
 
 @Preview(showBackground = true)
