@@ -249,10 +249,12 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     val expenseIdLength = transaction.id.length
                     //Verify if is a installment expense
                     if (expenseIdLength == 41) {
-                        val commonId = transaction.id.substring(0,25)
-                        val currentInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(transaction.id)
+                        val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(transaction.id)
                         //Will add just one installment off expense
-                        if(!installmentExpensesList.any{ it.id == commonId}){
+                        if(!installmentExpensesList.any{
+                            val commonExpenseId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id)
+                                commonExpenseId == commonId
+                        }){
                             val modifiedExpense = Expense(
                                 transaction.id,
                                 FormatValuesFromDatabase().priceToFile(transaction.price),
