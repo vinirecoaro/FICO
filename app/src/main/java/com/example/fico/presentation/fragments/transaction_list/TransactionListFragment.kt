@@ -75,8 +75,8 @@ class TransactionListFragment : Fragment(), XLSInterface {
     private var expenseMonthsList = arrayOf<String>()
     private val permissionRequestCode = 123
     private val permissions = arrayOf(
-        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        android.Manifest.permission.READ_EXTERNAL_STORAGE
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
     private companion object {
@@ -252,7 +252,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         val commonId = transaction.id.substring(0,25)
                         val currentInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(transaction.id)
                         //Will add just one installment off expense
-                        if(!installmentExpensesList.any{ it.id == commonId && currentInstallment == "001"}){
+                        if(!installmentExpensesList.any{ it.id == commonId}){
                             val modifiedExpense = Expense(
                                 transaction.id,
                                 FormatValuesFromDatabase().priceToFile(transaction.price),
@@ -295,14 +295,15 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         installmentExpensesList.forEach { expense ->
             val nOfInstallments = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).replace("0","")
-            val fullPrice = FormatValuesFromDatabase().installmentExpensePrice(expense.price, expense.id)
+            val fullPrice = BigDecimal(expense.price).multiply(BigDecimal(nOfInstallments)).toString()
             val formattedDescription = FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
+            val initialPaymentDate = FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id, expense.paymentDate)
             val formattedExpense = Expense(
                 expense.id,
                 fullPrice,
                 formattedDescription,
                 expense.category,
-                expense.paymentDate,
+                initialPaymentDate,
                 expense.purchaseDate,
                 expense.inputDateTime,
                 nOfInstallments

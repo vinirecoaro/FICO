@@ -28,7 +28,7 @@ interface XLSInterface {
             val wb : Workbook = HSSFWorkbook()
             val expensesSheet : Sheet = wb.createSheet(expensesSheetName)
             val earningsSheet : Sheet = wb.createSheet(earningsSheetName)
-            val installmentExpenseSheet : Sheet = wb.createSheet(installmentExpensesSheetName)
+            val installmentExpensesSheet : Sheet = wb.createSheet(installmentExpensesSheetName)
             var cell : Cell
             var rowIndex = 0
 
@@ -157,7 +157,7 @@ interface XLSInterface {
             //Start to fill installment expense sheet --------------------------------------------------------
 
             rowIndex = 0
-            val installmentExpenseTitleRow : Row = installmentExpenseSheet.createRow(rowIndex)
+            val installmentExpenseTitleRow : Row = installmentExpensesSheet.createRow(rowIndex)
 
             rowIndex++
             var columnInstallmentExpenseIncrement = 0
@@ -169,16 +169,16 @@ interface XLSInterface {
             }
 
             for(j in 0 until 123){
-                installmentExpenseSheet.setColumnWidth(j,(30*200))
+                installmentExpensesSheet.setColumnWidth(j,(30*200))
             }
 
-            for(i in 0 until earningsList.size()){
+            for(i in 0 until installmentExpenseList.size()){
 
                 val jsonObject : JsonObject = installmentExpenseList.get(i).asJsonObject
 
                 if(jsonObject != null){
                     var b = 0
-                    val installmentExpenseDataRow : Row = installmentExpenseSheet.createRow(i + rowIndex)
+                    val installmentExpenseDataRow : Row = installmentExpensesSheet.createRow(i + rowIndex)
 
                     for( index in installmentExpenseIndexName){
                         val cell = installmentExpenseDataRow.createCell(b)
