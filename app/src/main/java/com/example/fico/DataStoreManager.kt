@@ -353,7 +353,7 @@ class DataStoreManager (context: Context) {
         when (transaction.type) {
             StringConstants.DATABASE.EXPENSE -> {
                 val commonId = if(transaction.id.length > 25){
-                    transaction.id.substring(0,25)
+                    FormatValuesFromDatabase().commonIdOnInstallmentExpense(transaction.id)
                 }else{
                     transaction.id
                 }
@@ -361,7 +361,7 @@ class DataStoreManager (context: Context) {
                 val updatedTransaction = expenseList.first {
                     val listItemId =
                         if(it.id.length > 25){
-                            it.id.substring(0,25)
+                            FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id)
                         }else{
                             it.id
                         }
@@ -383,10 +383,10 @@ class DataStoreManager (context: Context) {
     }
 
     suspend fun getInstallmentExpense(transaction: Transaction) : List<Transaction>{
-        val commonId = transaction.id.substring(0,25)
+        val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(transaction.id)
         val expenseList = getExpenseList()
         val updatedExpenseList = expenseList.filter {
-            val listItemCommonId = it.id.substring(0,25)
+            val listItemCommonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id)
             listItemCommonId == commonId }
         val updatedTransactionList = mutableListOf<Transaction>()
         updatedExpenseList.forEach { updatedTransactionList.add(it.toTransaction()) }

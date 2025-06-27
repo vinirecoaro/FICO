@@ -584,13 +584,14 @@ class TransactionListViewModel(
     fun showTransactionsBasedOnType(transactionType : String){
         if(transactionsListLiveData.value != null) {
             val allTransactionList = _transactionsListLiveData.value!!
+            val finalFilteredList = mutableListOf<Transaction>()
+            val typeFilteredList = mutableListOf<Transaction>()
             if (_isFiltered.value == false || _isFiltered.value == null) {
-                _showListLiveData.postValue(allTransactionList)
+                finalFilteredList.addAll(allTransactionList)
             } else {
                 val textFilteredList = mutableListOf<Transaction>()
                 val dateFilteredList = mutableListOf<Transaction>()
                 val categoryFilteredList = mutableListOf<Transaction>()
-                val finalFilteredList = mutableListOf<Transaction>()
 
                 //Apply description filter
                 if (_descriptionFilterState.value == true) {
@@ -633,21 +634,17 @@ class TransactionListViewModel(
                     finalFilteredList.addAll(categoryFilteredList)
                 }
 
-                val typeFilteredList = mutableListOf<Transaction>()
-
-                if(transactionType == StringConstants.DATABASE.EXPENSE){
-                    typeFilteredList.addAll(finalFilteredList.filter { it.type == StringConstants.DATABASE.EXPENSE })
-                }else if(transactionType == StringConstants.DATABASE.EARNING){
-                    typeFilteredList.addAll(finalFilteredList.filter { it.type == StringConstants.DATABASE.EARNING })
-                }else{
-                    typeFilteredList.addAll(finalFilteredList)
-                }
-
-                _showListLiveData.postValue(typeFilteredList)
-
             }
-        }
+            if(transactionType == StringConstants.DATABASE.EXPENSE){
+                typeFilteredList.addAll(finalFilteredList.filter { it.type == StringConstants.DATABASE.EXPENSE })
+            }else if(transactionType == StringConstants.DATABASE.EARNING){
+                typeFilteredList.addAll(finalFilteredList.filter { it.type == StringConstants.DATABASE.EARNING })
+            }else{
+                typeFilteredList.addAll(finalFilteredList)
+            }
 
+            _showListLiveData.postValue(typeFilteredList)
+        }
     }
 
     fun changeReturningFromEditState(state : Boolean){
@@ -667,13 +664,13 @@ class TransactionListViewModel(
                     StringConstants.OPERATIONS.DELETE -> {
                         val excludedItem = _deletedItem.value!!
                         val commondId = if(excludedItem.id.length > 25){
-                            excludedItem.id.substring(0,25)
+                            FormatValuesFromDatabase().commonIdOnInstallmentExpense(excludedItem.id)
                         }else{
                             excludedItem.id
                         }
                         filteredTransactionList.addAll(currentList.filter {
                             if(it.id.length > 25){
-                                it.id.substring(0,25) != commondId
+                                FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id) != commondId
                             }else{
                                 it.id != commondId
                             }
@@ -704,11 +701,11 @@ class TransactionListViewModel(
                             //check if is installment expense
                             if(oldTransaction.id.length > 25){
                                 val updatedTransactions = dataStore.getInstallmentExpense(oldTransaction)
-                                val commonId = oldTransaction.id.substring(0,25)
+                                val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(oldTransaction.id)
 
                                 // Update List
                                 filteredTransactionList.addAll(currentList.filter {
-                                    val listItemId = it.id.substring(0,25)
+                                    val listItemId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id)
                                     listItemId != commonId
                                 }.toMutableList())
                                 if(_monthFilterLiveData.value != null){

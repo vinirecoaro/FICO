@@ -2,6 +2,7 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import java.math.BigDecimal
@@ -63,8 +64,8 @@ class ArrangeDataToUpdateToDatabase() {
                 var formattedExpense = formatExpenseToInstallmentExpense(Expense("", expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime), i)
 
                 if(isEdit){
-                    val commonExpenseId = expense.id.substring(0,25)
-                    val expenseId = "${commonExpenseId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+                    val commonExpenseId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(expense.id)
+                    val expenseId = "${formattedExpense.paymentDate}-${commonExpenseId}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
 
                     formattedExpense.id = expenseId
                 }else{
