@@ -239,22 +239,43 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
     }
 
-    private fun getTransactionsListForFile(): Pair<MutableList<Expense>,MutableList<Earning>> {
+    private fun getTransactionsListForFile(): Triple<MutableList<Expense>,MutableList<Earning>,MutableList<Expense>> {
         val expensesList: MutableList<Expense> = ArrayList()
         val earningsList: MutableList<Earning> = ArrayList()
+        val installmentExpensesList: MutableList<Expense> = ArrayList()
         viewModel.showListLiveData.observe(viewLifecycleOwner, Observer { transactions ->
             for (transaction in transactions) {
                 if(transaction.type == StringConstants.DATABASE.EXPENSE){
-                    val modifiedExpense = Expense(
-                        transaction.id,
-                        FormatValuesFromDatabase().priceToFile(transaction.price),
-                        transaction.description,
-                        transaction.category,
-                        transaction.paymentDate,
-                        transaction.purchaseDate,
-                        transaction.inputDateTime
-                    )
-                    expensesList.add(modifiedExpense)
+                    val expenseIdLength = transaction.id.length
+                    //Verify if is a installment expense
+                    if (expenseIdLength == 41) {
+                        val commonId = transaction.id.substring(0,25)
+                        val currentInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(transaction.id)
+                        //Will add just one installment off expense
+                        if(!installmentExpensesList.any{ it.id == commonId && currentInstallment == "001"}){
+                            val modifiedExpense = Expense(
+                                transaction.id,
+                                FormatValuesFromDatabase().priceToFile(transaction.price),
+                                transaction.description,
+                                transaction.category,
+                                transaction.paymentDate,
+                                transaction.purchaseDate,
+                                transaction.inputDateTime
+                            )
+                            installmentExpensesList.add(modifiedExpense)
+                        }
+                    }else{
+                        val modifiedExpense = Expense(
+                            transaction.id,
+                            FormatValuesFromDatabase().priceToFile(transaction.price),
+                            transaction.description,
+                            transaction.category,
+                            transaction.paymentDate,
+                            transaction.purchaseDate,
+                            transaction.inputDateTime
+                        )
+                        expensesList.add(modifiedExpense)
+                    }
                 }else if(transaction.type == StringConstants.DATABASE.EARNING){
                     val modifiedEarning = Earning(
                         transaction.id,
@@ -270,9 +291,28 @@ class TransactionListFragment : Fragment(), XLSInterface {
             }
         })
 
-        val listsPair = Pair(expensesList, earningsList)
+        val formattedInstallmentExpenseList = mutableListOf<Expense>()
 
-        return listsPair
+        installmentExpensesList.forEach { expense ->
+            val nOfInstallments = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).replace("0","")
+            val fullPrice = FormatValuesFromDatabase().installmentExpensePrice(expense.price, expense.id)
+            val formattedDescription = FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
+            val formattedExpense = Expense(
+                expense.id,
+                fullPrice,
+                formattedDescription,
+                expense.category,
+                expense.paymentDate,
+                expense.purchaseDate,
+                expense.inputDateTime,
+                nOfInstallments
+            )
+            formattedInstallmentExpenseList.add(formattedExpense)
+        }
+
+        val listsTriple = Triple(expensesList, earningsList, formattedInstallmentExpenseList)
+
+        return listsTriple
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -697,12 +737,15 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val gson = Gson()
         var expensesJsonArray = gson.toJsonTree(transactionsLists.first).asJsonArray
         var earningsJsonArray = gson.toJsonTree(transactionsLists.second).asJsonArray
+        var installmentExpensesJsonArray = gson.toJsonTree(transactionsLists.third).asJsonArray
 
         var file = generateXlsFile(
             requireActivity(), StringConstants.XLS.EXPENSE_TITLES, StringConstants.XLS.EARNINGS_TITLES,
-            StringConstants.XLS.EXPENSE_INDEX_NAME, StringConstants.XLS.EARNINGS_INDEX_NAME, expensesJsonArray,
-            earningsJsonArray, HashMap(), StringConstants.XLS.SHEET_NAME_EXPENSES, StringConstants.XLS.SHEET_NAME_EARNINGS,
-            StringConstants.XLS.FILE_NAME, 0
+            StringConstants.XLS.INSTALLMENT_EXPENSES_TITLES, StringConstants.XLS.EXPENSE_INDEX_NAME,
+            StringConstants.XLS.EARNINGS_INDEX_NAME, StringConstants.XLS.INSTALLMENT_EXPENSES_INDEX_NAME,
+            expensesJsonArray, earningsJsonArray, installmentExpensesJsonArray, HashMap(),
+            StringConstants.XLS.SHEET_NAME_EXPENSES, StringConstants.XLS.SHEET_NAME_EARNINGS,
+            StringConstants.XLS.SHEET_NAME_INSTALLMENT_EXPENSES, StringConstants.XLS.FILE_NAME, 0
         )
 
         if (file != null) {

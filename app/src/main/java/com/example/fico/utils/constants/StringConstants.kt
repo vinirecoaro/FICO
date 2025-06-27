@@ -51,8 +51,11 @@ class StringConstants private constructor() {
         val EXPENSE_INDEX_NAME: Array<String> = arrayOf("price", "description", "category", "paymentDate", "purchaseDate")
         val EARNINGS_TITLES: Array<String> = arrayOf("Valor", "Descrição", "Categoria", "Data")
         val EARNINGS_INDEX_NAME: Array<String> = arrayOf("value", "description", "category", "date")
+        val INSTALLMENT_EXPENSES_TITLES: Array<String> = arrayOf("Valor", "Descrição", "Categoria", "Data de Pagamento Inicial", "Data de Compra", "Número de Parcelas")
+        val INSTALLMENT_EXPENSES_INDEX_NAME: Array<String> = arrayOf("price", "description", "category", "paymentDate", "purchaseDate", "nOfInstallment")
         const val SHEET_NAME_EXPENSES = "despesas"
         const val SHEET_NAME_EARNINGS = "receitas"
+        const val SHEET_NAME_INSTALLMENT_EXPENSES = "despesas_parceladas"
         const val FILE_NAME = "transactions"
     }
 

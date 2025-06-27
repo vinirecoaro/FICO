@@ -19,14 +19,16 @@ import kotlin.collections.HashMap
 interface XLSInterface {
 
     fun generateXlsFile(activity : Activity, expensesTitles : Array<String>, earningsTitles : Array<String>,
-                        expensesIndexName : Array<String>, earningsIndexName : Array<String>, expensesList : JsonArray,
-                        earningsList : JsonArray, otherValueMap : HashMap<String, String>, expensesSheetName : String,
-                        earningsSheetName : String, fileName : String, otherRowItemCount : Int) : File? {
-
+                        installmentExpenseTitles: Array<String>, expensesIndexName : Array<String>,
+                        earningsIndexName : Array<String>, installmentExpenseIndexName : Array<String>,
+                        expensesList : JsonArray, earningsList : JsonArray, installmentExpenseList : JsonArray,
+                        otherValueMap : HashMap<String, String>, expensesSheetName : String, earningsSheetName : String,
+                        installmentExpensesSheetName : String, fileName : String, otherRowItemCount : Int) : File? {
         try{
             val wb : Workbook = HSSFWorkbook()
             val expensesSheet : Sheet = wb.createSheet(expensesSheetName)
             val earningsSheet : Sheet = wb.createSheet(earningsSheetName)
+            val installmentExpenseSheet : Sheet = wb.createSheet(installmentExpensesSheetName)
             var cell : Cell
             var rowIndex = 0
 
@@ -63,7 +65,7 @@ interface XLSInterface {
                 ++rowIndex
             }
 
-            //Start to fill expense sheet
+            //Start to fill expense sheet --------------------------------------------------------
 
             val expensesTitleRow : Row = expensesSheet.createRow(rowIndex)
 
@@ -107,7 +109,8 @@ interface XLSInterface {
                 }
             }
 
-            //Start to fill earning sheet
+            //Start to fill earning sheet --------------------------------------------------------
+
             rowIndex = 0
             val earningsTitleRow : Row = earningsSheet.createRow(rowIndex)
 
@@ -134,6 +137,51 @@ interface XLSInterface {
 
                     for( index in earningsIndexName){
                         val cell = earningDataRow.createCell(b)
+                        try{
+                            if(index != null && !TextUtils.isEmpty(index)){
+                                if(jsonObject.has(index) &&
+                                    jsonObject.get(index).asString != null){
+                                    cell.setCellValue(jsonObject.get(index).asString)
+                                }else {
+                                    cell.setCellValue(" - ")
+                                }
+                            }
+                        }catch (e : java.lang.Exception){
+                            e.printStackTrace()
+                        }
+                        ++b
+                    }
+                }
+            }
+
+            //Start to fill installment expense sheet --------------------------------------------------------
+
+            rowIndex = 0
+            val installmentExpenseTitleRow : Row = installmentExpenseSheet.createRow(rowIndex)
+
+            rowIndex++
+            var columnInstallmentExpenseIncrement = 0
+
+            for (title in installmentExpenseTitles){
+                cell = installmentExpenseTitleRow.createCell(columnInstallmentExpenseIncrement)
+                cell.setCellValue(title)
+                columnInstallmentExpenseIncrement++
+            }
+
+            for(j in 0 until 123){
+                installmentExpenseSheet.setColumnWidth(j,(30*200))
+            }
+
+            for(i in 0 until earningsList.size()){
+
+                val jsonObject : JsonObject = installmentExpenseList.get(i).asJsonObject
+
+                if(jsonObject != null){
+                    var b = 0
+                    val installmentExpenseDataRow : Row = installmentExpenseSheet.createRow(i + rowIndex)
+
+                    for( index in installmentExpenseIndexName){
+                        val cell = installmentExpenseDataRow.createCell(b)
                         try{
                             if(index != null && !TextUtils.isEmpty(index)){
                                 if(jsonObject.has(index) &&
