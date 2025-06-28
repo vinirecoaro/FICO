@@ -176,17 +176,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            /*R.id.add_expense_menu_common -> {
-                changeToCommonExpense()
-                //clearUserInputs()
-                return true
-            }
-
-            R.id.add_expense_menu_installments -> {
-                changeToInstallmentExpense()
-                //clearUserInputs()
-                return true
-            }*/
 
             R.id.add_recurring_expense_menu -> {
                 viewModel.getRecurringTransactionList(StringConstants.DATABASE.RECURRING_EXPENSE)
@@ -726,7 +715,8 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             .setMessage("Selecione o tipo de gasto que deseja importar.")
             .setNeutralButton("Gastos Parcelados") { dialog, which ->
                 importInstallmentExpenseTypeAlertDialog()
-            }.setPositiveButton("Gastos Comuns") { dialog, which ->
+            }
+            .setPositiveButton("Gastos Comuns") { dialog, which ->
                 importCommonExpenseTypeAlertDialog()
             }.show()
     }
@@ -949,8 +939,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     Toast.LENGTH_LONG
                 ).show()
             }
-        } else {
-
         }
     }
 
@@ -1043,6 +1031,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilRecurringTransactionDay.visibility = View.GONE
         binding.etRecurringTransactionDay.visibility = View.GONE
         binding.rgExpenseType.visibility = View.GONE
+        binding.clCreditCard.visibility = View.GONE
         adapter.updateCategories(categoriesList.getEarningCategoryList().sortedBy { it.description })
     }
 
@@ -1064,6 +1053,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilRecurringTransactionDay.visibility = View.GONE
         binding.etRecurringTransactionDay.visibility = View.GONE
         binding.rgExpenseType.visibility = View.VISIBLE
+        binding.clCreditCard.visibility = View.VISIBLE
         adapter.updateCategories(categoriesList.getExpenseCategoryList().sortedBy { it.description })
     }
 

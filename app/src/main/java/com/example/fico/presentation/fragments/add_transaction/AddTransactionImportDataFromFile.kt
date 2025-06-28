@@ -100,8 +100,8 @@ class AddTransactionImportDataFromFile(){
     }
 
     private fun verifyDateFormat(date: String): Boolean {
-        val formatoData = "\\d{2}/\\d{2}/\\d{4}" // Expressão regular para o formato "dd/mm/aaaa"
-        return date.matches(Regex(formatoData))
+        val dateFormat = "\\d{2}/\\d{2}/\\d{4}" // Expressão regular para o formato "dd/mm/aaaa"
+        return date.matches(Regex(dateFormat))
     }
 
     fun getCellValueAsString(cell: Cell?): String {
@@ -113,11 +113,11 @@ class AddTransactionImportDataFromFile(){
         }
     }
 
-    // Método para gerar uma URI para o novo arquivo (exemplo).
+    // Metodo para gerar uma URI para o novo arquivo (exemplo).
      fun getNewFileUri(): Uri {
         val downloadsDir =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val newFile = File(downloadsDir, "expenses.xlsx")
+        val newFile = File(downloadsDir, "transactions.xlsx")
         return Uri.fromFile(newFile)
     }
 
