@@ -11,10 +11,10 @@
         android:title="@string/recurring_earning"
         android:visible="false"
         />
-    <!--<item
-        android:id="@+id/add_expense_menu_get_data_from_file"
-        android:title="@string/import_expenses"
-        />-->
+    <item
+        android:id="@+id/add_transaction_menu_get_data_from_file"
+        android:title="@string/import_transactions"
+        />
     <item
         android:id="@+id/add_earning_transaction_menu"
         android:title="@string/add_income"

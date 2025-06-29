@@ -13,7 +13,6 @@ data class Expense(
     var purchaseDate: String,
     var inputDateTime: String,
     var nOfInstallment: String = "1"
-
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

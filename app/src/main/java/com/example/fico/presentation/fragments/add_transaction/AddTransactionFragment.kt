@@ -188,7 +188,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             }
 
             //TODO Change function and instructions to add expenses from file
-            /*R.id.add_expense_menu_get_data_from_file -> {
+            R.id.add_transaction_menu_get_data_from_file -> {
                 lifecycleScope.launch {
                     if (checkPermission()) {
                         if (viewModel.checkIfExistDefaultBudget().await()) {
@@ -201,7 +201,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     }
                 }
                 return true
-            }*/
+            }
 
             R.id.add_earning_transaction_menu -> {
                 changeComponentsToEarningState()
@@ -711,13 +711,18 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
     }
 
     fun importDataAlertDialog() {
-        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos")
-            .setMessage("Selecione o tipo de gasto que deseja importar.")
-            .setNeutralButton("Gastos Parcelados") { dialog, which ->
-                importInstallmentExpenseTypeAlertDialog()
+        MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.import_transactions))
+            .setMessage(getString(R.string.import_transactions_dialog_message))
+            .setNeutralButton(getString(R.string.instructions)) { dialog, which ->
+                startActivity(
+                    Intent(
+                        requireContext(),
+                        InstallmentExpenseImportFileInstructionsActivity::class.java
+                    )
+                )
             }
-            .setPositiveButton("Gastos Comuns") { dialog, which ->
-                importCommonExpenseTypeAlertDialog()
+            .setPositiveButton(getString(R.string.select_file)) { dialog, which ->
+                performFileSearch(READ_COMON_EXPENSE_REQUEST_CODE)
             }.show()
     }
 
@@ -779,73 +784,31 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                     }
                     // Work with a copy of file
                     val newPath = AddTransactionImportDataFromFile().getNewFileUri().path.toString()
-                    var readFileResult = AddTransactionImportDataFromFile().readFromExcelFile(newPath)
-                    if (readFileResult.second) {
+                    var readFileResult = AddTransactionImportDataFromFile().readFromExcelFile(newPath, requireContext())
+                    if (readFileResult.result) {
                         lifecycleScope.launch(Dispatchers.Main) {
 
-                            val expensesList = readFileResult.first
+                            val expensesList = readFileResult.expenseList
+                            val earningList = readFileResult.earningList
+                            val installmentExpenseList = readFileResult.installmentExpenseList
 
                             // innit the upload data to database service
                             val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
-                            serviceIntent.putParcelableArrayListExtra(
-                                "expensesList", ArrayList(expensesList)
-                            )
+                            serviceIntent
+                                .putParcelableArrayListExtra(StringConstants.XLS.EXPENSE_LIST, ArrayList(expensesList))
+                                .putParcelableArrayListExtra(StringConstants.XLS.EARNING_LIST, ArrayList(earningList))
+                                .putParcelableArrayListExtra(StringConstants.XLS.INSTALLMENT_EXPENSE_LIST, ArrayList(installmentExpenseList))
                             requireContext().startService(serviceIntent)
                         }
                         Toast.makeText(
                             requireContext(),
-                            "Dados corretos, salvando dados !",
+                            getString(R.string.data_format_success_message),
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            "Falha ao importar os dados, " +
-                                    "verifique se os dados estão corretos !",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            }
-        } else if (requestCode == READ_INSTALLMENT_EXPENSE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            resultData?.data?.also { uri ->
-                val inputStream = requireContext().contentResolver.openInputStream(uri)
-
-                if (inputStream != null) {
-                    val outputStream =
-                        FileOutputStream(AddTransactionImportDataFromFile().getNewFileUri().path)
-
-                    inputStream.use { input ->
-                        outputStream.use { output ->
-                            input.copyTo(output)
-                        }
-                    }
-                    // Work with a copy of file
-                    val newPath = AddTransactionImportDataFromFile().getNewFileUri().path.toString()
-                    var readFileResult = AddTransactionImportDataFromFile().readFromExcelFile(newPath)
-                    if (readFileResult.second) {
-                        lifecycleScope.launch(Dispatchers.Main) {
-
-                            val expensesList = readFileResult.first
-
-                            // innit the upload data to database service
-                            val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
-                            serviceIntent.putParcelableArrayListExtra(
-                                "expensesList", ArrayList(expensesList)
-                            )
-                            serviceIntent.putExtra("installmentExpense", true)
-                            requireContext().startService(serviceIntent)
-                        }
-                        Toast.makeText(
-                            requireContext(),
-                            "Dados corretos, salvando dados !",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Falha ao importar os dados, " +
-                                    "verifique se os dados estão corretos !",
+                            getString(R.string.data_formart_failure_message),
                             Toast.LENGTH_LONG
                         ).show()
                     }

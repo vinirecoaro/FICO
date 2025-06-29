@@ -36,6 +36,7 @@ class StringConstants private constructor() {
         const val TRANSACTIONS = "transactions"
         const val EARNINGS_LIST = "earningsList"
         const val CREDIT_CARD_LIST = "creditCardList"
+        const val INSTALLMENT_EXPENSE = "installment_expense"
         const val VALUE = "value"
         const val BALANCE = "value"
         const val DEFAULT_CREDIT_CARD_ID = "default_credit_card_id"
@@ -57,6 +58,10 @@ class StringConstants private constructor() {
         const val SHEET_NAME_EARNINGS = "receitas"
         const val SHEET_NAME_INSTALLMENT_EXPENSES = "despesas_parceladas"
         const val FILE_NAME = "transactions"
+        const val FINAL_LINE_IDENTIFICATION = "xxx"
+        const val EXPENSE_LIST = "expense_list"
+        const val EARNING_LIST = "earning_list"
+        const val INSTALLMENT_EXPENSE_LIST = "installment_expense_list"
     }
 
     object FILE_PROVIDER {

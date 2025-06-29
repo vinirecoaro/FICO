@@ -297,6 +297,17 @@
     <string name="light_blue">Azul claro</string>
     <string name="cards">Cartões</string>
     <string name="select_credit_card">Selecionar cartão</string>
+    <string name="import_transactions">Importar transações</string>
+    <string name="import_transactions_dialog_message">Importe transações através de uma planilha, siga as instruções.</string>
+    <string name="instructions">Instruções</string>
+    <string name="select_file">Selecionar Arquivo</string>
+    <string name="import_transactions_success_message">Transações importadas com sucesso.</string>
+    <string name="import_transactions_no_sheet_found_message">Nenhuma aba reconhecida encontrada no arquivo. Esperado: \'despesas\', \'receitas\', ou \'despesas_parceladas\'.</string>
+    <string name="invalid_date">Data inválida</string>
+    <string name="import_transaction_from_file_failure_on_process_line">Erro ao processar linha</string>
+    <string name="at_sheet">na aba</string>
+    <string name="data_format_success_message">Dados corretos, salvando dados !</string>
+    <string name="data_formart_failure_message">Falha ao importar os dados, verifique se os dados estão corretos !</string>
 
 
 </resources>
