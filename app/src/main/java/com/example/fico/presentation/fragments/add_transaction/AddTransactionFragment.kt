@@ -726,36 +726,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
             }.show()
     }
 
-    private fun importCommonExpenseTypeAlertDialog() {
-        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Comuns")
-            .setMessage("Os dados devem estar no formato correto.")
-            .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                startActivity(
-                    Intent(
-                        requireContext(),
-                        ComonExpenseImportFileInstructionsActivity::class.java
-                    )
-                )
-            }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
-                performFileSearch(READ_COMON_EXPENSE_REQUEST_CODE)
-            }.show()
-    }
-
-    private fun importInstallmentExpenseTypeAlertDialog() {
-        MaterialAlertDialogBuilder(requireContext()).setTitle("Importar Gastos Parcelados")
-            .setMessage("Os dados devem estar no formato correto.")
-            .setNeutralButton("Ver Formato Correto") { dialog, which ->
-                startActivity(
-                    Intent(
-                        requireContext(),
-                        InstallmentExpenseImportFileInstructionsActivity::class.java
-                    )
-                )
-            }.setPositiveButton("Selecionar Arquivo") { dialog, which ->
-                performFileSearch(READ_INSTALLMENT_EXPENSE_REQUEST_CODE)
-            }.show()
-    }
-
     private fun performFileSearch(requestCode: Int) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
