@@ -68,8 +68,7 @@ class AddTransactionViewModel(
 
             val formattedPurchaseDate = FormatValuesToDatabase().expenseDate(purchaseDate)
 
-            val formattedInputDate =
-                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
+            val formattedInputDate = FormatValuesToDatabase().dateTimeNow()
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
 
@@ -193,8 +192,7 @@ class AddTransactionViewModel(
         viewModelScope.async(Dispatchers.IO){
             val formattedDate = FormatValuesToDatabase().expenseDate(date)
 
-            val formattedInputDate =
-                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
+            val formattedInputDate = FormatValuesToDatabase().dateTimeNow()
 
             val formattedValue = FormatValuesToDatabase().expensePrice(value, 1)
 
@@ -236,14 +234,16 @@ class AddTransactionViewModel(
         type : String
     ){
         viewModelScope.async(Dispatchers.IO){
-            val formattedInputDate =
-                "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
+
+            val formattedInputDateForId = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
+
+            val formattedInputDate = FormatValuesToDatabase().dateTimeNow()
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(price, 1)
 
             val randonNum = arrangeDataToUpdateToDatabase.generateRandomAddress(5)
 
-            val id = "${formattedInputDate}-${randonNum}"
+            val id = "${formattedInputDateForId}-${randonNum}"
 
             val recurringTransaction = RecurringTransaction(
                 id,

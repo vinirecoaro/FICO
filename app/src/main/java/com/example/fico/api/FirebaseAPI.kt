@@ -876,8 +876,7 @@ class FirebaseAPI(
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val expenseList = mutableListOf<Expense>()
                         for (expense in snapshot.children) {
-                            val date = expense.child(StringConstants.DATABASE.DATE).value.toString()
-                            val inputDateTime = "$date-${FormatValuesToDatabase().timeNow()}"
+                            val inputDateTime = FormatValuesToDatabase().dateTimeNow()
                             val newExpense = Expense(
                                 expense.key.toString(),
                                 expense.child(StringConstants.DATABASE.PRICE).value.toString(),

@@ -81,7 +81,7 @@ class EditTransactionViewModel(
             val newExpensePrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
             val newExpensePaymentDate = FormatValuesToDatabase().expenseDate(paymentDate)
             val newExpensePurchaseDate = FormatValuesToDatabase().expenseDate(purchaseData)
-            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
+            val formattedInputDate = FormatValuesToDatabase().dateTimeNow()
 
             val newExpense = Expense(oldExpense.id, newExpensePrice, description, category, newExpensePaymentDate, newExpensePurchaseDate, formattedInputDate)
 
@@ -228,7 +228,7 @@ class EditTransactionViewModel(
 
             val newEarningValue = FormatValuesToDatabase().expensePrice(value, 1)
             val newEarningDate = FormatValuesToDatabase().expenseDate(date)
-            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
+            val formattedInputDate = FormatValuesToDatabase().dateTimeNow()
 
             val newEarning = Earning(oldEarning.id, newEarningValue, description, category, newEarningDate, formattedInputDate)
 
@@ -257,7 +257,7 @@ class EditTransactionViewModel(
         viewModelScope.async(Dispatchers.IO) {
 
             val newValue = FormatValuesToDatabase().expensePrice(value, 1)
-            val formattedInputDate = "${FormatValuesToDatabase().expenseDate(DateFunctions().getCurrentDate())}-${FormatValuesToDatabase().timeNow()}"
+            val formattedInputDate = FormatValuesToDatabase().dateTimeNow()
 
             val newRecurringExpense = RecurringTransaction(oldRecurringTransaction.id, newValue, description, category, day, formattedInputDate, oldRecurringTransaction.type)
 

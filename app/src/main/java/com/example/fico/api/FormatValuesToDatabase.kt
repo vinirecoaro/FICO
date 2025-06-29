@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.model.Expense
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class FormatValuesToDatabase {
@@ -38,6 +39,11 @@ class FormatValuesToDatabase {
             second = "0${timeNow.second}"
         }
         return "${hour}-${minute}-${second}"
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun dateTimeNow() : String {
+        return LocalDateTime.now().toString()
     }
 
     fun expensePrice(number : String, nOfInstallments : Int) : String {
