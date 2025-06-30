@@ -765,8 +765,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                             // innit the upload data to database service
                             val serviceIntent = Intent(requireContext(), UploadFile()::class.java)
 
-                            return@launch
-
                             serviceIntent
                                 .putParcelableArrayListExtra(StringConstants.XLS.EXPENSE_LIST, ArrayList(expensesList))
                                 .putParcelableArrayListExtra(StringConstants.XLS.EARNING_LIST, ArrayList(earningList))
