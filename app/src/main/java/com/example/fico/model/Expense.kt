@@ -22,6 +22,7 @@ data class Expense(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
+        parcel.readString() ?: "",
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -31,6 +32,7 @@ data class Expense(
         parcel.writeString(category)
         parcel.writeString(paymentDate)
         parcel.writeString(purchaseDate)
+        parcel.writeString(inputDateTime)
         parcel.writeString(nOfInstallment)
     }
 

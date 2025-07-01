@@ -379,6 +379,8 @@ class FirebaseAPI(
                 // Add Information per Month
                 updates.putAll(generateMapToUpdateInformationPerMonth(masterExpenseList.updatedInformationPerMonth))
 
+                return@withContext false
+
                 expenses.updateChildren(updates)
 
                 result.complete(true)

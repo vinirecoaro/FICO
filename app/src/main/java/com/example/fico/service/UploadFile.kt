@@ -37,9 +37,9 @@ class UploadFile : Service() {
                 mutableListOf(),1,"0", mutableListOf())
 
             //Total expense
-            val _expenseList = expenseList ?: mutableListOf()
-            val _installmentExpenseList = installmentExpenseList ?: mutableListOf()
-            val totalExpenseFromFile = sumAllExpenses(_expenseList, _installmentExpenseList)
+            val notNullExpenseList = expenseList ?: mutableListOf()
+            val notNullInstallmentExpenseList = installmentExpenseList ?: mutableListOf()
+            val totalExpenseFromFile = sumAllExpenses(notNullExpenseList, notNullInstallmentExpenseList)
 
             val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
@@ -47,25 +47,26 @@ class UploadFile : Service() {
                 1
             )
 
-            Log.e("e", updatedTotalExpense)
+            masterExpenseList.updatedTotalExpense = updatedTotalExpense
+
+            //Expense per month
+            val expensePerMonthList = arrangeDataToUpdateToDatabase.joinExpensesOfMonth(notNullExpenseList, notNullInstallmentExpenseList)
+
+            val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(
+                expensePerMonthList,
+                dataStore.getExpenseInfoPerMonth(),
+                dataStore.getDefaultBudget()
+            )
+
+            for (info in updatedInformationPerMonth){
+                masterExpenseList.updatedInformationPerMonth.add(info)
+            }
+
+            Log.e("e", expensePerMonthList.toString())
 
             return@launch
 
-            if (expenseList != null) {
-
-                masterExpenseList.updatedTotalExpense = updatedTotalExpense
-
-                val expensePerMonthList = arrangeDataToUpdateToDatabase.joinExpensesOfMonth(expenseList, false)
-
-                val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(
-                    expensePerMonthList,
-                    dataStore.getExpenseInfoPerMonth(),
-                    dataStore.getDefaultBudget()
-                )
-
-                for (info in updatedInformationPerMonth){
-                    masterExpenseList.updatedInformationPerMonth.add(info)
-                }
+            /*if (expenseList != null) {
 
                 val expenseList = arrangeDataToUpdateToDatabase.addToExpenseListFromFileCommonExpense(expenseList)
 
@@ -77,7 +78,7 @@ class UploadFile : Service() {
                     val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
                     sendBroadcast(intentConcludedWarning)
                 }
-            }
+            }*/
 
             //Installment expense
             /*if (installmentExpenseList != null) {
