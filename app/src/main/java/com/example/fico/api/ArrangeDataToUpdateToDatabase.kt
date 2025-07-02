@@ -2,6 +2,7 @@ package com.example.fico.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import java.math.BigDecimal
@@ -90,6 +91,33 @@ class ArrangeDataToUpdateToDatabase() {
         }
 
         return expenseList
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addToEarningListFromFile(earningList : List<Earning>): MutableList<Earning> {
+
+        val formattedEarningList = mutableListOf<Earning>()
+
+        for(earning in earningList){
+
+            val randomNum = generateRandomAddress(5)
+
+            val inputTime = FormatValuesToDatabase().timeNow()
+
+            val earningId = "${earning.date}-${inputTime}-${randomNum}"
+
+            val earningFormatted = Earning(
+                earningId,
+                earning.value,
+                earning.description,
+                earning.category,
+                earning.date,
+                earning.inputDateTime
+            )
+
+            formattedEarningList.add(earningFormatted)
+        }
+        return formattedEarningList
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

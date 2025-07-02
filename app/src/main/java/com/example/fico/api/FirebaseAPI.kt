@@ -379,9 +379,13 @@ class FirebaseAPI(
                 // Add Information per Month
                 updates.putAll(generateMapToUpdateInformationPerMonth(masterExpenseList.updatedInformationPerMonth))
 
-                return@withContext false
-
                 expenses.updateChildren(updates)
+
+                updates.clear()
+
+                updates.putAll(generateMapToUpdateUserEarnings(masterExpenseList.earningList))
+
+                earnings.updateChildren(updates)
 
                 result.complete(true)
             } catch (e: Exception) {
@@ -421,7 +425,7 @@ class FirebaseAPI(
 
         return@withContext try {
             // Add Expense List
-            updates.putAll(generateMapToUpdateUserEarnings(earning))
+            updates.putAll(generateMapToUpdateUserEarnings(mutableListOf<Earning>(earning)))
 
             earnings.updateChildren(updates)
 
@@ -494,7 +498,7 @@ class FirebaseAPI(
         try {
 
             // Add Earning List
-            updates.putAll(generateMapToUpdateUserEarnings(earning))
+            updates.putAll(generateMapToUpdateUserEarnings(mutableListOf<Earning>(earning)))
 
             earnings.updateChildren(updates)
 
@@ -559,19 +563,21 @@ class FirebaseAPI(
         return updatesOfExpenseList
     }
 
-    private fun generateMapToUpdateUserEarnings(earning : Earning): MutableMap<String, Any> {
+    private fun generateMapToUpdateUserEarnings(earningList : MutableList<Earning>): MutableMap<String, Any> {
         val updatesOfEarningList = mutableMapOf<String, Any>()
 
-        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.VALUE}"] =
-            earning.value
-        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
-            earning.description
-        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.CATEGORY}"] =
-            earning.category
-        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DATE}"] =
-            earning.date
-        updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
-            earning.inputDateTime
+        for(earning in earningList){
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.VALUE}"] =
+                earning.value
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DESCRIPTION}"] =
+                earning.description
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.CATEGORY}"] =
+                earning.category
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.DATE}"] =
+                earning.date
+            updatesOfEarningList["${StringConstants.DATABASE.EARNINGS_LIST}/${earning.id}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] =
+                earning.inputDateTime
+        }
 
         return updatesOfEarningList
     }

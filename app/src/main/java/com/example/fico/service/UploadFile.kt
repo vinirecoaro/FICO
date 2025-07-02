@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.UpdateFromFileExpenseList
 import com.example.fico.utils.constants.StringConstants
@@ -28,18 +29,19 @@ class UploadFile : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         val expenseList = intent?.getParcelableArrayListExtra<Expense>(StringConstants.XLS.EXPENSE_LIST)
-        val earningList = intent?.getParcelableArrayListExtra<Expense>(StringConstants.XLS.EARNING_LIST)
+        val earningList = intent?.getParcelableArrayListExtra<Earning>(StringConstants.XLS.EARNING_LIST)
         val installmentExpenseList = intent?.getParcelableArrayListExtra<Expense>(StringConstants.XLS.INSTALLMENT_EXPENSE_LIST)
 
         serviceScope.launch {
 
             var masterExpenseList = UpdateFromFileExpenseList(
-                mutableListOf(),"0", mutableListOf())
+                mutableListOf(),"0", mutableListOf(), mutableListOf())
 
 
             //Total expense
             val notNullExpenseList = expenseList ?: mutableListOf()
             val notNullInstallmentExpenseList = installmentExpenseList ?: mutableListOf()
+            val notNullEarningList = earningList ?: mutableListOf()
             val totalExpenseFromFile = sumAllExpenses(notNullExpenseList, notNullInstallmentExpenseList)
 
             val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
@@ -67,53 +69,18 @@ class UploadFile : Service() {
 
             masterExpenseList.expenseList.addAll(expenseListFormatted)
 
-            Log.e("e", expenseListFormatted.toString())
 
-            return@launch
+            //Earning list
+            val earningListFormatted = arrangeDataToUpdateToDatabase.addToEarningListFromFile(notNullEarningList)
+
+            masterExpenseList.earningList.addAll(earningListFormatted)
 
 
+            //Add to database
             if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
                 val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
                 sendBroadcast(intentConcludedWarning)
             }
-
-            /*if (expenseList != null) {
-
-                val expenseList = arrangeDataToUpdateToDatabase.addToExpenseListFromFileCommonExpense(expenseList)
-
-               for(expenseFromExpenseList in expenseList){
-                   masterExpenseList.expenseList.add(expenseFromExpenseList)
-               }
-
-                if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
-                    val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
-                    sendBroadcast(intentConcludedWarning)
-                }
-            }*/
-
-            //Installment expense
-            /*if (installmentExpenseList != null) {
-
-                for (expense in installmentExpenseList){
-
-                    val expensePriceFormatted = BigDecimal(expense.price).divide(BigDecimal(expense.nOfInstallment), 8, RoundingMode.HALF_UP).toString()
-
-                    val _expense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
-
-                    val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(_expense, installmentExpense, expense.nOfInstallment.toFloat().toInt(), false)
-
-                    for(expenseFromExpenseList in expenseList){
-                        masterExpenseList.expenseList.add(expenseFromExpenseList)
-                    }
-
-                }
-
-                if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
-                    val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
-                    sendBroadcast(intentConcludedWarning)
-                }
-
-            }*/
 
         }
 
