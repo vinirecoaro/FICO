@@ -37,7 +37,7 @@ class ArrangeDataToUpdateToDatabase() {
     fun addToExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int, isEdit : Boolean) : MutableList<Expense>{
 
         val expenseList : MutableList<Expense> = mutableListOf()
-        val randonNum = generateRandomAddress(5)
+        val randomNum = generateRandomAddress(5)
         val inputTime = FormatValuesToDatabase().timeNow()
 
         if(installment){
@@ -67,7 +67,7 @@ class ArrangeDataToUpdateToDatabase() {
 
                     formattedExpense.id = expenseId
                 }else{
-                    val expenseId = "${formattedExpense.paymentDate}-${inputTime}-${randonNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
+                    val expenseId = "${formattedExpense.paymentDate}-${inputTime}-${randomNum}-Parcela-$currentInstallment-${nOfInstallmentsFormatted}"
 
                     formattedExpense.id = expenseId
                 }
@@ -82,7 +82,7 @@ class ArrangeDataToUpdateToDatabase() {
             if (isEdit){
                 formattedExpense.id = expense.id
             }else{
-                val expenseId = "${formattedExpense.paymentDate}-${inputTime}-${randonNum}"
+                val expenseId = "${formattedExpense.paymentDate}-${inputTime}-${randomNum}"
                 formattedExpense.id = expenseId
             }
 
@@ -93,40 +93,29 @@ class ArrangeDataToUpdateToDatabase() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addToExpenseListFromFileCommonExpense(expenses : MutableList<Expense>) : MutableList<Expense>{
+    fun addToExpenseListFromFile(expenseList : MutableList<Expense>, installmentExpenseList : MutableList<Expense>) : MutableList<Expense>{
 
-        val expenseList : MutableList<Expense> = mutableListOf()
-        val randonNums : MutableList<String> = mutableListOf()
-        val inputDateTime = FormatValuesToDatabase().dateTimeNow()
+        val fullExpenseList : MutableList<Expense> = mutableListOf()
 
-        val inputTime = FormatValuesToDatabase().timeNow()
+        for (expense in expenseList){
 
-        var i = 0
+            val expense = addToExpenseList(expense, false, 1, false)
 
-        //Generate randon nums to Id and make sure that values aren't equal
-        while(i < expenses.size){
-            val randonNum = generateRandomAddress(5)
-            if(!randonNums.any { it == randonNum }){
-                randonNums.add(randonNum)
-                i++
-            }
+            fullExpenseList.addAll(expense)
         }
 
-        for(expense in expenses){
+        for(expense in installmentExpenseList){
 
-            val selectedIndex = kotlin.random.Random.nextInt(randonNums.size)
+            val expensePriceFormatted = BigDecimal(expense.price).divide(BigDecimal(expense.nOfInstallment), 8, RoundingMode.HALF_UP).toString()
 
-            val randonNumId = randonNums[selectedIndex]
+            val formattedExpense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
 
-            val expenseId = "${expense.purchaseDate}-${inputTime}-${randonNumId}"
-            val formattedExpense = Expense(expenseId, expense.price, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, inputDateTime)
+            val expenseListFromInstallmentExpense = addToExpenseList(formattedExpense, true, expense.nOfInstallment.toFloat().toInt(), false)
 
-            expenseList.add(formattedExpense)
-
-            randonNums.removeAt(selectedIndex)
+            fullExpenseList.addAll(expenseListFromInstallmentExpense)
         }
 
-        return expenseList
+        return fullExpenseList
     }
 
     fun removeFromExpenseList(expense : Expense, currentExpenseList : List<Expense>) : MutableList<String>{
