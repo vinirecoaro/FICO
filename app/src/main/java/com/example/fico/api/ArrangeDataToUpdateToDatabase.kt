@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.ValuePerMonth
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -344,7 +345,7 @@ class ArrangeDataToUpdateToDatabase() {
         }
 
     fun addToInformationPerMonthFromUpdatedFile(
-        monthExpenseList : MutableList<Pair<String,String>>,
+        monthExpenseList : MutableList<ValuePerMonth>,
         currentInfoPerMonth : List<InformationPerMonthExpense>,
         defaultBudget : String
     ) : MutableList<InformationPerMonthExpense>{
@@ -353,9 +354,9 @@ class ArrangeDataToUpdateToDatabase() {
             val defaultBudgetString = defaultBudgetBigDecimal.setScale(8, RoundingMode.HALF_UP).toString()
 
             for (monthExpense in monthExpenseList) {
-                val date = monthExpense.first
+                val date = monthExpense.month
                 val existDate = currentInfoPerMonth.any { it.date == date }
-                val monthExpenseValue = monthExpense.second
+                val monthExpenseValue = monthExpense.value
 
                 if (!existDate) {
 
@@ -434,9 +435,9 @@ class ArrangeDataToUpdateToDatabase() {
     fun joinExpensesOfMonth(
         expensesList : MutableList<Expense>,
         installmentExpenseList : MutableList<Expense>
-    ) : MutableList<Pair<String,String>> {
+    ) : MutableList<ValuePerMonth> {
 
-        val calculatedList : MutableList<Pair<String,String>> = mutableListOf()
+        val calculatedList : MutableList<ValuePerMonth> = mutableListOf()
         val months : MutableSet<String> = mutableSetOf()
 
         //Common expense
@@ -452,7 +453,7 @@ class ArrangeDataToUpdateToDatabase() {
                 sumPrices = sumPrices.add(expensePrice)
             }
 
-            val monthExpense = Pair(month, sumPrices.toString())
+            val monthExpense = ValuePerMonth(month, sumPrices.toString())
 
             calculatedList.add(monthExpense)
         }
@@ -480,12 +481,12 @@ class ArrangeDataToUpdateToDatabase() {
                sumPrices = sumPrices.add(BigDecimal(expense.price))
             }
 
-            val monthExpense = Pair(month, sumPrices.toString())
+            val monthExpense = ValuePerMonth(month, sumPrices.toString())
 
-            val month = calculatedList.find { it.first == month }
+            val month = calculatedList.find { it.month == month }
             if(month != null){
-                val expenseMonth = BigDecimal(month.second).add(BigDecimal(monthExpense.second)).toString()
-                val newMonthExpense = Pair(month.first, expenseMonth)
+                val expenseMonth = BigDecimal(month.value).add(BigDecimal(monthExpense.value)).toString()
+                val newMonthExpense = ValuePerMonth(month.month, expenseMonth)
                 calculatedList.remove(month)
                 calculatedList.add(newMonthExpense)
             }else{

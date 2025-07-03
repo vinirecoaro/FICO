@@ -17,6 +17,7 @@ class StringConstants private constructor() {
         const val DESCRIPTION = "description"
         const val CATEGORY = "category"
         const val INFORMATION_PER_MONTH = "informationPerMonth"
+        const val EXPENSE_INFORMATION_PER_MONTH = "expenseInformationPerMonth"
         const val AVAILABLE_NOW = "availableNow"
         const val EXPENSE = "expense"
         const val EXPENSES = "expenses"
@@ -36,10 +37,13 @@ class StringConstants private constructor() {
         const val TRANSACTIONS = "transactions"
         const val EARNINGS_LIST = "earningsList"
         const val CREDIT_CARD_LIST = "creditCardList"
+        const val UPLOADS_FROM_FILE = "uploadsFromFile"
         const val INSTALLMENT_EXPENSE = "installment_expense"
         const val VALUE = "value"
         const val BALANCE = "value"
         const val DEFAULT_CREDIT_CARD_ID = "default_credit_card_id"
+        const val EXPENSE_ID_LIST = "expenseIdList"
+        const val EARNING_ID_LIST = "earningIdList"
     }
 
     object GENERAL_CONFIGURATION_LIST {

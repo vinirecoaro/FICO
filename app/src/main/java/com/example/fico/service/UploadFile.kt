@@ -4,14 +4,13 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
-import com.example.fico.model.UpdateFromFileExpenseList
+import com.example.fico.model.UpdateTransactionFromFileInfo
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -34,8 +33,11 @@ class UploadFile : Service() {
 
         serviceScope.launch {
 
-            var masterExpenseList = UpdateFromFileExpenseList(
-                mutableListOf(),"0", mutableListOf(), mutableListOf())
+            var transactionFromFileInfo = UpdateTransactionFromFileInfo(
+                "", mutableListOf(), "0", mutableListOf(),
+                mutableListOf(), mutableListOf(), mutableListOf(),
+                "", mutableListOf()
+            )
 
 
             //Total expense
@@ -43,17 +45,19 @@ class UploadFile : Service() {
             val notNullInstallmentExpenseList = installmentExpenseList ?: mutableListOf()
             val notNullEarningList = earningList ?: mutableListOf()
             val totalExpenseFromFile = sumAllExpenses(notNullExpenseList, notNullInstallmentExpenseList)
+            transactionFromFileInfo.totalExpenseFromFile = totalExpenseFromFile // add to log
 
             val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
                 totalExpenseFromFile, 1
             )
 
-            masterExpenseList.updatedTotalExpense = updatedTotalExpense
+            transactionFromFileInfo.updatedTotalExpense = updatedTotalExpense
 
 
             //Expense per month
             val expensePerMonthList = arrangeDataToUpdateToDatabase.joinExpensesOfMonth(notNullExpenseList, notNullInstallmentExpenseList)
+            transactionFromFileInfo.expensePerMonthList.addAll(expensePerMonthList) // Add to log
 
             val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(
                 expensePerMonthList,
@@ -61,23 +65,27 @@ class UploadFile : Service() {
                 dataStore.getDefaultBudget()
             )
 
-            masterExpenseList.updatedInformationPerMonth.addAll(updatedInformationPerMonth)
+            transactionFromFileInfo.updatedInformationPerMonth.addAll(updatedInformationPerMonth)
 
 
             //Expense list
             val expenseListFormatted = arrangeDataToUpdateToDatabase.addToExpenseListFromFile(notNullExpenseList, notNullInstallmentExpenseList)
 
-            masterExpenseList.expenseList.addAll(expenseListFormatted)
+            transactionFromFileInfo.expenseList.addAll(expenseListFormatted)
 
 
             //Earning list
             val earningListFormatted = arrangeDataToUpdateToDatabase.addToEarningListFromFile(notNullEarningList)
 
-            masterExpenseList.earningList.addAll(earningListFormatted)
+            transactionFromFileInfo.earningList.addAll(earningListFormatted)
 
+
+            //log for upload from file
+            transactionFromFileInfo.expenseIdList.addAll(expenseListFormatted.map { it.id })
+            transactionFromFileInfo.earningIdList.addAll(earningListFormatted.map { it.id })
 
             //Add to database
-            if(firebaseAPI.addExpenseFromFile(masterExpenseList)){
+            if(firebaseAPI.addTransactionsFromFile(transactionFromFileInfo)){
                 val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
                 sendBroadcast(intentConcludedWarning)
             }

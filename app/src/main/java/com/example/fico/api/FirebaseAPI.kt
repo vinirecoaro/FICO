@@ -11,8 +11,9 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
-import com.example.fico.model.UpdateFromFileExpenseList
+import com.example.fico.model.UpdateTransactionFromFileInfo
 import com.example.fico.model.User
+import com.example.fico.model.ValuePerMonth
 import com.example.fico.utils.constants.StringConstants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -23,6 +24,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.collections.set
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -45,6 +47,7 @@ class FirebaseAPI(
     private lateinit var earnings : DatabaseReference
     private lateinit var earningsList : DatabaseReference
     private lateinit var credit_card_list : DatabaseReference
+    private lateinit var uploads_from_file : DatabaseReference
 
     fun updateReferences() {
         user_root = rootRef.child(auth.currentUser?.uid.toString())
@@ -59,6 +62,7 @@ class FirebaseAPI(
         earnings = user_root.child(StringConstants.DATABASE.EARNINGS)
         earningsList = earnings.child(StringConstants.DATABASE.EARNINGS_LIST)
         credit_card_list = expenses.child(StringConstants.DATABASE.CREDIT_CARD_LIST)
+        uploads_from_file = transactions.child(StringConstants.DATABASE.UPLOADS_FROM_FILE)
     }
 
     suspend fun updateExpensesPath(){
@@ -364,26 +368,55 @@ class FirebaseAPI(
         })
     }
 
-    suspend fun addExpenseFromFile(masterExpenseList: UpdateFromFileExpenseList): Boolean =
+    suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): Boolean =
         withContext(Dispatchers.IO) {
             val updates = mutableMapOf<String, Any>()
             val result = CompletableDeferred<Boolean>()
 
             try {
+
+                //Add log info to database
+                val uploadId = uploads_from_file.push().key
+
+                if(uploadId != null){
+
+                    val updateMap = generateMapToUpdateLogImportTransactionsFromFile(
+                        transactionFromFileInfo.expenseIdList,
+                        transactionFromFileInfo.earningIdList,
+                        transactionFromFileInfo.expensePerMonthList,
+                        transactionFromFileInfo.totalExpenseFromFile,
+                        uploads_from_file.child(StringConstants.DATABASE.EXPENSE_ID_LIST),
+                        uploads_from_file.child(StringConstants.DATABASE.EARNING_ID_LIST),
+                        uploadId
+                    )
+
+                    if(updateMap != null){
+                        updates.putAll(updateMap)
+                        uploads_from_file.updateChildren(updates)
+                    }else{
+                        result.complete(false)
+                    }
+                }else{
+                    result.complete(false)
+                }
+
+                updates.clear()
+
                 // Add Expense List
-                updates.putAll(generateMapToUpdateUserExpenses(masterExpenseList.expenseList))
+                updates.putAll(generateMapToUpdateUserExpenses(transactionFromFileInfo.expenseList))
 
                 // Add Updated Total Expense
-                updates.putAll(generateMapToUpdateUserTotalExpense(masterExpenseList.updatedTotalExpense))
+                updates.putAll(generateMapToUpdateUserTotalExpense(transactionFromFileInfo.updatedTotalExpense))
 
                 // Add Information per Month
-                updates.putAll(generateMapToUpdateInformationPerMonth(masterExpenseList.updatedInformationPerMonth))
+                updates.putAll(generateMapToUpdateInformationPerMonth(transactionFromFileInfo.updatedInformationPerMonth))
 
                 expenses.updateChildren(updates)
 
                 updates.clear()
 
-                updates.putAll(generateMapToUpdateUserEarnings(masterExpenseList.earningList))
+                // Add Earning List
+                updates.putAll(generateMapToUpdateUserEarnings(transactionFromFileInfo.earningList))
 
                 earnings.updateChildren(updates)
 
@@ -580,6 +613,49 @@ class FirebaseAPI(
         }
 
         return updatesOfEarningList
+    }
+
+    private fun generateMapToUpdateLogImportTransactionsFromFile(
+        expenseIdList : MutableList<String>,
+        earningIdList : MutableList<String>,
+        expenseInfoPerMonthList : MutableList<ValuePerMonth>,
+        totalExpense : String,
+        referenceForExpenseIdList : DatabaseReference,
+        referenceForEarningIdList : DatabaseReference,
+        uploadId : String
+    ): MutableMap<String, Any>? {
+        val updates = mutableMapOf<String, Any>()
+
+        //Expense id
+        for(id in expenseIdList){
+            val key = referenceForExpenseIdList.push().key
+            if(key != null){
+                updates["${uploadId}/${StringConstants.DATABASE.EXPENSE_ID_LIST}/${key}"] = id
+            }else{
+                return null
+            }
+        }
+
+        //Earning id
+        for(id in earningIdList){
+            val key = referenceForEarningIdList.push().key
+            if(key != null){
+                updates["${uploadId}/${StringConstants.DATABASE.EARNING_ID_LIST}/${key}"] = id
+            }else{
+                return null
+            }
+        }
+
+        //Expense value per month
+        for(infoPerMonth in expenseInfoPerMonthList){
+            updates["${uploadId}/${StringConstants.DATABASE.EXPENSE_INFORMATION_PER_MONTH}/${infoPerMonth.month}/${StringConstants.DATABASE.EXPENSE}"] =
+                infoPerMonth.value
+        }
+
+        //Total expense
+        updates["${uploadId}/${StringConstants.DATABASE.TOTAL_EXPENSE}"] = totalExpense
+
+        return updates
     }
 
     private fun generateMapToUpdateCreditCardList(creditCard : CreditCard): MutableMap<String, Any> {
