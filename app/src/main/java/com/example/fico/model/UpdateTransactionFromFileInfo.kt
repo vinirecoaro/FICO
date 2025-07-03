@@ -1,7 +1,7 @@
 package com.example.fico.model
 
 data class UpdateTransactionFromFileInfo(
-    val id: String,
+    var id: String,
     val expenseList: MutableList<Expense>,
     var updatedTotalExpense: String,
     val updatedInformationPerMonth: MutableList<InformationPerMonthExpense>,

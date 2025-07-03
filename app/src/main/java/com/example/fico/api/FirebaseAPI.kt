@@ -368,10 +368,10 @@ class FirebaseAPI(
         })
     }
 
-    suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): Boolean =
+    suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): String? =
         withContext(Dispatchers.IO) {
             val updates = mutableMapOf<String, Any>()
-            val result = CompletableDeferred<Boolean>()
+            val result = CompletableDeferred<String?>()
 
             try {
 
@@ -394,10 +394,10 @@ class FirebaseAPI(
                         updates.putAll(updateMap)
                         uploads_from_file.updateChildren(updates)
                     }else{
-                        result.complete(false)
+                        result.complete(null)
                     }
                 }else{
-                    result.complete(false)
+                    result.complete(null)
                 }
 
                 updates.clear()
@@ -420,10 +420,12 @@ class FirebaseAPI(
 
                 earnings.updateChildren(updates)
 
-                result.complete(true)
+                result.complete(uploadId)
             } catch (e: Exception) {
-                result.complete(false)
+                result.complete(null)
             }
+
+            return@withContext result.await()
         }
 
     suspend fun addExpense(

@@ -11,6 +11,7 @@ import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
+import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateTransactionFromFileInfo
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
@@ -86,29 +87,19 @@ class UploadFile : Service() {
             transactionFromFileInfo.earningIdList.addAll(earningListFormatted.map { it.id })
 
             //Add to database
-            if(firebaseAPI.addTransactionsFromFile(transactionFromFileInfo)){
+            val uploadId = firebaseAPI.addTransactionsFromFile(transactionFromFileInfo)
+            if(uploadId != null){
+
+                transactionFromFileInfo.id = uploadId
 
                 //Update datastore
-                dataStore.updateTotalExpense(updatedTotalExpense)
-                dataStore.updateAndResetInfoPerMonthExpense(updatedInformationPerMonth)
-                dataStore.updateExpenseList(expenseListFormatted.apply {
-                    forEach {
-                        it.paymentDate = FormatValuesFromDatabase().date(it.paymentDate)
-                        it.purchaseDate = FormatValuesFromDatabase().date(it.purchaseDate)
-                    }
-                })
-                val monthList = mutableListOf<String>()
-                for(month in updatedInformationPerMonth){
-                    if(month.budget != month.availableNow){
-                        monthList.add(month.date)
-                    }
-                }
-                dataStore.updateAndResetExpenseMonths(monthList)
-                for(earning in earningListFormatted){
-                    dataStore.updateEarningList(earning)
-                }
-                val updatedEarningListFromDataStore = dataStore.getEarningsList()
-                dataStore.updateAndResetEarningMonthInfoList(updatedEarningListFromDataStore)
+                updateDatastore(
+                    updatedTotalExpense,
+                    updatedInformationPerMonth,
+                    expenseListFormatted,
+                    earningListFormatted,
+                    transactionFromFileInfo
+                )
 
                 val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
                 sendBroadcast(intentConcludedWarning)
@@ -141,5 +132,40 @@ class UploadFile : Service() {
         }
         allExpensePrice.setScale(8, RoundingMode.HALF_UP)
         return allExpensePrice.toString()
+    }
+
+    private suspend fun updateDatastore(
+        updatedTotalExpense : String,
+        updatedInformationPerMonth : List<InformationPerMonthExpense>,
+        expenseListFormatted : List<Expense>,
+        earningListFormatted : List<Earning>,
+        transactionFromFileInfo : UpdateTransactionFromFileInfo
+    ){
+
+        //Save transactions info
+        dataStore.updateTotalExpense(updatedTotalExpense)
+        dataStore.updateAndResetInfoPerMonthExpense(updatedInformationPerMonth)
+        dataStore.updateExpenseList(expenseListFormatted.apply {
+            forEach {
+                it.paymentDate = FormatValuesFromDatabase().date(it.paymentDate)
+                it.purchaseDate = FormatValuesFromDatabase().date(it.purchaseDate)
+            }
+        })
+        val monthList = mutableListOf<String>()
+        for(month in updatedInformationPerMonth){
+            if(month.budget != month.availableNow){
+                monthList.add(month.date)
+            }
+        }
+        dataStore.updateAndResetExpenseMonths(monthList)
+        for(earning in earningListFormatted){
+            dataStore.updateEarningList(earning)
+        }
+        val updatedEarningListFromDataStore = dataStore.getEarningsList()
+        dataStore.updateAndResetEarningMonthInfoList(updatedEarningListFromDataStore)
+
+
+        //Save upload log info
+        dataStore.updateUploadsFromFileList(transactionFromFileInfo)
     }
 }

@@ -177,6 +177,7 @@ class StringConstants private constructor() {
         const val FIREBASE_DATABASE_FIXING_VERSION_KEY = "FirebaseDatabaseFixingVersionKey"
         const val CREDIT_CARD_LIST_KEY = "CreditCardListKey"
         const val DEFAULT_CREDIT_CARD_ID_KEY = "default_credit_card_id_key"
+        const val UPLOADS_FROM_FILE_LIST_KEY = "uploadsFromFileListKey"
     }
 
     object VERSION{
