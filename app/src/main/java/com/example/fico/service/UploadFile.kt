@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
+import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.UpdateTransactionFromFileInfo
@@ -86,6 +87,29 @@ class UploadFile : Service() {
 
             //Add to database
             if(firebaseAPI.addTransactionsFromFile(transactionFromFileInfo)){
+
+                //Update datastore
+                dataStore.updateTotalExpense(updatedTotalExpense)
+                dataStore.updateAndResetInfoPerMonthExpense(updatedInformationPerMonth)
+                dataStore.updateExpenseList(expenseListFormatted.apply {
+                    forEach {
+                        it.paymentDate = FormatValuesFromDatabase().date(it.paymentDate)
+                        it.purchaseDate = FormatValuesFromDatabase().date(it.purchaseDate)
+                    }
+                })
+                val monthList = mutableListOf<String>()
+                for(month in updatedInformationPerMonth){
+                    if(month.budget != month.availableNow){
+                        monthList.add(month.date)
+                    }
+                }
+                dataStore.updateAndResetExpenseMonths(monthList)
+                for(earning in earningListFormatted){
+                    dataStore.updateEarningList(earning)
+                }
+                val updatedEarningListFromDataStore = dataStore.getEarningsList()
+                dataStore.updateAndResetEarningMonthInfoList(updatedEarningListFromDataStore)
+
                 val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
                 sendBroadcast(intentConcludedWarning)
             }
