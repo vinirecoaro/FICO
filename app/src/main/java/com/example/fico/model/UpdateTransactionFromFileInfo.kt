@@ -9,5 +9,6 @@ data class UpdateTransactionFromFileInfo(
     val expenseIdList : MutableList<String>,
     val earningIdList : MutableList<String>,
     var totalExpenseFromFile : String,
-    val expensePerMonthList : MutableList<ValuePerMonth>
+    val expensePerMonthList : MutableList<ValuePerMonth>,
+    var inputDateTime : String
 )

@@ -387,7 +387,8 @@ class FirebaseAPI(
                         transactionFromFileInfo.totalExpenseFromFile,
                         uploads_from_file.child(StringConstants.DATABASE.EXPENSE_ID_LIST),
                         uploads_from_file.child(StringConstants.DATABASE.EARNING_ID_LIST),
-                        uploadId
+                        uploadId,
+                        transactionFromFileInfo.inputDateTime
                     )
 
                     if(updateMap != null){
@@ -624,7 +625,8 @@ class FirebaseAPI(
         totalExpense : String,
         referenceForExpenseIdList : DatabaseReference,
         referenceForEarningIdList : DatabaseReference,
-        uploadId : String
+        uploadId : String,
+        inputDateTime : String
     ): MutableMap<String, Any>? {
         val updates = mutableMapOf<String, Any>()
 
@@ -656,6 +658,9 @@ class FirebaseAPI(
 
         //Total expense
         updates["${uploadId}/${StringConstants.DATABASE.TOTAL_EXPENSE}"] = totalExpense
+
+        //Date time
+        updates["${uploadId}/${StringConstants.DATABASE.INPUT_DATE_TIME}"] = inputDateTime
 
         return updates
     }

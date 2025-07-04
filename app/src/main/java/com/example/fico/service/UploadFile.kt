@@ -9,11 +9,13 @@ import com.example.fico.DataStoreManager
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
+import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateTransactionFromFileInfo
 import com.example.fico.repositories.TransactionsRepository
+import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -39,9 +41,11 @@ class UploadFile : Service() {
             var transactionFromFileInfo = UpdateTransactionFromFileInfo(
                 "", mutableListOf(), "0", mutableListOf(),
                 mutableListOf(), mutableListOf(), mutableListOf(),
-                "", mutableListOf()
+                "", mutableListOf(), ""
             )
 
+            //Input Date time
+            transactionFromFileInfo.inputDateTime = FormatValuesToDatabase().dateTimeNow()
 
             //Total expense
             val notNullExpenseList = expenseList ?: mutableListOf()
@@ -87,6 +91,7 @@ class UploadFile : Service() {
             transactionFromFileInfo.expenseIdList.addAll(expenseListFormatted.map { it.id })
             transactionFromFileInfo.earningIdList.addAll(earningListFormatted.map { it.id })
 
+
             //Add to database
             val uploadId = transactionsRepository.addTransactionsFromFile(transactionFromFileInfo)
             if(uploadId != null){
@@ -94,13 +99,7 @@ class UploadFile : Service() {
                 transactionFromFileInfo.id = uploadId
 
                 //Update datastore
-                updateDatastore(
-                    updatedTotalExpense,
-                    updatedInformationPerMonth,
-                    expenseListFormatted,
-                    earningListFormatted,
-                    transactionFromFileInfo
-                )
+                updateDatastore(transactionFromFileInfo)
 
                 val intentConcludedWarning = Intent(StringConstants.UPLOAD_FILE_SERVICE.SUCCESS_UPLOAD)
                 sendBroadcast(intentConcludedWarning)
@@ -136,30 +135,26 @@ class UploadFile : Service() {
     }
 
     private suspend fun updateDatastore(
-        updatedTotalExpense : String,
-        updatedInformationPerMonth : List<InformationPerMonthExpense>,
-        expenseListFormatted : List<Expense>,
-        earningListFormatted : List<Earning>,
         transactionFromFileInfo : UpdateTransactionFromFileInfo
     ){
 
         //Save transactions info
-        dataStore.updateTotalExpense(updatedTotalExpense)
-        dataStore.updateAndResetInfoPerMonthExpense(updatedInformationPerMonth)
-        dataStore.updateExpenseList(expenseListFormatted.apply {
+        dataStore.updateTotalExpense(transactionFromFileInfo.updatedTotalExpense)
+        dataStore.updateAndResetInfoPerMonthExpense(transactionFromFileInfo.updatedInformationPerMonth)
+        dataStore.updateExpenseList(transactionFromFileInfo.expenseList.apply {
             forEach {
                 it.paymentDate = FormatValuesFromDatabase().date(it.paymentDate)
                 it.purchaseDate = FormatValuesFromDatabase().date(it.purchaseDate)
             }
         })
         val monthList = mutableListOf<String>()
-        for(month in updatedInformationPerMonth){
+        for(month in transactionFromFileInfo.updatedInformationPerMonth){
             if(month.budget != month.availableNow){
                 monthList.add(month.date)
             }
         }
         dataStore.updateAndResetExpenseMonths(monthList)
-        for(earning in earningListFormatted){
+        for(earning in transactionFromFileInfo.earningList){
             dataStore.updateEarningList(earning)
         }
         val updatedEarningListFromDataStore = dataStore.getEarningsList()

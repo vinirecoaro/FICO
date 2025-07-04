@@ -126,4 +126,11 @@ class TransactionConfigurationViewModel(
         }
     }
 
+    /*fun getUploadsFromFileList(){
+        viewModelScope.async{
+            val test = dataStore.getUploadsFromFileList()
+            Log.e("e", test.toString())
+        }
+    }*/
+
 }
