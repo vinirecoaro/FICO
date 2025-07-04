@@ -13,6 +13,7 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.repositories.TransactionsRepository
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -22,7 +23,7 @@ import java.math.RoundingMode
 class UploadFile : Service() {
 
     private val dataStore : DataStoreManager by inject()
-    private val firebaseAPI : FirebaseAPI by inject()
+    private val transactionsRepository: TransactionsRepository by inject()
     private val serviceScope = CoroutineScope(Dispatchers.Default)
     private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
 
@@ -87,7 +88,7 @@ class UploadFile : Service() {
             transactionFromFileInfo.earningIdList.addAll(earningListFormatted.map { it.id })
 
             //Add to database
-            val uploadId = firebaseAPI.addTransactionsFromFile(transactionFromFileInfo)
+            val uploadId = transactionsRepository.addTransactionsFromFile(transactionFromFileInfo)
             if(uploadId != null){
 
                 transactionFromFileInfo.id = uploadId

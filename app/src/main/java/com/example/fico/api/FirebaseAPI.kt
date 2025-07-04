@@ -329,7 +329,7 @@ class FirebaseAPI(
         }
     }
 
-    suspend fun checkIfExistsOnDatabse(reference: DatabaseReference): Boolean =
+    suspend fun checkIfExistsOnDatabase(reference: DatabaseReference): Boolean =
         withContext(Dispatchers.IO) {
             val futureResult = CompletableDeferred<Boolean>()
 
@@ -347,7 +347,7 @@ class FirebaseAPI(
         }
 
     suspend fun checkIfExistDefaultBudget(): Boolean {
-        return checkIfExistsOnDatabse(default_expense_values.child(StringConstants.DATABASE.DEFAULT_BUDGET))
+        return checkIfExistsOnDatabase(default_expense_values.child(StringConstants.DATABASE.DEFAULT_BUDGET))
     }
 
     private suspend fun updateTotalExpense(value: String) = withContext(Dispatchers.IO) {
@@ -368,7 +368,7 @@ class FirebaseAPI(
         })
     }
 
-    suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): String? =
+    override suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): String? =
         withContext(Dispatchers.IO) {
             val updates = mutableMapOf<String, Any>()
             val result = CompletableDeferred<String?>()
@@ -1059,7 +1059,7 @@ class FirebaseAPI(
     }
 
     suspend fun verifyExistsExpensesPath(): Boolean {
-        return checkIfExistsOnDatabse(expenses)
+        return checkIfExistsOnDatabase(expenses)
     }
 
     private suspend fun setDefaultExpenseValue(key : String, value : String): Result<Unit> = withContext(Dispatchers.IO){

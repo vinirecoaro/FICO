@@ -5,6 +5,7 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
+import com.example.fico.model.UpdateTransactionFromFileInfo
 
 class TransactionsRepository(private val transactionsInterface : TransactionsInterface) {
     suspend fun getExpenseList() : Result<List<Expense>> {
@@ -35,6 +36,8 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
         return transactionsInterface.getRecurringExpensesList()
     }
 
-
+    suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): String?{
+        return transactionsInterface.addTransactionsFromFile(transactionFromFileInfo)
+    }
 
 }

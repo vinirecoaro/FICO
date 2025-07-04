@@ -4,6 +4,7 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
+import com.example.fico.model.UpdateTransactionFromFileInfo
 
 interface TransactionsInterface {
 
@@ -20,4 +21,6 @@ interface TransactionsInterface {
     suspend fun getEarningList() : Result<List<Earning>>
 
     suspend fun getRecurringExpensesList() : Result<List<RecurringTransaction>>
+
+    suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): String?
 }
