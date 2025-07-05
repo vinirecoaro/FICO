@@ -40,4 +40,8 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
         return transactionsInterface.addTransactionsFromFile(transactionFromFileInfo)
     }
 
+    suspend fun getUploadsFromFile() : Result<List<UpdateTransactionFromFileInfo>>{
+        return transactionsInterface.getUploadsFromFile()
+    }
+
 }

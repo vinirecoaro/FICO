@@ -41,6 +41,7 @@ class RemoteDatabaseViewModel(
         withContext(Dispatchers.IO){
             getCreditCardList()
             getDefaultCreditCardId()
+            getUploadsFromFile()
         }
     }
 
@@ -251,6 +252,17 @@ class RemoteDatabaseViewModel(
             },
             onFailure = {
                 Log.e("LogoViewModel", "Error updating default credit card id: ${it.message}")
+            }
+        )
+    }
+
+    private suspend fun getUploadsFromFile(){
+        transactionsRepository.getUploadsFromFile().fold(
+            onSuccess = {
+                dataStore.updateAndResetUploadsFromFileList(it)
+            },
+            onFailure = {
+                Log.e("LogoViewModel", "Error getting uploads from file: ${it.message}")
             }
         )
     }

@@ -433,7 +433,7 @@ class FirebaseAPI(
             suspendCoroutine{ continuation ->
                 try{
                     val updatesFromFileList = mutableListOf<UpdateTransactionFromFileInfo>()
-                    earningsList.addListenerForSingleValueEvent(object : ValueEventListener{
+                    uploads_from_file.addListenerForSingleValueEvent(object : ValueEventListener{
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if(snapshot.exists()){
                                 for(updateFromFile in snapshot.children){

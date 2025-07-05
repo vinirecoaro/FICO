@@ -89,7 +89,7 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
 
         setUpListeners()
 
-        //viewModel.getUploadsFromFileList()
+        viewModel.getUploadsFromFileList()
 
         return rootView
     }

@@ -162,6 +162,19 @@ class UploadFile : Service() {
 
 
         //Save upload log info
-        dataStore.updateUploadsFromFileList(transactionFromFileInfo)
+        dataStore.updateUploadsFromFileList(
+            UpdateTransactionFromFileInfo(
+                id = transactionFromFileInfo.id,
+                expenseList = mutableListOf(),
+                updatedTotalExpense = "",
+                updatedInformationPerMonth = mutableListOf(),
+                earningList = mutableListOf(),
+                expenseIdList = transactionFromFileInfo.expenseIdList,
+                earningIdList = transactionFromFileInfo.earningIdList,
+                totalExpenseFromFile = transactionFromFileInfo.totalExpenseFromFile,
+                expensePerMonthList = transactionFromFileInfo.expensePerMonthList,
+                inputDateTime = transactionFromFileInfo.inputDateTime
+            )
+        )
     }
 }

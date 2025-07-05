@@ -1,5 +1,6 @@
 package com.example.fico.api
 
+import android.util.Log
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.model.Earning
@@ -340,15 +341,21 @@ class FormatValuesFromDatabase {
         val earningIdList = mutableListOf<String>()
         val expensePerMonthList = mutableListOf<ValuePerMonth>()
 
-        if(dataSnapShot.child(StringConstants.DATABASE.EXPENSE_ID_LIST) != null){
-            expenseIdList.addAll(dataSnapShot.child(StringConstants.DATABASE.EXPENSE_ID_LIST).children.map { it.value.toString() })
+        dataSnapShot.child(StringConstants.DATABASE.EXPENSE_ID_LIST).children.forEach {
+            val expenseId = it.value.toString()
+            expenseIdList.add(expenseId)
         }
-        if(dataSnapShot.child(StringConstants.DATABASE.EARNING_ID_LIST) != null){
-            earningIdList.addAll(dataSnapShot.child(StringConstants.DATABASE.EARNING_ID_LIST).children.map { it.value.toString() })
+
+        dataSnapShot.child(StringConstants.DATABASE.EARNING_ID_LIST).children.forEach {
+            val earningId = it.value.toString()
+            earningIdList.add(earningId)
         }
-        if(dataSnapShot.child(StringConstants.DATABASE.EXPENSE_INFORMATION_PER_MONTH) != null){
-            expensePerMonthList.addAll(dataSnapShot.child(StringConstants.DATABASE.EXPENSE_INFORMATION_PER_MONTH).children.map { ValuePerMonth(it.key.toString(),it.value.toString()) })
-        }
+
+       dataSnapShot.child(StringConstants.DATABASE.EXPENSE_INFORMATION_PER_MONTH).children.forEach {
+           val month = it.key.toString()
+           val expense = it.child(StringConstants.DATABASE.EXPENSE).value.toString()
+           expensePerMonthList.add(ValuePerMonth(month, expense))
+       }
 
         return UpdateTransactionFromFileInfo(
             id = dataSnapShot.key.toString(),
