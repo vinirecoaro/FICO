@@ -131,6 +131,7 @@
     <string name="budget_configuration_list">Orçamento</string>
     <string name="recurring_transactions_configuration_list">Transações Recorrentes</string>
     <string name="cancel">Cancelar</string>
+    <string name="imports_from_file_history">Histórico de importações de arquivos</string>
     <string name="close">Fechar</string>
     <string name="transactions">Transações</string>
     <string name="overview">Visão Geral</string>

@@ -127,6 +127,11 @@ class MainTransactionActivity : AppCompatActivity(){
                     dialogLogout()
                     true
                 }
+                R.id.nav_menu_item_security -> {
+                    startActivity(Intent(this, SecurityConfigurationActivity::class.java))
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
                 else -> false
             }
         }
@@ -142,14 +147,17 @@ class MainTransactionActivity : AppCompatActivity(){
         val menu = navigationView.menu
         val configMenuItem = menu.findItem(R.id.nav_menu_item_logout)
         val profileMenuItem = menu.findItem(R.id.nav_menu_item_personal_data)
+        val securityMenuItem = menu.findItem(R.id.nav_menu_item_security)
         when (this.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> {
                 configMenuItem.setIcon(R.drawable.logout_24_light)
                 profileMenuItem.setIcon(R.drawable.baseline_person_24_light)
+                securityMenuItem.setIcon(R.drawable.security_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 configMenuItem.setIcon(R.drawable.logout_24_dark)
                 profileMenuItem.setIcon(R.drawable.baseline_person_24_black)
+                securityMenuItem.setIcon(R.drawable.security_dark)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }

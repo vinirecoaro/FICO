@@ -142,10 +142,7 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
             getString(R.string.recurring_transactions_configuration_list) -> {
                 selectTransactionTypeDialog()
             }
-            getString(R.string.security) -> {
-                startActivity(Intent(requireContext(), SecurityConfigurationActivity::class.java))
-            }
-
+            getString(R.string.imports_from_file_history) -> {}
         }
     }
 
