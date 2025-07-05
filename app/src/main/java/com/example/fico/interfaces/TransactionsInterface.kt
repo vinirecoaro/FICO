@@ -23,4 +23,6 @@ interface TransactionsInterface {
     suspend fun getRecurringExpensesList() : Result<List<RecurringTransaction>>
 
     suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): String?
+
+    suspend fun getUploadsFromFile() : Result<List<UpdateTransactionFromFileInfo>>
 }

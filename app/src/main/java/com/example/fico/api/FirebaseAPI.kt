@@ -429,6 +429,32 @@ class FirebaseAPI(
             return@withContext result.await()
         }
 
+    override suspend fun getUploadsFromFile(): Result<List<UpdateTransactionFromFileInfo>> = withContext(Dispatchers.IO){
+            suspendCoroutine{ continuation ->
+                try{
+                    val updatesFromFileList = mutableListOf<UpdateTransactionFromFileInfo>()
+                    earningsList.addListenerForSingleValueEvent(object : ValueEventListener{
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if(snapshot.exists()){
+                                for(updateFromFile in snapshot.children){
+                                    val updateFromFileFormatted = FormatValuesFromDatabase().dataSnapshotToUpdateFromFile(updateFromFile)
+                                    updatesFromFileList.add(updateFromFileFormatted)
+                                }
+                                continuation.resume(Result.success(updatesFromFileList))
+                            }else{
+                                continuation.resume(Result.success(emptyList()))
+                            }
+                        }
+                        override fun onCancelled(error: DatabaseError) {
+                            continuation.resume(Result.failure(Exception(error.message)))
+                        }
+                    })
+                }catch (error : Exception){
+                    continuation.resume(Result.failure(error))
+                }
+            }
+    }
+
     suspend fun addExpense(
         expenseList: MutableList<Expense>,
         updatedTotalExpense: String,

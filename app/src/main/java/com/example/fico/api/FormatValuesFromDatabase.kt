@@ -6,6 +6,8 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
+import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.model.ValuePerMonth
 import com.example.fico.utils.constants.StringConstants
 import com.google.firebase.database.DataSnapshot
 import java.math.BigDecimal
@@ -328,6 +330,36 @@ class FormatValuesFromDatabase {
             description = dataSnapShot.child(StringConstants.DATABASE.DESCRIPTION).value.toString(),
             category = dataSnapShot.child(StringConstants.DATABASE.CATEGORY).value.toString(),
             date = dataSnapShot.child(StringConstants.DATABASE.DATE).value.toString(),
+            inputDateTime = dataSnapShot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
+        )
+    }
+
+    fun dataSnapshotToUpdateFromFile(dataSnapShot : DataSnapshot) : UpdateTransactionFromFileInfo{
+
+        val expenseIdList = mutableListOf<String>()
+        val earningIdList = mutableListOf<String>()
+        val expensePerMonthList = mutableListOf<ValuePerMonth>()
+
+        if(dataSnapShot.child(StringConstants.DATABASE.EXPENSE_ID_LIST) != null){
+            expenseIdList.addAll(dataSnapShot.child(StringConstants.DATABASE.EXPENSE_ID_LIST).children.map { it.value.toString() })
+        }
+        if(dataSnapShot.child(StringConstants.DATABASE.EARNING_ID_LIST) != null){
+            earningIdList.addAll(dataSnapShot.child(StringConstants.DATABASE.EARNING_ID_LIST).children.map { it.value.toString() })
+        }
+        if(dataSnapShot.child(StringConstants.DATABASE.EXPENSE_INFORMATION_PER_MONTH) != null){
+            expensePerMonthList.addAll(dataSnapShot.child(StringConstants.DATABASE.EXPENSE_INFORMATION_PER_MONTH).children.map { ValuePerMonth(it.key.toString(),it.value.toString()) })
+        }
+
+        return UpdateTransactionFromFileInfo(
+            id = dataSnapShot.key.toString(),
+            expenseList = mutableListOf(),
+            updatedTotalExpense = "",
+            updatedInformationPerMonth = mutableListOf(),
+            earningList = mutableListOf(),
+            expenseIdList = expenseIdList,
+            earningIdList = earningIdList,
+            totalExpenseFromFile = dataSnapShot.child(StringConstants.DATABASE.TOTAL_EXPENSE).value.toString(),
+            expensePerMonthList = expensePerMonthList,
             inputDateTime = dataSnapShot.child(StringConstants.DATABASE.INPUT_DATE_TIME).value.toString()
         )
     }
