@@ -23,6 +23,7 @@ import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.interfaces.OnListItemClick
+import com.example.fico.presentation.activities.ImportTransactionsFromFileHistoryComposeActivity
 import com.example.fico.presentation.activities.SecurityConfigurationActivity
 import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.utils.constants.CategoriesList
@@ -142,7 +143,9 @@ class TransactionConfigurationFragment : Fragment(), OnListItemClick {
             getString(R.string.recurring_transactions_configuration_list) -> {
                 selectTransactionTypeDialog()
             }
-            getString(R.string.imports_from_file_history) -> {}
+            getString(R.string.imports_from_file_history) -> {
+                startActivity(Intent(requireContext(), ImportTransactionsFromFileHistoryComposeActivity::class.java))
+            }
         }
     }
 
