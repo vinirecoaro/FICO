@@ -39,6 +39,7 @@
     <string name="title_home">Home</string>
     <string name="title_add_expense">AddExpense</string>
     <string name="installment_expense">Despesa Parcelada</string>
+    <string name="installment_expense_short">Desp. Parcelada</string>
     <string name="installments">Parcelas</string>
     <string name="common_expense">Despesa Comum</string>
     <string name="filter">Filtro</string>

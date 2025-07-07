@@ -3,24 +3,25 @@ package com.example.fico.presentation.compose.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.res.colorResource
 import com.example.fico.R
 
 @Composable
-    fun Theme(
+    fun FICOTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
 
     val extendedColors = if (darkTheme) {
         ExtendedColors(
+            customCardBackgroundColor = colorResource(id = R.color.black_100),
             customCardBackgroundColorSecondary = colorResource(id = R.color.black_400)
         )
     } else {
         ExtendedColors(
+            customCardBackgroundColor = colorResource(id = R.color.white),
             customCardBackgroundColorSecondary = colorResource(id = R.color.grey_100)
         )
     }

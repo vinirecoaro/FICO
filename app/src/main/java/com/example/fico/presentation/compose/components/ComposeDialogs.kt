@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -23,11 +22,10 @@ import androidx.compose.ui.window.Dialog
 import com.example.fico.R
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
-import com.example.fico.model.TransactionCategory
 import com.example.fico.model.TransactionsCategory
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CategoryFilterItem
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CreditCardItem
-import com.example.fico.presentation.compose.theme.Theme
+import com.example.fico.presentation.compose.theme.FICOTheme
 
 class ComposeDialogs {
     companion object{
@@ -110,7 +108,7 @@ class ComposeDialogs {
             onItemSelected: (CreditCard) -> Unit
         ) {
             composeView.setContent {
-                Theme {
+                FICOTheme {
                     CreditCardDialog(
                         items = items,
                         title = title,
@@ -138,7 +136,7 @@ class ComposeDialogs {
             onFilterButtonClick: (List<Int>) -> Unit
         ) {
             composeView.setContent {
-                Theme {
+                FICOTheme {
                     CategoryListFilterDialog(
                         items = items,
                         title = title,
@@ -234,7 +232,7 @@ class ComposeDialogs {
 @Preview(showBackground = true)
 @Composable
 fun CategoryListFilterDialogPreview(){
-    Theme {
+    FICOTheme {
         ComposeDialogs.CategoryListFilterDialog(
             items = listOf(
                 TransactionsCategory.BET,

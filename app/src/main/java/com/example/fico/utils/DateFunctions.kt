@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
@@ -87,5 +88,14 @@ class DateFunctions {
         val lastDayOfMonth = YearMonth.of(year, month).lengthOfMonth()
         // Using lowest value between `day` and `lastDayOfMonth`
         return LocalDate.of(year, month, minOf(day, lastDayOfMonth))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun formatDateTimeToShow(input: String): String {
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm")
+
+        val dateTime = LocalDateTime.parse(input, inputFormatter)
+        return dateTime.format(outputFormatter)
     }
 }

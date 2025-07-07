@@ -2,6 +2,7 @@ package com.example.fico.presentation.compose.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,8 +34,9 @@ import androidx.compose.ui.unit.sp
 import com.example.fico.R
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CategoryFilterItem
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CreditCardItem
+import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.UpdateFromFileItem
+import com.example.fico.presentation.compose.theme.FICOTheme
 import com.example.fico.presentation.compose.theme.LocalExtendedColors
-import com.example.fico.presentation.compose.theme.Theme
 
 class ItemForLazyColumn {
     companion object {
@@ -126,7 +130,8 @@ class ItemForLazyColumn {
                 modifier = modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ){
                 Row(
                     modifier = Modifier
@@ -161,13 +166,75 @@ class ItemForLazyColumn {
             }
         }
 
+        @Composable
+        fun UpdateFromFileItem(
+            date : String,
+            nOfExpenses : String,
+            nOfEarnings : String,
+            nOfInstallmentExpenses : String
+        ){
+            val extendedColors = LocalExtendedColors.current
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(bottom = 8.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(extendedColors.customCardBackgroundColor)
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Text(date, fontSize = 25.sp)
+                        Icon(
+                            painter = painterResource(id = R.drawable.delete_icon_24),
+                            contentDescription = "Menu"
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(stringResource(R.string.expenses_2))
+                            Text(nOfExpenses, fontSize = 20.sp)
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(stringResource(R.string.earnings_2))
+                            Text(nOfEarnings, fontSize = 20.sp)
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(stringResource(R.string.installment_expense_short))
+                            Text(nOfInstallmentExpenses, fontSize = 20.sp)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CreditCardPreview(){
-    Theme{
+    FICOTheme {
         CreditCardItem(
             backgroundColor = Color(0xFF2196F3).toArgb(), // Azul
             textColor = Color.White.toArgb(),
@@ -185,12 +252,23 @@ fun CreditCardPreview(){
 @Preview(showBackground = true)
 @Composable
 fun CategoryForFilterPreview(){
-    Theme {
+    FICOTheme {
         CategoryFilterItem(
             Modifier,
             "Categoria 2",
             R.drawable.category_icon_entertainment,
             true
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    FICOTheme {
+        UpdateFromFileItem(
+            "07/06/2025  07:20:20",
+            "5", "10", "8"
         )
     }
 }
