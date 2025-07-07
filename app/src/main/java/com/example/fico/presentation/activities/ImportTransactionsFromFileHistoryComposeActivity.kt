@@ -7,12 +7,10 @@ import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,15 +33,16 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.example.fico.R
 import com.example.fico.api.FormatValuesFromDatabase
-import com.example.fico.model.UpdateTransactionFromFileInfo
-import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CreditCardItem
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.UpdateFromFileItem
 import com.example.fico.presentation.compose.theme.FICOTheme
-import com.example.fico.presentation.viewmodel.EditTransactionViewModel
 import com.example.fico.presentation.viewmodel.ImportTransactionsFromFileHistoryViewModel
 import com.example.fico.utils.DateFunctions
 import org.koin.android.ext.android.inject
 import kotlin.getValue
+import androidx.compose.runtime.collectAsState
+import androidx.compose.foundation.lazy.items
+
+
 
 class ImportTransactionsFromFileHistoryComposeActivity : ComponentActivity() {
 
@@ -55,27 +54,14 @@ class ImportTransactionsFromFileHistoryComposeActivity : ComponentActivity() {
         //enableEdgeToEdge()
         setContent {
             FICOTheme {
-                ImportTransactionsFromFileHistoryScreen(emptyList(), onBackClick = {finish()})
+                ImportTransactionsFromFileHistoryScreen(viewModel, onBackClick = {finish()})
             }
         }
-
-        setupListeners()
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.getUploadsFromFileList()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun setupListeners(){
-        viewModel.uploadsFromFileList.observe(this){ uploadsList ->
-            setContent {
-                FICOTheme {
-                    ImportTransactionsFromFileHistoryScreen(uploadsList, onBackClick = {finish()})
-                }
-            }
-        }
     }
 
 }
@@ -84,9 +70,11 @@ class ImportTransactionsFromFileHistoryComposeActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImportTransactionsFromFileHistoryScreen(
-    updatesFromFileList : List<UpdateTransactionFromFileInfo>,
+    viewModel : ImportTransactionsFromFileHistoryViewModel,
     onBackClick: () -> Unit
 ) {
+
+    val updatesFromFileList = viewModel.uploadsFromFileList.collectAsState().value
 
     SetStatusBarColor(color = colorResource(id = R.color.blue_500), darkIcons = false)
 
