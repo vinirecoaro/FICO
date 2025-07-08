@@ -23,8 +23,7 @@ import com.example.fico.presentation.activities.EditTransactionActivity
 import com.example.fico.presentation.adapters.ExpenseConfigurationListAdapter
 import com.example.fico.presentation.adapters.TransactionListAdapter
 import com.example.fico.interfaces.OnListItemClick
-import com.example.fico.presentation.activities.ImportTransactionsFromFileHistoryComposeActivity
-import com.example.fico.presentation.activities.SecurityConfigurationActivity
+import com.example.fico.presentation.activities.import_transactions.ImportTransactionsFromFileHistoryComposeActivity
 import com.example.fico.presentation.viewmodel.TransactionConfigurationViewModel
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.utils.constants.StringConstants

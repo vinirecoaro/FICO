@@ -314,6 +314,7 @@
     <string name="title_activity_import_transactions_from_file_history_compose">
         ImportTransactionsFromFileHistoryComposeActivity
     </string>
+    <string name="there_is_no_import_history_message">Não há histórico de importação de transação</string>
 
 
 </resources>

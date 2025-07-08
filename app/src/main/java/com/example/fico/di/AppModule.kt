@@ -24,7 +24,7 @@ import com.example.fico.presentation.viewmodel.HomeMonthBalanceViewModel
 import com.example.fico.presentation.viewmodel.HomeEarningsViewModel
 import com.example.fico.presentation.viewmodel.HomeMonthExpensesViewModel
 import com.example.fico.presentation.viewmodel.HomeViewModel
-import com.example.fico.presentation.viewmodel.ImportTransactionsFromFileHistoryViewModel
+import com.example.fico.presentation.viewmodel.ImportTransactionsHistoryViewModel
 import com.example.fico.presentation.viewmodel.LoginViewModel
 import com.example.fico.presentation.viewmodel.LogoViewModel
 import com.example.fico.presentation.viewmodel.MainViewModel
@@ -97,8 +97,8 @@ val appModule = module {
         )
     }
 
-    factory<ImportTransactionsFromFileHistoryViewModel> {
-        ImportTransactionsFromFileHistoryViewModel(
+    factory<ImportTransactionsHistoryViewModel> {
+        ImportTransactionsHistoryViewModel(
             dataStore = get(),
         )
     }
