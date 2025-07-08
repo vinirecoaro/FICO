@@ -315,6 +315,8 @@
         ImportTransactionsFromFileHistoryComposeActivity
     </string>
     <string name="there_is_no_import_history_message">Não há histórico de importação de transação</string>
+    <string name="delete_transactions_title">Excluir transações</string>
+    <string name="transactions_deliting_message">Deseja prosseguir com a exclusão dos dados importados?</string>
 
 
 </resources>

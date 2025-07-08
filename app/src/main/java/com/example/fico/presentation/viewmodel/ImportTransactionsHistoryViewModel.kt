@@ -20,13 +20,12 @@ class ImportTransactionsHistoryViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = ImportTransactionsHistoryUiState.Loading
 
-            val updates = dataStore.getUploadsFromFileList()
+            val updates = dataStore.getUploadsFromFileList().sortedByDescending { it.inputDateTime }
 
             _uiState.value = if (updates.isEmpty()) {
                 ImportTransactionsHistoryUiState.Empty
             } else {
-                ImportTransactionsHistoryUiState.Empty
-                //ImportTransactionsHistoryUiState.Success(updates)
+                ImportTransactionsHistoryUiState.Success(updates)
             }
         }
     }

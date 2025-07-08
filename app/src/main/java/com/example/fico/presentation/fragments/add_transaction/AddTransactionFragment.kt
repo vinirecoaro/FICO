@@ -187,17 +187,20 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 return true
             }
 
-            //TODO Change function and instructions to add expenses from file
             R.id.add_transaction_menu_get_data_from_file -> {
                 lifecycleScope.launch {
-                    if (checkPermission()) {
-                        if (viewModel.checkIfExistDefaultBudget().await()) {
-                            importDataAlertDialog()
+                    if(hasInternetConnection()){
+                        if (checkPermission()) {
+                            if (viewModel.checkIfExistDefaultBudget().await()) {
+                                importDataAlertDialog()
+                            } else {
+                                setUpDefaultBudgetAlertDialog()
+                            }
                         } else {
-                            setUpDefaultBudgetAlertDialog()
+                            requestPermission()
                         }
-                    } else {
-                        requestPermission()
+                    }else{
+                        PersonalizedSnackBars.noInternetConnection(binding.btSave, requireActivity()).show()
                     }
                 }
                 return true

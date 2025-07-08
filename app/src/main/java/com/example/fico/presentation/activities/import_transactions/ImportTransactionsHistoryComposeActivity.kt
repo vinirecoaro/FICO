@@ -48,10 +48,14 @@ import kotlin.getValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.presentation.compose.components.ComposeDialogs.Companion.ConfirmDialog
 
 class ImportTransactionsFromFileHistoryComposeActivity : ComponentActivity() {
 
@@ -148,6 +152,9 @@ fun ImportTransactionsFromFileHistoryScreen(
                     }
                 }
                 is ImportTransactionsHistoryUiState.Success -> {
+
+                    val selectedItem = remember { mutableStateOf<UpdateTransactionFromFileInfo?>(null) }
+
                     LazyColumn {
                         items(uiState.data) { item ->
                             val nOfExpenses = item.expenseIdList.filter { !it.contains("Parcela") }.size.toString()
@@ -167,8 +174,25 @@ fun ImportTransactionsFromFileHistoryScreen(
                             UpdateFromFileItem(
                                 date,
                                 nOfExpenses, nOfEarnings, nOfInstallmentExpenses,
+                                onDeleteIconClicked = {
+                                    selectedItem.value = item
+                                }
                             )
                         }
+                    }
+
+                    selectedItem.value?.let { item ->
+                        ConfirmDialog(
+                            title = stringResource(R.string.delete_transactions_title),
+                            message = stringResource(R.string.transactions_deliting_message),
+                            onDismissRequest = {
+                                selectedItem.value = null
+                            },
+                            onConfirmButtonClick = {
+                                //viewModel.deleteItem(item)
+                                selectedItem.value = null
+                            }
+                        )
                     }
                 }
                 is ImportTransactionsHistoryUiState.Error -> {

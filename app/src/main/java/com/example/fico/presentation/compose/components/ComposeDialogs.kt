@@ -23,6 +23,7 @@ import com.example.fico.R
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.model.TransactionsCategory
+import com.example.fico.presentation.compose.components.ComposeDialogs.Companion.ConfirmDialog
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CategoryFilterItem
 import com.example.fico.presentation.compose.components.ItemForLazyColumn.Companion.CreditCardItem
 import com.example.fico.presentation.compose.theme.FICOTheme
@@ -48,7 +49,7 @@ class ComposeDialogs {
                     tonalElevation = 8.dp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(24.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -172,7 +173,7 @@ class ComposeDialogs {
                     tonalElevation = 8.dp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(24.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -199,7 +200,7 @@ class ComposeDialogs {
                                         .clickable {
                                             selectedCategories.add(item.descriptionResId)
                                             selected = !selected
-                                       }
+                                        }
                                 )
                             }
                         }
@@ -211,20 +212,77 @@ class ComposeDialogs {
                             horizontalArrangement = Arrangement.End
                         ) {
                             TextButton(onClick = onDismissRequest) {
-                                Text("Cancelar")
+                                Text(stringResource(R.string.cancel))
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             Button(
                                 onClick = {
                                 onFilterButtonClick(selectedCategories)
                             }) {
-                                Text("Filtrar")
+                                Text(stringResource(R.string.to_filter))
                             }
                         }
                     }
                 }
             }
         }
+
+        @Composable
+        fun ConfirmDialog(
+            title: String,
+            message: String,
+            onDismissRequest: () -> Unit,
+            onConfirmButtonClick: () -> Unit
+        ){
+            Dialog(
+                onDismissRequest = onDismissRequest,
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 8.dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                        Text(
+                            text = message,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = onDismissRequest) {
+                                Text(stringResource(R.string.cancel))
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Button(
+                                onClick = {
+                                    onConfirmButtonClick()
+                                }) {
+                                Text(stringResource(R.string.confirm))
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
 
     }
 }
@@ -257,4 +315,17 @@ fun CreditCardDialogPreview(){
         onDismissRequest = {},
         onItemClick = {}
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ConfirmDialogPreview(){
+    FICOTheme{
+        ConfirmDialog(
+            title = stringResource(R.string.delete_transactions_title),
+            message = stringResource(R.string.transactions_deliting_message),
+            onDismissRequest = {},
+            onConfirmButtonClick = {}
+        )
+    }
 }
