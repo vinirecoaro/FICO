@@ -11,7 +11,7 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
-import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.model.UploadTransactionFromFileInfo
 import com.example.fico.model.User
 import com.example.fico.model.ValuePerMonth
 import com.example.fico.utils.constants.StringConstants
@@ -253,9 +253,7 @@ class FirebaseAPI(
         return@withContext try {
             // Remove from expense list
             updates.putAll(
-                generateMapToRemoveUserExpenses(
-                    removeFromExpenseList, expenseNOfInstallment
-                )
+                generateMapToRemoveUserExpenses(removeFromExpenseList)
             )
 
             // Add Updated Total Expense
@@ -368,7 +366,7 @@ class FirebaseAPI(
         })
     }
 
-    override suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): String? =
+    override suspend fun addTransactionsFromFile(transactionFromFileInfo: UploadTransactionFromFileInfo): String? =
         withContext(Dispatchers.IO) {
             val updates = mutableMapOf<String, Any>()
             val result = CompletableDeferred<String?>()
@@ -429,10 +427,10 @@ class FirebaseAPI(
             return@withContext result.await()
         }
 
-    override suspend fun getUploadsFromFile(): Result<List<UpdateTransactionFromFileInfo>> = withContext(Dispatchers.IO){
+    override suspend fun getUploadsFromFile(): Result<List<UploadTransactionFromFileInfo>> = withContext(Dispatchers.IO){
             suspendCoroutine{ continuation ->
                 try{
-                    val updatesFromFileList = mutableListOf<UpdateTransactionFromFileInfo>()
+                    val updatesFromFileList = mutableListOf<UploadTransactionFromFileInfo>()
                     uploads_from_file.addListenerForSingleValueEvent(object : ValueEventListener{
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if(snapshot.exists()){
@@ -453,6 +451,33 @@ class FirebaseAPI(
                     continuation.resume(Result.failure(error))
                 }
             }
+    }
+
+    override suspend fun deleteUploadFromFile(
+        expenseIdList: MutableList<String>,
+        earningIdList : MutableList<String>,
+        updatedTotalExpense : String,
+        updatedInformationPerMonth : MutableList<InformationPerMonthExpense>
+    ): Result<Boolean> = withContext(Dispatchers.IO){
+
+        val updates = mutableMapOf<String, Any?>()
+
+        return@withContext try {
+            // Remove from expense list
+            updates.putAll(generateMapToRemoveUserExpenses(expenseIdList))
+
+            /*// Add Updated Total Expense
+            updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
+
+            // Add Information per Month
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))*/
+
+            expenses.updateChildren(updates)
+
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun addExpense(
@@ -525,9 +550,7 @@ class FirebaseAPI(
         try {
             // Remove from Expense List
             updates.putAll(
-                generateMapToRemoveUserExpenses(
-                    removeFromExpenseList, oldExpenseNOfInstallment
-                )
+                generateMapToRemoveUserExpenses(removeFromExpenseList)
             )
 
             expenses.updateChildren(updates)
@@ -722,12 +745,12 @@ class FirebaseAPI(
     }
 
     private fun generateMapToRemoveUserExpenses(
-        expenseIdList: MutableList<String>, nOfInstallments: Int
+        expenseIdList: MutableList<String>
     ): MutableMap<String, Any?> {
         val removeFromExpenseList = mutableMapOf<String, Any?>()
 
-        for (i in 0 until nOfInstallments) {
-            removeFromExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${expenseIdList[i]}"] =
+        expenseIdList.forEach {
+            removeFromExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${it}"] =
                 null
         }
 

@@ -14,7 +14,7 @@ import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.Transaction
-import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.model.UploadTransactionFromFileInfo
 import com.example.fico.model.ValuePerMonth
 import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
@@ -490,27 +490,27 @@ class DataStoreManager (context: Context) {
         return defaultCreditCardId ?: ""
     }
 
-    suspend fun updateAndResetUploadsFromFileList(uploadsFromFileList : List<UpdateTransactionFromFileInfo>){
+    suspend fun updateAndResetUploadsFromFileList(uploadsFromFileList : List<UploadTransactionFromFileInfo>){
         val uploadsFromFileListString = Gson().toJson(uploadsFromFileList)
         dataStore.edit { preferences ->
             preferences[uploadsFromFileListKey] = uploadsFromFileListString
         }
     }
 
-    suspend fun updateUploadsFromFileList(uploadFromFile : UpdateTransactionFromFileInfo){
+    suspend fun updateUploadsFromFileList(uploadFromFile : UploadTransactionFromFileInfo){
         dataStore.edit { preferences ->
             val existingUploadsFromFileListString = preferences[uploadsFromFileListKey] ?: "[]"
-            val existingUploadsFromFileList = Gson().fromJson(existingUploadsFromFileListString, Array<UpdateTransactionFromFileInfo>::class.java).toMutableList()
+            val existingUploadsFromFileList = Gson().fromJson(existingUploadsFromFileListString, Array<UploadTransactionFromFileInfo>::class.java).toMutableList()
             existingUploadsFromFileList.add(uploadFromFile)
             val uploadsFromFileListString = Gson().toJson(existingUploadsFromFileList)
             preferences[uploadsFromFileListKey] = uploadsFromFileListString
         }
     }
 
-    suspend fun getUploadsFromFileList() : List<UpdateTransactionFromFileInfo>{
+    suspend fun getUploadsFromFileList() : List<UploadTransactionFromFileInfo>{
         val uploadsFromFileListString = dataStore.data.map { preferences ->
             preferences[uploadsFromFileListKey]
         }.first() ?: return emptyList()
-        return Gson().fromJson(uploadsFromFileListString, object : TypeToken<List<UpdateTransactionFromFileInfo>>() {}.type)
+        return Gson().fromJson(uploadsFromFileListString, object : TypeToken<List<UploadTransactionFromFileInfo>>() {}.type)
     }
 }

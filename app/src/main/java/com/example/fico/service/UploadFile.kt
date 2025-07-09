@@ -7,15 +7,12 @@ import android.os.IBinder
 import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
 import com.example.fico.api.ArrangeDataToUpdateToDatabase
-import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
-import com.example.fico.model.InformationPerMonthExpense
-import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.model.UploadTransactionFromFileInfo
 import com.example.fico.repositories.TransactionsRepository
-import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.StringConstants
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
@@ -38,7 +35,7 @@ class UploadFile : Service() {
 
         serviceScope.launch {
 
-            var transactionFromFileInfo = UpdateTransactionFromFileInfo(
+            var transactionFromFileInfo = UploadTransactionFromFileInfo(
                 "", mutableListOf(), "0", mutableListOf(),
                 mutableListOf(), mutableListOf(), mutableListOf(),
                 "", mutableListOf(), ""
@@ -135,7 +132,7 @@ class UploadFile : Service() {
     }
 
     private suspend fun updateDatastore(
-        transactionFromFileInfo : UpdateTransactionFromFileInfo
+        transactionFromFileInfo : UploadTransactionFromFileInfo
     ){
 
         //Save transactions info
@@ -163,7 +160,7 @@ class UploadFile : Service() {
 
         //Save upload log info
         dataStore.updateUploadsFromFileList(
-            UpdateTransactionFromFileInfo(
+            UploadTransactionFromFileInfo(
                 id = transactionFromFileInfo.id,
                 expenseList = mutableListOf(),
                 updatedTotalExpense = "",

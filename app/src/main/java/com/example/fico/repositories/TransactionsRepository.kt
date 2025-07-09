@@ -5,7 +5,7 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
-import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.model.UploadTransactionFromFileInfo
 
 class TransactionsRepository(private val transactionsInterface : TransactionsInterface) {
     suspend fun getExpenseList() : Result<List<Expense>> {
@@ -36,12 +36,21 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
         return transactionsInterface.getRecurringExpensesList()
     }
 
-    suspend fun addTransactionsFromFile(transactionFromFileInfo: UpdateTransactionFromFileInfo): String?{
+    suspend fun addTransactionsFromFile(transactionFromFileInfo: UploadTransactionFromFileInfo): String?{
         return transactionsInterface.addTransactionsFromFile(transactionFromFileInfo)
     }
 
-    suspend fun getUploadsFromFile() : Result<List<UpdateTransactionFromFileInfo>>{
+    suspend fun getUploadsFromFile() : Result<List<UploadTransactionFromFileInfo>>{
         return transactionsInterface.getUploadsFromFile()
+    }
+
+    suspend fun deleteUploadFromFile(
+        expenseIdList: MutableList<String>,
+        earningIdList : MutableList<String>,
+        updatedTotalExpense : String,
+        updatedInformationPerMonth : MutableList<InformationPerMonthExpense>
+    ) : Result<Boolean>{
+        return transactionsInterface.deleteUploadFromFile(expenseIdList, earningIdList, updatedTotalExpense, updatedInformationPerMonth)
     }
 
 }

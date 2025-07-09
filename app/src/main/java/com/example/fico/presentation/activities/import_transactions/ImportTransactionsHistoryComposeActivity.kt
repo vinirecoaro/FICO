@@ -54,7 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.model.UploadTransactionFromFileInfo
 import com.example.fico.presentation.compose.components.ComposeDialogs.Companion.ConfirmDialog
 
 class ImportTransactionsFromFileHistoryComposeActivity : ComponentActivity() {
@@ -153,7 +153,7 @@ fun ImportTransactionsFromFileHistoryScreen(
                 }
                 is ImportTransactionsHistoryUiState.Success -> {
 
-                    val selectedItem = remember { mutableStateOf<UpdateTransactionFromFileInfo?>(null) }
+                    val selectedItem = remember { mutableStateOf<UploadTransactionFromFileInfo?>(null) }
 
                     LazyColumn {
                         items(uiState.data) { item ->

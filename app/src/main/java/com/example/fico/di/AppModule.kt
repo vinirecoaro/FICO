@@ -100,6 +100,7 @@ val appModule = module {
     factory<ImportTransactionsHistoryViewModel> {
         ImportTransactionsHistoryViewModel(
             dataStore = get(),
+            transactionsRepository = get()
         )
     }
 

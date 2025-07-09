@@ -1,6 +1,6 @@
 package com.example.fico.model
 
-data class UpdateTransactionFromFileInfo(
+data class UploadTransactionFromFileInfo(
     var id: String,
     val expenseList: MutableList<Expense>,
     var updatedTotalExpense: String,

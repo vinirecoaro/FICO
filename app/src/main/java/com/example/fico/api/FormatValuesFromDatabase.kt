@@ -1,13 +1,12 @@
 package com.example.fico.api
 
-import android.util.Log
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
-import com.example.fico.model.UpdateTransactionFromFileInfo
+import com.example.fico.model.UploadTransactionFromFileInfo
 import com.example.fico.model.ValuePerMonth
 import com.example.fico.utils.constants.StringConstants
 import com.google.firebase.database.DataSnapshot
@@ -335,7 +334,7 @@ class FormatValuesFromDatabase {
         )
     }
 
-    fun dataSnapshotToUpdateFromFile(dataSnapShot : DataSnapshot) : UpdateTransactionFromFileInfo{
+    fun dataSnapshotToUpdateFromFile(dataSnapShot : DataSnapshot) : UploadTransactionFromFileInfo{
 
         val expenseIdList = mutableListOf<String>()
         val earningIdList = mutableListOf<String>()
@@ -357,7 +356,7 @@ class FormatValuesFromDatabase {
            expensePerMonthList.add(ValuePerMonth(month, expense))
        }
 
-        return UpdateTransactionFromFileInfo(
+        return UploadTransactionFromFileInfo(
             id = dataSnapShot.key.toString(),
             expenseList = mutableListOf(),
             updatedTotalExpense = "",
