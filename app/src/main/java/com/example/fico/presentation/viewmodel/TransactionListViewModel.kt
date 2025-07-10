@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
-import com.example.fico.api.ArrangeDataToUpdateToDatabase
+import com.example.fico.api.TransactionsFunctions
 import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
@@ -57,7 +57,7 @@ class TransactionListViewModel(
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _installmentExpenseSwiped = MutableLiveData<Boolean>()
     val installmentExpenseSwiped: LiveData<Boolean> = _installmentExpenseSwiped
-    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
+    private val transactionsFunctions  = TransactionsFunctions()
     private val _monthFilterLiveData = MutableLiveData<String>()
     val monthFilterLiveData: LiveData<String>
         get() = _monthFilterLiveData
@@ -312,7 +312,7 @@ class TransactionListViewModel(
                 formattedInputDate
             )
 
-            val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
+            val expenseList = transactionsFunctions.addToExpenseList(
                 expense,
                 installment,
                 nOfInstallments,
@@ -323,14 +323,14 @@ class TransactionListViewModel(
 
             _undoDeletedItem.postValue(undoDeletedTransaction)
 
-            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+            val updatedTotalExpense = transactionsFunctions.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
                 formattedPrice,
                 nOfInstallments
             )
 
             val updatedInformationPerMonth =
-                arrangeDataToUpdateToDatabase.addToInformationPerMonth(
+                transactionsFunctions.calculateExpenseInformationPerMonthAfterAddExpense(
                     expense,
                     installment,
                     nOfInstallments,

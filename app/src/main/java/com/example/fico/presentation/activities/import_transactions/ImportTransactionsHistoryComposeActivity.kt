@@ -189,7 +189,7 @@ fun ImportTransactionsFromFileHistoryScreen(
                                 selectedItem.value = null
                             },
                             onConfirmButtonClick = {
-                                //viewModel.deleteItem(item)
+                                viewModel.deleteUploadFromFile(item)
                                 selectedItem.value = null
                             }
                         )

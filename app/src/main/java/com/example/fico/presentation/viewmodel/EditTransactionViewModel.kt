@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
-import com.example.fico.api.ArrangeDataToUpdateToDatabase
+import com.example.fico.api.TransactionsFunctions
 import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesFromDatabase
@@ -30,7 +30,7 @@ class EditTransactionViewModel(
     val editExpenseResult : LiveData<Boolean> = _editExpenseResult
     private val _deleteInstallmentExpenseResult = MutableLiveData<Boolean>()
     val deleteInstallmentExpenseResult : LiveData<Boolean> = _deleteInstallmentExpenseResult
-    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
+    private val transactionsFunctions  = TransactionsFunctions()
     private val _editEarningResult = MutableLiveData<Boolean>()
     val editEarningResult : LiveData<Boolean> = _editEarningResult
     private val _editRecurringTransactionResult = MutableLiveData<Boolean>()
@@ -76,7 +76,7 @@ class EditTransactionViewModel(
                 oldExpenseNOfInstallment.toString()
             )
 
-            val removeFromExpenseList = arrangeDataToUpdateToDatabase.removeFromExpenseList(oldExpenseFormatted, dataStore.getExpenseList())
+            val removeFromExpenseList = transactionsFunctions.removeFromExpenseList(oldExpenseFormatted, dataStore.getExpenseList())
 
             val newExpensePrice = FormatValuesToDatabase().expensePrice(price, nOfInstallments)
             val newExpensePaymentDate = FormatValuesToDatabase().expenseDate(paymentDate)
@@ -85,7 +85,7 @@ class EditTransactionViewModel(
 
             val newExpense = Expense(oldExpense.id, newExpensePrice, description, category, newExpensePaymentDate, newExpensePurchaseDate, formattedInputDate)
 
-            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+            val updatedTotalExpense = transactionsFunctions.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
                 newExpense.price,
                 nOfInstallments,
@@ -98,7 +98,7 @@ class EditTransactionViewModel(
 
             val budget = monthBudgetDataStore!!.budget ?: dataStore.getDefaultBudget()
 
-            val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonth(
+            val updatedInformationPerMonth = transactionsFunctions.calculateExpenseInformationPerMonthAfterAddExpense(
                 newExpense,
                 installment,
                 nOfInstallments,
@@ -108,7 +108,7 @@ class EditTransactionViewModel(
                 oldExpenseFormatted
             )
 
-            val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(newExpense, installment, nOfInstallments, true)
+            val expenseList = transactionsFunctions.addToExpenseList(newExpense, installment, nOfInstallments, true)
 
             firebaseAPI.editExpense(expenseList, updatedTotalExpense,updatedInformationPerMonth, removeFromExpenseList, oldExpenseNOfInstallment).fold(
                 onSuccess = {
@@ -129,7 +129,7 @@ class EditTransactionViewModel(
                         updatedExpenseListDataStore.removeAll{it.id == expenseId}
                     }
                         //Remove old expense values from info per month list
-                    val oldExpenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
+                    val oldExpenseList = transactionsFunctions.addToExpenseList(
                         oldExpenseFormatted,
                         installment,
                         oldExpenseFormatted.nOfInstallment.toInt(),
@@ -290,19 +290,19 @@ class EditTransactionViewModel(
             )
 
             //Id's to remove from expense list
-            val removeFromExpenseList = arrangeDataToUpdateToDatabase.removeFromExpenseList(
+            val removeFromExpenseList = transactionsFunctions.removeFromExpenseList(
                 formattedExpense,dataStore.getExpenseList()
             )
 
             //Updated total expense
-            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+            val updatedTotalExpense = transactionsFunctions.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
                 formattedExpense.price,
                 expenseNOfInstallment
             )
 
             //Updated info per month
-            val updatedInformationPerMonthExpense = arrangeDataToUpdateToDatabase.addToInformationPerMonth(
+            val updatedInformationPerMonthExpense = transactionsFunctions.calculateExpenseInformationPerMonthAfterAddExpense(
                 expense = formattedExpense,
                 installment = true,
                 newExpenseNOfInstallments =  expenseNOfInstallment,
@@ -313,7 +313,6 @@ class EditTransactionViewModel(
 
             firebaseAPI.deleteInstallmentExpense(
                 removeFromExpenseList,
-                expenseNOfInstallment,
                 updatedTotalExpense,
                 updatedInformationPerMonthExpense
             ).fold(

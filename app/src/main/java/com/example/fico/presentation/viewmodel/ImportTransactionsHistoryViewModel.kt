@@ -3,6 +3,7 @@ package com.example.fico.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
+import com.example.fico.api.TransactionsFunctions
 import com.example.fico.model.UploadTransactionFromFileInfo
 import com.example.fico.presentation.activities.import_transactions.ImportTransactionsHistoryUiState
 import com.example.fico.repositories.TransactionsRepository
@@ -16,6 +17,7 @@ class ImportTransactionsHistoryViewModel(
     private val transactionsRepository: TransactionsRepository
 ) : ViewModel() {
 
+    val transactionsFunctions = TransactionsFunctions()
     private val _uiState = MutableStateFlow<ImportTransactionsHistoryUiState>(ImportTransactionsHistoryUiState.Loading)
     val uiState: StateFlow<ImportTransactionsHistoryUiState> = _uiState
 
@@ -35,7 +37,30 @@ class ImportTransactionsHistoryViewModel(
 
     fun deleteUploadFromFile(uploadFromFile : UploadTransactionFromFileInfo){
         viewModelScope.launch(Dispatchers.IO) {
-            transactionsRepository.deleteUploadFromFile(uploadFromFile).fold(
+
+            //Verifying expenses that still exists
+            val currentTotalExpense = dataStore.getTotalExpense()
+
+            val currentExpenseList = dataStore.getExpenseList()
+
+            val expenseThatStillExists = transactionsFunctions.getExpensesThatStillExists(uploadFromFile.expenseIdList, currentExpenseList)
+
+            val expenseIdList = mutableListOf<String>()
+            expenseThatStillExists.forEach { expenseIdList.add(it.id) }
+
+            //Total expense
+            val totalValueFromList = transactionsFunctions.calculateTotalValueFromExpenseList(expenseThatStillExists)
+
+            val updatedTotalExpense = transactionsFunctions.calculateUpdatedTotalExpense(
+                currentTotalExpense, "0", 1, totalValueFromList, 1
+            )
+
+            transactionsRepository.deleteUploadFromFile(
+                expenseIdList,
+                uploadFromFile.earningIdList,
+                updatedTotalExpense,
+                mutableListOf()
+            ).fold(
                 onSuccess = {},
                 onFailure = {}
             )

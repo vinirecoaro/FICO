@@ -3,7 +3,6 @@ package com.example.fico.presentation.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,10 +11,9 @@ import com.example.fico.DataStoreManager
 import com.example.fico.model.Expense
 import com.example.fico.api.FirebaseAPI
 import com.example.fico.api.FormatValuesToDatabase
-import com.example.fico.api.ArrangeDataToUpdateToDatabase
+import com.example.fico.api.TransactionsFunctions
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.model.CreditCard
-import com.example.fico.model.CreditCardColors
 import com.example.fico.model.Earning
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.RecurringTransaction
@@ -35,7 +33,7 @@ class AddTransactionViewModel(
     val addExpenseResult: LiveData<Boolean> = _addExpenseResult
     private val _setDefaultBudgetResult = MutableLiveData<Boolean>()
     val setDefaultBudgetResult : LiveData<Boolean> = _setDefaultBudgetResult
-    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
+    private val transactionsFunctions  = TransactionsFunctions()
     private var operation : String = StringConstants.ADD_TRANSACTION.ADD_EXPENSE
     private val _payWithCreditCardSwitchInitialState = MutableLiveData<Boolean>()
     val payWithCreditCardSwitchInitialState: LiveData<Boolean> = _payWithCreditCardSwitchInitialState
@@ -82,21 +80,21 @@ class AddTransactionViewModel(
                 formattedInputDate
             )
 
-            val expenseList = arrangeDataToUpdateToDatabase.addToExpenseList(
+            val expenseList = transactionsFunctions.addToExpenseList(
                 expense,
                 installment,
                 nOfInstallments,
                 false
             )
 
-            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+            val updatedTotalExpense = transactionsFunctions.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
                 formattedPrice,
                 nOfInstallments
             )
 
             val updatedInformationPerMonth =
-                arrangeDataToUpdateToDatabase.addToInformationPerMonth(
+                transactionsFunctions.calculateExpenseInformationPerMonthAfterAddExpense(
                     expense,
                     installment,
                     nOfInstallments,
@@ -196,7 +194,7 @@ class AddTransactionViewModel(
 
             val formattedValue = FormatValuesToDatabase().expensePrice(value, 1)
 
-            val randonNum = arrangeDataToUpdateToDatabase.generateRandomAddress(5)
+            val randonNum = transactionsFunctions.generateRandomAddress(5)
 
             val inputTime = FormatValuesToDatabase().timeNow()
 
@@ -241,7 +239,7 @@ class AddTransactionViewModel(
 
             val formattedPrice = FormatValuesToDatabase().expensePrice(price, 1)
 
-            val randonNum = arrangeDataToUpdateToDatabase.generateRandomAddress(5)
+            val randonNum = transactionsFunctions.generateRandomAddress(5)
 
             val id = "${formattedInputDateForId}-${randonNum}"
 

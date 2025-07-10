@@ -14,7 +14,7 @@ class ArrangeDataToUpdateToDatabaseTest{
             val expenseNOfInstallment = 1
 
             //When
-            val updatedTotalExpense = ArrangeDataToUpdateToDatabase().calculateUpdatedTotalExpense(
+            val updatedTotalExpense = TransactionsFunctions().calculateUpdatedTotalExpense(
                 currentTotalExpense,
                 expensePrice,
                 expenseNOfInstallment

@@ -244,7 +244,6 @@ class FirebaseAPI(
 
     suspend fun deleteInstallmentExpense(
         removeFromExpenseList: MutableList<String>,
-        expenseNOfInstallment: Int,
         updatedTotalExpense: String,
         updatedInformationPerMonth: MutableList<InformationPerMonthExpense>
     ): Result<Unit> = withContext(Dispatchers.IO) {
@@ -253,7 +252,7 @@ class FirebaseAPI(
         return@withContext try {
             // Remove from expense list
             updates.putAll(
-                generateMapToRemoveUserExpenses(removeFromExpenseList)
+                generateMapToRemoveKeysFromNode(StringConstants.DATABASE.EXPENSES_LIST, removeFromExpenseList)
             )
 
             // Add Updated Total Expense
@@ -463,8 +462,10 @@ class FirebaseAPI(
         val updates = mutableMapOf<String, Any?>()
 
         return@withContext try {
+            //Expenses ---------------------------------------
+
             // Remove from expense list
-            updates.putAll(generateMapToRemoveUserExpenses(expenseIdList))
+            updates.putAll(generateMapToRemoveKeysFromNode(StringConstants.DATABASE.EXPENSES_LIST, expenseIdList))
 
             /*// Add Updated Total Expense
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
@@ -473,6 +474,15 @@ class FirebaseAPI(
             updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))*/
 
             expenses.updateChildren(updates)
+
+
+            //Earnings ---------------------------------------
+
+            updates.clear()
+
+            updates.putAll(generateMapToRemoveKeysFromNode(StringConstants.DATABASE.EARNINGS_LIST, earningIdList))
+
+            earnings.updateChildren(updates)
 
             Result.success(true)
         } catch (e: Exception) {
@@ -550,7 +560,7 @@ class FirebaseAPI(
         try {
             // Remove from Expense List
             updates.putAll(
-                generateMapToRemoveUserExpenses(removeFromExpenseList)
+                generateMapToRemoveKeysFromNode(StringConstants.DATABASE.EXPENSES_LIST, removeFromExpenseList)
             )
 
             expenses.updateChildren(updates)
@@ -744,15 +754,13 @@ class FirebaseAPI(
         return updatesOfRecurringExpensesList
     }
 
-    private fun generateMapToRemoveUserExpenses(
+    private fun generateMapToRemoveKeysFromNode(
+        nodeKey : String,
         expenseIdList: MutableList<String>
     ): MutableMap<String, Any?> {
         val removeFromExpenseList = mutableMapOf<String, Any?>()
 
-        expenseIdList.forEach {
-            removeFromExpenseList["${StringConstants.DATABASE.EXPENSES_LIST}/${it}"] =
-                null
-        }
+        expenseIdList.forEach { removeFromExpenseList["${nodeKey}/${it}"] = null }
 
         return removeFromExpenseList
     }

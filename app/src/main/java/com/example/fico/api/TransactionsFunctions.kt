@@ -10,7 +10,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
-class ArrangeDataToUpdateToDatabase() {
+class TransactionsFunctions() {
 
     fun calculateUpdatedTotalExpense(
         currentTotalExpense: String,
@@ -210,7 +210,7 @@ class ArrangeDataToUpdateToDatabase() {
         return randomSequence.toString()
     }
 
-    fun addToInformationPerMonth(
+    fun calculateExpenseInformationPerMonthAfterAddExpense(
         expense : Expense,
         installment : Boolean,
         newExpenseNOfInstallments: Int,
@@ -344,7 +344,7 @@ class ArrangeDataToUpdateToDatabase() {
             return newInformationPerMonth
         }
 
-    fun addToInformationPerMonthFromUpdatedFile(
+    fun calculateExpenseInformationPerMonthAfterUploadFile(
         monthExpenseList : MutableList<ValuePerMonth>,
         currentInfoPerMonth : List<InformationPerMonthExpense>,
         defaultBudget : String
@@ -498,6 +498,24 @@ class ArrangeDataToUpdateToDatabase() {
         return calculatedList
     }
 
+    fun getExpensesThatStillExists(uploadedExpenseIdList : List<String>, currentExpenseList : List<Expense>) : MutableList<Expense> {
+        val idsThatStillExists = mutableListOf<Expense>()
 
+        uploadedExpenseIdList.forEach { id ->
+            val expenseOnCurrentList = currentExpenseList.find { it.id == id }
+            if(expenseOnCurrentList != null){
+                idsThatStillExists.add(expenseOnCurrentList)
+            }
+        }
 
+        return idsThatStillExists
+    }
+
+    fun calculateTotalValueFromExpenseList(expenseList : List<Expense>) : String{
+        var totalValue = BigDecimal(0)
+        expenseList.forEach { expense ->
+            totalValue = totalValue.add(BigDecimal(expense.price))
+        }
+        return totalValue.setScale(8,RoundingMode.HALF_UP).toString()
+    }
 }

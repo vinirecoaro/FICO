@@ -6,7 +6,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import com.example.fico.DataStoreManager
-import com.example.fico.api.ArrangeDataToUpdateToDatabase
+import com.example.fico.api.TransactionsFunctions
 import com.example.fico.api.FormatValuesFromDatabase
 import com.example.fico.api.FormatValuesToDatabase
 import com.example.fico.model.Earning
@@ -24,7 +24,7 @@ class UploadFile : Service() {
     private val dataStore : DataStoreManager by inject()
     private val transactionsRepository: TransactionsRepository by inject()
     private val serviceScope = CoroutineScope(Dispatchers.Default)
-    private val arrangeDataToUpdateToDatabase  = ArrangeDataToUpdateToDatabase()
+    private val transactionsFunctions  = TransactionsFunctions()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -51,7 +51,7 @@ class UploadFile : Service() {
             val totalExpenseFromFile = sumAllExpenses(notNullExpenseList, notNullInstallmentExpenseList)
             transactionFromFileInfo.totalExpenseFromFile = totalExpenseFromFile // add to log
 
-            val updatedTotalExpense = arrangeDataToUpdateToDatabase.calculateUpdatedTotalExpense(
+            val updatedTotalExpense = transactionsFunctions.calculateUpdatedTotalExpense(
                 dataStore.getTotalExpense(),
                 totalExpenseFromFile, 1
             )
@@ -60,10 +60,10 @@ class UploadFile : Service() {
 
 
             //Expense per month
-            val expensePerMonthList = arrangeDataToUpdateToDatabase.joinExpensesOfMonth(notNullExpenseList, notNullInstallmentExpenseList)
+            val expensePerMonthList = transactionsFunctions.joinExpensesOfMonth(notNullExpenseList, notNullInstallmentExpenseList)
             transactionFromFileInfo.expensePerMonthList.addAll(expensePerMonthList) // Add to log
 
-            val updatedInformationPerMonth = arrangeDataToUpdateToDatabase.addToInformationPerMonthFromUpdatedFile(
+            val updatedInformationPerMonth = transactionsFunctions.calculateExpenseInformationPerMonthAfterUploadFile(
                 expensePerMonthList,
                 dataStore.getExpenseInfoPerMonth(),
                 dataStore.getDefaultBudget()
@@ -73,13 +73,13 @@ class UploadFile : Service() {
 
 
             //Expense list
-            val expenseListFormatted = arrangeDataToUpdateToDatabase.addToExpenseListFromFile(notNullExpenseList, notNullInstallmentExpenseList)
+            val expenseListFormatted = transactionsFunctions.addToExpenseListFromFile(notNullExpenseList, notNullInstallmentExpenseList)
 
             transactionFromFileInfo.expenseList.addAll(expenseListFormatted)
 
 
             //Earning list
-            val earningListFormatted = arrangeDataToUpdateToDatabase.addToEarningListFromFile(notNullEarningList)
+            val earningListFormatted = transactionsFunctions.addToEarningListFromFile(notNullEarningList)
 
             transactionFromFileInfo.earningList.addAll(earningListFormatted)
 
@@ -137,7 +137,7 @@ class UploadFile : Service() {
 
         //Save transactions info
         dataStore.updateTotalExpense(transactionFromFileInfo.updatedTotalExpense)
-        dataStore.updateAndResetInfoPerMonthExpense(transactionFromFileInfo.updatedInformationPerMonth)
+        dataStore.updateInfoPerMonthExpense(transactionFromFileInfo.updatedInformationPerMonth)
         dataStore.updateExpenseList(transactionFromFileInfo.expenseList.apply {
             forEach {
                 it.paymentDate = FormatValuesFromDatabase().date(it.paymentDate)
@@ -145,7 +145,8 @@ class UploadFile : Service() {
             }
         })
         val monthList = mutableListOf<String>()
-        for(month in transactionFromFileInfo.updatedInformationPerMonth){
+        val updatedExpenseInfoPerMonth = dataStore.getExpenseInfoPerMonth()
+        for(month in updatedExpenseInfoPerMonth){
             if(month.budget != month.availableNow){
                 monthList.add(month.date)
             }
