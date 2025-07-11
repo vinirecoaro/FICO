@@ -48,9 +48,10 @@ class TransactionsRepository(private val transactionsInterface : TransactionsInt
         expenseIdList: MutableList<String>,
         earningIdList : MutableList<String>,
         updatedTotalExpense : String,
-        updatedInformationPerMonth : MutableList<InformationPerMonthExpense>
+        updatedInformationPerMonth : MutableList<InformationPerMonthExpense>,
+        uploadId : String
     ) : Result<Boolean>{
-        return transactionsInterface.deleteUploadFromFile(expenseIdList, earningIdList, updatedTotalExpense, updatedInformationPerMonth)
+        return transactionsInterface.deleteUploadFromFile(expenseIdList, earningIdList, updatedTotalExpense, updatedInformationPerMonth, uploadId)
     }
 
 }

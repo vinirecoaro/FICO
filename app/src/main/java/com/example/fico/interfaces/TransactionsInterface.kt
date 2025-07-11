@@ -30,6 +30,7 @@ interface TransactionsInterface {
          expenseIdList: MutableList<String>,
          earningIdList : MutableList<String>,
          updatedTotalExpense : String,
-         updatedInformationPerMonth : MutableList<InformationPerMonthExpense>
+         updatedInformationPerMonth : MutableList<InformationPerMonthExpense>,
+         uploadId : String
     ) : Result<Boolean>
 }

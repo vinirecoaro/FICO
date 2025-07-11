@@ -456,7 +456,8 @@ class FirebaseAPI(
         expenseIdList: MutableList<String>,
         earningIdList : MutableList<String>,
         updatedTotalExpense : String,
-        updatedInformationPerMonth : MutableList<InformationPerMonthExpense>
+        updatedInformationPerMonth : MutableList<InformationPerMonthExpense>,
+        uploadId : String
     ): Result<Boolean> = withContext(Dispatchers.IO){
 
         val updates = mutableMapOf<String, Any?>()
@@ -467,11 +468,11 @@ class FirebaseAPI(
             // Remove from expense list
             updates.putAll(generateMapToRemoveKeysFromNode(StringConstants.DATABASE.EXPENSES_LIST, expenseIdList))
 
-            /*// Add Updated Total Expense
+            // Add Updated Total Expense
             updates.putAll(generateMapToUpdateUserTotalExpense(updatedTotalExpense))
 
             // Add Information per Month
-            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))*/
+            updates.putAll(generateMapToUpdateInformationPerMonth(updatedInformationPerMonth))
 
             expenses.updateChildren(updates)
 
@@ -483,6 +484,15 @@ class FirebaseAPI(
             updates.putAll(generateMapToRemoveKeysFromNode(StringConstants.DATABASE.EARNINGS_LIST, earningIdList))
 
             earnings.updateChildren(updates)
+
+
+            //Upload log ---------------------------------------
+
+            updates.clear()
+
+            updates.putAll(generateMapToRemoveKeysFromNode(StringConstants.DATABASE.UPLOADS_FROM_FILE, mutableListOf<String>(uploadId)))
+
+            transactions.updateChildren(updates)
 
             Result.success(true)
         } catch (e: Exception) {

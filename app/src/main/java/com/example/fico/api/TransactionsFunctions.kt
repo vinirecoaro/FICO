@@ -6,6 +6,7 @@ import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
 import com.example.fico.model.ValuePerMonth
+import com.example.fico.utils.DateFunctions
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -36,10 +37,20 @@ class TransactionsFunctions() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addToExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int, isEdit : Boolean) : MutableList<Expense>{
+    fun addToExpenseList(expense : Expense, installment : Boolean, nOfInstallments: Int, isEdit : Boolean, notAcceptRandom : List<String> = emptyList<String>()) : MutableList<Expense>{
 
         val expenseList : MutableList<Expense> = mutableListOf()
-        val randomNum = generateRandomAddress(5)
+
+        var randomNum = ""
+        var exist = true
+
+        while(exist){
+            randomNum = generateRandomAddress(5)
+            if(!notAcceptRandom.contains(randomNum)){
+                exist = false
+            }
+        }
+
         val inputTime = FormatValuesToDatabase().timeNow()
 
         if(installment){
@@ -126,6 +137,8 @@ class TransactionsFunctions() {
 
         val fullExpenseList : MutableList<Expense> = mutableListOf()
 
+        val notAcceptRandom = mutableListOf<String>()
+
         for (expense in expenseList){
 
             val expense = addToExpenseList(expense, false, 1, false)
@@ -139,12 +152,18 @@ class TransactionsFunctions() {
 
             val formattedExpense = Expense("", expensePriceFormatted, expense.description, expense.category, expense.paymentDate, expense.purchaseDate, expense.inputDateTime)
 
-            val expenseListFromInstallmentExpense = addToExpenseList(formattedExpense, true, expense.nOfInstallment.toFloat().toInt(), false)
+            val expenseListFromInstallmentExpense = addToExpenseList(formattedExpense, true, expense.nOfInstallment.toFloat().toInt(), false, notAcceptRandom)
+
+            notAcceptRandom.add(getIdRandomNum(expenseListFromInstallmentExpense[0].id))
 
             fullExpenseList.addAll(expenseListFromInstallmentExpense)
         }
 
         return fullExpenseList
+    }
+
+    fun getIdRandomNum(expenseId : String) : String {
+        return expenseId.substring(20,25)
     }
 
     fun removeFromExpenseList(expense : Expense, currentExpenseList : List<Expense>) : MutableList<String>{
@@ -397,6 +416,38 @@ class TransactionsFunctions() {
             return newInformationPerMonth
         }
 
+    fun calculateExpenseInformationPerMonthAfterDeleteUploadsFromFile(
+        expensesThatStillExists : List<Expense>,
+        currentExpenseInfoPerMonth : List<InformationPerMonthExpense>
+    ) : MutableList<InformationPerMonthExpense>{
+        val monthsWithUpdate = mutableListOf<InformationPerMonthExpense>()
+
+        val expenseListWithDateFormatted = mutableListOf<Expense>()
+
+        expensesThatStillExists.forEach { expense ->
+            val expenseFormatted = Expense(
+                expense.id, expense.price, expense.description, expense.category,
+                FormatValuesToDatabase().expenseDate(expense.paymentDate),
+                FormatValuesToDatabase().expenseDate(expense.purchaseDate), expense.inputDateTime
+            )
+            expenseListWithDateFormatted.add(expenseFormatted)
+        }
+
+        val valuePerMonth = joinExpensesOfMonth(expenseListWithDateFormatted, mutableListOf())
+
+        valuePerMonth.forEach { valuePerMonth ->
+            val monthInfo = currentExpenseInfoPerMonth.find { it.date == valuePerMonth.month }
+            if(monthInfo != null){
+                val availableNow = BigDecimal(monthInfo.availableNow).add(BigDecimal(valuePerMonth.value)).toString()
+                val monthExpense = BigDecimal(monthInfo.monthExpense).subtract(BigDecimal(valuePerMonth.value)).toString()
+                val updatedMonthInfo = InformationPerMonthExpense(monthInfo.date, availableNow, monthInfo.budget, monthExpense)
+                monthsWithUpdate.add(updatedMonthInfo)
+            }
+        }
+
+        return monthsWithUpdate
+    }
+
     private fun updateInstallmentExpenseDate(expenseDate: String, iteraction: Int): String {
         val month = expenseDate.substring(5, 7).toInt()
         var newMonth = month + iteraction
@@ -499,12 +550,25 @@ class TransactionsFunctions() {
     }
 
     fun getExpensesThatStillExists(uploadedExpenseIdList : List<String>, currentExpenseList : List<Expense>) : MutableList<Expense> {
-        val idsThatStillExists = mutableListOf<Expense>()
+        val expensesThatStillExists = mutableListOf<Expense>()
 
         uploadedExpenseIdList.forEach { id ->
             val expenseOnCurrentList = currentExpenseList.find { it.id == id }
             if(expenseOnCurrentList != null){
-                idsThatStillExists.add(expenseOnCurrentList)
+                expensesThatStillExists.add(expenseOnCurrentList)
+            }
+        }
+
+        return expensesThatStillExists
+    }
+
+    fun getEarningsIdThatStillExists(uploadedEarningIdList : List<String>, currentEarningList : List<Earning>) : MutableList<String> {
+        val idsThatStillExists = mutableListOf<String>()
+
+        uploadedEarningIdList.forEach { id ->
+            val earningOnCurrentList = currentEarningList.find { it.id == id }
+            if(earningOnCurrentList != null){
+                idsThatStillExists.add(id)
             }
         }
 

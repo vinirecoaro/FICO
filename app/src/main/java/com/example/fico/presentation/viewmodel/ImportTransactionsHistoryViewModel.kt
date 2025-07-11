@@ -38,28 +38,43 @@ class ImportTransactionsHistoryViewModel(
     fun deleteUploadFromFile(uploadFromFile : UploadTransactionFromFileInfo){
         viewModelScope.launch(Dispatchers.IO) {
 
-            //Verifying expenses that still exists
             val currentTotalExpense = dataStore.getTotalExpense()
 
+            //Verifying expenses that still exists
             val currentExpenseList = dataStore.getExpenseList()
 
-            val expenseThatStillExists = transactionsFunctions.getExpensesThatStillExists(uploadFromFile.expenseIdList, currentExpenseList)
+            val expensesThatStillExists = transactionsFunctions.getExpensesThatStillExists(uploadFromFile.expenseIdList, currentExpenseList)
 
+            //Expense id List
             val expenseIdList = mutableListOf<String>()
-            expenseThatStillExists.forEach { expenseIdList.add(it.id) }
+            expensesThatStillExists.forEach { expenseIdList.add(it.id) }
 
             //Total expense
-            val totalValueFromList = transactionsFunctions.calculateTotalValueFromExpenseList(expenseThatStillExists)
+            val totalValueFromList = transactionsFunctions.calculateTotalValueFromExpenseList(expensesThatStillExists)
 
             val updatedTotalExpense = transactionsFunctions.calculateUpdatedTotalExpense(
                 currentTotalExpense, "0", 1, totalValueFromList, 1
             )
 
+            //Expense info per month
+            val currentExpenseInfoPerMonth = dataStore.getExpenseInfoPerMonth()
+            val expenseInfoPerMonth = transactionsFunctions.calculateExpenseInformationPerMonthAfterDeleteUploadsFromFile(
+                expensesThatStillExists,
+                currentExpenseInfoPerMonth
+            )
+
+            //Earning id list
+            val currentEarningList = dataStore.getEarningsList()
+
+            val earningIdsThatStillExists = transactionsFunctions.getEarningsIdThatStillExists(uploadFromFile.earningIdList, currentEarningList)
+
+
             transactionsRepository.deleteUploadFromFile(
                 expenseIdList,
-                uploadFromFile.earningIdList,
+                earningIdsThatStillExists,
                 updatedTotalExpense,
-                mutableListOf()
+                expenseInfoPerMonth,
+                uploadFromFile.id
             ).fold(
                 onSuccess = {},
                 onFailure = {}
