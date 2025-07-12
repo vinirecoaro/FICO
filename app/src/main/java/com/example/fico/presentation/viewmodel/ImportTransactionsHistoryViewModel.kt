@@ -1,5 +1,6 @@
 package com.example.fico.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fico.DataStoreManager
@@ -76,8 +77,37 @@ class ImportTransactionsHistoryViewModel(
                 expenseInfoPerMonth,
                 uploadFromFile.id
             ).fold(
-                onSuccess = {},
-                onFailure = {}
+                onSuccess = {
+                    //Expense list
+                    dataStore.deleteFromExpenseList(expenseIdList)
+
+                    //Expense info per month
+                    dataStore.updateInfoPerMonthExpense(expenseInfoPerMonth)
+
+                    //Update month expenses
+                    val monthList = mutableListOf<String>()
+                    val updatedExpenseInfoPerMonth = dataStore.getExpenseInfoPerMonth()
+                    for(month in updatedExpenseInfoPerMonth){
+                        if(month.budget != month.availableNow){
+                            monthList.add(month.date)
+                        }
+                    }
+                    dataStore.updateAndResetExpenseMonths(monthList)
+
+                    //Total expense
+                    dataStore.updateTotalExpense(updatedTotalExpense)
+
+                    //Earning list
+                    dataStore.deleteFromEarningList(earningIdsThatStillExists)
+
+                    //Upload log
+                    dataStore.deleteFromUploadsFromFileList(uploadFromFile.id)
+
+                    getUploadsFromFileList()
+                },
+                onFailure = {
+                    Log.e("Error: ", "Error on delete upload from file - ${ it.message.toString() }")
+                }
             )
         }
     }

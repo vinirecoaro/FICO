@@ -66,6 +66,18 @@ class DataStoreManager (context: Context) {
         }
     }
 
+    suspend fun deleteFromExpenseList(expenseIdList : List<String>){
+        dataStore.edit { preferences ->
+            val existingExpenseListString = preferences[expenseListKey] ?: "[]"
+            val existingExpenseList = Gson().fromJson(existingExpenseListString, Array<Expense>::class.java).toMutableList()
+            expenseIdList.forEach { id ->
+                existingExpenseList.removeAll { it.id == id }
+            }
+            val expenseListString = Gson().toJson(existingExpenseList)
+            preferences[expenseListKey] = expenseListString
+        }
+    }
+
     suspend fun getExpenseList() : List<Expense>{
         val expenseListString = dataStore.data.map { preferences ->
             preferences[expenseListKey]
@@ -155,32 +167,6 @@ class DataStoreManager (context: Context) {
         return Gson().fromJson(defaultBudget, object : TypeToken<String>() {}.type)
     }
 
-    suspend fun setDefaultPaymentDay(expirationDay : String){
-        dataStore.edit { preferences ->
-            preferences[defaultPaymentDayKey] = expirationDay
-        }
-    }
-
-    suspend fun setDaysForClosingBill(daysForClosingBill : String){
-        dataStore.edit { preferences ->
-            preferences[daysForClosingBillKey] = daysForClosingBill
-        }
-    }
-
-    suspend fun getDefaultPaymentDay() : String?{
-        val defaultPaymentDay = dataStore.data.map { preferences ->
-            preferences[defaultPaymentDayKey]
-        }.first()
-        return Gson().fromJson(defaultPaymentDay, object : TypeToken<String?>() {}.type)
-    }
-
-    suspend fun getDaysForClosingBill() : String?{
-        val defaultPaymentDay = dataStore.data.map { preferences ->
-            preferences[daysForClosingBillKey]
-        }.first()
-        return Gson().fromJson(defaultPaymentDay, object : TypeToken<String?>() {}.type)
-    }
-
     suspend fun setPayWithCreditCardSwitchState(active : Boolean){
         dataStore.edit { preferences ->
             preferences[payWithCreditCardSwitchKey] = active.toString()
@@ -252,6 +238,18 @@ class DataStoreManager (context: Context) {
             val existingEarningList = Gson().fromJson(existingEarningsListString, Array<Earning>::class.java).toMutableList()
             if(existingEarningList.find { it.id == earning.id } != null){
                 existingEarningList.removeAll { it.id == earning.id }
+            }
+            val earningListString = Gson().toJson(existingEarningList)
+            preferences[earningsListKey] = earningListString
+        }
+    }
+
+    suspend fun deleteFromEarningList(earningIdList : List<String>){
+        dataStore.edit { preferences ->
+            val existingEarningsListString = preferences[earningsListKey] ?: "[]"
+            val existingEarningList = Gson().fromJson(existingEarningsListString, Array<Earning>::class.java).toMutableList()
+            earningIdList.forEach{ id ->
+                existingEarningList.removeAll { it.id == id }
             }
             val earningListString = Gson().toJson(existingEarningList)
             preferences[earningsListKey] = earningListString
@@ -502,6 +500,16 @@ class DataStoreManager (context: Context) {
             val existingUploadsFromFileListString = preferences[uploadsFromFileListKey] ?: "[]"
             val existingUploadsFromFileList = Gson().fromJson(existingUploadsFromFileListString, Array<UploadTransactionFromFileInfo>::class.java).toMutableList()
             existingUploadsFromFileList.add(uploadFromFile)
+            val uploadsFromFileListString = Gson().toJson(existingUploadsFromFileList)
+            preferences[uploadsFromFileListKey] = uploadsFromFileListString
+        }
+    }
+
+    suspend fun deleteFromUploadsFromFileList(uploadFromFileId : String){
+        dataStore.edit { preferences ->
+            val existingUploadsFromFileListString = preferences[uploadsFromFileListKey] ?: "[]"
+            val existingUploadsFromFileList = Gson().fromJson(existingUploadsFromFileListString, Array<UploadTransactionFromFileInfo>::class.java).toMutableList()
+            existingUploadsFromFileList.removeAll{it.id == uploadFromFileId}
             val uploadsFromFileListString = Gson().toJson(existingUploadsFromFileList)
             preferences[uploadsFromFileListKey] = uploadsFromFileListString
         }

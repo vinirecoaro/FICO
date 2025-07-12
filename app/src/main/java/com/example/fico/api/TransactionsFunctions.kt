@@ -110,9 +110,20 @@ class TransactionsFunctions() {
 
         val formattedEarningList = mutableListOf<Earning>()
 
+        val notAcceptRandom = mutableListOf<String>()
+
         for(earning in earningList){
 
-            val randomNum = generateRandomAddress(5)
+            var randomNum = ""
+            var exist = true
+
+            while(exist){
+                randomNum = generateRandomAddress(5)
+                if(!notAcceptRandom.contains(randomNum)){
+                    notAcceptRandom.add(randomNum)
+                    exist = false
+                }
+            }
 
             val inputTime = FormatValuesToDatabase().timeNow()
 
@@ -141,9 +152,11 @@ class TransactionsFunctions() {
 
         for (expense in expenseList){
 
-            val expense = addToExpenseList(expense, false, 1, false)
+            val innerExpense = addToExpenseList(expense, false, 1, false, notAcceptRandom)
 
-            fullExpenseList.addAll(expense)
+            fullExpenseList.addAll(innerExpense)
+
+            notAcceptRandom.add(getIdRandomNum(innerExpense[0].id))
         }
 
         for(expense in installmentExpenseList){
