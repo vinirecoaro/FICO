@@ -16,6 +16,8 @@ import org.apache.poi.ss.usermodel.DateUtil
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.File
 import java.io.FileInputStream
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 
@@ -152,12 +154,17 @@ class AddTransactionImportDataFromFile(){
     }
 
     fun formatMoney(cellValue: String): String {
-        return cellValue.trim()
+        val removeSpecialChars = cellValue.trim()
             .replace("R$", "")
             .replace("R$ ", "")
             .replace("$", "")
             .replace("$ ", "")
-            .replace(",", ".")
+            .replace(",", "")
+            .replace(".", "")
+
+        val formattedValue = BigDecimal(removeSpecialChars).divide(BigDecimal(100)).setScale(8, RoundingMode.HALF_UP).toString()
+
+        return formattedValue
     }
 
     fun formatDescription(cellValue: String): String {
@@ -191,7 +198,7 @@ class AddTransactionImportDataFromFile(){
     fun getCellValueAsString(cell: Cell?): String {
         return when (cell?.cellType) {
             CellType.STRING -> cell.stringCellValue
-            CellType.NUMERIC -> cell.numericCellValue.toString()
+            CellType.NUMERIC -> BigDecimal(cell.numericCellValue.toString()).setScale(2, RoundingMode.HALF_UP).toString()
             CellType.BOOLEAN -> cell.booleanCellValue.toString()
             else -> ""
         }

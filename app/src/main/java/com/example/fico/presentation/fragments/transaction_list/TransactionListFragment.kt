@@ -257,7 +257,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         }){
                             val modifiedExpense = Expense(
                                 transaction.id,
-                                FormatValuesFromDatabase().priceToFile(transaction.price),
+                                transaction.price, // not format value to make multiply for number of installment in next step
                                 transaction.description,
                                 transaction.category,
                                 transaction.paymentDate,
@@ -297,7 +297,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         installmentExpensesList.forEach { expense ->
             val nOfInstallments = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).replace("0","")
-            val fullPrice = BigDecimal(expense.price).multiply(BigDecimal(nOfInstallments)).toString()
+            val fullPrice = FormatValuesFromDatabase().priceToFile(BigDecimal(expense.price).multiply(BigDecimal(nOfInstallments)).toString())
             val formattedDescription = FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
             val initialPaymentDate = FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id, expense.paymentDate)
             val formattedExpense = Expense(

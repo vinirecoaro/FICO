@@ -136,14 +136,22 @@ class UploadFile : Service() {
     ){
 
         //Save transactions info
+
+        //Expense total value
         dataStore.updateTotalExpense(transactionFromFileInfo.updatedTotalExpense)
+
+        //Expense info per month
         dataStore.updateInfoPerMonthExpense(transactionFromFileInfo.updatedInformationPerMonth)
+
+        //Expense List
         dataStore.updateExpenseList(transactionFromFileInfo.expenseList.apply {
             forEach {
                 it.paymentDate = FormatValuesFromDatabase().date(it.paymentDate)
                 it.purchaseDate = FormatValuesFromDatabase().date(it.purchaseDate)
             }
         })
+
+        //Expense months
         val monthList = mutableListOf<String>()
         val updatedExpenseInfoPerMonth = dataStore.getExpenseInfoPerMonth()
         for(month in updatedExpenseInfoPerMonth){
@@ -152,9 +160,13 @@ class UploadFile : Service() {
             }
         }
         dataStore.updateAndResetExpenseMonths(monthList)
+
+        //Earning list
         for(earning in transactionFromFileInfo.earningList){
             dataStore.updateEarningList(earning)
         }
+
+        //Earning months
         val updatedEarningListFromDataStore = dataStore.getEarningsList()
         dataStore.updateAndResetEarningMonthInfoList(updatedEarningListFromDataStore)
 

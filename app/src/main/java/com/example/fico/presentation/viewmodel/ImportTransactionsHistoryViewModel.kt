@@ -100,6 +100,10 @@ class ImportTransactionsHistoryViewModel(
                     //Earning list
                     dataStore.deleteFromEarningList(earningIdsThatStillExists)
 
+                    //Earning months
+                    val updatedEarningListFromDataStore = dataStore.getEarningsList()
+                    dataStore.updateAndResetEarningMonthInfoList(updatedEarningListFromDataStore)
+
                     //Upload log
                     dataStore.deleteFromUploadsFromFileList(uploadFromFile.id)
 
