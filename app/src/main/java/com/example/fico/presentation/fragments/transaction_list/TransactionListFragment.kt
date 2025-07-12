@@ -246,6 +246,13 @@ class TransactionListFragment : Fragment(), XLSInterface {
         viewModel.showListLiveData.observe(viewLifecycleOwner, Observer { transactions ->
             for (transaction in transactions) {
                 if(transaction.type == StringConstants.DATABASE.EXPENSE){
+                    if(transaction.description.contains("Academia 2023")){
+                        Log.e("Description: ", transaction.description)
+                        val expenseIdLength = transaction.id.length
+                        Log.e("Description: ", expenseIdLength.toString())
+                        val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(transaction.id)
+                        Log.e("Description: ", commonId.toString())
+                    }
                     val expenseIdLength = transaction.id.length
                     //Verify if is a installment expense
                     if (expenseIdLength == 41) {
@@ -253,7 +260,13 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         //Will add just one installment off expense
                         if(!installmentExpensesList.any{
                             val commonExpenseId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(it.id)
-                                commonExpenseId == commonId
+                            val expenseFromListNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(it.id)
+                            val analyzedExpenseNOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(transaction.id)
+
+                            //Conditions
+                            commonExpenseId == commonId &&
+                            expenseFromListNOfInstallment == analyzedExpenseNOfInstallment &&
+                            it.price == transaction.price
                         }){
                             val modifiedExpense = Expense(
                                 transaction.id,
@@ -296,7 +309,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         val formattedInstallmentExpenseList = mutableListOf<Expense>()
 
         installmentExpensesList.forEach { expense ->
-            val nOfInstallments = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).replace("0","")
+            val nOfInstallments = FormatValuesFromDatabase().installmentExpenseNofInstallment(expense.id).toInt().toString()
             val fullPrice = FormatValuesFromDatabase().priceToFile(BigDecimal(expense.price).multiply(BigDecimal(nOfInstallments)).toString())
             val formattedDescription = FormatValuesFromDatabase().installmentExpenseDescription(expense.description)
             val initialPaymentDate = FormatValuesFromDatabase().installmentExpenseInitialDate(expense.id, expense.paymentDate)

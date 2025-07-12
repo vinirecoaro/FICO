@@ -71,8 +71,8 @@ class TransactionListAdapter(private val expenseCategory : List<TransactionCateg
             //Verify if it is a installment expense
             val expenseIdLength = item.id.length
             if(expenseIdLength == 41){
-                val numOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(item.id).replace("0","")
-                val currentInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(item.id).replace("0","")
+                val numOfInstallment = FormatValuesFromDatabase().installmentExpenseNofInstallment(item.id).toInt().toString()
+                val currentInstallment = FormatValuesFromDatabase().installmentExpenseCurrentInstallment(item.id).toInt().toString()
                 holder.installmentField.visibility = View.VISIBLE
                 val installmentText = "Parcela $currentInstallment de $numOfInstallment"
                 holder.installmentField.text = installmentText

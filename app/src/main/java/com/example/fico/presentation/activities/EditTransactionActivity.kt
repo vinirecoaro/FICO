@@ -367,6 +367,10 @@ class EditTransactionActivity : AppCompatActivity(), OnCategorySelectedListener 
                 binding.ivPurchaseDateEdit.isEnabled = true
             }
 
+            datePicker.addOnDismissListener {
+                binding.ivPurchaseDateEdit.isEnabled = true
+            }
+
             datePicker.show(supportFragmentManager, "PurchaseDate")
         }
 

@@ -1,5 +1,7 @@
 package com.example.fico.api
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.fico.model.CreditCard
 import com.example.fico.model.CreditCardColors
 import com.example.fico.model.Earning
@@ -13,6 +15,8 @@ import com.google.firebase.database.DataSnapshot
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class FormatValuesFromDatabase {
 
@@ -53,33 +57,13 @@ class FormatValuesFromDatabase {
         return expenseId.split("-")[8]
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun installmentExpenseInitialDate(id: String, date: String) : String{
-        val currentInstallment = id.substring(35,37).toInt().toString()
-        var day = date.substring(0, 2)
-        val month = date.substring(3, 5)
-        val year = date.substring(6, 10)
-        var initialYear = year.toInt() - (currentInstallment.toInt()/12)
-        var initialMonth = 1
-        var initialMonthString = ""
-
-        val restAfterDivideTwelve = currentInstallment.toInt()%12
-
-        if(month.toInt() < restAfterDivideTwelve){
-            initialMonth = 12 + (month.toInt() - restAfterDivideTwelve) + 1
-            initialMonthString = initialMonth.toString()
-            initialYear -= 1
-        }else if(month.toInt() > restAfterDivideTwelve){
-            initialMonth = month.toInt() - restAfterDivideTwelve + 1
-            initialMonthString = initialMonth.toString()
-        }
-        if(day.toInt() < 10){
-            day = "0${day.toInt()}"
-        }
-        if(initialMonth < 10){
-            initialMonthString = "0${initialMonth}"
-        }
-
-        return "${day}/${initialMonthString}/${initialYear}"
+        val currentInstallment = (id.substring(35,37).toInt() - 1).toString()
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val dataOriginal = LocalDate.parse(date, formatter)
+        val novaData = dataOriginal.minusMonths(currentInstallment.toLong())
+        return novaData.format(formatter)
     }
 
     fun commonIdOnInstallmentExpense(installmentExpenseId : String) : String{
