@@ -957,7 +957,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
         binding.tilPurchaseDate.visibility = View.GONE
         binding.etPurchaseDate.visibility = View.GONE
         binding.ivPurchaseDate.visibility = View.GONE
-        binding.cvCreditCardPreview.visibility = View.GONE
         binding.tilInstallments.visibility = View.GONE
         binding.etInstallments.visibility = View.GONE
         binding.tvSwtPayWithCreditCard.visibility = View.GONE
