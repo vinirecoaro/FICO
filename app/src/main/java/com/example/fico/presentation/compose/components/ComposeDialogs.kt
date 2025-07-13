@@ -293,7 +293,7 @@ fun CategoryListFilterDialogPreview(){
     FICOTheme {
         ComposeDialogs.CategoryListFilterDialog(
             items = listOf(
-                TransactionsCategory.BET,
+                TransactionsCategory.CLOTHING,
                 TransactionsCategory.ELETRONICS_1,
                 TransactionsCategory.CAR,
             ),

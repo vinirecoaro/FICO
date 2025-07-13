@@ -98,11 +98,6 @@ class CategoriesList(private val context : Context) {
                     false
                 ),
                 TransactionCategory(
-                    context.getString(R.string.category_list_description_bet),
-                    StringConstants.CATEGORY_LIST.ICON_NAME.BET,
-                    false
-                ),
-                TransactionCategory(
                     context.getString(R.string.category_list_description_pets),
                     StringConstants.CATEGORY_LIST.ICON_NAME.PETS,
                     false
@@ -262,11 +257,6 @@ class CategoriesList(private val context : Context) {
             TransactionCategory(
                 context.getString(R.string.category_list_description_donation),
                 StringConstants.CATEGORY_LIST.ICON_NAME.DONATION,
-                false
-            ),
-            TransactionCategory(
-                context.getString(R.string.category_list_description_bet),
-                StringConstants.CATEGORY_LIST.ICON_NAME.BET,
                 false
             ),
             TransactionCategory(

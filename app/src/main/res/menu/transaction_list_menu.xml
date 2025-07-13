@@ -27,7 +27,7 @@
         android:title="@string/filter"
         android:icon="@drawable/up_down_arrow"
         app:showAsAction="always"
-        android:visible="true"
+        android:visible="false"
         />
 
 </menu>

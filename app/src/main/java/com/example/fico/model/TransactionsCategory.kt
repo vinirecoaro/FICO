@@ -29,7 +29,6 @@ enum class TransactionsCategory(
     TRIP(R.string.category_list_description_trip, R.drawable.category_icon_trip),
     HOUSE(R.string.category_list_description_house, R.drawable.category_icon_house),
     DONATION(R.string.category_list_description_donation, R.drawable.category_icon_donation),
-    BET(R.string.category_list_description_bet, R.drawable.category_icon_bet),
     PETS(R.string.category_list_description_pets, R.drawable.category_icon_pets),
     FEES(R.string.category_list_description_fees, R.drawable.category_icon_fees),
     GYM(R.string.category_list_description_gym, R.drawable.category_icon_gym),
@@ -57,7 +56,7 @@ enum class TransactionsCategory(
             FOOD, TRANSPORT, ENTERTAINMENT_1,
             MARKET, EDUCATION_1, GIFT, HEALTHY, GAMES, INVESTMENT,
             ELETRONICS_1, REPAIR, ACESSORIES, CLOTHING, CAR, MOTORCYCLE,
-            TRIP, HOUSE, DONATION, BET, PETS, FEES, GYM, CELLPHONE,
+            TRIP, HOUSE, DONATION, PETS, FEES, GYM, CELLPHONE,
             PERSONAL_HYGIENE_1, PHARMACY, CASH_WITHDRAWAL_1, RIDE, PAYMENT, SERVICES
         )
 
@@ -65,7 +64,7 @@ enum class TransactionsCategory(
             FOOD, TRANSPORT, ENTERTAINMENT_1, ENTERTAINMENT_2,
             MARKET, EDUCATION_1, EDUCATION_2, GIFT, HEALTHY, GAMES, INVESTMENT,
             ELETRONICS_1, ELETRONICS_2, REPAIR, ACESSORIES, CLOTHING, CAR, MOTORCYCLE,
-            TRIP, HOUSE, DONATION, BET, PETS, FEES, GYM, CELLPHONE,
+            TRIP, HOUSE, DONATION, PETS, FEES, GYM, CELLPHONE,
             PERSONAL_HYGIENE_1, PERSONAL_HYGIENE_2, PHARMACY, CASH_WITHDRAWAL_1,
             CASH_WITHDRAWAL_2, RIDE, PAYMENT, SERVICES
         )
@@ -79,7 +78,7 @@ enum class TransactionsCategory(
             FOOD, TRANSPORT, ENTERTAINMENT_1, ENTERTAINMENT_2,
             MARKET, EDUCATION_1, EDUCATION_2, GIFT, HEALTHY, GAMES, INVESTMENT,
             ELETRONICS_1, ELETRONICS_2, REPAIR, ACESSORIES, CLOTHING, CAR, MOTORCYCLE,
-            TRIP, HOUSE, DONATION, BET, PETS, FEES, GYM, CELLPHONE,
+            TRIP, HOUSE, DONATION, PETS, FEES, GYM, CELLPHONE,
             PERSONAL_HYGIENE_1, PERSONAL_HYGIENE_2, PHARMACY, CASH_WITHDRAWAL_1,
             CASH_WITHDRAWAL_2, RIDE, PAYMENT, SERVICES, SALE_OF_SHARES, SALARY, CASHBACK,
             FREELANCE, OTHER, DIVIDEND, BENEFITS, INCOME

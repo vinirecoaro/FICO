@@ -152,6 +152,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
 
         val filterItem = menu.findItem(R.id.transaction_list_menu_filter)
         val generateFileItem = menu.findItem(R.id.transaction_list_menu_generate_excel_file)
+        val orderByValueItem = menu.findItem(R.id.transaction_list_menu_order_by_value)
 
         viewLifecycleOwner.lifecycleScope.launch{
             viewModel.uiState.collectLatest{state ->
@@ -160,6 +161,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                         clearFilterItem.isVisible = false
                         filterItem.isVisible = false
                         generateFileItem.isVisible = false
+                        orderByValueItem.isVisible = false
                     }
                     is TransactionFragmentState.Error -> {
                         clearFilterItem.isVisible = false
@@ -174,6 +176,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
                     TransactionFragmentState.Success -> {
                         filterItem.isVisible = true
                         generateFileItem.isVisible = true
+                        orderByValueItem.isVisible = true
                     }
                 }
             }
@@ -239,6 +242,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getTransactionsListForFile(): Triple<MutableList<Expense>,MutableList<Earning>,MutableList<Expense>> {
         val expensesList: MutableList<Expense> = ArrayList()
         val earningsList: MutableList<Earning> = ArrayList()
@@ -246,13 +250,6 @@ class TransactionListFragment : Fragment(), XLSInterface {
         viewModel.showListLiveData.observe(viewLifecycleOwner, Observer { transactions ->
             for (transaction in transactions) {
                 if(transaction.type == StringConstants.DATABASE.EXPENSE){
-                    if(transaction.description.contains("Academia 2023")){
-                        Log.e("Description: ", transaction.description)
-                        val expenseIdLength = transaction.id.length
-                        Log.e("Description: ", expenseIdLength.toString())
-                        val commonId = FormatValuesFromDatabase().commonIdOnInstallmentExpense(transaction.id)
-                        Log.e("Description: ", commonId.toString())
-                    }
                     val expenseIdLength = transaction.id.length
                     //Verify if is a installment expense
                     if (expenseIdLength == 41) {
@@ -748,6 +745,7 @@ class TransactionListFragment : Fragment(), XLSInterface {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun generateFileAndShare() {
         val transactionsLists = getTransactionsListForFile()
         val gson = Gson()
