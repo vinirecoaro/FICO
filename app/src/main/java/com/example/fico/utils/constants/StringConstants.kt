@@ -276,6 +276,12 @@ class StringConstants private constructor() {
         const val EDIT_MODE = "edit_mode"
         const val ASCENDING = "ascending"
         const val DESCENDING = "descending"
+        const val FILES = "files"
+    }
+
+    object ASSETS{
+        const val WORKSHEET_IMPORT_TRANSACTION_FILE_NAME = "importacao_de_transacoes"
+        const val WORKSHEET_IMPORT_TRANSACTION_FILE_EXTENSION = ".xls"
     }
 
 }

@@ -12,6 +12,11 @@
         android:visible="false"
         />
     <item
+        android:id="@+id/download"
+        android:title="Download"
+        android:visible="true"
+        />
+    <item
         android:id="@+id/add_transaction_menu_get_data_from_file"
         android:title="@string/import_transactions"
         />

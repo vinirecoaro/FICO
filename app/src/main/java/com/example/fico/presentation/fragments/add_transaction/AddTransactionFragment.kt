@@ -58,6 +58,7 @@ import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.presentation.components.inputs.InputFieldFunctions
 import com.example.fico.presentation.compose.components.ComposeDialogs
+import com.example.fico.utils.file_functions.FileFunctions
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -213,6 +214,15 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
 
             R.id.add_expense_transaction_menu -> {
                 changeComponentsToExpenseState()
+                return true
+            }
+
+            R.id.download -> {
+                FileFunctions.copyFromAssetsToDownloadDeviceFolder(
+                    StringConstants.GENERAL.FILES,
+                    StringConstants.ASSETS.WORKSHEET_IMPORT_TRANSACTION_FILE_NAME,
+                    StringConstants.ASSETS.WORKSHEET_IMPORT_TRANSACTION_FILE_EXTENSION,
+                    binding.root)
                 return true
             }
 
