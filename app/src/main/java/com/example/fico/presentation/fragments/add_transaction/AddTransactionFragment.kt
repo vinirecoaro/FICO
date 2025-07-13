@@ -217,15 +217,6 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 return true
             }
 
-            R.id.download -> {
-                FileFunctions.copyFromAssetsToDownloadDeviceFolder(
-                    StringConstants.GENERAL.FILES,
-                    StringConstants.ASSETS.WORKSHEET_IMPORT_TRANSACTION_FILE_NAME,
-                    StringConstants.ASSETS.WORKSHEET_IMPORT_TRANSACTION_FILE_EXTENSION,
-                    binding.root)
-                return true
-            }
-
             else -> return super.onOptionsItemSelected(item)
         }
     }
