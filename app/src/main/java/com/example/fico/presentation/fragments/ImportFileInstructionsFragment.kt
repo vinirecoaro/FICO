@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.example.fico.R
 import com.example.fico.databinding.FragmentImportFileInstructionsBinding
 import com.example.fico.model.ImportFileInstructionsComponents
+import com.example.fico.utils.constants.StringConstants
+import com.example.fico.utils.file_functions.FileFunctions
 
 class ImportFileInstructionsFragment : Fragment() {
 
@@ -23,13 +25,21 @@ class ImportFileInstructionsFragment : Fragment() {
         var rootView = binding.root
 
         arguments?.let {
-            binding.tvTitle.text = it.getString(getString(R.string.title))
+            val title = it.getString(getString(R.string.title))
+            binding.tvTitle.text = title
             binding.ivIlustration.setImageResource(it.getInt(getString(R.string.image)))
             binding.tvDescription.text = it.getString(getString(R.string.description))
             if(it.getBoolean(getString(R.string.button_state))){
                 binding.btFinish.visibility = View.VISIBLE
             }else{
                 binding.btFinish.visibility = View.GONE
+            }
+
+            //Define button state
+            if(title == getString(R.string.file_extension)){
+                binding.btFinish.text = getString(R.string.download_base_workbook)
+            }else if(title == getString(R.string.final_line_identificator)){
+                binding.btFinish.text = getString(R.string.understood)
             }
         }
 
@@ -53,7 +63,16 @@ class ImportFileInstructionsFragment : Fragment() {
 
     private fun setUpListeners(){
         binding.btFinish.setOnClickListener {
-            requireActivity().finish()
+            if(binding.btFinish.text == getString(R.string.understood)){
+                requireActivity().finish()
+            }else if(binding.btFinish.text == getString(R.string.download_base_workbook)){
+                FileFunctions.copyFromAssetsToDownloadDeviceFolder(
+                    StringConstants.GENERAL.FILES,
+                    StringConstants.ASSETS.WORKSHEET_IMPORT_TRANSACTION_FILE_NAME,
+                    StringConstants.ASSETS.WORKSHEET_IMPORT_TRANSACTION_FILE_EXTENSION,
+                    binding.root
+                )
+            }
         }
     }
 }

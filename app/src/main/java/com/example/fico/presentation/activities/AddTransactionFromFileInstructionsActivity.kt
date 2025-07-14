@@ -35,33 +35,48 @@ class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
                     R.drawable.import_file_instructions_table_xls_light
                 ),
                 getString(R.string.import_transaction_file_extension_message),
+                true
+            ),
+            ImportFileInstructionsComponents(
+                getString(R.string.sheet_names),
+                R.drawable.sheet_names,
+                getString(R.string.sheet_names_instructions),
                 false
             ),
             ImportFileInstructionsComponents(
-                "Cebeçalho",
-                R.drawable.installment_expense_import_file_instructions_complete_table,
-                "O cabeçalho deve ser conforme ilustrado na imagem acima. " +
-                        "Deve ter as colunas Preço, Descrição, Categoria, Data e Parcelas nessa ordem.",
+                getString(R.string.expense_header),
+                R.drawable.expense_header,
+                getString(R.string.expense_header_instructions),
                 false
             ),
             ImportFileInstructionsComponents(
-                "Coluna Preço",
+                getString(R.string.earning_header),
+                R.drawable.earning_header,
+                getString(R.string.earning_header_instructions),
+                false
+            ),
+            ImportFileInstructionsComponents(
+                getString(R.string.installment_expense_header),
+                R.drawable.installment_expense_header,
+                getString(R.string.installment_expense_header_instructions),
+                false
+            ),
+            ImportFileInstructionsComponents(
+                getString(R.string.price_column),
                 R.drawable.import_file_instructions_price_column,
-                "Na coluna preço os valores podem \nestar nos formatos acima.",
+                getString(R.string.price_column_instructions),
                 false
             ),
             ImportFileInstructionsComponents(
-                "Coluna Data",
+                getString(R.string.date_column),
                 R.drawable.import_file_instructions_date_column,
-                "Na coluna data os valores devem ser no formato:\n\n" +
-                        "dd/mm/aaaa",
+                getString(R.string.date_column_instructions),
                 false
             ),
             ImportFileInstructionsComponents(
-                "Identificador de linha final",
+                getString(R.string.final_line_identificator),
                 R.drawable.import_file_instructions_final_line_identificator,
-                "Para identificar a última linha a ser lida use\no identificador abaixo na linha posterior:\n\n" +
-                        "xxx",
+                getString(R.string.final_line_identificator_instructions),
                 true
             ),
         )
@@ -76,6 +91,9 @@ class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
                 binding.dot3.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot4.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot5.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot6.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot7.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot8.setImageResource(R.drawable.ic_dot_unselected_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -83,6 +101,9 @@ class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
                 binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot8.setImageResource(R.drawable.ic_dot_unselected_black)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
@@ -111,41 +132,26 @@ class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
     }
 
     private fun updateIndicator(currentPosition: Int) {
-        if(currentPosition == 0){
-            binding.dot1.setImageResource(R.drawable.ic_dot_selected)
-            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
-        }
-        else if(currentPosition == 1){
-            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot2.setImageResource(R.drawable.ic_dot_selected)
-            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
-        }
-        else if(currentPosition == 2){
-            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot3.setImageResource(R.drawable.ic_dot_selected)
-            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
-        }
-        else if(currentPosition == 3){
-            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot4.setImageResource(R.drawable.ic_dot_selected)
-            binding.dot5.setImageResource(R.drawable.ic_dot_unselected_black)
-        }
-        else if(currentPosition == 4){
-            binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot2.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot3.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot4.setImageResource(R.drawable.ic_dot_unselected_black)
-            binding.dot5.setImageResource(R.drawable.ic_dot_selected)
+        val dots = listOf(
+            binding.dot1,
+            binding.dot2,
+            binding.dot3,
+            binding.dot4,
+            binding.dot5,
+            binding.dot6,
+            binding.dot7,
+            binding.dot8
+        )
+
+        dots.forEachIndexed { index, imageView ->
+            val resId = if (index == currentPosition) {
+                R.drawable.ic_dot_selected
+            } else {
+                R.drawable.ic_dot_unselected_black
+            }
+            imageView.setImageResource(resId)
         }
     }
+
 
 }
