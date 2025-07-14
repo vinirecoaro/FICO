@@ -318,6 +318,8 @@
     <string name="transactions_deliting_message">Deseja prosseguir com a exclusão dos dados importados?</string>
     <string name="file_saved_on_downloads_message">Arquivo salvo em Downloads</string>
     <string name="error_on_saving_file_message">Erro ao salvar arquivo</string>
+    <string name="file_extension">Extensão do arquivo</string>
+    <string name="import_transaction_file_extension_message">O arquivo deve ser com extensão xls.</string>
 
 
 </resources>

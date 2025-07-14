@@ -9,7 +9,7 @@ import com.example.fico.databinding.ActivityInstallmentExpenseImportFileInstruct
 import com.example.fico.model.ImportFileInstructionsComponents
 import com.example.fico.presentation.adapters.ImportFileInstructionsAdapter
 
-class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
+class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
 
     private val binding by lazy{ActivityInstallmentExpenseImportFileInstructionsBinding.inflate(layoutInflater)}
     private lateinit var importFileInstructionsAdapter: ImportFileInstructionsAdapter
@@ -29,12 +29,12 @@ class InstallmentExpenseImportFileInstructionsActivity : AppCompatActivity() {
     private fun getImportFileInstructionsComponents() : List<ImportFileInstructionsComponents>{
         val contents = listOf(
             ImportFileInstructionsComponents(
-                "Extensão do arquivo",
+                getString(R.string.file_extension),
                 setImageBasedOnTheme(
-                    R.drawable.installment_expense_import_file_instructions_table_xls_light,
-                    R.drawable.installment_expense_import_file_instructions_table_xls_black
+                    R.drawable.import_file_instructions_table_xls_dark,
+                    R.drawable.import_file_instructions_table_xls_light
                 ),
-                "O arquivo deve ser com extensão xls.",
+                getString(R.string.import_transaction_file_extension_message),
                 false
             ),
             ImportFileInstructionsComponents(

@@ -28,7 +28,7 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
 
     private fun getImportFileInstructionsComponents() : List<ImportFileInstructionsComponents>{
         val contents = listOf(
-            ImportFileInstructionsComponents(
+            /*ImportFileInstructionsComponents(
                 "Extensão do arquivo",
                 setImageBasedOnTheme(
                     R.drawable.import_file_instructions_table_xls_light,
@@ -36,7 +36,7 @@ class ComonExpenseImportFileInstructionsActivity : AppCompatActivity() {
                     ),
                 "O arquivo deve ser com extensão xls.",
                 false
-            ),
+            ),*/
             ImportFileInstructionsComponents(
                 "Cebeçalho",
                 R.drawable.import_file_instructions_complete_table,

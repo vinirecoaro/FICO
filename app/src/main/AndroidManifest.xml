@@ -48,7 +48,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.activities.InstallmentExpenseImportFileInstructionsActivity"
+            android:name=".presentation.activities.AddTransactionFromFileInstructionsActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.activities.ComonExpenseImportFileInstructionsActivity"

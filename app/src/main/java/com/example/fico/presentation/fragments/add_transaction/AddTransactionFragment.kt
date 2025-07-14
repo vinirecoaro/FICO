@@ -27,8 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fico.R
 import com.example.fico.service.UploadFile
 import com.example.fico.utils.constants.StringConstants
-import com.example.fico.presentation.activities.ComonExpenseImportFileInstructionsActivity
-import com.example.fico.presentation.activities.InstallmentExpenseImportFileInstructionsActivity
+import com.example.fico.presentation.activities.AddTransactionFromFileInstructionsActivity
 import com.example.fico.presentation.viewmodel.AddTransactionViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -58,7 +57,6 @@ import com.example.fico.utils.DateFunctions
 import com.example.fico.utils.constants.CategoriesList
 import com.example.fico.presentation.components.inputs.InputFieldFunctions
 import com.example.fico.presentation.compose.components.ComposeDialogs
-import com.example.fico.utils.file_functions.FileFunctions
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -721,7 +719,7 @@ class AddTransactionFragment : Fragment(), OnCategorySelectedListener {
                 startActivity(
                     Intent(
                         requireContext(),
-                        InstallmentExpenseImportFileInstructionsActivity::class.java
+                        AddTransactionFromFileInstructionsActivity::class.java
                     )
                 )
             }
