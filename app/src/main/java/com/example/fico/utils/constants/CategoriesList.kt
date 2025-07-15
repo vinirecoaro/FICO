@@ -146,6 +146,26 @@ class CategoriesList(private val context : Context) {
                     context.getString(R.string.category_list_description_services),
                     StringConstants.CATEGORY_LIST.ICON_NAME.SERVICES,
                     false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_drink),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.DRINK,
+                    false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_shoes),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.SHOES,
+                    false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_streaming),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.STREAMING,
+                    false
+                ),
+                TransactionCategory(
+                    context.getString(R.string.category_list_description_others_expense),
+                    StringConstants.CATEGORY_LIST.ICON_NAME.OTHERS_EXPENSE,
+                    false
                 )
 
             )
@@ -318,6 +338,26 @@ class CategoriesList(private val context : Context) {
                 context.getString(R.string.category_list_description_services),
                 StringConstants.CATEGORY_LIST.ICON_NAME.SERVICES,
                 false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_drink),
+                StringConstants.CATEGORY_LIST.ICON_NAME.DRINK,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_shoes),
+                StringConstants.CATEGORY_LIST.ICON_NAME.SHOES,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_streaming),
+                StringConstants.CATEGORY_LIST.ICON_NAME.STREAMING,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_others_expense),
+                StringConstants.CATEGORY_LIST.ICON_NAME.OTHERS_EXPENSE,
+                false
             )
 
         )
@@ -363,6 +403,11 @@ class CategoriesList(private val context : Context) {
             TransactionCategory(
                 context.getString(R.string.category_list_description_income),
                 StringConstants.CATEGORY_LIST.ICON_NAME.INCOME,
+                false
+            ),
+            TransactionCategory(
+                context.getString(R.string.category_list_description_sale),
+                StringConstants.CATEGORY_LIST.ICON_NAME.SALE,
                 false
             ),
         )

@@ -48,7 +48,12 @@ enum class TransactionsCategory(
     OTHER(R.string.category_list_description_other, R.drawable.category_icon_other),
     DIVIDEND(R.string.category_list_description_dividend, R.drawable.category_icon_dividend),
     BENEFITS(R.string.category_list_description_benefits, R.drawable.category_icon_benefits),
-    INCOME(R.string.category_list_description_income, R.drawable.category_icon_income);
+    INCOME(R.string.category_list_description_income, R.drawable.category_icon_income),
+    DRINK(R.string.category_list_description_drink, R.drawable.category_icon_drink),
+    SHOES(R.string.category_list_description_shoes, R.drawable.category_icon_shoes),
+    STREAMING(R.string.category_list_description_streaming, R.drawable.category_icon_streaming),
+    SALE(R.string.category_list_description_sale, R.drawable.category_icon_sale),
+    OTHERS_EXPENSE(R.string.category_list_description_others_expense, R.drawable.category_icon_others_expense);
 
     companion object {
 
@@ -57,7 +62,8 @@ enum class TransactionsCategory(
             MARKET, EDUCATION_1, GIFT, HEALTHY, GAMES, INVESTMENT,
             ELETRONICS_1, REPAIR, ACESSORIES, CLOTHING, CAR, MOTORCYCLE,
             TRIP, HOUSE, DONATION, PETS, FEES, GYM, CELLPHONE,
-            PERSONAL_HYGIENE_1, PHARMACY, CASH_WITHDRAWAL_1, RIDE, PAYMENT, SERVICES
+            PERSONAL_HYGIENE_1, PHARMACY, CASH_WITHDRAWAL_1, RIDE, PAYMENT,
+            SERVICES,DRINK,SHOES, STREAMING, OTHERS_EXPENSE
         )
 
         fun getExpenseCategoryListFull(): List<TransactionsCategory> = listOf(
@@ -66,12 +72,13 @@ enum class TransactionsCategory(
             ELETRONICS_1, ELETRONICS_2, REPAIR, ACESSORIES, CLOTHING, CAR, MOTORCYCLE,
             TRIP, HOUSE, DONATION, PETS, FEES, GYM, CELLPHONE,
             PERSONAL_HYGIENE_1, PERSONAL_HYGIENE_2, PHARMACY, CASH_WITHDRAWAL_1,
-            CASH_WITHDRAWAL_2, RIDE, PAYMENT, SERVICES
+            CASH_WITHDRAWAL_2, RIDE, PAYMENT, SERVICES, DRINK, SHOES,
+            STREAMING, OTHERS_EXPENSE
         )
 
         fun getEarningCategoryList(): List<TransactionsCategory> = listOf(
             SALE_OF_SHARES, SALARY, CASHBACK, FREELANCE,
-            OTHER, DIVIDEND, BENEFITS, INCOME
+            OTHER, DIVIDEND, BENEFITS, INCOME, SALE
         )
 
         fun getTransactionCategoryList(): List<TransactionsCategory> = listOf(
@@ -81,7 +88,9 @@ enum class TransactionsCategory(
             TRIP, HOUSE, DONATION, PETS, FEES, GYM, CELLPHONE,
             PERSONAL_HYGIENE_1, PERSONAL_HYGIENE_2, PHARMACY, CASH_WITHDRAWAL_1,
             CASH_WITHDRAWAL_2, RIDE, PAYMENT, SERVICES, SALE_OF_SHARES, SALARY, CASHBACK,
-            FREELANCE, OTHER, DIVIDEND, BENEFITS, INCOME
+            FREELANCE, OTHER, DIVIDEND, BENEFITS, INCOME, DRINK, SHOES, STREAMING,
+            OTHERS_EXPENSE, SALE
+
         )
     }
 }

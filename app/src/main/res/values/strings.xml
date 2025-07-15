@@ -172,6 +172,11 @@
     <string name="category_list_description_ride">Passeio</string>
     <string name="category_list_description_payment">Pagamento</string>
     <string name="category_list_description_services">Serviços</string>
+    <string name="category_list_description_drink">Bebida</string>
+    <string name="category_list_description_shoes">Calçado</string>
+    <string name="category_list_description_streaming">Streaming</string>
+    <string name="category_list_description_sale">Venda</string>
+    <string name="category_list_description_others_expense">Outros</string>
     <string name="category_list_description_sale_of_shares">Venda de Ações</string>
     <string name="category_list_description_salary">Salário</string>
     <string name="category_list_description_cashback">Cashback</string>
