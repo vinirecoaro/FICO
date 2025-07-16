@@ -338,6 +338,8 @@
     <string name="installment_expense_header">Cabeçalho para despesas parceladas</string>
     <string name="installment_expense_header_instructions">O cabeçalho deve ser conforme ilustrado na imagem acima. Deve ter as colunas \'Preço\', \'Descrição\', \'Categoria\', \'Data de pagamento inicial\' e \'Data de compra\' nessa ordem.</string>
     <string name="final_line_identificator">Identificador de linha final</string>
+    <string name="check_data_instruction">Resumo da importação</string>
+    <string name="check_data_instruction_message">Verifique o resumo da importação, analise se a quantidade de transações de cada tipo está correta</string>
     <string name="final_line_identificator_instructions">Para identificar a última linha a ser lida use\no identificador abaixo na linha posterior:\n\nxxx</string>
     <string name="download_base_workbook">Baixar planilha base</string>
 

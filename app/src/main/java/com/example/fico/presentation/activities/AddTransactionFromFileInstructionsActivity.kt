@@ -77,6 +77,15 @@ class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
                 getString(R.string.final_line_identificator),
                 R.drawable.import_file_instructions_final_line_identificator,
                 getString(R.string.final_line_identificator_instructions),
+                false
+            ),
+            ImportFileInstructionsComponents(
+                getString(R.string.check_data_instruction),
+                setImageBasedOnTheme(
+                    R.drawable.import_file_instructions_info_resume_dark,
+                    R.drawable.import_file_instructions_info_resume_light
+                ),
+                getString(R.string.check_data_instruction_message),
                 true
             ),
         )
@@ -94,6 +103,7 @@ class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
                 binding.dot6.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot7.setImageResource(R.drawable.ic_dot_unselected_light)
                 binding.dot8.setImageResource(R.drawable.ic_dot_unselected_light)
+                binding.dot9.setImageResource(R.drawable.ic_dot_unselected_light)
             }
             Configuration.UI_MODE_NIGHT_NO -> {
                 binding.dot1.setImageResource(R.drawable.ic_dot_unselected_black)
@@ -104,6 +114,7 @@ class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
                 binding.dot6.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot7.setImageResource(R.drawable.ic_dot_unselected_black)
                 binding.dot8.setImageResource(R.drawable.ic_dot_unselected_black)
+                binding.dot9.setImageResource(R.drawable.ic_dot_unselected_black)
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
         }
@@ -140,7 +151,8 @@ class AddTransactionFromFileInstructionsActivity : AppCompatActivity() {
             binding.dot5,
             binding.dot6,
             binding.dot7,
-            binding.dot8
+            binding.dot8,
+            binding.dot9
         )
 
         dots.forEachIndexed { index, imageView ->
