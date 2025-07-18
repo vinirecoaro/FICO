@@ -22,4 +22,8 @@ class AuthRepository(private val authInterface: AuthInterface) {
         return authInterface.sendVerificationEmail()
     }
 
+    suspend fun isPremium(): Result<Boolean> {
+        return authInterface.isPremium()
+    }
+
 }

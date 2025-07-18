@@ -10,4 +10,6 @@ interface AuthInterface {
     suspend fun isLogged() : Result<Boolean>
 
     suspend fun sendVerificationEmail() : Result<Boolean>
+
+    suspend fun isPremium(): Result<Boolean>
 }

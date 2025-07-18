@@ -34,7 +34,8 @@ class FirebaseAPI(
     private val auth : FirebaseAuth,
     private val database : FirebaseDatabase
 ) : AuthInterface, UserDataInterface, TransactionsInterface, CreditCardInterface {
-    private val rootRef = database.getReference(StringConstants.DATABASE.USERS)
+    private val premium_users_list_ref = database.getReference(StringConstants.DATABASE.PREMIUM_USERS_LIST)
+    private val users_data_root_ref = database.getReference(StringConstants.DATABASE.USERS)
     private lateinit var user_root : DatabaseReference
     private lateinit var user_info : DatabaseReference
     private lateinit var expenses : DatabaseReference
@@ -50,7 +51,7 @@ class FirebaseAPI(
     private lateinit var uploads_from_file : DatabaseReference
 
     fun updateReferences() {
-        user_root = rootRef.child(auth.currentUser?.uid.toString())
+        user_root = users_data_root_ref.child(auth.currentUser?.uid.toString())
         user_info = user_root.child(StringConstants.DATABASE.USER_INFO)
         expenses = user_root.child(StringConstants.DATABASE.EXPENSES)
         transactions = user_root.child(StringConstants.DATABASE.TRANSACTIONS)
@@ -147,6 +148,10 @@ class FirebaseAPI(
         }catch (e : Exception){
             Result.failure(e)
         }
+    }
+
+    override suspend fun isPremium(): Result<Boolean> {
+        TODO("Not yet implemented")
     }
 
     suspend fun stateListener() = withContext(Dispatchers.IO) {
@@ -1027,7 +1032,7 @@ class FirebaseAPI(
     //Function created to fix data that was updated before new information about expense
     private suspend fun updateExpensePerListInformationPath() = withContext(Dispatchers.IO) {
         suspendCancellableCoroutine<Unit> { continuation ->
-            rootRef.child(auth.currentUser?.uid.toString())
+            users_data_root_ref.child(auth.currentUser?.uid.toString())
                 .child(StringConstants.DATABASE.EXPENSES_LIST)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     @RequiresApi(Build.VERSION_CODES.O)
