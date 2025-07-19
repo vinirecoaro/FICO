@@ -25,6 +25,7 @@ import org.koin.android.ext.android.inject
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.transition.Visibility
+import com.bumptech.glide.Glide
 import com.example.fico.R
 import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
 import com.example.fico.utils.constants.StringConstants
@@ -61,6 +62,7 @@ class LogoActivity : AppCompatActivity() {
                 showBiometricPrompt()
             }else{
                 lifecycleScope.launch(Dispatchers.Main) {
+                    showLoadingLogo()
                     if(ConnectionFunctions.internetConnectionVerification(this@LogoActivity)){
                         remoteDatabaseViewModel.getDataFromDatabase()
                     }
@@ -111,6 +113,7 @@ class LogoActivity : AppCompatActivity() {
                         }
                     }
                     BiometricResult.AuthenticationSuccess -> {
+                        showLoadingLogo()
                         if(ConnectionFunctions.internetConnectionVerification(this@LogoActivity)){
                             remoteDatabaseViewModel.getDataFromDatabase()
                         }
@@ -143,6 +146,15 @@ class LogoActivity : AppCompatActivity() {
             title = getString(R.string.biometric_prompt_title),
             description = getString(R.string.biometric_prompt_description)
         )
+    }
+
+    private fun showLoadingLogo(){
+        binding.cvLogo.visibility = View.GONE
+        Glide.with(this@LogoActivity)
+            .asGif()
+            .load(R.drawable.animated_logo)
+            .into(binding.ivLoadingLogo)
+        binding.ivLoadingLogo.visibility = View.VISIBLE
     }
 
 }
