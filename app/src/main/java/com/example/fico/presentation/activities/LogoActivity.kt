@@ -6,10 +6,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -24,10 +21,10 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import androidx.transition.Visibility
 import com.bumptech.glide.Glide
 import com.example.fico.R
 import com.example.fico.presentation.viewmodel.shared.RemoteDatabaseViewModel
+import com.example.fico.utils.UiFunctions
 import com.example.fico.utils.constants.StringConstants
 import com.example.fico.utils.internet.ConnectionFunctions
 
@@ -138,7 +135,6 @@ class LogoActivity : AppCompatActivity() {
                 finish()
             }
         }
-
     }
 
     private fun showBiometricPrompt(){
@@ -152,7 +148,13 @@ class LogoActivity : AppCompatActivity() {
         binding.cvLogo.visibility = View.GONE
         Glide.with(this@LogoActivity)
             .asGif()
-            .load(R.drawable.animated_logo)
+            .load(
+                UiFunctions.setImageBasedOnTheme(
+                    this,
+                    R.drawable.animated_logo_dark_mode,
+                    R.drawable.animated_logo_light_mode
+                )
+            )
             .into(binding.ivLoadingLogo)
         binding.ivLoadingLogo.visibility = View.VISIBLE
     }
