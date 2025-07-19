@@ -10,6 +10,7 @@ import com.example.fico.model.CreditCard
 import com.example.fico.model.Earning
 import com.example.fico.model.Expense
 import com.example.fico.model.InformationPerMonthExpense
+import com.example.fico.model.Premium
 import com.example.fico.model.RecurringTransaction
 import com.example.fico.model.UploadTransactionFromFileInfo
 import com.example.fico.model.User
@@ -34,7 +35,6 @@ class FirebaseAPI(
     private val auth : FirebaseAuth,
     private val database : FirebaseDatabase
 ) : AuthInterface, UserDataInterface, TransactionsInterface, CreditCardInterface {
-    private val premium_users_list_ref = database.getReference(StringConstants.DATABASE.PREMIUM_USERS_LIST)
     private val users_data_root_ref = database.getReference(StringConstants.DATABASE.USERS)
     private lateinit var user_root : DatabaseReference
     private lateinit var user_info : DatabaseReference
@@ -150,8 +150,25 @@ class FirebaseAPI(
         }
     }
 
-    override suspend fun isPremium(): Result<Boolean> {
-        TODO("Not yet implemented")
+    override suspend fun isPremium(): Result<Premium> = withContext(Dispatchers.IO) {
+        return@withContext suspendCancellableCoroutine { continuation ->
+            try {
+                user_info.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val isPremium = snapshot.child(StringConstants.DATABASE.IS_PREMIUM).value?.toString()?.toBoolean() ?: false
+                        val premiumUntil = snapshot.child(StringConstants.DATABASE.PREMIUM_UNTIL).value?.toString() ?: ""
+                        val premium = Premium(isPremium, premiumUntil)
+                        continuation.resume(Result.success(premium))
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resume(Result.failure(Exception(error.message)))
+                    }
+                })
+            } catch (e: Exception) {
+                continuation.resume(Result.failure(e))
+            }
+        }
     }
 
     suspend fun stateListener() = withContext(Dispatchers.IO) {

@@ -1,5 +1,6 @@
 package com.example.fico.interfaces
 
+import com.example.fico.model.Premium
 import com.example.fico.model.User
 
 interface AuthInterface {
@@ -11,5 +12,5 @@ interface AuthInterface {
 
     suspend fun sendVerificationEmail() : Result<Boolean>
 
-    suspend fun isPremium(): Result<Boolean>
+    suspend fun isPremium(): Result<Premium>
 }

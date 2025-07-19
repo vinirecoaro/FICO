@@ -1,6 +1,7 @@
 package com.example.fico.repositories
 
 import com.example.fico.interfaces.AuthInterface
+import com.example.fico.model.Premium
 import com.example.fico.model.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -22,7 +23,7 @@ class AuthRepository(private val authInterface: AuthInterface) {
         return authInterface.sendVerificationEmail()
     }
 
-    suspend fun isPremium(): Result<Boolean> {
+    suspend fun isPremium(): Result<Premium> {
         return authInterface.isPremium()
     }
 
